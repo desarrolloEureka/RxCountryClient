@@ -1,113 +1,137 @@
+"use client";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ImKey } from "react-icons/im";
+import { IoEye, IoEyeOff, IoMail } from "react-icons/io5";
+import DashboardFooter from "./component/DashboardFooter";
 
 export default function Home() {
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isPatient, setIsPatient] = useState(false);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="relative flex flex-col justify-center items-center bg-login-image bg-cover bg-bottom min-h-screen w-full">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+        className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80"
+      >
+        <div className="w-full">
+          <Link
+            href="/sign-up"
+            className="flex items-center space-x-2 text-company-blue"
           >
-            By{" "}
+            <span>Registrarse</span>
             <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+              src={"/assets/icons/register-arrow.svg"}
+              width={22}
+              height={20}
+              alt={"register icon"}
             />
-          </a>
+          </Link>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        <div className="flex flex-col space-y-8 items-center w-full mx-16">
+          <Image
+            src={"/assets/logo.png"}
+            width={220}
+            height={72}
+            alt={"logo"}
+          />
+          <div className="grid grid-cols-2 justify-between w-full px-16">
+            <div className="flex space-x-2 items-center text-white">
+              <input
+                type="radio"
+                checked={!isPatient}
+                onChange={(_) => {
+                  setIsPatient(false);
+                }}
+                className="w-8 h-8 border-2"
+              />
+              <span>Especialista</span>
+            </div>
+            <div className="flex space-x-2 justify-end items-center text-white">
+              <input
+                type="radio"
+                checked={isPatient}
+                onChange={(_) => {
+                  setIsPatient(true);
+                }}
+                className="w-8 h-8 border-0"
+              />
+              <span>Paciente</span>
+            </div>
+          </div>
+          {!isPatient && (
+            <div className="relative flex flex-col w-full px-16 space-y-2">
+              <label htmlFor="email" className="text-white">
+                Correo
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+              />
+              <IoMail className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+            </div>
+          )}
+          {!isPatient && (
+            <div className="relative flex flex-col w-full px-16 space-y-2">
+              <label htmlFor="password" className="text-white">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+              />
+              <ImKey className="ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
+              <Link href={""} onClick={() => setShowPassword(!showPassword)}>
+                <span className="absolute right-2 bottom-4 text-company-blue mr-16 text-[1.5rem]">
+                  {showPassword ? <IoEyeOff /> : <IoEye />}
+                </span>
+              </Link>
+            </div>
+          )}
+          {!isPatient && (
+            <div className="flex justify-end items-center w-full px-16">
+              <Link href={"/forgot-password"} className="text-white underline">
+                Olvide mi contraseña
+              </Link>
+            </div>
+          )}
+          {isPatient && (
+            <div className="flex flex-col w-full px-16 space-y-2">
+              <label htmlFor="user" className="text-white">
+                Usuario (cédula)
+              </label>
+              <input
+                id="user"
+                name="user"
+                type="text"
+                required
+                className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-2"
+              />
+            </div>
+          )}
+          <button
+            // type="submit"
+            className="bg-company-blue rounded-2xl px-5 py-3 text-white"
+            onClick={() => {
+              router.replace("/dashboard");
+            }}
+          >
+            Iniciar sesión
+          </button>
+        </div>
+      </form>
+      <DashboardFooter />
     </main>
   );
 }

@@ -12,6 +12,14 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "login-image": "url('/assets/bg-login.png')",
+        "home-image": "url('/assets/bg-home.png')",
+        "gray-image": "url('/assets/bg-gray.png')",
+      },
+      colors: {
+        "company-blue": "#5696D3",
+        "company-orange": "#E9A225",
+        "company-gray": "#505050",
       },
     },
   },
