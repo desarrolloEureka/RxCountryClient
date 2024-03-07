@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ImKey } from "react-icons/im";
 import { IoEye, IoEyeOff, IoMail } from "react-icons/io5";
 
 export default function SignUp() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isPatient, setIsPatient] = useState(false);
   return (
@@ -125,7 +127,10 @@ export default function SignUp() {
               />
             </div>
           </div>
-          <button className="bg-company-blue rounded-2xl px-5 py-3 text-white">
+          <button
+            onClick={() => router.replace("/")}
+            className="bg-company-blue rounded-2xl px-5 py-3 text-white"
+          >
             Iniciar sesión
           </button>
         </div>
