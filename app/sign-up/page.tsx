@@ -128,10 +128,10 @@ export default function SignUp() {
             </div>
           </div>
           <button
-            onClick={() => router.replace("/")}
+            onClick={() => router.replace("/dashboard")}
             className="bg-company-blue rounded-2xl px-5 py-3 text-white"
           >
-            Iniciar sesión
+            Registrate
           </button>
         </div>
       </div>
