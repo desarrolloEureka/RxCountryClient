@@ -7,7 +7,7 @@ import ImagesRequestIcon from "./icons/ImagesRequestIcon.jsx";
 import { useState } from "react";
 
 interface Props {
-  selectedMenuItem?: "create-order" | "orders-historial" | "consult-images";
+  selectedMenuItem?: "create-order" | "orders-historial" | "images-query";
 }
 
 export default function DashboardHeader({ selectedMenuItem }: Props) {
@@ -57,18 +57,18 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
         <span>Historial de ordenes</span>
       </Link>
       <Link
-        href={""}
+        href={"/dashboard/images-query"}
         onMouseEnter={() => setImagesRequestIconColor("#E9A225")}
         onMouseLeave={() => setImagesRequestIconColor("white")}
         className={`flex flex-col justify-center h-36 items-center space-y-2 ${
-          selectedMenuItem === "consult-images"
+          selectedMenuItem === "images-query"
             ? "text-company-orange border-b-2 border-company-orange"
             : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
         }`}
       >
         <ImagesRequestIcon
           color={
-            selectedMenuItem === "consult-images"
+            selectedMenuItem === "images-query"
               ? "#E9A225"
               : imagesRequestIconColor
           }
