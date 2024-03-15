@@ -115,7 +115,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                         Acerca de
                     </Link>
                     <Link
-                        href=""
+                        href="/dashboard/protection-policy"
                         className="p-4 hover:bg-gray-900 bg-opacity-80"
                     >
                         Políticas de privacidad
