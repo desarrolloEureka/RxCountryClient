@@ -9,7 +9,6 @@ const OrderDetails = ({ params }: { params: { slug: string } }) => {
         <DashboardHeader selectedMenuItem="orders-historial" />
         <OrderDetailsContent />
       </div>
-      <DashboardFooter />
     </main>
   );
 };
