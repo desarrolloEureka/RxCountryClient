@@ -21,7 +21,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
         <Image src="/assets/logo.png" width={150} height={50} alt="Logo" />
       </Link>
       <Link
-        href={""}
+        href={"/dashboard/new-order"}
         onMouseEnter={() => setOrderIconColor("#E9A225")}
         onMouseLeave={() => setOrderIconColor("white")}
         className={`flex flex-col justify-center h-36 items-center space-y-2 ${
