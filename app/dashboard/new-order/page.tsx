@@ -149,29 +149,45 @@ const NewOrderPage = () => {
 								<div className="grid grid-cols-3 gap-4">
 									<div className="col flex flex-col space-y-2">
 										<label
-											htmlFor="firstname"
+											htmlFor="patientId"
+											className="text-white"
+										>
+											Cédula
+										</label>
+										<input
+											type="number"
+											name="patientId"
+											id="patientId"
+											min={0}
+											max={9999999999}
+											className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+										/>
+									</div>
+									<div className="col flex flex-col space-y-2">
+										<label
+											htmlFor="firstName"
 											className="text-white"
 										>
 											Nombres
 										</label>
 										<input
 											type="text"
-											name="firstname"
-											id="firstname"
+											name="firstName"
+											id="firstName"
 											className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
 										/>
 									</div>
 									<div className="col flex flex-col space-y-2">
 										<label
-											htmlFor="lastname"
+											htmlFor="lastName"
 											className="text-white"
 										>
 											Apellidos
 										</label>
 										<input
 											type="text"
-											name="lastname"
-											id="lastname"
+											name="lastName"
+											id="lastName"
 											className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
 										/>
 									</div>
