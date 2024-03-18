@@ -177,6 +177,27 @@ const NewOrderPage = () => {
     "CD"
   ];
 
+  const [
+    selectedDiagnosticPackage,
+    setSelectedDiagnosticPackage,
+  ] = useState<string[]>([]);
+
+  const diagnosticPackage = [
+    "Mínimo de ortodoncia",
+    "Plus de ortodoncia",
+    "Plus de ortodoncia con periapical completo",
+    "Cirugía ortognática",
+    "Especial de ortodoncia",
+    "Básico de ortodoncia basico para alineadores",
+    "Rehabilitación",
+    "Básico para cefalometría",
+    "Básico de ortodoncia",
+    "Ortodoncia para alineadores",
+    "T-Quiet",
+    "T-Brux",
+  ];
+
+
   return (
     <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
       <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
@@ -1005,7 +1026,85 @@ const NewOrderPage = () => {
                   </div>
                 </div>
               </div>
-            )}        
+            )}
+            {formStep === 5 && (
+              <div className="flex flex-col mx-20">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                    <h3 className="text-company-orange text-xl font-bold">
+                      Paquete de diagnóstico
+                    </h3>
+                    <div className="grid grid-cols-4 gap-4">
+                      {diagnosticPackage.map(
+                        (option, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className="col flex space-x-2 items-center"
+                            >
+                              <div
+                                onClick={() => {
+                                  if (
+                                    selectedDiagnosticPackage.includes(
+                                      option,
+                                    )
+                                  ) {
+                                    let selectedList =
+                                      selectedDiagnosticPackage.filter(
+                                        (
+                                          item,
+                                        ) =>
+                                          item !==
+                                          option,
+                                      );
+                                    setSelectedDiagnosticPackage(
+                                      selectedList,
+                                    );
+                                  } else {
+                                    setSelectedDiagnosticPackage(
+                                      [
+                                        ...selectedDiagnosticPackage,
+                                        option,
+                                      ],
+                                    );
+                                  }
+                                }}
+                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${selectedDiagnosticPackage.includes(
+                                  option,
+                                )
+                                  ? "bg-company-orange"
+                                  : "bg-transparent"
+                                  }`}
+                              >
+                                {selectedDiagnosticPackage.includes(
+                                  option,
+                                ) && (
+                                    <IoCheckmark color="black" />
+                                  )}
+                              </div>
+                              <span className="text-white">
+                                {option}
+                              </span>
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                    <h3 className="text-company-orange text-xl font-bold">
+                      Observaciones
+                    </h3>
+                    <div className="grid grid-cols-1 gap-2">
+                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue w-full h-[0.1rem]">
             <div
