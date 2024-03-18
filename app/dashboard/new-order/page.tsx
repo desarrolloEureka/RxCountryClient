@@ -202,7 +202,7 @@ const NewOrderPage = () => {
     <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
       <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
         <DashboardHeader selectedMenuItem="create-order" />
-        <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
+        <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto relative">
           <div className="flex justify-center items-center">
             <div className="flex justify-between items-center w-full p-8">
               <div className="flex items-center space-x-8">
@@ -214,15 +214,17 @@ const NewOrderPage = () => {
                 </Link>
               </div>
               <div></div>
-              <div className="flex flex-col items-center space-y-2 text-white text-sm">
-                <button
-                  onClick={() => setShowHelp(true)}
-                  className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
-                >
-                  <LightIcon color="#5696D3" />
-                </button>
-                <span>Ayuda</span>
-              </div>
+              {formStep < 6 && (
+                <div className="flex flex-col items-center space-y-2 text-white text-sm">
+                  <button
+                    onClick={() => setShowHelp(true)}
+                    className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
+                  >
+                    <LightIcon color="#5696D3" />
+                  </button>
+                  <span>Ayuda</span>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex flex-col">
@@ -1029,8 +1031,8 @@ const NewOrderPage = () => {
             )}
             {formStep === 5 && (
               <div className="flex flex-col mx-20">
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                     <h3 className="text-company-orange text-xl font-bold">
                       Paquete de diagnóstico
                     </h3>
@@ -1098,25 +1100,72 @@ const NewOrderPage = () => {
                     <div className="grid grid-cols-1 gap-2">
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+
+                    </div>
+                  </div>
+                  <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                    <h3 className="text-company-orange text-xl font-bold">
+                      Impresión diagnostica
+                    </h3>
+                    <div className="grid grid-cols-1 gap-2">
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+
                     </div>
                   </div>
                 </div>
               </div>
             )}
+            {formStep === 6 && (
+              <div className="flex flex-col mx-20">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col space-y-4 p-4 mb-[50%]">
+                    <h2 className="text-company-orange font-bold text-4xl">
+                      Examen finalizado con exito
+                    </h2>
+                    <p className="text-white w-[80%] xl:w-[80%] text-justify pb-10">
+                      Lorem ipsum dolor sit amet, consectetuer adipiscing
+                      elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+                      dolore magna aliquam erat volutpat. Ut wisi enim ad
+                      minim veniam, quis nostrud exerci tation ullamcorper
+                      suscipit lobortis nisl ut aliquip ex ea commodo
+                      consequat.
+                    </p>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                      <button className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-black bg-opacity-30">
+                        <span>Guardar y enviar</span>
+                      </button>
+                      <button className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-black bg-opacity-30">
+                        <IoEye className="text-sky-500" />
+                        <span>Previsualizar</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col h-auto justify-center items-center absolute left-[50%] -bottom-5">
+                    <DoctorVector width={500}
+                      height={500} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue w-full h-[0.1rem]">
-            <div
-              className={`h-4 w-${formStep}/6 bg-company-blue ${formStep < 5 ? "rounded-r-full" : "rounded-none"
-                }`}
-            />
-            <div className={`h-4 w-${6 - formStep}/6`} />
-          </div>
-          <div className="flex justify-between items-center p-8">
-            <div className="text-white">Paso {formStep}/5</div>
+          {formStep < 6 && (
+            <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue w-full h-[0.1rem]">
+              <div
+                className={`h-4 w-${formStep}/6 bg-company-ornage ${formStep < 5 ? "rounded-r-full" : "rounded-none"
+                  }`}
+              />
+              <div className={`h-4 w-${6 - formStep}/6`} />
+            </div>
+          )}
+          <div className={`flex ${formStep < 6 ? "justify-between" : "justify-end"} items-center p-8 ${formStep === 6 && "hidden"}`}>
+            {formStep < 6 && (
+              <>
+                <div className="text-white">Paso {formStep}/5</div>
+              </>
+            )}
             <div className="flex items-center space-x-8">
-              {formStep > 0 && (
+              {formStep !== 6 && (
                 <div
                   onClick={() => {
                     let step = formStep;
