@@ -51,6 +51,7 @@ export default function AboutPage() {
                     Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
                     Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
                     Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
                 </div>
             </div>
         </main>
