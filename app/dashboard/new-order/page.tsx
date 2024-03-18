@@ -1029,8 +1029,8 @@ const NewOrderPage = () => {
             )}
             {formStep === 5 && (
               <div className="flex flex-col mx-20">
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                     <h3 className="text-company-orange text-xl font-bold">
                       Paquete de diagnóstico
                     </h3>
@@ -1098,8 +1098,17 @@ const NewOrderPage = () => {
                     <div className="grid grid-cols-1 gap-2">
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+
+                    </div>
+                  </div>
+                  <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                    <h3 className="text-company-orange text-xl font-bold">
+                      Impresión diagnostica
+                    </h3>
+                    <div className="grid grid-cols-1 gap-2">
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
                       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae praesentium ullam pariatur qui blanditiis unde sunt a tempora iure cumque corrupti, maiores beatae explicabo dolores nisi. Error a nam possimus.</p>
+
                     </div>
                   </div>
                 </div>
