@@ -9,7 +9,6 @@ const ImageQueryDetails = ({ params }: { params: { slug: string } }) => {
         <DashboardHeader selectedMenuItem="images-query" />
         <ImagesGroup />
       </div>
-      <DashboardFooter />
     </main>
   );
 };
