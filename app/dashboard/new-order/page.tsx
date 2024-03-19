@@ -205,7 +205,7 @@ const NewOrderPage = () => {
         <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto relative">
           <div className="flex justify-center items-center">
             <div className="flex justify-between items-center w-full p-8">
-              <div className="flex items-center space-x-8">
+              <div className={`flex items-center space-x-8 ${formStep === 7 && "hidden"}`}>
                 <Link href={"/dashboard/images-query"}>
                   <IoArrowBackCircleOutline
                     className="text-company-blue"
@@ -1131,17 +1131,43 @@ const NewOrderPage = () => {
                       suscipit lobortis nisl ut aliquip ex ea commodo
                       consequat.
                     </p>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                      <button className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-black bg-opacity-30">
+                    <div className="grid grid-cols-1 xl:grid-cols-2">
+                      <button onClick={() => {
+                        let step = formStep;
+                        step++;
+                        setFormStep(step);
+                      }} className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white">
                         <span>Guardar y enviar</span>
                       </button>
-                      <button className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-black bg-opacity-30">
-                        <IoEye className="text-sky-500" />
+                      <button className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white">
+                        <IoEye className="text-company-blue" size={24} />
                         <span>Previsualizar</span>
                       </button>
                     </div>
                   </div>
                   <div className="flex flex-col h-auto justify-center items-center absolute left-[50%] -bottom-5">
+                    <DoctorVector width={500}
+                      height={500} />
+                  </div>
+                </div>
+              </div>
+            )}
+            {formStep === 7 && (
+              <div className="flex flex-col mx-20">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex flex-col space-y-4 rounded-xl pr-[40%] pb-[20%] pl-[10%] pt-[15%] bg-black bg-opacity-40">
+                    <h2 className="text-company-orange font-bold text-4xl">
+                      La orden #345 ha sido enviada con éxito al área encargada
+                    </h2>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pt-10">
+                      <button onClick={() => {
+                        router.replace("/dashboard/orders-historial");
+                      }} className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-company-gray shadow-lg">
+                        <span>Ir al historial</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-center items-center absolute left-[50%] -bottom-4">
                     <DoctorVector width={500}
                       height={500} />
                   </div>
@@ -1165,7 +1191,7 @@ const NewOrderPage = () => {
               </>
             )}
             <div className="flex items-center space-x-8">
-              {formStep !== 6 && (
+              {formStep < 6 && (
                 <div
                   onClick={() => {
                     let step = formStep;
@@ -1195,33 +1221,35 @@ const NewOrderPage = () => {
           </div>
         </div>
       </div>
-      {showHelp && (
-        <>
-          <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
-            <div className="flex justify-end items-center">
-              <button onClick={() => setShowHelp(false)}>
-                <MdClose color="gray" size={24} />
-              </button>
+      {
+        showHelp && (
+          <>
+            <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
+              <div className="flex justify-end items-center">
+                <button onClick={() => setShowHelp(false)}>
+                  <MdClose color="gray" size={24} />
+                </button>
+              </div>
+              <div className="flex items-center space-x-2 text-black pr-6 pb-5 text-justify">
+                <IoAlertCircleSharp
+                  className="text-company-orange mx-4"
+                  size={40}
+                />
+                <p className="w-64">
+                  Si una orden tiene una alerta en la campana de
+                  notificación quiere decir que en ella
+                  encontraras las observaciones por cada area de
+                  esta orden.
+                </p>
+              </div>
             </div>
-            <div className="flex items-center space-x-2 text-black pr-6 pb-5 text-justify">
-              <IoAlertCircleSharp
-                className="text-company-orange mx-4"
-                size={40}
-              />
-              <p className="w-64">
-                Si una orden tiene una alerta en la campana de
-                notificación quiere decir que en ella
-                encontraras las observaciones por cada area de
-                esta orden.
-              </p>
+            <div className="fixed transition-transform right-16 -bottom-3">
+              <DoctorVector />
             </div>
-          </div>
-          <div className="fixed transition-transform right-16 -bottom-3">
-            <DoctorVector />
-          </div>
-        </>
-      )}
-    </main>
+          </>
+        )
+      }
+    </main >
   );
 };
 
