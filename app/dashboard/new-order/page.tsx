@@ -5,7 +5,7 @@ import { useState } from "react";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";
 import { IoIosArrowBack, IoIosArrowForward, IoMdSearch } from "react-icons/io";
 import { LuSettings2 } from "react-icons/lu";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
 import {
   IoAlertCircleSharp,
@@ -18,11 +18,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import DentalSelect from "@/app/component/orders/dental-select";
+import PDFViewer from "@/app/component/PDFViewer";
+import { RiEditBoxFill } from "react-icons/ri";
 
 const NewOrderPage = () => {
   const router = useRouter();
   const [showHelp, setShowHelp] = useState(false);
   const [formStep, setFormStep] = useState(0);
+
+  const [urlPDF, setUrlPDF] = useState("/assets/documents/RXOrdenFinal.pdf");
 
   // section 2
   const [selectedIntraOrals, setSelectedIntraOrals] = useState<string[]>([]);
@@ -202,7 +206,7 @@ const NewOrderPage = () => {
     <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
       <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
         <DashboardHeader selectedMenuItem="create-order" />
-        <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto relative">
+        <div className={`flex flex-col rounded-3xl shadow-lg ${formStep === 8 ? "bg-black bg-opacity-30" : "bg-company-gray"}  w-full max-w-[1440px] mx-auto relative`}>
           <div className="flex justify-center items-center">
             <div className="flex justify-between items-center w-full p-8">
               <div className={`flex items-center space-x-8 ${formStep === 7 && "hidden"}`}>
@@ -1139,7 +1143,11 @@ const NewOrderPage = () => {
                       }} className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white">
                         <span>Guardar y enviar</span>
                       </button>
-                      <button className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white">
+                      <button
+                        onClick={() => {
+                          setFormStep(8);
+                        }}
+                        className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white">
                         <IoEye className="text-company-blue" size={24} />
                         <span>Previsualizar</span>
                       </button>
@@ -1174,6 +1182,33 @@ const NewOrderPage = () => {
                 </div>
               </div>
             )}
+            {formStep === 8 && (
+              <div className="flex flex-col mx-20">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex flex-col space-y-4 p-4">
+                    <PDFViewer fileUrl={urlPDF} />
+                    <div className="hidden">
+                      <div className="grid grid-cols-2 xl:grid-cols-2">
+                        <div className="flex items-center justify-center">
+                          <button onClick={() => { }} className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-company-blue hover:text-white">
+                            <RiEditBoxFill size={24} />
+                            <span>Editar Orden</span>
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <button
+                            onClick={() => { }}
+                            className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-company-blue hover:text-white">
+                            <MdPictureAsPdf size={24} />
+                            <span>Descargar PDF</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           {formStep < 6 && (
             <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue w-full h-[0.1rem]">
@@ -1186,12 +1221,10 @@ const NewOrderPage = () => {
           )}
           <div className={`flex ${formStep < 6 ? "justify-between" : "justify-end"} items-center p-8 ${formStep === 6 && "hidden"}`}>
             {formStep < 6 && (
-              <>
-                <div className="text-white">Paso {formStep}/5</div>
-              </>
+              <div className="text-white">Paso {formStep}/5</div>
             )}
             <div className="flex items-center space-x-8">
-              {formStep < 6 && (
+              {formStep < 6 && formStep > 0 && (
                 <div
                   onClick={() => {
                     let step = formStep;
