@@ -3,8 +3,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { IoArrowBackCircleOutline, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
+import { useRouter } from "next/navigation";
 
 const OrderDetailsContent = () => {
+    const router = useRouter();
     const [expandReceptionData, setExpandReceptionData] = useState(false);
     const [expandSpecialist, setExpandSpecialist] = useState(false);
     const [expandRx1, setExpandRx1] = useState(false);
@@ -27,7 +29,12 @@ const OrderDetailsContent = () => {
                 </h2>
             </div>
             <div className="mx-16">
-                <button className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white">
+                <button
+                    onClick={() => {
+                        router.replace("/dashboard/new-order/preview-order");
+                    }}
+                    className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                >
                     <IoEye className="text-company-blue" size={24} />
                     <span>Previsualizar PDF</span>
                 </button>
