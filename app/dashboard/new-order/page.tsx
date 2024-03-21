@@ -18,8 +18,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import DentalSelect from "@/app/component/orders/dental-select";
-import PDFViewer from "@/app/component/PDFViewer";
-import { RiEditBoxFill } from "react-icons/ri";
 import SelectComponent from "@/app/component/SelectComponent";
 
 const NewOrderPage = () => {
@@ -28,14 +26,10 @@ const NewOrderPage = () => {
     const [formStep, setFormStep] = useState(0);
 
     //*Aquí para cambiar de vista de especialista a recepcionista
-    const [user, setUser] = useState("Receptionist");
+    const [user, setUser] = useState("Receptionista");
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
-
-    const [urlPDF, setUrlPDF] = useState<string>(
-        "/assets/documents/RXOrdenFinal.pdf",
-    );
 
     // section 2
     const [selectedIntraOrals, setSelectedIntraOrals] = useState<string[]>([]);
@@ -204,13 +198,7 @@ const NewOrderPage = () => {
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="create-order" />
-                <div
-                    className={`flex flex-col rounded-3xl shadow-lg ${
-                        formStep === 8
-                            ? "bg-black bg-opacity-30"
-                            : "bg-company-gray"
-                    }  w-full max-w-[1440px] mx-auto relative`}
-                >
+                <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto relative">
                     <div className="flex justify-center items-center">
                         <div className="flex justify-between items-center w-full p-8">
                             <div
@@ -1270,7 +1258,9 @@ const NewOrderPage = () => {
                                             </button>
                                             <button
                                                 onClick={() => {
-                                                    setFormStep(8);
+                                                    router.replace(
+                                                        "/dashboard/new-order/preview-order",
+                                                    );
                                                 }}
                                                 className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white"
                                             >
@@ -1317,47 +1307,6 @@ const NewOrderPage = () => {
                                             width={500}
                                             height={500}
                                         />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                        {formStep === 8 && (
-                            <div className="flex flex-col mx-20">
-                                <div className="grid grid-cols-1 gap-4">
-                                    <div className="flex flex-col space-y-4 p-4">
-                                        <PDFViewer fileUrl={urlPDF} />
-                                        {isEdit && (
-                                            <>
-                                                <div className="grid grid-cols-2 xl:grid-cols-2">
-                                                    <div className="flex items-center justify-center">
-                                                        <button
-                                                            onClick={() => {}}
-                                                            className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-company-blue hover:text-white"
-                                                        >
-                                                            <RiEditBoxFill
-                                                                size={24}
-                                                            />
-                                                            <span>
-                                                                Editar Orden
-                                                            </span>
-                                                        </button>
-                                                    </div>
-                                                    <div className="flex items-center justify-center">
-                                                        <button
-                                                            onClick={() => {}}
-                                                            className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-company-blue hover:text-white"
-                                                        >
-                                                            <MdPictureAsPdf
-                                                                size={24}
-                                                            />
-                                                            <span>
-                                                                Descargar PDF
-                                                            </span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </>
-                                        )}
                                     </div>
                                 </div>
                             </div>

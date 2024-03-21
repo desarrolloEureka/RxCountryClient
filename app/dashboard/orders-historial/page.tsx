@@ -50,7 +50,9 @@ const OrderHistorialPage = () => {
                                 onClick={() => {
                                     setSelectedOrder("received");
                                 }}
-                                className="col flex flex-col cursor-pointer"
+                                className={`col flex flex-col ${
+                                    user !== "Specialist" && "cursor-pointer"
+                                }`}
                             >
                                 <h3
                                     className={`text-2xl ${
@@ -288,6 +290,9 @@ const OrderHistorialPage = () => {
                                         </button>
                                         <button
                                             onClick={(e) => {
+                                                router.replace(
+                                                    "/dashboard/new-order/preview-order",
+                                                );
                                                 e.stopPropagation();
                                             }}
                                         >
