@@ -58,7 +58,7 @@ const ImageQueryPage = () => {
                             <input
                                 type="search"
                                 placeholder="Ej. Hernandez Rodriguez"
-                                className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10"
+                                className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10 text-black"
                             />
                             <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                         </div>
@@ -78,7 +78,7 @@ const ImageQueryPage = () => {
                                 </label>
                                 <input
                                     type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4"
+                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
                                 />
                             </div>
                             <div className="relative col flex flex-col space-y-2 w-full">
@@ -90,7 +90,7 @@ const ImageQueryPage = () => {
                                 </label>
                                 <input
                                     type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4"
+                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
                                 />
                             </div>
                             {showFilter && (
@@ -116,7 +116,7 @@ const ImageQueryPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 orderMinorMajor
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Ordenar de menor a mayor
@@ -126,7 +126,7 @@ const ImageQueryPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 nameAZ
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Nombre A-Z
@@ -140,7 +140,7 @@ const ImageQueryPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 dateMinorMajor
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Fecha de menor a mayor
@@ -154,7 +154,7 @@ const ImageQueryPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 dateMajorMinor
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Fecha de mayor a menor
@@ -170,7 +170,7 @@ const ImageQueryPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 all
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             todos

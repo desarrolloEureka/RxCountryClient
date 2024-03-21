@@ -20,6 +20,11 @@ const OrderHistorialPage = () => {
     const router = useRouter();
     const [showFilter, setShowFilter] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState("received");
+
+    //*Aquí para cambiar de vista de especialista a recepcionista
+    const [user, setUser] = useState("Specialist");
+
     // filters
     const [orderMinorMajor, setOrderMinorMajor] = useState(false);
     const [nameAZ, setNameAZ] = useState(false);
@@ -33,9 +38,50 @@ const OrderHistorialPage = () => {
                 <DashboardHeader selectedMenuItem="orders-historial" />
                 <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
                     <div className="relative flex justify-center items-center border-b-2 border-company-orange p-8">
-                        <h3 className="text-2xl text-company-orange">
-                            Ordenes enviadas
-                        </h3>
+                        {/* //todo: Se muestra dependiendo del usuario */}
+                        <div
+                            className={`grid ${
+                                user === "Specialist"
+                                    ? "grid-cols-1"
+                                    : "grid-cols-2"
+                            }  gap-52 xl:gap-80 space-x-20`}
+                        >
+                            <div
+                                onClick={() => {
+                                    setSelectedOrder("received");
+                                }}
+                                className="col flex flex-col cursor-pointer"
+                            >
+                                <h3
+                                    className={`text-2xl ${
+                                        selectedOrder === "received"
+                                            ? "text-company-orange"
+                                            : " text-gray-400"
+                                    }`}
+                                >
+                                    Ordenes recibidas
+                                </h3>
+                            </div>
+                            {/* //todo: Se muestra dependiendo del usuario */}
+                            {user !== "Specialist" && (
+                                <div
+                                    onClick={() => {
+                                        setSelectedOrder("send");
+                                    }}
+                                    className="col flex flex-col cursor-pointer"
+                                >
+                                    <h3
+                                        className={`text-2xl ${
+                                            selectedOrder === "send"
+                                                ? "text-company-orange"
+                                                : " text-gray-400"
+                                        }`}
+                                    >
+                                        Ordenes enviadas
+                                    </h3>
+                                </div>
+                            )}
+                        </div>
                         <div className="absolute right-8 flex flex-col items-center space-y-2 text-white text-sm">
                             <button
                                 onClick={() => setShowHelp(true)}
@@ -57,7 +103,7 @@ const OrderHistorialPage = () => {
                             <input
                                 type="search"
                                 placeholder="Ej. Hernandez Rodriguez"
-                                className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10"
+                                className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10 text-black"
                             />
                             <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                         </div>
@@ -77,7 +123,7 @@ const OrderHistorialPage = () => {
                                 </label>
                                 <input
                                     type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4"
+                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
                                 />
                             </div>
                             <div className="relative col flex flex-col space-y-2 w-full">
@@ -89,7 +135,7 @@ const OrderHistorialPage = () => {
                                 </label>
                                 <input
                                     type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4"
+                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
                                 />
                             </div>
                             {showFilter && (
@@ -115,7 +161,7 @@ const OrderHistorialPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 orderMinorMajor
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Ordenar de menor a mayor
@@ -125,7 +171,7 @@ const OrderHistorialPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 nameAZ
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Nombre A-Z
@@ -139,7 +185,7 @@ const OrderHistorialPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 dateMinorMajor
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Fecha de menor a mayor
@@ -153,7 +199,7 @@ const OrderHistorialPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 dateMajorMinor
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
                                             Fecha de mayor a menor
@@ -169,10 +215,10 @@ const OrderHistorialPage = () => {
                                             className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
                                                 all
                                                     ? "bg-company-blue text-white"
-                                                    : "bg-white"
+                                                    : "bg-white text-black"
                                             }`}
                                         >
-                                            todos
+                                            Todos
                                         </button>
                                     </div>
                                 </div>
@@ -209,25 +255,42 @@ const OrderHistorialPage = () => {
                                 <span>Teléfono</span>
                             </div>
                         </div>
-                        {Array.from({ length: 10 }).map((item, index) => {
+                        {Array.from({
+                            length: selectedOrder === "send" ? 3 : 10,
+                        }).map((item, index) => {
                             return (
                                 <div
                                     key={index}
-                                    onClick={() =>
+                                    onClick={() => {
                                         router.push(
                                             "/dashboard/orders-historial/details/hola",
-                                        )
-                                    }
+                                        );
+                                    }}
                                     className="grid grid-cols-12 cursor-pointer items-center text-white py-4 hover:bg-gray-700"
                                 >
                                     <div className="col-span-2 flex justify-between text-center text-company-blue px-16">
-                                        <button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                            }}
+                                        >
                                             <IoIosNotifications size={24} />
                                         </button>
-                                        <button>
+                                        <button
+                                            onClick={(e) => {
+                                                router.push(
+                                                    "/dashboard/new-order",
+                                                );
+                                                e.stopPropagation();
+                                            }}
+                                        >
                                             <RiEditBoxFill size={24} />
                                         </button>
-                                        <button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                            }}
+                                        >
                                             <MdPictureAsPdf size={24} />
                                         </button>
                                     </div>
@@ -287,10 +350,10 @@ const OrderHistorialPage = () => {
                                 <MdClose color="gray" size={24} />
                             </button>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 text-black pr-6 pb-5 text-justify">
                             <IoAlertCircleSharp
-                                className="text-company-orange"
-                                size={24}
+                                className="text-company-orange mx-4"
+                                size={40}
                             />
                             <p className="w-64">
                                 Si una orden tiene una alerta en la campana de
