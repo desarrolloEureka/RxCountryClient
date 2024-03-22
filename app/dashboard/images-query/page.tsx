@@ -282,10 +282,10 @@ const ImageQueryPage = () => {
                                 <MdClose color="gray" size={24} />
                             </button>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 text-black pr-6 pb-5 text-justify">
                             <IoAlertCircleSharp
-                                className="text-company-orange"
-                                size={24}
+                                className="text-company-orange mx-4"
+                                size={40}
                             />
                             <p className="w-64">
                                 Si una orden tiene una alerta en la campana de
