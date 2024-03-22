@@ -17,7 +17,7 @@ const NewOrderPage = () => {
     const [formStep, setFormStep] = useState(0);
 
     //*Aquí para cambiar de vista de especialista a recepcionista
-    const [user, setUser] = useState("Receptionista");
+    const [user, setUser] = useState("Receptionist");
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
