@@ -43,7 +43,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                             : orderIconColor
                     }
                 />
-                <span>Crear orden nueva</span>
+                <span>Crear Nueva Orden</span>
             </Link>
             <Link
                 href={"/dashboard/orders-historial"}
@@ -62,7 +62,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                             : orderHistorialIconColor
                     }
                 />
-                <span>Historial de ordenes</span>
+                <span>Historial de Ordenes</span>
             </Link>
             <Link
                 href={"/dashboard/images-query"}
@@ -81,7 +81,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                             : imagesRequestIconColor
                     }
                 />
-                <span>Consultar Image</span>
+                <span>Consultar Imágenes</span>
             </Link>
             <Link
                 href={""}
@@ -97,7 +97,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 />
                 <div className="flex flex-col text-center">
                     <span className="text-xl">Hola Fabian</span>
-                    <span className="text-sm">Rol especialista</span>
+                    <span className="text-sm">Rol Profesional</span>
                 </div>
             </Link>
             {openProfileMenu && (
@@ -106,25 +106,25 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                         href="/dashboard/profile"
                         className="p-4 hover:bg-gray-900 bg-opacity-80 rounded-t-2xl"
                     >
-                        Mi perfil
+                        Mi Perfil
                     </Link>
                     <Link
                         href="/dashboard/about"
                         className="p-4 hover:bg-gray-900 bg-opacity-80"
                     >
-                        Acerca de
+                        Acerca De
                     </Link>
                     <Link
                         href="/dashboard/protection-policy"
                         className="p-4 hover:bg-gray-900 bg-opacity-80"
                     >
-                        Políticas de privacidad
+                        Políticas de Privacidad
                     </Link>
                     <Link
                         href="/"
                         className="p-4 hover:bg-gray-900 bg-opacity-80 rounded-b-2xl"
                     >
-                        Cerra sesión
+                        Cerra Sesión
                     </Link>
                 </div>
             )}

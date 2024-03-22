@@ -33,6 +33,10 @@ footer {
     width: 100%;
 }
 
+input.calendar-light {
+    color-scheme: dark;
+}
+
 @layer utilities {
     .text-balance {
         text-wrap: balance;

@@ -313,7 +313,7 @@ const NewOrderPage = () => {
                                             htmlFor="birthday"
                                             className="text-white"
                                         >
-                                            Fecha de nacimiento
+                                            Fecha de Nacimiento
                                         </label>
                                         <input
                                             type="date"
@@ -1156,7 +1156,7 @@ const NewOrderPage = () => {
                                             Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2">
-                                            <p>
+                                            <p className="text-white text-justify">
                                                 Lorem ipsum dolor sit amet
                                                 consectetur, adipisicing elit.
                                                 Repudiandae praesentium ullam
@@ -1166,7 +1166,7 @@ const NewOrderPage = () => {
                                                 explicabo dolores nisi. Error a
                                                 nam possimus.
                                             </p>
-                                            <p>
+                                            <p className="text-white text-justify">
                                                 Lorem ipsum dolor sit amet
                                                 consectetur, adipisicing elit.
                                                 Repudiandae praesentium ullam
