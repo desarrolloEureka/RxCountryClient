@@ -85,17 +85,22 @@ const NewOrderPage = () => {
                         )}
                         <div className="flex items-center space-x-8">
                             {formStep < 6 && formStep > 0 && (
-                                <div
-                                    onClick={() => {
-                                        let step = formStep;
-                                        step--;
-                                        setFormStep(step);
-                                    }}
-                                    className="flex items-center cursor-pointer text-company-blue"
-                                >
-                                    <BiChevronLeft size={32} />
-                                    <span>Atrás</span>
-                                </div>
+                                <>
+                                    <div
+                                        onClick={() => {
+                                            let step = formStep;
+                                            step--;
+                                            setFormStep(step);
+                                        }}
+                                        className="flex items-center cursor-pointer text-company-blue"
+                                    >
+                                        <BiChevronLeft size={32} />
+                                        <span>Atrás</span>
+                                    </div>
+                                    <div className="flex items-center cursor-pointer text-company-blue">
+                                        <span>Omitir</span>
+                                    </div>
+                                </>
                             )}
                             {formStep < 6 && (
                                 <div
