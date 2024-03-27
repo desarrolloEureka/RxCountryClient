@@ -17,7 +17,7 @@ const OrderDetailsContent = () => {
     const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
 
     //*Aquí para cambiar de vista a recepcionista
-    const [user, setUser] = useState("dispatch");
+    const [user, setUser] = useState("diagnosis"); // user:"models", "dispatch", "professional", "receptionist", "diagnosis"
 
     const suppliers = ["Invisalign", "T-Brux", "Planeación Virtual"];
 
