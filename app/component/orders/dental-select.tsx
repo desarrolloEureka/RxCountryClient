@@ -51,6 +51,8 @@ const DentalSelect = (props: Props) => {
                                     {tooth}
                                 </span>
                                 <Image
+                                    className={`${tooth >= 16 ? "w-9" : "w-5"}`}
+                                    src={`/assets/teeth/${tooth}.svg`}
                                     style={{
                                         filter: `${
                                             selected?.includes(tooth)
@@ -58,9 +60,8 @@ const DentalSelect = (props: Props) => {
                                                 : ""
                                         }`,
                                     }}
-                                    src={`/assets/teeth/${tooth}.svg`}
-                                    width={tooth >= 16 ? 35 : 20}
-                                    height={0}
+                                    width="0"
+                                    height="0"
                                     alt={"tooth icon"}
                                 />
                             </div>
@@ -93,6 +94,8 @@ const DentalSelect = (props: Props) => {
                                 {tooth}
                             </span>
                             <Image
+                                className={`${tooth >= 26 ? "w-9" : "w-5"}`}
+                                src={`/assets/teeth/${tooth}.svg`}
                                 style={{
                                     filter: `${
                                         selected?.includes(tooth)
@@ -100,9 +103,8 @@ const DentalSelect = (props: Props) => {
                                             : ""
                                     }`,
                                 }}
-                                src={`/assets/teeth/${tooth}.svg`}
-                                width={tooth >= 26 ? 35 : 20}
-                                height={0}
+                                width="0"
+                                height="0"
                                 alt={"tooth icon"}
                             />
                         </div>
@@ -130,6 +132,8 @@ const DentalSelect = (props: Props) => {
                                 }}
                             >
                                 <Image
+                                    className={`${tooth >= 46 ? "w-9" : "w-5"}`}
+                                    src={`/assets/teeth/${tooth}.svg`}
                                     style={{
                                         filter: `${
                                             selected?.includes(tooth)
@@ -137,9 +141,8 @@ const DentalSelect = (props: Props) => {
                                                 : ""
                                         }`,
                                     }}
-                                    src={`/assets/teeth/${tooth}.svg`}
-                                    width={tooth >= 46 ? 35 : 20}
-                                    height={0}
+                                    width="0"
+                                    height="0"
                                     alt={"tooth icon"}
                                 />
                                 <span
@@ -172,6 +175,8 @@ const DentalSelect = (props: Props) => {
                             }}
                         >
                             <Image
+                                className={`${tooth >= 36 ? "w-9" : "w-5"}`}
+                                src={`/assets/teeth/${tooth}.svg`}
                                 style={{
                                     filter: `${
                                         selected?.includes(tooth)
@@ -179,9 +184,8 @@ const DentalSelect = (props: Props) => {
                                             : ""
                                     }`,
                                 }}
-                                src={`/assets/teeth/${tooth}.svg`}
-                                width={tooth >= 36 ? 35 : 20}
-                                height={0}
+                                width="0"
+                                height="0"
                                 alt={"tooth icon"}
                             />
                             <span

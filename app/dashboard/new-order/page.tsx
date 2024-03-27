@@ -6,10 +6,7 @@ import DoctorVector from "@/app/component/vectors/DoctorVector";
 import Link from "next/link";
 import { useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import {
-    IoAlertCircleSharp,
-    IoArrowBackCircleOutline
-} from "react-icons/io5";
+import { IoAlertCircleSharp, IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 
 const NewOrderPage = () => {
@@ -21,6 +18,10 @@ const NewOrderPage = () => {
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
+
+    const widthSlider = ["w-0", "w-1/5", "w-2/5", "w-3/5", "w-4/5", "w-full"];
+
+    // console.log(widthSlider[formStep]);
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
@@ -64,15 +65,16 @@ const NewOrderPage = () => {
                     />
 
                     {formStep < 6 && (
-                        <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue w-full h-[0.1rem]">
+                        <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue bg-opacity-25 w-full h-[0.1rem]">
                             <div
-                                className={`h-4 w-${formStep}/6 bg-company-blue ${
+                                className={`h-[0.3rem] ${
+                                    widthSlider[formStep]
+                                } bg-company-blue ${
                                     formStep < 5
                                         ? "rounded-r-full"
                                         : "rounded-none"
                                 }`}
                             />
-                            <div className={`h-4 w-${6 - formStep}/6`} />
                         </div>
                     )}
                     <div
