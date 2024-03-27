@@ -19,6 +19,10 @@ const NewOrderPage = () => {
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
 
+    const widthSlider = ["w-0", "w-1/5", "w-2/5", "w-3/5", "w-4/5", "w-full"];
+
+    // console.log(widthSlider[formStep]);
+
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
@@ -61,18 +65,15 @@ const NewOrderPage = () => {
                     />
 
                     {formStep < 6 && (
-                        <div className="flex flex-col mt-8 justify-center items-start w-full">
+                        <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue bg-opacity-25 w-full h-[0.1rem]">
                             <div
-                                className={`flex h-[0.2rem] w-[${
-                                    (formStep / 5) * 100
-                                }%] bg-company-blue items-center ${
+                                className={`h-[0.3rem] ${
+                                    widthSlider[formStep]
+                                } bg-company-blue ${
                                     formStep < 5
                                         ? "rounded-r-full"
                                         : "rounded-none"
                                 }`}
-                            />
-                            <div
-                                className={`flex h-[0.2rem] w-[100%] bg-company-blue opacity-40 items-center`}
                             />
                         </div>
                     )}
