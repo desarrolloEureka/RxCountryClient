@@ -5,6 +5,7 @@ import OrderIcon from "./icons/OrderIcon.jsx";
 import OrderHistorialIcon from "./icons/OrderHistorialIcon.jsx";
 import ImagesRequestIcon from "./icons/ImagesRequestIcon.jsx";
 import { useState } from "react";
+import { IoAlertCircleSharp } from "react-icons/io5";
 
 interface Props {
     selectedMenuItem?: "create-order" | "orders-historial" | "images-query";
@@ -16,6 +17,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
     const [imagesRequestIconColor, setImagesRequestIconColor] =
         useState("white");
     const [openProfileMenu, setOpenProfileMenu] = useState(false);
+    const [openLogOutMenu, setOpenLogOutMenu] = useState(false);
     return (
         <div className="relative rounded-2xl shadow-md bg-gray-700 px-8 bg-opacity-80 flex justify-between items-center">
             <Link href="/dashboard">
@@ -43,7 +45,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                             : orderIconColor
                     }
                 />
-                <span>Crear orden nueva</span>
+                <span>Crear Nueva Orden</span>
             </Link>
             <Link
                 href={"/dashboard/orders-historial"}
@@ -62,7 +64,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                             : orderHistorialIconColor
                     }
                 />
-                <span>Historial de ordenes</span>
+                <span>Historial de Ordenes</span>
             </Link>
             <Link
                 href={"/dashboard/images-query"}
@@ -81,7 +83,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                             : imagesRequestIconColor
                     }
                 />
-                <span>Consultar Image</span>
+                <span>Consultar Imágenes</span>
             </Link>
             <Link
                 href={""}
@@ -97,7 +99,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 />
                 <div className="flex flex-col text-center">
                     <span className="text-xl">Hola Fabian</span>
-                    <span className="text-sm">Rol especialista</span>
+                    <span className="text-sm">Rol Profesional</span>
                 </div>
             </Link>
             {openProfileMenu && (
@@ -106,26 +108,66 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                         href="/dashboard/profile"
                         className="p-4 hover:bg-gray-900 bg-opacity-80 rounded-t-2xl"
                     >
-                        Mi perfil
+                        Mi Perfil
                     </Link>
                     <Link
                         href="/dashboard/about"
                         className="p-4 hover:bg-gray-900 bg-opacity-80"
                     >
-                        Acerca de
+                        Acerca De
                     </Link>
                     <Link
                         href="/dashboard/protection-policy"
                         className="p-4 hover:bg-gray-900 bg-opacity-80"
                     >
-                        Políticas de privacidad
+                        Políticas de Privacidad
                     </Link>
                     <Link
-                        href="/"
+                        onClick={() => {
+                            setOpenLogOutMenu(!openLogOutMenu);
+                            setOpenProfileMenu(!openProfileMenu);
+                        }}
+                        href=""
                         className="p-4 hover:bg-gray-900 bg-opacity-80 rounded-b-2xl"
                     >
-                        Cerra sesión
+                        Cerra Sesión
                     </Link>
+                </div>
+            )}
+
+            {openLogOutMenu && (
+                <div className="absolute flex flex-col divide-y-2 shadow-xl right-8 top-32 rounded-2xl bg-black bg-opacity-80 text-white text-sm">
+                    <div className="flex flex-col justify-center items-center px-10 text-white p-5 text-center w-56">
+                        <IoAlertCircleSharp
+                            className="text-company-orange mb-5"
+                            size={30}
+                        />
+                        <p>¿Seguro que deseas cerrar sesión?</p>
+                    </div>
+                    <div className="flex flex-row divide-x">
+                        <div className="flex flex-1 justify-center items-center ">
+                            <Link
+                                onClick={() =>
+                                    setOpenLogOutMenu(!openLogOutMenu)
+                                }
+                                href="/"
+                                className="p-4 hover:bg-gray-900 bg-opacity-80"
+                            >
+                                Sí
+                            </Link>
+                        </div>
+                        <div className="flex flex-1 justify-center items-center ">
+                            <Link
+                                onClick={() =>
+                                    setOpenLogOutMenu(!openLogOutMenu)
+                                }
+                                href=""
+                                className="p-4 hover:bg-gray-900 bg-opacity-80"
+                            >
+                                No
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

@@ -10,11 +10,11 @@ export default function ProtectionPolicyPage() {
                     <Link href={"/dashboard"}>
                         <div className="flex items-center space-x-2 text-company-blue font-bold text-3xl underline ">
                             <IoArrowBackCircleOutline />
-                            <h1>Política de protección de datos</h1>
+                            <h1>Política de Protección de Datos</h1>
                         </div>
                     </Link>
                 </div>
-                <div className="pt-28">
+                <div className="pt-28 text-white text-justify">
                     Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
                     Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
                     Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum

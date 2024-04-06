@@ -17,7 +17,7 @@ export default function PreviewOrder(props: IPreviewOrderProps) {
 
     //*Aquí para cambiar de vista de edición
     const router = useRouter();
-    const [isEdit, setIsEdit] = useState(true);
+    const [isEdit, setIsEdit] = useState(false);
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
