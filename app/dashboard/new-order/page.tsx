@@ -4,24 +4,24 @@ import LightIcon from "@/app/component/icons/LightIcon";
 import StepByStep from "@/app/component/StepByStep";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
 import Link from "next/link";
-import { useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { IoAlertCircleSharp, IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import NewOrderHook from "./hook/NewOrderHook";
 
 const NewOrderPage = () => {
-    const [showHelp, setShowHelp] = useState(false);
-    const [formStep, setFormStep] = useState(0);
-
-    //*Aquí para cambiar de vista de especialista a recepcionista
-    const [user, setUser] = useState("Receptionist");
-
-    //*Aquí para cambiar de vista de edición
-    const [isEdit, setIsEdit] = useState(false);
-
-    const [isDataSelected, setIsDataSelected] = useState(false);
-
-    const widthSlider = ["w-0", "w-1/5", "w-2/5", "w-3/5", "w-4/5", "w-full"];
+    const {
+        showHelp,
+        setShowHelp,
+        formStep,
+        setFormStep,
+        isDataSelected,
+        setIsDataSelected,
+        widthSlider,
+        isEdit,
+        user,
+        data,
+    } = NewOrderHook();
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
@@ -63,6 +63,7 @@ const NewOrderPage = () => {
                         user={user}
                         isEdit={isEdit}
                         setDataSelected={setIsDataSelected}
+                        data={data}
                     />
 
                     {formStep < 6 && (

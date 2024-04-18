@@ -22,10 +22,14 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
         <div className="relative rounded-2xl shadow-md bg-gray-700 px-8 bg-opacity-80 flex justify-between items-center">
             <Link href="/dashboard">
                 <Image
-                    src="/assets/logo.png"
-                    width={150}
-                    height={50}
-                    alt="Logo"
+                    src={"/assets/logo.png"}
+                    width={0}
+                    height={0}
+                    sizes="200px"
+                    style={{ width: "100%", height: "auto" }}
+                    alt={"logo"}
+                    placeholder="blur"
+                    blurDataURL={"/assets/logo.png"}
                 />
             </Link>
             <Link
