@@ -1,33 +1,29 @@
+import _ from "lodash";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { IoCheckmark, IoEye } from "react-icons/io5";
+import { options } from "./constants/StepByStepConstants";
 import DentalSelect from "./orders/dental-select";
 import SelectComponent from "./SelectComponent";
 import DoctorVector from "./vectors/DoctorVector";
-import {
-    additionalDeliveryMethod,
-    background,
-    clinicalPhotographyDeliveryMethod,
-    diagnosis,
-    diagnosticPackage,
-    extraOralClinicalPhotography,
-    extraOralsOptions,
-    intraOralClinicalPhotography,
-    intraOralsOptions,
-    models,
-    options,
-    presentation,
-    volumetricTomography,
-} from "./constants/StepByStepConstants";
 
 interface Props {
     formStep: number;
-    setFormStep: Dispatch<SetStateAction<number>>;
+    setFormStep: (e: any) => void;
     user?: string;
     isEdit?: boolean;
+    setDataSelected: (e: any) => void;
+    data: any;
 }
 
-function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
+function StepByStep({
+    formStep,
+    setFormStep,
+    user,
+    isEdit,
+    setDataSelected,
+    data,
+}: Props) {
     const router = useRouter();
 
     const [selectedIntraOrals, setSelectedIntraOrals] = useState<string[]>([]);
@@ -70,6 +66,45 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
     const [selectedDiagnosticPackage, setSelectedDiagnosticPackage] = useState<
         string[]
     >([]);
+
+    const allDataSelected = useMemo(
+        () => [
+            selectedIntraOrals,
+            selectedExtraOrals,
+            selected3DVolumetricTomography,
+            selectedAdditionalDeliveryMethod,
+            selectedDiagnosis,
+            selectedModels,
+            selectedIntraOralClinicalPhotography,
+            selectedExtraOralClinicalPhotography,
+            selectedPresentation,
+            selectedBackground,
+            selectedClinicalPhotographyDeliveryMethod,
+            selectedDiagnosticPackage,
+        ],
+        [
+            selected3DVolumetricTomography,
+            selectedAdditionalDeliveryMethod,
+            selectedBackground,
+            selectedClinicalPhotographyDeliveryMethod,
+            selectedDiagnosis,
+            selectedDiagnosticPackage,
+            selectedExtraOralClinicalPhotography,
+            selectedExtraOrals,
+            selectedIntraOralClinicalPhotography,
+            selectedIntraOrals,
+            selectedModels,
+            selectedPresentation,
+        ],
+    );
+
+    const valData = useCallback(async () => {
+        setDataSelected(!_.isEmpty(_.flattenDeep(allDataSelected)));
+    }, [allDataSelected, setDataSelected]);
+
+    useEffect(() => {
+        valData();
+    }, [allDataSelected, setDataSelected, valData]);
 
     return (
         <div className="flex flex-col">
@@ -201,8 +236,11 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
             )}
             {formStep === 1 && (
                 <div className="flex flex-col mx-20">
+                    <h3 className="text-company-blue text-3xl font-bold pb-5">
+                        Radiografía
+                    </h3>
                     <div className="mx-auto mb-8">
-                        <DentalSelect  />
+                        <DentalSelect />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -210,55 +248,63 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Intra Orales
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {intraOralsOptions.map((option, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
+                                {data.intraOralsOptions.map(
+                                    (option: any, index: any) => {
+                                        return (
                                             <div
-                                                onClick={() => {
-                                                    if (
-                                                        selectedIntraOrals.includes(
-                                                            option,
-                                                        )
-                                                    ) {
-                                                        let selectedList =
-                                                            selectedIntraOrals.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelectedIntraOrals(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelectedIntraOrals([
-                                                            ...selectedIntraOrals,
-                                                            option,
-                                                        ]);
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selectedIntraOrals.includes(
-                                                        option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
                                             >
-                                                {selectedIntraOrals.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedIntraOrals.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedIntraOrals.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedIntraOrals(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedIntraOrals(
+                                                                    [
+                                                                        ...selectedIntraOrals,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                            selectedIntraOrals.includes(
+                                                                option,
+                                                            )
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedIntraOrals.includes(
+                                                            option,
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <span className="text-white">
+                                                    {option}
+                                                </span>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                         <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -266,55 +312,63 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Extra Orales
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {extraOralsOptions.map((option, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
+                                {data.extraOralsOptions.map(
+                                    (option: any, index: any) => {
+                                        return (
                                             <div
-                                                onClick={() => {
-                                                    if (
-                                                        selectedExtraOrals.includes(
-                                                            option,
-                                                        )
-                                                    ) {
-                                                        let selectedList =
-                                                            selectedExtraOrals.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelectedExtraOrals(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelectedExtraOrals([
-                                                            ...selectedExtraOrals,
-                                                            option,
-                                                        ]);
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selectedExtraOrals.includes(
-                                                        option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
                                             >
-                                                {selectedExtraOrals.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedExtraOrals.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedExtraOrals.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedExtraOrals(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedExtraOrals(
+                                                                    [
+                                                                        ...selectedExtraOrals,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                            selectedExtraOrals.includes(
+                                                                option,
+                                                            )
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedExtraOrals.includes(
+                                                            option,
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <span className="text-white">
+                                                    {option}
+                                                </span>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                     </div>
@@ -322,6 +376,9 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
             )}
             {formStep === 2 && (
                 <div className="flex flex-col mx-20">
+                    <h3 className="text-company-blue text-3xl font-bold pb-5">
+                        Tomografía
+                    </h3>
                     <div className="mx-auto mb-8">
                         <DentalSelect />
                     </div>
@@ -331,57 +388,73 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Tomografía volumétrica 3D
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
-                                {volumetricTomography.map((option, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
+                                {data.volumetricTomography.map(
+                                    (option: any, index: any) => {
+                                        return (
                                             <div
-                                                onClick={() => {
-                                                    if (
-                                                        selected3DVolumetricTomography.includes(
-                                                            option,
-                                                        )
-                                                    ) {
-                                                        let selectedList =
-                                                            selected3DVolumetricTomography.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelected3DVolumetricTomography(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelected3DVolumetricTomography(
-                                                            [
-                                                                ...selected3DVolumetricTomography,
-                                                                option,
-                                                            ],
-                                                        );
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selected3DVolumetricTomography.includes(
-                                                        option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
                                             >
-                                                {selected3DVolumetricTomography.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selected3DVolumetricTomography.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selected3DVolumetricTomography.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelected3DVolumetricTomography(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelected3DVolumetricTomography(
+                                                                    [
+                                                                        ...selected3DVolumetricTomography,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                            selected3DVolumetricTomography.includes(
+                                                                option,
+                                                            )
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selected3DVolumetricTomography.includes(
+                                                            option,
+                                                        ) && (
+                                                            <IoCheckmark
+                                                                color="black"
+                                                                // className="text-xl"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="">
+                                                    <span
+                                                        className={`text-white ${
+                                                            option.length >=
+                                                                30 && "text-xs"
+                                                        }`}
+                                                    >
+                                                        {option}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                         <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -389,51 +462,55 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Forma de entrega adicional
                             </h3>
                             <div className="grid grid-cols-1 gap-4">
-                                {additionalDeliveryMethod.map(
-                                    (option, index) => {
+                                {data.additionalDeliveryMethod.map(
+                                    (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
                                                 className="col flex space-x-2 items-center"
                                             >
-                                                <div
-                                                    onClick={() => {
-                                                        if (
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedAdditionalDeliveryMethod.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedAdditionalDeliveryMethod.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedAdditionalDeliveryMethod(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedAdditionalDeliveryMethod(
+                                                                    [
+                                                                        ...selectedAdditionalDeliveryMethod,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
                                                             selectedAdditionalDeliveryMethod.includes(
                                                                 option,
                                                             )
-                                                        ) {
-                                                            let selectedList =
-                                                                selectedAdditionalDeliveryMethod.filter(
-                                                                    (item) =>
-                                                                        item !==
-                                                                        option,
-                                                                );
-                                                            setSelectedAdditionalDeliveryMethod(
-                                                                selectedList,
-                                                            );
-                                                        } else {
-                                                            setSelectedAdditionalDeliveryMethod(
-                                                                [
-                                                                    ...selectedAdditionalDeliveryMethod,
-                                                                    option,
-                                                                ],
-                                                            );
-                                                        }
-                                                    }}
-                                                    className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                        selectedAdditionalDeliveryMethod.includes(
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedAdditionalDeliveryMethod.includes(
                                                             option,
-                                                        )
-                                                            ? "bg-company-orange"
-                                                            : "bg-transparent"
-                                                    }`}
-                                                >
-                                                    {selectedAdditionalDeliveryMethod.includes(
-                                                        option,
-                                                    ) && (
-                                                        <IoCheckmark color="black" />
-                                                    )}
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <span className="text-white">
                                                     {option}
@@ -449,61 +526,72 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
             )}
             {formStep === 3 && (
                 <div className="flex flex-col mx-20">
+                    <h3 className="text-company-blue text-3xl font-bold pb-5">
+                        Diagnósticos/Modelos
+                    </h3>
                     <div className="grid grid-cols-1 gap-4">
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                             <h3 className="text-company-orange text-xl font-bold">
                                 Diagnóstico
                             </h3>
                             <div className="grid grid-cols-4 gap-4">
-                                {diagnosis.map((option, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
+                                {data.diagnosis.map(
+                                    (option: any, index: any) => {
+                                        return (
                                             <div
-                                                onClick={() => {
-                                                    if (
-                                                        selectedDiagnosis.includes(
-                                                            option,
-                                                        )
-                                                    ) {
-                                                        let selectedList =
-                                                            selectedDiagnosis.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelectedDiagnosis(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelectedDiagnosis([
-                                                            ...selectedDiagnosis,
-                                                            option,
-                                                        ]);
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selectedDiagnosis.includes(
-                                                        option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
                                             >
-                                                {selectedDiagnosis.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedDiagnosis.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedDiagnosis.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedDiagnosis(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedDiagnosis(
+                                                                    [
+                                                                        ...selectedDiagnosis,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                            selectedDiagnosis.includes(
+                                                                option,
+                                                            )
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedDiagnosis.includes(
+                                                            option,
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <span className="text-white">
+                                                    {option}
+                                                </span>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -511,48 +599,50 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Modelos
                             </h3>
                             <div className="grid grid-cols-4 gap-4">
-                                {models.map((option, index) => {
+                                {data.models.map((option: any, index: any) => {
                                     return (
                                         <div
                                             key={index}
                                             className="col flex space-x-2 items-center"
                                         >
-                                            <div
-                                                onClick={() => {
-                                                    if (
+                                            <div className="">
+                                                <div
+                                                    onClick={() => {
+                                                        if (
+                                                            selectedModels.includes(
+                                                                option,
+                                                            )
+                                                        ) {
+                                                            let selectedList =
+                                                                selectedModels.filter(
+                                                                    (item) =>
+                                                                        item !==
+                                                                        option,
+                                                                );
+                                                            setSelectedModels(
+                                                                selectedList,
+                                                            );
+                                                        } else {
+                                                            setSelectedModels([
+                                                                ...selectedModels,
+                                                                option,
+                                                            ]);
+                                                        }
+                                                    }}
+                                                    className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
                                                         selectedModels.includes(
                                                             option,
                                                         )
-                                                    ) {
-                                                        let selectedList =
-                                                            selectedModels.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelectedModels(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelectedModels([
-                                                            ...selectedModels,
-                                                            option,
-                                                        ]);
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selectedModels.includes(
+                                                            ? "bg-company-orange"
+                                                            : "bg-transparent"
+                                                    }`}
+                                                >
+                                                    {selectedModels.includes(
                                                         option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
-                                            >
-                                                {selectedModels.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                    ) && (
+                                                        <IoCheckmark color="black" />
+                                                    )}
+                                                </div>
                                             </div>
                                             <span className="text-white">
                                                 {option}
@@ -576,51 +666,55 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Intra Orales
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
-                                {intraOralClinicalPhotography.map(
-                                    (option, index) => {
+                                {data.intraOralClinicalPhotography.map(
+                                    (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
                                                 className="col flex space-x-2 items-center"
                                             >
-                                                <div
-                                                    onClick={() => {
-                                                        if (
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedIntraOralClinicalPhotography.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedIntraOralClinicalPhotography.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedIntraOralClinicalPhotography(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedIntraOralClinicalPhotography(
+                                                                    [
+                                                                        ...selectedIntraOralClinicalPhotography,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
                                                             selectedIntraOralClinicalPhotography.includes(
                                                                 option,
                                                             )
-                                                        ) {
-                                                            let selectedList =
-                                                                selectedIntraOralClinicalPhotography.filter(
-                                                                    (item) =>
-                                                                        item !==
-                                                                        option,
-                                                                );
-                                                            setSelectedIntraOralClinicalPhotography(
-                                                                selectedList,
-                                                            );
-                                                        } else {
-                                                            setSelectedIntraOralClinicalPhotography(
-                                                                [
-                                                                    ...selectedIntraOralClinicalPhotography,
-                                                                    option,
-                                                                ],
-                                                            );
-                                                        }
-                                                    }}
-                                                    className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                        selectedIntraOralClinicalPhotography.includes(
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedIntraOralClinicalPhotography.includes(
                                                             option,
-                                                        )
-                                                            ? "bg-company-orange"
-                                                            : "bg-transparent"
-                                                    }`}
-                                                >
-                                                    {selectedIntraOralClinicalPhotography.includes(
-                                                        option,
-                                                    ) && (
-                                                        <IoCheckmark color="black" />
-                                                    )}
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <span className="text-white">
                                                     {option}
@@ -636,51 +730,55 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Extra Orales
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {extraOralClinicalPhotography.map(
-                                    (option, index) => {
+                                {data.extraOralClinicalPhotography.map(
+                                    (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
                                                 className="col flex space-x-2 items-center"
                                             >
-                                                <div
-                                                    onClick={() => {
-                                                        if (
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedExtraOralClinicalPhotography.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedExtraOralClinicalPhotography.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedExtraOralClinicalPhotography(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedExtraOralClinicalPhotography(
+                                                                    [
+                                                                        ...selectedExtraOralClinicalPhotography,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
                                                             selectedExtraOralClinicalPhotography.includes(
                                                                 option,
                                                             )
-                                                        ) {
-                                                            let selectedList =
-                                                                selectedExtraOralClinicalPhotography.filter(
-                                                                    (item) =>
-                                                                        item !==
-                                                                        option,
-                                                                );
-                                                            setSelectedExtraOralClinicalPhotography(
-                                                                selectedList,
-                                                            );
-                                                        } else {
-                                                            setSelectedExtraOralClinicalPhotography(
-                                                                [
-                                                                    ...selectedExtraOralClinicalPhotography,
-                                                                    option,
-                                                                ],
-                                                            );
-                                                        }
-                                                    }}
-                                                    className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                        selectedExtraOralClinicalPhotography.includes(
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedExtraOralClinicalPhotography.includes(
                                                             option,
-                                                        )
-                                                            ? "bg-company-orange"
-                                                            : "bg-transparent"
-                                                    }`}
-                                                >
-                                                    {selectedExtraOralClinicalPhotography.includes(
-                                                        option,
-                                                    ) && (
-                                                        <IoCheckmark color="black" />
-                                                    )}
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <span className="text-white">
                                                     {option}
@@ -696,57 +794,63 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Presentación
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {presentation.map((option, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
+                                {data.presentation.map(
+                                    (option: any, index: any) => {
+                                        return (
                                             <div
-                                                onClick={() => {
-                                                    if (
-                                                        selectedPresentation.includes(
-                                                            option,
-                                                        )
-                                                    ) {
-                                                        let selectedList =
-                                                            selectedPresentation.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelectedPresentation(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelectedPresentation(
-                                                            [
-                                                                ...selectedPresentation,
-                                                                option,
-                                                            ],
-                                                        );
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selectedPresentation.includes(
-                                                        option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
                                             >
-                                                {selectedPresentation.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedPresentation.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedPresentation.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedPresentation(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedPresentation(
+                                                                    [
+                                                                        ...selectedPresentation,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                            selectedPresentation.includes(
+                                                                option,
+                                                            )
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedPresentation.includes(
+                                                            option,
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <span className="text-white">
+                                                    {option}
+                                                </span>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -754,55 +858,63 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Fondo
                             </h3>
                             <div className="grid grid-cols-1 gap-4">
-                                {background.map((option, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
+                                {data.background.map(
+                                    (option: any, index: any) => {
+                                        return (
                                             <div
-                                                onClick={() => {
-                                                    if (
-                                                        selectedBackground.includes(
-                                                            option,
-                                                        )
-                                                    ) {
-                                                        let selectedList =
-                                                            selectedBackground.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelectedBackground(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelectedBackground([
-                                                            ...selectedBackground,
-                                                            option,
-                                                        ]);
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selectedBackground.includes(
-                                                        option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
                                             >
-                                                {selectedBackground.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedBackground.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedBackground.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedBackground(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedBackground(
+                                                                    [
+                                                                        ...selectedBackground,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                            selectedBackground.includes(
+                                                                option,
+                                                            )
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedBackground.includes(
+                                                            option,
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <span className="text-white">
+                                                    {option}
+                                                </span>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -810,51 +922,55 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                                 Formas de entrega adicional
                             </h3>
                             <div className="grid grid-cols-1 gap-4">
-                                {clinicalPhotographyDeliveryMethod.map(
-                                    (option, index) => {
+                                {data.clinicalPhotographyDeliveryMethod.map(
+                                    (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
                                                 className="col flex space-x-2 items-center"
                                             >
-                                                <div
-                                                    onClick={() => {
-                                                        if (
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedClinicalPhotographyDeliveryMethod.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedClinicalPhotographyDeliveryMethod.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedClinicalPhotographyDeliveryMethod(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedClinicalPhotographyDeliveryMethod(
+                                                                    [
+                                                                        ...selectedClinicalPhotographyDeliveryMethod,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
                                                             selectedClinicalPhotographyDeliveryMethod.includes(
                                                                 option,
                                                             )
-                                                        ) {
-                                                            let selectedList =
-                                                                selectedClinicalPhotographyDeliveryMethod.filter(
-                                                                    (item) =>
-                                                                        item !==
-                                                                        option,
-                                                                );
-                                                            setSelectedClinicalPhotographyDeliveryMethod(
-                                                                selectedList,
-                                                            );
-                                                        } else {
-                                                            setSelectedClinicalPhotographyDeliveryMethod(
-                                                                [
-                                                                    ...selectedClinicalPhotographyDeliveryMethod,
-                                                                    option,
-                                                                ],
-                                                            );
-                                                        }
-                                                    }}
-                                                    className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                        selectedClinicalPhotographyDeliveryMethod.includes(
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedClinicalPhotographyDeliveryMethod.includes(
                                                             option,
-                                                        )
-                                                            ? "bg-company-orange"
-                                                            : "bg-transparent"
-                                                    }`}
-                                                >
-                                                    {selectedClinicalPhotographyDeliveryMethod.includes(
-                                                        option,
-                                                    ) && (
-                                                        <IoCheckmark color="black" />
-                                                    )}
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <span className="text-white">
                                                     {option}
@@ -870,63 +986,72 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
             )}
             {formStep === 5 && (
                 <div className="flex flex-col mx-20">
+                    <h3 className="text-company-blue text-3xl font-bold pb-5">
+                        Entregas
+                    </h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                             <h3 className="text-company-orange text-xl font-bold">
                                 Paquete de diagnóstico
                             </h3>
                             <div className="grid grid-cols-4 gap-4">
-                                {diagnosticPackage.map((option, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
+                                {data.diagnosticPackage.map(
+                                    (option: any, index: any) => {
+                                        return (
                                             <div
-                                                onClick={() => {
-                                                    if (
-                                                        selectedDiagnosticPackage.includes(
-                                                            option,
-                                                        )
-                                                    ) {
-                                                        let selectedList =
-                                                            selectedDiagnosticPackage.filter(
-                                                                (item) =>
-                                                                    item !==
-                                                                    option,
-                                                            );
-                                                        setSelectedDiagnosticPackage(
-                                                            selectedList,
-                                                        );
-                                                    } else {
-                                                        setSelectedDiagnosticPackage(
-                                                            [
-                                                                ...selectedDiagnosticPackage,
-                                                                option,
-                                                            ],
-                                                        );
-                                                    }
-                                                }}
-                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                    selectedDiagnosticPackage.includes(
-                                                        option,
-                                                    )
-                                                        ? "bg-company-orange"
-                                                        : "bg-transparent"
-                                                }`}
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
                                             >
-                                                {selectedDiagnosticPackage.includes(
-                                                    option,
-                                                ) && (
-                                                    <IoCheckmark color="black" />
-                                                )}
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedDiagnosticPackage.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedDiagnosticPackage.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedDiagnosticPackage(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedDiagnosticPackage(
+                                                                    [
+                                                                        ...selectedDiagnosticPackage,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                            selectedDiagnosticPackage.includes(
+                                                                option,
+                                                            )
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedDiagnosticPackage.includes(
+                                                            option,
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <span className="text-white">
+                                                    {option}
+                                                </span>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                         <div
@@ -990,6 +1115,31 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
             )}
             {formStep === 6 && (
                 <div className="flex flex-col mx-20">
+                    <div className="grid grid-cols-1 gap-4">
+                        <div className="flex flex-col space-y-4 rounded-xl p-[5%] bg-black bg-opacity-40">
+                            <div className="flex flex-col space-y-8 justify-center mx-32">
+                                <h2 className="text-company-orange font-bold text-4xl text-center">
+                                    CONSENTIMIENTO INFORMADO
+                                </h2>
+                                <div className="px-[20%] pb-5">
+                                    <p className="text-white text-justify font-bold">
+                                        Autorizo a Rx Country a realizar ayudas
+                                        diagnósticas según orden de servicio,
+                                        después de haber leído el documento
+                                        titulado. Consentimiento informado
+                                    </p>
+                                </div>
+                                <div className="mt-10 space-y-8">
+                                    <h5>FIRMA:</h5>
+                                    <p className="border-b-2"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {formStep === 7 && (
+                <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col space-y-4 p-4 mb-[50%]">
                             {isEdit ? (
@@ -1051,7 +1201,7 @@ function StepByStep({ formStep, setFormStep, user, isEdit }: Props) {
                     </div>
                 </div>
             )}
-            {formStep === 7 && (
+            {formStep === 8 && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-1 gap-4">
                         <div className="flex flex-col space-y-4 rounded-xl pr-[40%] pb-[20%] pl-[10%] pt-[15%] bg-black bg-opacity-40">

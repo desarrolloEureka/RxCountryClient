@@ -86,14 +86,14 @@ export const extraOralClinicalPhotography = [
     "Perfil izquierdo",
     "3/4 izquierda",
     "Perfil Silueta",
-    "Plantilla 11 -fotos (plantilla como usted lo indique) ",
+    "Plantilla 11 - fotos (plantilla como usted lo indique)",
 ];
 
 export const presentation = [
     "Papel Color",
     "Tamaño Natural 1-1",
     "Blanco y Negro",
-    "Digital ",
+    "Digital",
 ];
 
 export const background = ["Blanco", "Negro"];
@@ -106,7 +106,7 @@ export const diagnosticPackage = [
     "Plus de ortodoncia con periapical completo",
     "Cirugía ortognática",
     "Especial de ortodoncia",
-    "Básico de ortodoncia basico para alineadores",
+    "Básico de ortodoncia básico para alineadores",
     "Rehabilitación",
     "Básico para cefalometría",
     "Básico de ortodoncia",
