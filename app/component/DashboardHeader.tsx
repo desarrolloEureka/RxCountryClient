@@ -141,15 +141,19 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
             </Link>
             {openProfileMenu && (
                 <div className="absolute flex flex-col divide-y-2 shadow-xl right-8 top-32 rounded-2xl bg-black bg-opacity-80 text-white text-sm">
-                    <Link
-                        href="/dashboard/profile"
-                        className="p-4 hover:bg-gray-900 bg-opacity-80 rounded-t-2xl"
-                    >
-                        Mi Perfil
-                    </Link>
+                    {isActiveUser && (
+                        <Link
+                            href="/dashboard/profile"
+                            className="p-4 hover:bg-gray-900 bg-opacity-80 rounded-t-2xl"
+                        >
+                            Mi Perfil
+                        </Link>
+                    )}
                     <Link
                         href="/dashboard/about"
-                        className="p-4 hover:bg-gray-900 bg-opacity-80"
+                        className={`p-4 hover:bg-gray-900 bg-opacity-80 ${
+                            !isActiveUser && "rounded-t-2xl"
+                        }`}
                     >
                         Acerca De
                     </Link>
