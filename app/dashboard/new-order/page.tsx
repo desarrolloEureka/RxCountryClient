@@ -19,9 +19,9 @@ const NewOrderPage = () => {
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
 
-    const widthSlider = ["w-0", "w-1/5", "w-2/5", "w-3/5", "w-4/5", "w-full"];
+    const [isDataSelected, setIsDataSelected] = useState(false);
 
-    // console.log(widthSlider[formStep]);
+    const widthSlider = ["w-0", "w-1/5", "w-2/5", "w-3/5", "w-4/5", "w-full"];
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
@@ -62,6 +62,7 @@ const NewOrderPage = () => {
                         setFormStep={setFormStep}
                         user={user}
                         isEdit={isEdit}
+                        setDataSelected={setIsDataSelected}
                     />
 
                     {formStep < 6 && (
@@ -80,13 +81,13 @@ const NewOrderPage = () => {
                     <div
                         className={`flex ${
                             formStep < 6 ? "justify-between" : "justify-end"
-                        } items-center p-8 ${formStep === 6 && "hidden"}`}
+                        } items-center p-8 ${formStep === 7 && "hidden"}`}
                     >
                         {formStep < 6 && (
                             <div className="text-white">Paso {formStep}/5</div>
                         )}
                         <div className="flex items-center space-x-8">
-                            {formStep < 6 && formStep > 0 && (
+                            {formStep < 7 && formStep > 0 && (
                                 <>
                                     <div
                                         onClick={() => {
@@ -97,23 +98,29 @@ const NewOrderPage = () => {
                                         className="flex items-center cursor-pointer text-company-blue"
                                     >
                                         <BiChevronLeft size={32} />
+                                        {}
                                         <span>Atrás</span>
                                     </div>
-                                    <div className="flex items-center cursor-pointer text-company-blue">
+                                    {/* <div className="flex items-center cursor-pointer text-company-blue">
                                         <span>Omitir</span>
-                                    </div>
+                                    </div> */}
                                 </>
                             )}
-                            {formStep < 6 && (
+                            {formStep < 7 && (
                                 <div
                                     onClick={() => {
                                         let step = formStep;
                                         step++;
                                         setFormStep(step);
+                                        setIsDataSelected(false);
                                     }}
                                     className="flex items-center cursor-pointer text-company-blue"
                                 >
-                                    <span>Siguiente</span>
+                                    {isDataSelected || formStep === 0 ? (
+                                        <span>Siguiente</span>
+                                    ) : (
+                                        <span>Omitir</span>
+                                    )}
                                     <BiChevronRight size={32} />
                                 </div>
                             )}
