@@ -23,7 +23,7 @@ const NewOrderHook = (props?: Props) => {
     const [optionsData, setOptionsData] = useState<any>(dataAllOptions);
 
     const getOptions = useCallback(async () => {
-        const allOptionsData = await getAllOptions();
+        const allOptionsData = await getAllOptions("rxCountryFront");
         allOptionsData && setOptionsData(allOptionsData);
     }, []);
 
