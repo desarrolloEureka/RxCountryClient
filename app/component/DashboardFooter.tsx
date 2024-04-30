@@ -13,9 +13,13 @@ const DashboardFooter = () => {
             <Link href="" className="underline text-white text-sm">
                 <Image
                     src={"/assets/logo.png"}
-                    width={100}
-                    height={24}
+                    width={0}
+                    height={0}
+                    sizes="100px"
+                    style={{ width: "100%", height: "auto" }}
                     alt={"logo"}
+                    placeholder="blur"
+                    blurDataURL={"/assets/logo.png"}
                 />
             </Link>
         </footer>
