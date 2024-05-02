@@ -1,4 +1,5 @@
 import { dataAllOptions } from "@/app/data/documentsData";
+import useAuth from "@/app/firebase/auth";
 import { getAllOptions } from "@/app/firebase/documents";
 import { useCallback, useEffect, useState } from "react";
 
@@ -9,11 +10,13 @@ type Props = {
 };
 
 const NewOrderHook = (props?: Props) => {
+    const { isActiveUser, userData } = useAuth();
+
     const [showHelp, setShowHelp] = useState(false);
     const [formStep, setFormStep] = useState(0);
 
     //*Aquí para cambiar de vista de especialista a recepcionista
-    const [user, setUser] = useState("Receptionist");
+    // const [userRol, setUserRol] = useState(userData?.rol);
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
@@ -36,8 +39,8 @@ const NewOrderHook = (props?: Props) => {
         setShowHelp,
         formStep,
         setFormStep,
-        user,
-        setUser,
+        userRol: userData?.rol,
+        // setUserRol,
         isEdit,
         setIsEdit,
         isDataSelected,

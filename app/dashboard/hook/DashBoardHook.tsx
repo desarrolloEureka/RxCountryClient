@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import useAuth from "@/app/firebase/auth";
 
 const DashBoardHook = () => {
-    const { user, isActiveUser, isLoading } = useAuth();
+    const { user, isActiveUser, isLoading, isLoadingValidate } = AuthValidate();
     const router = useRouter();
 
     // useEffect(() => {
@@ -15,7 +15,7 @@ const DashBoardHook = () => {
     //         router.replace("/sign-in/inactive-user");
     // }, [isActiveUser, isLoading, router, user]);
 
-    return { user, isActiveUser };
+    return { user, isActiveUser, isLoading, isLoadingValidate };
 };
 
 export default DashBoardHook;

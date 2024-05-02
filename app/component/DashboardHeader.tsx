@@ -126,7 +126,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 className="flex flex-col items-center space-y-2 text-white"
             >
                 <Image
-                    src={"https://via.placeholder.com/512"}
+                    src={`https://ui-avatars.com/api/?name=${userData?.name}+${userData?.lastName}?size=150?bold=true`}
                     width={0}
                     height={0}
                     sizes="100px"

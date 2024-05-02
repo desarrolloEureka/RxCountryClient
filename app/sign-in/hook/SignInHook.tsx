@@ -7,12 +7,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const SignUpHook = () => {
-    const { user, isActiveUser } = useAuth();
+    const { user, isActiveUser, userData } = useAuth();
     const [error, setError] = useState(false);
     const [data, setData] = useState(LoginData);
     const router = useRouter();
     const { email, password } = data;
-    const [sigIn, setSignIn] = useState(false);
+    // const [sigIn, setSignIn] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const [isPatient, setIsPatient] = useState(false);
@@ -22,7 +22,7 @@ const SignUpHook = () => {
             loginFirebase(email, password)
                 .then(() => {
                     setError(false);
-                    setSignIn(true);
+                    // setSignIn(true);
                     // if (isActiveUser) {
                     //     router.replace("/dashboard");
                     // } else {
@@ -31,7 +31,7 @@ const SignUpHook = () => {
                 })
                 .catch(() => {
                     setError(true);
-                    setSignIn(false);
+                    // setSignIn(false);
                 });
         } else {
             setError(true);
@@ -43,18 +43,20 @@ const SignUpHook = () => {
     };
 
     useEffect(() => {
-        if (user) {
-            setSignIn(true);
-            router.replace("/dashboard");
+        if (user && userData) {
+            // setSignIn(true);
+            userData?.isActive
+                ? router.replace("/dashboard")
+                : router.replace("/sign-in/inactive-user");
         }
-    }, [router, user]);
+    }, [router, user, userData, userData?.isActive]);
 
     return {
         user,
         email,
         password,
         error,
-        sigIn,
+        // sigIn,
         showPassword,
         router,
         isPatient,

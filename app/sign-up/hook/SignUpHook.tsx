@@ -60,7 +60,7 @@ const isActiveData = [
 
 const SignUpHook = (props?: Props) => {
     const router = useRouter();
-    const { user, isActiveUser } = useAuth();
+    const { user, isActiveUser, userData } = useAuth();
 
     const [showPassword, setShowPassword] = useState(false);
     const [isPatient, setIsPatient] = useState(false);
@@ -244,11 +244,14 @@ const SignUpHook = (props?: Props) => {
         getContracts();
     }, [getSpecialties, getContracts]);
 
-    // useEffect(() => {
-    //     if (user) {
-    //         router.replace("/dashboard");
-    //     }
-    // }, [router, user]);
+    useEffect(() => {
+        if (user) {
+            // setSignUp(true);
+            userData?.isActive
+                ? router.replace("/dashboard")
+                : router.replace("/sign-in/inactive-user");
+        }
+    }, [router, user, userData?.isActive]);
 
     return {
         data,
