@@ -315,6 +315,16 @@ export default function SignUp() {
                                         <IoCall />
                                     </span>
                                 </div>
+                                <div className="col flex flex-col md:col-span-2 lg:col-span-3 items-center">
+                                    <p
+                                        className="mt-1 text-sm text-center text-white"
+                                        id="file_input_help"
+                                    >
+                                        Los campos con&nbsp;(&nbsp;
+                                        <span className="text-blue-500">*</span>
+                                        &nbsp;) son obligatorios.
+                                    </p>
+                                </div>
                             </>
                         ) : (
                             <>
