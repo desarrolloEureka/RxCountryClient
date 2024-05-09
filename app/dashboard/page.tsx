@@ -6,9 +6,10 @@ import Spinner from "../component/spinner/Spinner";
 import DashBoardHook from "./hook/DashBoardHook";
 
 export default function Dashboard() {
-    const { user, isActiveUser } = DashBoardHook();
+    const { user, isActiveUser, isLoading, isLoadingValidate } =
+        DashBoardHook();
 
-    // if (!user || !isActiveUser) {
+    // if (isLoadingValidate) {
     //     return <Spinner />;
     // }
 

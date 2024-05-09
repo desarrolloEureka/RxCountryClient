@@ -10,7 +10,7 @@ import DoctorVector from "./vectors/DoctorVector";
 interface Props {
     formStep: number;
     setFormStep: (e: any) => void;
-    user?: string;
+    userRol?: string;
     isEdit?: boolean;
     setDataSelected: (e: any) => void;
     data: any;
@@ -19,7 +19,7 @@ interface Props {
 function StepByStep({
     formStep,
     setFormStep,
-    user,
+    userRol,
     isEdit,
     setDataSelected,
     data,
@@ -185,7 +185,7 @@ function StepByStep({
                                 className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
                             />
                         </div>
-                        {user === "Receptionist" && (
+                        {userRol === "Recepción/Caja" && (
                             <>
                                 <div className="col flex flex-col space-y-2">
                                     <label
@@ -387,7 +387,7 @@ function StepByStep({
                             <h3 className="text-company-orange text-xl font-bold">
                                 Tomografía volumétrica 3D
                             </h3>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 {data.volumetricTomography.map(
                                     (option: any, index: any) => {
                                         return (
@@ -442,12 +442,7 @@ function StepByStep({
                                                     </div>
                                                 </div>
                                                 <div className="">
-                                                    <span
-                                                        className={`text-white ${
-                                                            option.length >=
-                                                                30 && "text-xs"
-                                                        }`}
-                                                    >
+                                                    <span className="text-white">
                                                         {option}
                                                     </span>
                                                 </div>
@@ -1056,7 +1051,7 @@ function StepByStep({
                         </div>
                         <div
                             className={`${
-                                user !== "Receptionist"
+                                userRol !== "Recepción/Caja"
                                     ? "col-span-1"
                                     : "col-span-2"
                             } flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50`}
@@ -1083,7 +1078,7 @@ function StepByStep({
                                 </p>
                             </div>
                         </div>
-                        {user !== "Receptionist" && (
+                        {userRol !== "Recepción/Caja" && (
                             <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                 <h3 className="text-company-orange text-xl font-bold">
                                     Impresión diagnostica
@@ -1129,7 +1124,7 @@ function StepByStep({
                                         titulado. Consentimiento informado
                                     </p>
                                 </div>
-                                <div className="mt-10 space-y-8">
+                                <div className="mt-10 space-y-8 text-white">
                                     <h5>FIRMA:</h5>
                                     <p className="border-b-2"></p>
                                 </div>
@@ -1160,7 +1155,7 @@ function StepByStep({
                                 lobortis nisl ut aliquip ex ea commodo
                                 consequat.
                             </p>
-                            {user === "Receptionist" && (
+                            {userRol === "Recepción/Caja" && (
                                 <div className="pr-10 space-y-4 pb-10">
                                     <label className="text-company-orange">
                                         Enviar a:

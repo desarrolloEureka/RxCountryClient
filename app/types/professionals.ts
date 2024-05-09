@@ -17,6 +17,7 @@ export type DataProfessionalObject = {
     contract: string;
     rol: string;
     urlPhoto: string;
-    timestamp: any;
-    isActive: any;
+    timestamp: Date;
+    isActive: boolean;
+    isDeleted: boolean;
 };

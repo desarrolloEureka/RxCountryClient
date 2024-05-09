@@ -1,7 +1,7 @@
 "use client";
 import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
-import { useState } from "react";
+import DoctorVector from "@/app/component/vectors/DoctorVector";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";
 import {
     IoIosArrowBack,
@@ -9,50 +9,58 @@ import {
     IoIosNotifications,
     IoMdSearch,
 } from "react-icons/io";
+import { IoAlertCircleSharp } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
 import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
-import DoctorVector from "@/app/component/vectors/DoctorVector";
-import { IoAlertCircleSharp, IoClose } from "react-icons/io5";
-import { useRouter } from "next/navigation";
+import OrderHistorialHook from "./hook/OrderHistorialHook";
 
 const OrderHistorialPage = () => {
-    const router = useRouter();
-    const [showFilter, setShowFilter] = useState(false);
-    const [showHelp, setShowHelp] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState("received");
-
-    //*Aquí para cambiar de vista de especialista a recepcionista
-    const [user, setUser] = useState("Specialist");
-
-    // filters
-    const [orderMinorMajor, setOrderMinorMajor] = useState(false);
-    const [nameAZ, setNameAZ] = useState(false);
-    const [dateMinorMajor, setDateMinorMajor] = useState(false);
-    const [dateMajorMinor, setDateMajorMinor] = useState(false);
-    const [all, setAll] = useState(false);
+    const {
+        userData,
+        router,
+        showFilter,
+        setShowFilter,
+        showHelp,
+        setShowHelp,
+        selectedOrder,
+        setSelectedOrder,
+        userRol,
+        setUserRol,
+        orderMinorMajor,
+        setOrderMinorMajor,
+        nameAZ,
+        setNameAZ,
+        dateMinorMajor,
+        setDateMinorMajor,
+        dateMajorMinor,
+        setDateMajorMinor,
+        all,
+        setAll,
+    } = OrderHistorialHook();
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="orders-historial" />
                 <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
-                    <div className="relative flex justify-center items-center border-b-2 border-company-orange p-8">
+                    <div className="flex justify-end items-center border-b-2 border-company-orange p-8">
                         {/* //todo: Se muestra dependiendo del usuario */}
                         <div
                             className={`grid ${
-                                user === "Specialist"
+                                userRol === "Profesional"
                                     ? "grid-cols-1"
                                     : "grid-cols-2"
-                            }  gap-52 xl:gap-80 space-x-20`}
+                            } flex-1 gap-52 xl:gap-80 `}
                         >
                             <div
                                 onClick={() => {
                                     setSelectedOrder("received");
                                 }}
                                 className={`col flex flex-col ${
-                                    user !== "Specialist" && "cursor-pointer"
-                                }`}
+                                    userRol !== "Profesional" &&
+                                    "cursor-pointer"
+                                } items-end`}
                             >
                                 <h3
                                     className={`text-2xl ${
@@ -65,7 +73,7 @@ const OrderHistorialPage = () => {
                                 </h3>
                             </div>
                             {/* //todo: Se muestra dependiendo del usuario */}
-                            {user !== "Specialist" && (
+                            {userRol !== "Profesional" && (
                                 <div
                                     onClick={() => {
                                         setSelectedOrder("send");
@@ -84,7 +92,7 @@ const OrderHistorialPage = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="absolute right-8 flex flex-col items-center space-y-2 text-white text-sm">
+                        <div className="flex flex-col items-center space-y-2 text-white text-sm">
                             <button
                                 onClick={() => setShowHelp(true)}
                                 className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"

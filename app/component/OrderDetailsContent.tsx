@@ -1,13 +1,16 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { IoArrowBackCircleOutline, IoCheckmark, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
+import useAuth from "../firebase/auth";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
 
 const OrderDetailsContent = () => {
+    const { isActiveUser, userData } = useAuth();
+
     const router = useRouter();
     const [expandReceptionData, setExpandReceptionData] = useState(false);
     const [expandSpecialist, setExpandSpecialist] = useState(false);
@@ -17,7 +20,7 @@ const OrderDetailsContent = () => {
     const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
 
     //*Aquí para cambiar de vista a recepcionista
-    const [user, setUser] = useState("diagnosis"); // user:"models", "dispatch", "professional", "receptionist", "diagnosis"
+    // const [user, setUser] = useState<string>(`${userData?.rol}`); // user:"Modelos", "Despachos", "Profesional", "Recepción/Caja", "Despachos"
 
     const suppliers = ["Invisalign", "T-Brux", "Planeación Virtual"];
 
@@ -33,7 +36,7 @@ const OrderDetailsContent = () => {
     const handleChecks = (
         option: string,
         selected: string[],
-        setSelected: Dispatch<SetStateAction<string[]>>,
+        setSelected: (e: any) => void,
     ) => {
         if (selected.includes(option)) {
             let selectedList = selected.filter((item) => item !== option);
@@ -67,7 +70,7 @@ const OrderDetailsContent = () => {
                     <span>Previsualizar PDF</span>
                 </button>
             </div>
-            {user === "professional" && (
+            {userData && userData?.rol === "Profesional" && (
                 <>
                     {/* Reception data */}
                     <div
@@ -283,7 +286,7 @@ const OrderDetailsContent = () => {
                     </div>
                 </>
             )}
-            {user === "receptionist" && (
+            {userData && userData?.rol === "Recepción/Caja" && (
                 <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                     <h3 className="text-company-orange text-xl font-bold">
                         Observaciones
@@ -306,7 +309,7 @@ const OrderDetailsContent = () => {
                     </div>
                 </div>
             )}
-            {user === "models" && (
+            {userData && userData?.rol === "Modelos" && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl">
@@ -448,7 +451,7 @@ const OrderDetailsContent = () => {
                     </div>
                 </div>
             )}
-            {user === "dispatch" && (
+            {userData && userData?.rol === "Despachos" && (
                 <div className="flex flex-col mx-20 pt-20">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -477,7 +480,7 @@ const OrderDetailsContent = () => {
                     </div>
                 </div>
             )}
-            {user === "diagnosis" && (
+            {userData && userData?.rol === "Despachos" && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl">

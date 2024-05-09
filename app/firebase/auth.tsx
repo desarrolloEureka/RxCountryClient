@@ -2,6 +2,7 @@ import { User, onAuthStateChanged, getAuth } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { auth } from "@/shared/firebase/firebase";
 import { getProfileDataByIdFb } from "./user";
+import { UserData } from "../types/user";
 
 // interface Role {
 //     id: string;
@@ -14,7 +15,7 @@ const useAuth = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isActiveUser, setIsActiveUser] = useState<boolean>();
     const [user, setUser] = useState<User | null>();
-    const [userData, setUserData] = useState<any>();
+    const [userData, setUserData] = useState<UserData>();
     // const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
     //   const getRole = useCallback(async () => {
@@ -55,7 +56,7 @@ const useAuth = () => {
         user &&
             (await getProfileDataByIdFb(userId, "professionals").then(
                 (res: any) => {
-                    setIsActiveUser(res.isActive === "Activo");
+                    setIsActiveUser(res.isActive);
                     setUserData(res);
                 },
             ));
@@ -67,7 +68,7 @@ const useAuth = () => {
             getUserState();
             // console.log("soy diferente a indefinido");
         }
-        // console.log("user", user, isActiveUser);
+        console.log("user", user, isActiveUser);
         // console.log("isActiveUser", isActiveUser);
     }, [getUserState, isActiveUser, user]);
 

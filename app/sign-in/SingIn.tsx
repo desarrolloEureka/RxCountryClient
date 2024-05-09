@@ -72,7 +72,7 @@ const SingIn = () => {
                                     }}
                                     className="w-8 h-8 border-2"
                                 />
-                                <span>Especialista</span>
+                                <span>Profesional</span>
                             </div>
                             <div className="flex space-x-2 justify-end items-center text-white">
                                 <input

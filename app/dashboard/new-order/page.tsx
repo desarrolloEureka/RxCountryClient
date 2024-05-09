@@ -19,7 +19,7 @@ const NewOrderPage = () => {
         setIsDataSelected,
         widthSlider,
         isEdit,
-        user,
+        userRol,
         data,
     } = NewOrderHook();
 
@@ -27,7 +27,7 @@ const NewOrderPage = () => {
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="create-order" />
-                <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto relative">
+                <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
                     <div className="flex justify-center items-center">
                         <div className="flex justify-between items-center w-full p-8">
                             <div
@@ -60,7 +60,7 @@ const NewOrderPage = () => {
                     <StepByStep
                         formStep={formStep}
                         setFormStep={setFormStep}
-                        user={user}
+                        userRol={userRol}
                         isEdit={isEdit}
                         setDataSelected={setIsDataSelected}
                         data={data}
