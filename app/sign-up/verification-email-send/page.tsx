@@ -37,7 +37,7 @@ export default function VerificationEmailSend() {
                         className="bg-company-blue rounded-2xl px-5 py-3 text-white"
                         onClick={() => router.push("/sign-in")}
                     >
-                        Salir
+                        Continuar
                     </button>
                 </div>
             </div>

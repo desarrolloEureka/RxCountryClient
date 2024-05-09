@@ -44,14 +44,14 @@ const OrderHistorialPage = () => {
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="orders-historial" />
                 <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
-                    <div className="relative flex justify-center items-center border-b-2 border-company-orange p-8">
+                    <div className="flex justify-end items-center border-b-2 border-company-orange p-8">
                         {/* //todo: Se muestra dependiendo del usuario */}
                         <div
                             className={`grid ${
                                 userRol === "Profesional"
                                     ? "grid-cols-1"
                                     : "grid-cols-2"
-                            }  gap-52 xl:gap-80 space-x-20`}
+                            } flex-1 gap-52 xl:gap-80 `}
                         >
                             <div
                                 onClick={() => {
@@ -60,7 +60,7 @@ const OrderHistorialPage = () => {
                                 className={`col flex flex-col ${
                                     userRol !== "Profesional" &&
                                     "cursor-pointer"
-                                }`}
+                                } items-end`}
                             >
                                 <h3
                                     className={`text-2xl ${
@@ -92,7 +92,7 @@ const OrderHistorialPage = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="absolute right-8 flex flex-col items-center space-y-2 text-white text-sm">
+                        <div className="flex flex-col items-center space-y-2 text-white text-sm">
                             <button
                                 onClick={() => setShowHelp(true)}
                                 className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"

@@ -33,11 +33,13 @@ const ImageQueryPage = () => {
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="images-query" />
                 <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
-                    <div className="relative flex justify-center items-center border-b-2 border-company-orange p-8">
-                        <h3 className="text-2xl text-company-orange">
-                            Consulta de imágenes por paciente
-                        </h3>
-                        <div className="absolute right-8 flex flex-col items-center space-y-2 text-white text-sm">
+                    <div className="flex justify-end items-center border-b-2 border-company-orange p-8">
+                        <div className="flex flex-1 justify-center">
+                            <h3 className="text-2xl text-company-orange">
+                                Consulta de imágenes por paciente
+                            </h3>
+                        </div>
+                        <div className="flex flex-col items-center space-y-2 text-white text-sm">
                             <button
                                 onClick={() => setShowHelp(true)}
                                 className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"

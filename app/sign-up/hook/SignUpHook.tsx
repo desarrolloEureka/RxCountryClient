@@ -69,6 +69,7 @@ const SignUpHook = (props?: Props) => {
     const [errorPass, setErrorPass] = useState(false);
     const [isSendData, setIsSendData] = useState(false);
     const [sigUp, setSignUp] = useState(false);
+    const [nextStep, setNextStep] = useState(true);
 
     const [specialties, setSpecialties] = useState<any>();
     const [contracts, setContracts] = useState<any>();
@@ -120,23 +121,23 @@ const SignUpHook = (props?: Props) => {
         data.id &&
         data.name &&
         data.lastName &&
-        data.phone &&
-        // data.phone2 &&
-        data.address &&
-        data.country &&
-        data.state &&
-        data.city &&
         data.email &&
         data.password &&
         data.confirmPassword &&
-        data.specialty &&
-        data.contract &&
-        data.isActive;
+        data.phone;
+    // data.phone2 &&
+    // data.address &&
+    // data.country &&
+    // data.state &&
+    // data.city &&
+    // data.specialty &&
+    // data.contract &&
+    // data.isActive;
 
     const passValidation = data.confirmPassword === data.password;
 
     const uploadHandle = async () => {
-        let newData = {};
+        let newData = data;
         const res = await registerFirebase(data.email, data.password)
             .then(async (result: any) => {
                 const newUser = result.user;
@@ -167,6 +168,7 @@ const SignUpHook = (props?: Props) => {
                                     ...data,
                                     urlPhoto: urlName,
                                 };
+                                console.log(newData);
                             })
                             .catch((err: any) => {
                                 console.log(err);
@@ -266,6 +268,9 @@ const SignUpHook = (props?: Props) => {
         specialties,
         contracts,
         isSendData,
+        nextStep,
+        professionalsVal,
+        setNextStep,
         setErrorPass,
         handleClose,
         getCities,
