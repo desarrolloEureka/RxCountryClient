@@ -124,7 +124,9 @@ const SignUpHook = (props?: Props) => {
         data.email &&
         data.password &&
         data.confirmPassword &&
-        data.phone;
+        data.phone !== "57" &&
+        data.phone !== "" &&
+        data.phone.length > 10;
     // data.phone2 &&
     // data.address &&
     // data.country &&
@@ -133,6 +135,8 @@ const SignUpHook = (props?: Props) => {
     // data.specialty &&
     // data.contract &&
     // data.isActive;
+
+    // console.log(professionalsVal);
 
     const passValidation = data.confirmPassword === data.password;
 

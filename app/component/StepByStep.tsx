@@ -237,7 +237,7 @@ function StepByStep({
             {formStep === 1 && (
                 <div className="flex flex-col mx-20">
                     <h3 className="text-company-blue text-3xl font-bold pb-5">
-                        Radiografía
+                        Radiografías
                     </h3>
                     <div className="mx-auto mb-8">
                         <DentalSelect />
@@ -247,7 +247,7 @@ function StepByStep({
                             <h3 className="text-company-orange text-xl font-bold">
                                 Intra Orales
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-rows-4 grid-flow-col gap-4">
                                 {data.intraOralsOptions.map(
                                     (option: any, index: any) => {
                                         return (
@@ -311,7 +311,7 @@ function StepByStep({
                             <h3 className="text-company-orange text-xl font-bold">
                                 Extra Orales
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-rows-4 grid-flow-col gap-4">
                                 {data.extraOralsOptions.map(
                                     (option: any, index: any) => {
                                         return (
@@ -377,7 +377,8 @@ function StepByStep({
             {formStep === 2 && (
                 <div className="flex flex-col mx-20">
                     <h3 className="text-company-blue text-3xl font-bold pb-5">
-                        Tomografía
+                        Tomografía volumétrica 3D en las Sedes Country-Santa
+                        Bárbara-Marly
                     </h3>
                     <div className="mx-auto mb-8">
                         <DentalSelect />
@@ -393,7 +394,12 @@ function StepByStep({
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className={`col ${
+                                                    data.volumetricTomography
+                                                        .length -
+                                                        1 ===
+                                                        index && "col-span-2"
+                                                } flex space-x-2 items-center`}
                                             >
                                                 <div className="">
                                                     <div
@@ -580,9 +586,11 @@ function StepByStep({
                                                         )}
                                                     </div>
                                                 </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
+                                                <div className="flex items-start">
+                                                    <span className="text-white">
+                                                        {option}
+                                                    </span>
+                                                </div>
                                             </div>
                                         );
                                     },
@@ -660,13 +668,19 @@ function StepByStep({
                             <h3 className="text-company-orange text-xl font-bold">
                                 Intra Orales
                             </h3>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 {data.intraOralClinicalPhotography.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className={`col ${
+                                                    data
+                                                        .intraOralClinicalPhotography
+                                                        .length -
+                                                        1 ===
+                                                        index && "col-span-2"
+                                                } flex space-x-2 items-center`}
                                             >
                                                 <div className="">
                                                     <div
@@ -724,13 +738,19 @@ function StepByStep({
                             <h3 className="text-company-orange text-xl font-bold">
                                 Extra Orales
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 {data.extraOralClinicalPhotography.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className={`col ${
+                                                    data
+                                                        .extraOralClinicalPhotography
+                                                        .length -
+                                                        1 ===
+                                                        index && "col-span-2"
+                                                } flex space-x-2 items-center`}
                                             >
                                                 <div className="">
                                                     <div
@@ -995,7 +1015,7 @@ function StepByStep({
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className="col flex space-x-2 items-start"
                                             >
                                                 <div className="">
                                                     <div
@@ -1060,22 +1080,14 @@ function StepByStep({
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="Observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                />
                             </div>
                         </div>
                         {userRol !== "Recepción/Caja" && (
@@ -1084,31 +1096,21 @@ function StepByStep({
                                     Impresión diagnostica
                                 </h3>
                                 <div className="grid grid-cols-1 gap-2">
-                                    <p>
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Repudiandae
-                                        praesentium ullam pariatur qui
-                                        blanditiis unde sunt a tempora iure
-                                        cumque corrupti, maiores beatae
-                                        explicabo dolores nisi. Error a nam
-                                        possimus.
-                                    </p>
-                                    <p>
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Repudiandae
-                                        praesentium ullam pariatur qui
-                                        blanditiis unde sunt a tempora iure
-                                        cumque corrupti, maiores beatae
-                                        explicabo dolores nisi. Error a nam
-                                        possimus.
-                                    </p>
+                                    <textarea
+                                        id="DiagnosticImpression"
+                                        name="DiagnosticImpression"
+                                        rows={4}
+                                        cols={50}
+                                        className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                        placeholder="Escribe aquí tus observaciones..."
+                                    />
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
             )}
-            {formStep === 6 && (
+            {/* {formStep === 6 && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-1 gap-4">
                         <div className="flex flex-col space-y-4 rounded-xl p-[5%] bg-black bg-opacity-40">
@@ -1132,8 +1134,8 @@ function StepByStep({
                         </div>
                     </div>
                 </div>
-            )}
-            {formStep === 7 && (
+            )} */}
+            {formStep === 6 && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col space-y-4 p-4 mb-[50%]">
@@ -1196,7 +1198,7 @@ function StepByStep({
                     </div>
                 </div>
             )}
-            {formStep === 8 && (
+            {formStep === 7 && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-1 gap-4">
                         <div className="flex flex-col space-y-4 rounded-xl pr-[40%] pb-[20%] pl-[10%] pt-[15%] bg-black bg-opacity-40">

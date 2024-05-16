@@ -32,7 +32,7 @@ const NewOrderPage = () => {
                         <div className="flex justify-between items-center w-full p-8">
                             <div
                                 className={`flex items-center space-x-8 ${
-                                    formStep === 7 && "hidden"
+                                    formStep === 6 && "hidden"
                                 }`}
                             >
                                 <Link href={"/dashboard/images-query"}>
@@ -82,13 +82,13 @@ const NewOrderPage = () => {
                     <div
                         className={`flex ${
                             formStep < 6 ? "justify-between" : "justify-end"
-                        } items-center p-8 ${formStep === 7 && "hidden"}`}
+                        } items-center p-8 ${formStep === 6 && "hidden"}`}
                     >
                         {formStep < 6 && (
                             <div className="text-white">Paso {formStep}/5</div>
                         )}
                         <div className="flex items-center space-x-8">
-                            {formStep < 7 && formStep > 0 && (
+                            {formStep < 6 && formStep > 0 && (
                                 <>
                                     <div
                                         onClick={() => {
@@ -102,9 +102,6 @@ const NewOrderPage = () => {
                                         {}
                                         <span>Atrás</span>
                                     </div>
-                                    {/* <div className="flex items-center cursor-pointer text-company-blue">
-                                        <span>Omitir</span>
-                                    </div> */}
                                 </>
                             )}
                             {formStep < 7 && (
