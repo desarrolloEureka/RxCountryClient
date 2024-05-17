@@ -14,6 +14,7 @@ import { LuSettings2 } from "react-icons/lu";
 import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
 import OrderHistorialHook from "./hook/OrderHistorialHook";
+import moment from "moment";
 
 const OrderHistorialPage = () => {
     const {
@@ -26,7 +27,6 @@ const OrderHistorialPage = () => {
         selectedOrder,
         setSelectedOrder,
         userRol,
-        setUserRol,
         orderMinorMajor,
         setOrderMinorMajor,
         nameAZ,
@@ -37,7 +37,10 @@ const OrderHistorialPage = () => {
         setDateMajorMinor,
         all,
         setAll,
+        allDataOrders,
     } = OrderHistorialHook();
+
+    // console.log(ordersData);
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
@@ -55,12 +58,14 @@ const OrderHistorialPage = () => {
                         >
                             <div
                                 onClick={() => {
-                                    setSelectedOrder("received");
+                                    userRol !== "Profesional" &&
+                                        setSelectedOrder("received");
                                 }}
                                 className={`col flex flex-col ${
-                                    userRol !== "Profesional" &&
-                                    "cursor-pointer"
-                                } items-end`}
+                                    userRol !== "Profesional"
+                                        ? "cursor-pointer items-end"
+                                        : "items-center"
+                                }`}
                             >
                                 <h3
                                     className={`text-2xl ${
@@ -72,7 +77,7 @@ const OrderHistorialPage = () => {
                                     Ordenes recibidas
                                 </h3>
                             </div>
-                            {/* //todo: Se muestra dependiendo del usuario */}
+
                             {userRol !== "Profesional" && (
                                 <div
                                     onClick={() => {
@@ -235,107 +240,214 @@ const OrderHistorialPage = () => {
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-col divide-y">
-                        <div className="grid grid-cols-12 items-center text-company-orange py-4">
-                            <div className="col-span-2 flex flex-col text-center">
-                                <span>Detalle</span>
-                            </div>
-                            <div className="col">
-                                <span># Orden</span>
-                            </div>
-                            <div className="col">
-                                <span>Fecha</span>
-                            </div>
-                            <div className="col">
-                                <span>Estado</span>
-                            </div>
-                            <div className="col">
-                                <span>Cédula</span>
-                            </div>
-                            <div className="col">
-                                <span>Nombre</span>
-                            </div>
-                            <div className="col">
-                                <span>Apellido</span>
-                            </div>
-                            <div className="col-span-2">
-                                <span>Correo</span>
-                            </div>
-                            <div className="col">
-                                <span>Teléfono</span>
-                            </div>
-                        </div>
-                        {Array.from({
-                            length: selectedOrder === "send" ? 3 : 10,
-                        }).map((item, index) => {
-                            return (
-                                <div
-                                    key={index}
-                                    onClick={() => {
-                                        router.push(
-                                            "/dashboard/orders-historial/details/hola",
-                                        );
-                                    }}
-                                    className="grid grid-cols-12 cursor-pointer items-center text-white py-4 hover:bg-gray-700"
-                                >
-                                    <div className="col-span-2 flex justify-between text-center text-company-blue px-16">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                            }}
-                                        >
-                                            <IoIosNotifications size={24} />
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                router.push(
-                                                    "/dashboard/new-order",
-                                                );
-                                                e.stopPropagation();
-                                            }}
-                                        >
-                                            <RiEditBoxFill size={24} />
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                router.replace(
-                                                    "/dashboard/new-order/preview-order",
-                                                );
-                                                e.stopPropagation();
-                                            }}
-                                        >
-                                            <MdPictureAsPdf size={24} />
-                                        </button>
-                                    </div>
-                                    <div className="col">
-                                        <span>#123456</span>
-                                    </div>
-                                    <div className="col">
-                                        <span>06/03/2024</span>
-                                    </div>
-                                    <div className="col">
-                                        <span>Diagnóstico</span>
-                                    </div>
-                                    <div className="col">
-                                        <span>12345644</span>
-                                    </div>
-                                    <div className="col">
-                                        <span>Jhon</span>
-                                    </div>
-                                    <div className="col">
-                                        <span>Doe</span>
-                                    </div>
-                                    <div className="col-span-2">
-                                        <span>demo@example.com</span>
-                                    </div>
-                                    <div className="col">
-                                        <span>3216549870</span>
-                                    </div>
+
+                    {selectedOrder === "received" ? (
+                        <div className="flex flex-col divide-y">
+                            <div className="grid grid-cols-12 items-center text-company-orange py-4">
+                                <div className="col-span-2 flex flex-col text-center">
+                                    <span>Detalle</span>
                                 </div>
-                            );
-                        })}
-                    </div>
-                    <div className="flex tiems-center px-16 py-4 border-t-2 border-company-blue">
+                                <div className="col">
+                                    <span># Orden</span>
+                                </div>
+                                <div className="col">
+                                    <span>Fecha</span>
+                                </div>
+                                <div className="col">
+                                    <span>Estado</span>
+                                </div>
+                                <div className="col">
+                                    <span>Cédula</span>
+                                </div>
+                                <div className="col">
+                                    <span>Nombre</span>
+                                </div>
+                                <div className="col">
+                                    <span>Apellido</span>
+                                </div>
+                                <div className="col-span-2">
+                                    <span>Correo</span>
+                                </div>
+                                <div className="col">
+                                    <span>Teléfono</span>
+                                </div>
+                            </div>
+                            {allDataOrders?.map((item: any, index: number) => {
+                                return (
+                                    <div
+                                        key={index}
+                                        onClick={() => {
+                                            router.push(
+                                                `/dashboard/orders-historial/details/${item.uid}`,
+                                            );
+                                        }}
+                                        className="grid grid-cols-12 cursor-pointer items-center text-white py-4 hover:bg-gray-700"
+                                    >
+                                        <div className="col-span-2 flex justify-between text-center text-company-blue px-16">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <IoIosNotifications size={24} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    router.push(
+                                                        "/dashboard/new-order",
+                                                    );
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <RiEditBoxFill size={24} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    router.replace(
+                                                        "/dashboard/new-order/preview-order",
+                                                    );
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <MdPictureAsPdf size={24} />
+                                            </button>
+                                        </div>
+                                        <div className="col">
+                                            <span>{`#${item.uid}`}</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>
+                                                {moment(item.timestamp).format(
+                                                    "DD/MM/YYYY",
+                                                )}
+                                            </span>
+                                        </div>
+                                        <div className="col">
+                                            <span>{item.status}</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>{item.id}</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>{item.name}</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>{item.lastName}</span>
+                                        </div>
+                                        <div className="col-span-2">
+                                            <span>{item.email}</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>{item.phone}</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="flex flex-col divide-y">
+                            <div className="grid grid-cols-12 items-center text-company-orange py-4">
+                                <div className="col-span-2 flex flex-col text-center">
+                                    <span>Detalle</span>
+                                </div>
+                                <div className="col">
+                                    <span># Orden</span>
+                                </div>
+                                <div className="col">
+                                    <span>Fecha</span>
+                                </div>
+                                <div className="col">
+                                    <span>Estado</span>
+                                </div>
+                                <div className="col">
+                                    <span>Cédula</span>
+                                </div>
+                                <div className="col">
+                                    <span>Nombre</span>
+                                </div>
+                                <div className="col">
+                                    <span>Apellido</span>
+                                </div>
+                                <div className="col-span-2">
+                                    <span>Correo</span>
+                                </div>
+                                <div className="col">
+                                    <span>Teléfono</span>
+                                </div>
+                            </div>
+                            {Array.from({
+                                length: 3,
+                            }).map((item, index) => {
+                                return (
+                                    <div
+                                        key={index}
+                                        onClick={() => {
+                                            router.push(
+                                                "/dashboard/orders-historial/details/hola",
+                                            );
+                                        }}
+                                        className="grid grid-cols-12 cursor-pointer items-center text-white py-4 hover:bg-gray-700"
+                                    >
+                                        <div className="col-span-2 flex justify-between text-center text-company-blue px-16">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <IoIosNotifications size={24} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    router.push(
+                                                        "/dashboard/new-order",
+                                                    );
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <RiEditBoxFill size={24} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    router.replace(
+                                                        "/dashboard/new-order/preview-order",
+                                                    );
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <MdPictureAsPdf size={24} />
+                                            </button>
+                                        </div>
+                                        <div className="col">
+                                            <span>#123456</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>06/03/2024</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>Diagnóstico</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>12345644</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>Jhon</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>Doe</span>
+                                        </div>
+                                        <div className="col-span-2">
+                                            <span>demo@example.com</span>
+                                        </div>
+                                        <div className="col">
+                                            <span>3216549870</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    <div className="flex items-center px-16 py-4 border-t-2 border-company-blue">
                         <button className="flex flex-col items-center text-white w-20 text-[9px]">
                             <BsFileEarmarkExcelFill
                                 className="text-company-blue"

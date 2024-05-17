@@ -82,7 +82,7 @@ export default function SignUp() {
                             <>
                                 <div className="col relative flex flex-col w-full space-y-2">
                                     <label
-                                        htmlFor="dni-type"
+                                        htmlFor="idType"
                                         className="text-white"
                                     >
                                         Tipo de Documento&nbsp;
@@ -316,7 +316,6 @@ export default function SignUp() {
                                         }}
                                         value={data.phone}
                                         onChange={phoneChangeHandler}
-                                        // isValid={(value) => value !== "57"}
                                     />
 
                                     <span className="absolute left-2 bottom-4 text-company-blue text-[1.5rem]">

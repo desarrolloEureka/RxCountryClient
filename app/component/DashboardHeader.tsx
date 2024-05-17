@@ -18,6 +18,7 @@ interface Props {
 export default function DashboardHeader({ selectedMenuItem }: Props) {
     const logOut = () => signOut(auth);
     const { isActiveUser, userData } = useAuth();
+    const { name, lastName, rol } = userData;
     const [urlPhoto, setUrlPhoto] = useState<any>();
 
     // const getUrlPhoto = () => {
@@ -126,7 +127,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 className="flex flex-col items-center space-y-2 text-white"
             >
                 <Image
-                    src={`https://ui-avatars.com/api/?name=${userData?.name}+${userData?.lastName}?size=150?bold=true`}
+                    src={`https://ui-avatars.com/api/?name=${name}+${lastName}?size=150?bold=true`}
                     width={0}
                     height={0}
                     sizes="100px"
@@ -135,8 +136,8 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                     className="rounded-full shadow-sm"
                 />
                 <div className="flex flex-col text-center">
-                    <span className="text-xl">{userData?.name}</span>
-                    <span className="text-sm">{userData?.rol}</span>
+                    <span className="text-xl">{name}</span>
+                    <span className="text-sm">{rol}</span>
                 </div>
             </Link>
             {openProfileMenu && (
