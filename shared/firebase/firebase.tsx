@@ -15,6 +15,8 @@ const firebaseConfig = {
     messagingSenderId: "150291031577",
     appId: "1:150291031577:web:0b17b2757cecf3f6a6ac88",
     measurementId: "G-NVG2EXRMDV",
+    backendBaseUrl:
+        "https://us-central1-rxcountry-backoffice.cloudfunctions.net/api",
 };
 
 // Initialize Firebase
@@ -24,5 +26,4 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
 const auth = firebase.auth();
 
-export { auth, db };
-
+export { auth, db, firebaseConfig };

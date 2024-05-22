@@ -294,7 +294,7 @@ const OrderHistorialPage = () => {
                                             <button
                                                 onClick={(e) => {
                                                     router.push(
-                                                        "/dashboard/new-order",
+                                                        `/dashboard/orders-historial/edit-order/${item.uid}`,
                                                     );
                                                     e.stopPropagation();
                                                 }}

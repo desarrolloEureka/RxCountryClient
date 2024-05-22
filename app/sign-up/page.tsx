@@ -290,8 +290,6 @@ export default function SignUp() {
                                         inputProps={{
                                             name: "phone",
                                             required: true,
-                                            // pattern:
-                                            //     "^\\+(?:[0-9] ?){7,14}[0-9]$",
                                             pattern:
                                                 "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
                                             title: "Por favor, ingrese un número de teléfono válido",
@@ -300,16 +298,6 @@ export default function SignUp() {
                                         specialLabel=""
                                         placeholder=""
                                         prefix="+"
-                                        // onlyCountries={[]}
-                                        inputStyle={{
-                                            borderColor: "rgb(34, 140, 240)",
-                                            width: "100%",
-                                            height: 40,
-                                            background: "transparent",
-                                            borderRadius: 12,
-                                            color: "white",
-                                            fontSize: 16,
-                                        }}
                                         dropdownStyle={{
                                             color: "black",
                                             borderRadius: 12,
@@ -346,15 +334,6 @@ export default function SignUp() {
                                         specialLabel=""
                                         placeholder=""
                                         country={"co"}
-                                        inputStyle={{
-                                            borderColor: "rgb(34, 140, 240)",
-                                            width: "100%",
-                                            height: 40,
-                                            background: "transparent",
-                                            borderRadius: 12,
-                                            color: "white",
-                                            fontSize: 16,
-                                        }}
                                         dropdownStyle={{
                                             color: "black",
                                             borderRadius: 12,

@@ -962,19 +962,20 @@
 
 .react-tel-input .form-control {
     position: relative;
-    font-size: 14px;
+    font-size: 16px;
     letter-spacing: 0.01rem;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     padding-left: 70px;
     margin-left: 0;
-    background: #ffffff;
-    border: 1px solid #cacaca;
-    border-radius: 5px;
+    background: transparent;
+    border: 1px solid #228cf0;
+    border-radius: 12px;
     line-height: 25px;
-    height: 35px;
-    width: 300px;
+    height: 40px;
+    width: 100%;
     outline: none;
+    color: white;
 }
 
 .react-tel-input .form-control.invalid-number {
@@ -1078,10 +1079,10 @@
     padding: 0;
     margin: 10px 0 10px -1px;
     box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.35);
-    background-color: white;
+    background-color: black;
     width: 300px;
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
     border-radius: 0 0 3px 3px;
 }
 
@@ -1100,15 +1101,15 @@
 }
 
 .react-tel-input .country-list .country .dial-code {
-    color: #6b6b6b;
+    color: #b9b9b9;
 }
 
 .react-tel-input .country-list .country:hover {
-    background-color: #f1f1f1;
+    background-color: #1976d2;
 }
 
 .react-tel-input .country-list .country.highlight {
-    background-color: #f1f1f1;
+    background-color: #1976d2;
 }
 
 .react-tel-input .country-list .flag {
@@ -1118,6 +1119,7 @@
 
 .react-tel-input .country-list .country-name {
     margin-right: 6px;
+    color: white;
 }
 
 .react-tel-input .country-list .search {

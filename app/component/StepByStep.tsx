@@ -3,7 +3,14 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsFillGeoAltFill, BsFillPersonVcardFill } from "react-icons/bs";
 import { FaUserDoctor } from "react-icons/fa6";
-import { IoCall, IoCheckmark, IoEye, IoMail, IoPerson } from "react-icons/io5";
+import {
+    IoCall,
+    IoCheckmark,
+    IoCloseSharp,
+    IoEye,
+    IoMail,
+    IoPerson,
+} from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
 import "../style.css";
@@ -18,17 +25,25 @@ interface Props {
     setFormStep: (e: any) => void;
     userRol?: string;
     currentOrder: number;
+    suggestions?: any[];
     isEdit?: boolean;
     setIsDataSelected: (e: any) => void;
-    changeHandler: (e: any) => void;
-    selectChangeHandlerIdType: (e: any) => void;
-    dateChangeHandler: (e: any) => void;
-    phoneChangeHandler: (e: any) => void;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    selectChangeHandlerIdType: (
+        e: React.ChangeEvent<HTMLSelectElement>,
+    ) => void;
+    dateChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    phoneChangeHandler: (phone: string) => void;
+    idChangeHandler: (id: string) => void;
     setSelectedOptions: (e: any) => void;
     handleSendForm: (e: any) => Promise<void>;
     selectChangeHandlerSentTo: (e: any) => void;
+    handleClose: (e: any) => void;
     data: any;
     optionsData: any;
+    oldData?: any;
+    wrapperRef?: any;
 }
 
 function StepByStep({
@@ -39,16 +54,26 @@ function StepByStep({
     setIsDataSelected,
     optionsData,
     data,
+    oldData,
     currentOrder,
+    suggestions,
+    wrapperRef,
+    handleClose,
     changeHandler,
+    idChangeHandler,
     selectChangeHandlerIdType,
     dateChangeHandler,
     phoneChangeHandler,
     setSelectedOptions,
     handleSendForm,
     selectChangeHandlerSentTo,
+    handleInputChange,
 }: Props) {
     const router = useRouter();
+
+    const [professionalName, setProfessionalName] = useState("");
+    const [professionalSpecialty, setProfessionalSpecialty] = useState("");
+    const [professionalEmail, setProfessionalEmail] = useState("");
 
     const [observationComment, setObservationComment] = useState<string>("");
 
@@ -104,9 +129,18 @@ function StepByStep({
         string[]
     >([]);
 
+    // console.log(
+    //     oldData.selectedIntraOrals,
+    //     selectedIntraOrals,
+    //     isEdit && oldData && oldData?.selectedIntraOrals,
+    // );
+
     const allDataSelected = useMemo(
         () => [
             {
+                professionalName,
+                professionalSpecialty,
+                professionalEmail,
                 dentalSelectBoneScan,
                 selectedIntraOrals,
                 selectedExtraOrals,
@@ -126,6 +160,9 @@ function StepByStep({
             },
         ],
         [
+            professionalName,
+            professionalSpecialty,
+            professionalEmail,
             dentalSelectBoneScan,
             dentalSelectTomography,
             diagnosticImpressionComment,
@@ -158,8 +195,42 @@ function StepByStep({
         valData();
     }, [allDataSelected, setIsDataSelected, valData]);
 
+    useEffect(() => {
+        if (oldData) {
+            setProfessionalName(oldData.professionalName);
+            setProfessionalSpecialty(oldData.professionalSpecialty);
+            setProfessionalEmail(oldData.professionalEmail);
+            setObservationComment(oldData.observationComment);
+            setDiagnosticImpressionComment(oldData.diagnosticImpressionComment);
+            setDentalSelectBoneScan(oldData.dentalSelectBoneScan);
+            setDentalSelectTomography(oldData.dentalSelectTomography);
+            setSelectedIntraOrals(oldData.selectedIntraOrals);
+            setSelectedExtraOrals(oldData.selectedExtraOrals);
+            setSelected3DVolumetricTomography(
+                oldData.selected3DVolumetricTomography,
+            );
+            setSelectedAdditionalDeliveryMethod(
+                oldData.selectedAdditionalDeliveryMethod,
+            );
+            setSelectedDiagnosis(oldData.selectedDiagnosis);
+            setSelectedModels(oldData.selectedModels);
+            setSelectedIntraOralClinicalPhotography(
+                oldData.selectedIntraOralClinicalPhotography,
+            );
+            setSelectedExtraOralClinicalPhotography(
+                oldData.selectedExtraOralClinicalPhotography,
+            );
+            setSelectedPresentation(oldData.selectedPresentation);
+            setSelectedBackground(oldData.selectedBackground);
+            setSelectedClinicalPhotographyDeliveryMethod(
+                oldData.selectedClinicalPhotographyDeliveryMethod,
+            );
+            setSelectedDiagnosticPackage(oldData.selectedDiagnosticPackage);
+        }
+    }, [oldData]);
+
     return (
-        <div className="flex flex-col">
+        <div>
             {formStep === 0 && (
                 <div className="mx-16 bg-black bg-opacity-50 rounded-2xl p-8 flex flex-col space-y-8">
                     <h3 className="text-2xl text-company-orange">
@@ -200,7 +271,10 @@ function StepByStep({
                                 <BsFillPersonVcardFill />
                             </span>
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
+                        <div
+                            className="col relative flex flex-col space-y-2"
+                            ref={wrapperRef}
+                        >
                             <label htmlFor="patientId" className="text-white">
                                 Documento&nbsp;
                                 <span className="text-blue-500">*</span>
@@ -214,11 +288,31 @@ function StepByStep({
                                 min={0}
                                 max={9999999999}
                                 className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
-                                onChange={changeHandler}
+                                onChange={handleInputChange}
                             />
+                            {suggestions && suggestions?.length > 0 && (
+                                <ul className="absolute top-16 w-full text-white bg-black border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto z-10">
+                                    {suggestions?.map((patient) => (
+                                        <li
+                                            key={patient.id}
+                                            className="p-2 hover:bg-company-blue cursor-pointer"
+                                            onClick={() =>
+                                                idChangeHandler(patient.id)
+                                            }
+                                        >
+                                            {patient.id}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                             <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                 <BsFillPersonVcardFill />
                             </span>
+                            {data.id && (
+                                <span className="absolute right-2 bottom-2 hover:bg-black/25 rounded-md text-company-blue text-[1.5rem]">
+                                    <IoCloseSharp onClick={handleClose} />
+                                </span>
+                            )}
                         </div>
                         <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="firstName" className="text-white">
@@ -291,15 +385,6 @@ function StepByStep({
                                 specialLabel=""
                                 placeholder=""
                                 prefix="+"
-                                inputStyle={{
-                                    borderColor: "rgb(34, 140, 240)",
-                                    width: "100%",
-                                    height: 40,
-                                    background: "transparent",
-                                    borderRadius: 12,
-                                    color: "white",
-                                    fontSize: 16,
-                                }}
                                 dropdownStyle={{
                                     color: "black",
                                     borderRadius: 12,
@@ -374,7 +459,9 @@ function StepByStep({
                                         name="ProfessionalName"
                                         id="Doctor"
                                         className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
-                                        onChange={changeHandler}
+                                        onChange={(e) =>
+                                            setProfessionalName(e.target.value)
+                                        }
                                     />
                                     <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                         <FaUserDoctor />
@@ -393,7 +480,11 @@ function StepByStep({
                                         name="ProfessionalSpecialty"
                                         id="Specialty"
                                         className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
-                                        onChange={changeHandler}
+                                        onChange={(e) =>
+                                            setProfessionalSpecialty(
+                                                e.target.value,
+                                            )
+                                        }
                                     />
                                     <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                         <FaUserDoctor />
@@ -412,7 +503,9 @@ function StepByStep({
                                         name="ProfessionalEmail"
                                         id="emailDoctor"
                                         className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
-                                        onChange={changeHandler}
+                                        onChange={(e) =>
+                                            setProfessionalEmail(e.target.value)
+                                        }
                                     />
                                     <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                         <IoMail />
@@ -426,7 +519,10 @@ function StepByStep({
             {formStep === 1 && (
                 <div className="flex flex-col mx-20">
                     <div className="mx-auto mb-8">
-                        <DentalSelect onSelect={setDentalSelectBoneScan} />
+                        <DentalSelect
+                            setSelected={setDentalSelectBoneScan}
+                            selected={dentalSelectBoneScan}
+                        />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -563,7 +659,10 @@ function StepByStep({
             {formStep === 2 && (
                 <div className="flex flex-col mx-20">
                     <div className="mx-auto mb-8">
-                        <DentalSelect onSelect={setDentalSelectTomography} />
+                        <DentalSelect
+                            setSelected={setDentalSelectTomography}
+                            selected={dentalSelectTomography}
+                        />
                     </div>
                     <div className="grid grid-cols-5 gap-4">
                         <div className="col-span-3 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -1261,6 +1360,7 @@ function StepByStep({
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
                                 <textarea
+                                    value={observationComment}
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -1280,6 +1380,7 @@ function StepByStep({
                                 </h3>
                                 <div className="grid grid-cols-1 gap-2">
                                     <textarea
+                                        value={diagnosticImpressionComment}
                                         id="DiagnosticImpression"
                                         name="diagnosticImpression"
                                         rows={4}
@@ -1329,11 +1430,11 @@ function StepByStep({
                         <div className="flex flex-col space-y-4 p-4 mb-[50%]">
                             {isEdit ? (
                                 <h2 className="text-company-orange font-bold text-4xl">
-                                    Examen editado con exito
+                                    Examen Editado con Éxito
                                 </h2>
                             ) : (
                                 <h2 className="text-company-orange font-bold text-4xl">
-                                    Examen finalizado con exito
+                                    Examen Finalizado con Éxito
                                 </h2>
                             )}
                             <p className="text-white w-[80%] xl:w-[80%] text-justify pb-10">
@@ -1403,6 +1504,7 @@ function StepByStep({
                             </h2>
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pt-10">
                                 <button
+                                    type="button"
                                     onClick={() => {
                                         router.replace(
                                             "/dashboard/orders-historial",

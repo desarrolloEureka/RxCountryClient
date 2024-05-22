@@ -4,21 +4,28 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface Props {
-    onSelect?: (value: number[]) => void;
+    setSelected: (value: number[]) => void;
+    selected: number[];
 }
 
 const DentalSelect = (props: Props) => {
-    const { onSelect } = props;
-    const [selected, setSelected] = useState<number[]>([]);
+    const { setSelected, selected } = props;
+    // const [selected, setSelected] = useState<number[]>(selectedOptions || []);
 
     const quadrant = (inicio: number) =>
         Array.from({ length: 8 }, (_, i) => inicio * 10 + 1 + i);
 
     useEffect(() => {
-        if (onSelect) {
-            onSelect(selected);
+        if (setSelected) {
+            setSelected(selected);
         }
-    }, [onSelect, selected]);
+    }, [selected, setSelected]);
+
+    // useEffect(() => {
+    //     if (selectedOptions) {
+    //         setSelected(selectedOptions);
+    //     }
+    // }, [selectedOptions]);
 
     return (
         <div className="flex flex-row items-center space-x-10">

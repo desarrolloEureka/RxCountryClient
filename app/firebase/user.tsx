@@ -1,4 +1,5 @@
-import { auth, db } from "@/shared/firebase/firebase";
+import { auth, firebaseConfig, db } from "@/shared/firebase/firebase";
+import axios from "axios";
 import {
     confirmPasswordReset,
     createUserWithEmailAndPassword,
@@ -6,8 +7,64 @@ import {
     signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import useAuth from "./auth";
 
 const user = auth.currentUser;
+
+const backendClient = async () => {
+    return axios.create({
+        baseURL: firebaseConfig.backendBaseUrl,
+        headers: {
+            Authorization: `Bearer ${await user?.getIdToken()}`,
+        },
+    });
+};
+
+export const addPatient = async ({
+    email,
+    password,
+}: {
+    email: string;
+    password: string;
+}) => {
+    return new Promise((resolve, reject) => {
+        backendClient().then(async (client) => {
+            const data = await client.post(`auth/createUser`, {
+                email,
+                password,
+            });
+            console.log(data.status);
+            if (data.status === 200) {
+                resolve(data);
+            } else {
+                reject(data);
+            }
+        });
+    });
+};
+
+export const updatePassword = async ({
+    uid,
+    password,
+}: {
+    uid: string;
+    password: string;
+}) => {
+    return new Promise((resolve, reject) => {
+        backendClient().then(async (client) => {
+            const data = await client.post(`auth/updatePassword`, {
+                uid,
+                password,
+            });
+            console.log(data.status);
+            if (data.status === 200) {
+                resolve(data);
+            } else {
+                reject(data);
+            }
+        });
+    });
+};
 
 export const saveUserById = async (data: any) => {
     const docRef = await setDoc(doc(db, "users", data.uid), data);

@@ -13,6 +13,13 @@ export default function Dashboard() {
     //     return <Spinner />;
     // }
 
+    // const getToken = async () => {
+    //     const token = await user?.getIdToken();
+    //     return console.log("ID Token:", token);
+    // };
+
+    // getToken();
+
     return (
         <main className="min-h-screen w-full bg-home-image bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
