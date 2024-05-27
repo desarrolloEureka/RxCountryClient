@@ -5,8 +5,13 @@ import { ImKey } from "react-icons/im";
 import { IoEye, IoEyeOff, IoMail } from "react-icons/io5";
 import Spinner from "../component/spinner/Spinner";
 import SignInHook from "./hook/SignInHook";
+import { useSearchParams } from "next/navigation";
 
 const SingIn = () => {
+    const searchParams = useSearchParams();
+
+    const search = searchParams.get("email");
+
     const {
         user,
         showPassword,
@@ -14,7 +19,7 @@ const SingIn = () => {
         error,
         password,
         isPatient,
-        isActiveUser,
+        // isActiveUser,
         setError,
         setShowPassword,
         setIsPatient,
@@ -22,9 +27,9 @@ const SingIn = () => {
         handleSignIn,
     } = SignInHook();
 
-    // if (user || user === undefined) {
-    //     return <Spinner />;
-    // }
+    if (user || user === undefined) {
+        return <Spinner />;
+    }
 
     return (
         <main className="flex flex-col bg-login-image bg-cover bg-bottom w-full min-h-screen">
@@ -96,6 +101,7 @@ const SingIn = () => {
                                         Correo
                                     </label>
                                     <input
+                                        value={search ? search : email}
                                         id="email"
                                         name="email"
                                         type="email"
@@ -221,10 +227,14 @@ const SingIn = () => {
                             type="submit"
                             className="bg-company-blue rounded-2xl px-5 py-3 text-white"
                             onClick={() =>
-                                handleSignIn({
-                                    email,
-                                    password,
-                                })
+                                handleSignIn(
+                                    search
+                                        ? { email: search, password }
+                                        : {
+                                              email,
+                                              password,
+                                          },
+                                )
                             }
                         >
                             Iniciar Sesión

@@ -13,13 +13,8 @@ export type DataPatientObject = {
     state: any;
     city: string;
     email: string;
-    password: string;
-    confirmPassword: string;
     rol: string;
     urlPhoto: string;
-    ProfessionalName: string;
-    ProfessionalEmail: string;
-    ProfessionalSpecialty: string;
     serviceOrders: string[];
     timestamp: Date;
     isActive: boolean;

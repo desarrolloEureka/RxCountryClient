@@ -67,14 +67,15 @@ const useAuth = () => {
     }, [user]);
 
     useEffect(() => {
-        if (user !== undefined) {
+        if (user !== undefined && user !== null) {
             setIsLoading(false);
             getUserState();
             user?.getIdToken().then((token) => setAccessTokenUser(token));
+            console.log("user", user);
+        } else {
+            console.log("User nulo o Indefinido");
         }
-        console.log("user", user, isActiveUser);
-        // console.log("isActiveUser", isActiveUser);
-    }, [getUserState, isActiveUser, user]);
+    }, [getUserState, user]);
 
     return {
         isLoading,

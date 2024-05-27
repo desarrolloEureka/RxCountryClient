@@ -378,7 +378,7 @@ function StepByStep({
                                 inputProps={{
                                     name: "phone",
                                     required: true,
-                                    pattern: "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
+                                    pattern: "^(\\+?\\d{1,4})?\\s?\\d{11,15}$",
                                     title: "Por favor, ingrese un número de teléfono válido",
                                 }}
                                 country={"co"}

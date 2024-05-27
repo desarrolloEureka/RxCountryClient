@@ -39,7 +39,7 @@ const calculateAge = (birthDate: Date | string): number => {
 };
 
 const NewOrderHook = (props?: Props) => {
-    const { isActiveUser, userData } = useAuth();
+    const { isActiveUser, userData, accessTokenUser } = useAuth();
 
     const { rol } = userData;
 
@@ -144,7 +144,9 @@ const NewOrderHook = (props?: Props) => {
         patientData.name &&
         patientData.lastName &&
         patientData.email &&
-        patientData.phone;
+        patientData.phone !== "57" &&
+        patientData.phone !== "" &&
+        patientData.phone.length > 11;
 
     const handleSendForm = async (e?: any) => {
         if (patientVal) {
@@ -204,27 +206,26 @@ const NewOrderHook = (props?: Props) => {
                 });
             });
         } else {
+            const documentPatientRef: any = getReference(patientRef);
             // Si el paciente es nuevo se crea en Auth de firebase
             await addPatient({
                 email: patientData.email,
                 password: patientData.id,
+                accessTokenUser,
+                uid: documentPatientRef.id,
             }).then(async (res: any) => {
-                const patientId = res.payload.data.userId;
-                const documentNewPatientRef: any = getDocumentRef(
-                    patientRef,
-                    patientId,
-                );
+                const patientId = res.data.userId;
                 // Guarda la información del nuevo paciente
-                await saveOneDocumentFb(documentNewPatientRef, {
+                await saveOneDocumentFb(documentPatientRef, {
                     ...patientData,
-                    uid: documentNewPatientRef.id,
+                    uid: patientId,
                     serviceOrders: [documentNewOrderRef.id],
                 }).then(async () => {
                     // Se crea la nueva orden de servicio
                     await saveOneDocumentFb(documentNewOrderRef, {
                         ...selectedOptions,
                         uid: documentNewOrderRef.id,
-                        patientId: documentNewPatientRef.id,
+                        patientId: documentPatientRef.id,
                         status: "creada",
                         sendTo: sentToArea,
                         isActive: true,

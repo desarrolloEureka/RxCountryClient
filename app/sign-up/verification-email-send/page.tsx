@@ -4,23 +4,29 @@ import useAuth from "@/app/firebase/auth";
 import AuthValidate from "@/app/hook/AuthValidate";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Logout from "@/app/hook/Logout";
 
 export default function VerificationEmailSend() {
     const router = useRouter();
+    const { logOut } = Logout();
     const { user, isLoading } = useAuth();
 
-    // useEffect(() => {
-    //     if (user) {
-    //         router.replace("/dashboard");
-    //     }
-    //     if (!isLoading && !user) {
-    //         router.replace("/sign-in");
-    //     }
-    // }, [router, user, isLoading]);
+    useEffect(() => {
+        if (user && user.emailVerified) {
+            router.replace("/dashboard");
+        }
+        if ((!isLoading && !user) || user === null) {
+            router.replace("/sign-in");
+        }
+    }, [router, user, isLoading]);
 
-    // if (user === undefined || user === null) {
+    // if (!user || (user && user.emailVerified)) {
     //     return <Spinner />;
     // }
+
+    if (!user) {
+        return <Spinner />;
+    }
 
     return (
         <main className="relative flex flex-col justify-center items-center bg-login-image bg-cover bg-bottom min-h-screen w-full">
@@ -39,6 +45,12 @@ export default function VerificationEmailSend() {
                     >
                         Continuar
                     </button>
+                    {/* <button
+                        className="bg-company-blue rounded-2xl px-5 py-3 text-white"
+                        onClick={logOut}
+                    >
+                        Salir
+                    </button> */}
                 </div>
             </div>
         </main>

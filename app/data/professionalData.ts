@@ -20,6 +20,6 @@ export const dataProfessionalObject = {
     rol: "Profesional",
     urlPhoto: "",
     timestamp: new Date(),
-    isActive: false,
+    isActive: true,
     isDeleted: false,
 } as DataProfessionalObject;

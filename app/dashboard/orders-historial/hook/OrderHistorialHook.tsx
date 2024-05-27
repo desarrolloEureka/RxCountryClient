@@ -3,6 +3,7 @@ import useAuth from "@/app/firebase/auth";
 import { getAllOrders, getAllPatients } from "@/app/firebase/documents";
 import { Order } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -34,12 +35,16 @@ const OrderHistorialHook = () => {
         );
 
         if (patient) {
-            const { id, name, lastName, phone, email } = patient;
-            return { ...order, id, name, lastName, phone, email };
+            const { id, name, lastName, phone, email, idType } = patient;
+            return { ...order, id, name, lastName, phone, email, idType };
         }
 
         return [];
     });
+
+    const formatearFecha = (fechaISO: string): string => {
+        return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
+    };
 
     const getOrders = useCallback(async () => {
         const allOrdersData = await getAllOrders();
@@ -57,7 +62,6 @@ const OrderHistorialHook = () => {
     }, [getOrders, getPatients]);
 
     return {
-        userData,
         router,
         showFilter,
         setShowFilter,
@@ -77,6 +81,7 @@ const OrderHistorialHook = () => {
         all,
         setAll,
         allDataOrders,
+        formatearFecha,
     };
 };
 

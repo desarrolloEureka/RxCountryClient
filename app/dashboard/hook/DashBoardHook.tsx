@@ -8,12 +8,17 @@ const DashBoardHook = () => {
     const { user, isActiveUser, isLoading, isLoadingValidate } = AuthValidate();
     const router = useRouter();
 
+    useEffect(() => {
+        !user?.emailVerified &&
+            !isLoading &&
+            !user &&
+            router.replace("/sign-in/inactive-user");
+    }, [isActiveUser, isLoading, router, user]);
+
     // useEffect(() => {
-    //     !isActiveUser &&
-    //         !isLoading &&
-    //         !user &&
+    //     !user?.emailVerified &&
     //         router.replace("/sign-in/inactive-user");
-    // }, [isActiveUser, isLoading, router, user]);
+    // }, [router, user]);
 
     return { user, isActiveUser, isLoading, isLoadingValidate };
 };

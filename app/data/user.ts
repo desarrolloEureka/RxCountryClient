@@ -27,8 +27,6 @@ export const dataUserObject = {
     state: "",
     city: "",
     email: "",
-    password: "",
-    confirmPassword: "",
     specialty: "",
     contract: "",
     rol: "",
@@ -38,7 +36,7 @@ export const dataUserObject = {
     availableAreas: [],
     urlPhoto: "",
     timestamp: new Date(),
-    isActive: false,
+    isActive: true,
     isDeleted: false,
 } as UserData;
 
