@@ -7,9 +7,9 @@ import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { IoAlertCircleSharp, IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import NewOrderHook from "./hook/NewOrderHook";
+import EditOrderHook from "../hook/EditOrderHook";
 
-const NewOrderPage = () => {
+const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
         showHelp,
         setShowHelp,
@@ -19,30 +19,25 @@ const NewOrderPage = () => {
         setIsDataSelected,
         widthSlider,
         isEdit,
+        oldData,
         userRol,
         optionsData,
         patientData,
         titles,
-        patientVal,
         currentOrder,
-        suggestions,
-        wrapperRef,
-        handleClose,
         changeHandler,
-        idChangeHandler,
-        handleInputChange,
         selectChangeHandlerIdType,
         dateChangeHandler,
         phoneChangeHandler,
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
-    } = NewOrderHook();
+    } = EditOrderHook({ slug });
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
-                <DashboardHeader selectedMenuItem="create-order" />
+                <DashboardHeader selectedMenuItem="orders-historial" />
                 <form
                     onSubmit={handleSendForm}
                     className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
@@ -83,8 +78,8 @@ const NewOrderPage = () => {
                     </div>
 
                     <StepByStep
+                        oldData={oldData}
                         formStep={formStep}
-                        wrapperRef={wrapperRef}
                         setFormStep={setFormStep}
                         userRol={userRol}
                         isEdit={isEdit}
@@ -97,11 +92,9 @@ const NewOrderPage = () => {
                         phoneChangeHandler={phoneChangeHandler}
                         setSelectedOptions={setSelectedOptions}
                         handleSendForm={handleSendForm}
-                        handleInputChange={handleInputChange}
                         currentOrder={currentOrder}
-                        suggestions={suggestions}
-                        idChangeHandler={idChangeHandler}
-                        handleClose={handleClose}
+                        idChangeHandler={() => {}}
+                        handleClose={() => {}}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
                     />
 
@@ -127,7 +120,7 @@ const NewOrderPage = () => {
                             <div className="text-white">Paso {formStep}/5</div>
                         )}
                         <div className="flex items-center space-x-8">
-                            {formStep < 6 && formStep > 0 && (
+                            {formStep < 6 && formStep > 1 && (
                                 <>
                                     <div
                                         onClick={() => {
@@ -144,15 +137,12 @@ const NewOrderPage = () => {
                                 </>
                             )}
                             {formStep < 7 && (
-                                <button
-                                    type={patientVal ? "button" : "submit"}
+                                <div
                                     onClick={() => {
-                                        if (patientVal) {
-                                            let step = formStep;
-                                            step++;
-                                            setFormStep(step);
-                                            setIsDataSelected(false);
-                                        }
+                                        let step = formStep;
+                                        step++;
+                                        setFormStep(step);
+                                        setIsDataSelected(false);
                                     }}
                                     className="flex items-center cursor-pointer text-company-blue"
                                 >
@@ -162,7 +152,7 @@ const NewOrderPage = () => {
                                         <span>Omitir</span>
                                     )}
                                     <BiChevronRight size={32} />
-                                </button>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -198,4 +188,4 @@ const NewOrderPage = () => {
     );
 };
 
-export default NewOrderPage;
+export default EditOrderPage;

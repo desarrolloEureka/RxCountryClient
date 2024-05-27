@@ -43,7 +43,9 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
         return [];
     });
 
-    const patient = allDataOrders?.find((item: any) => item.uid === params.slug);
+    const patient = allDataOrders?.find(
+        (item: any) => item.uid === params.slug,
+    );
 
     const getOrders = useCallback(async () => {
         const allOrdersData = await getAllOrders();
@@ -83,7 +85,8 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                     />
                 </Link>
                 <h2 className="text text-company-orange text-xl">
-                    {patient && `Orden #${patient?.uid} - ${patient?.name} ${patient?.lastName}`}
+                    {patient &&
+                        `Orden #${patient?.uid} - ${patient?.name} ${patient?.lastName}`}
                 </h2>
             </div>
             <div className="mx-16">
@@ -125,7 +128,18 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <textarea
+                                <p className="">
+                                    Lorem ipsum dolor sit amet, consectetuer
+                                    adipiscing elit, sed diam nonummy nibh
+                                    euismod tincidunt ut laoreet dolore magna
+                                    aliquam erat volutpat. Ut wisi enim ad minim
+                                    veniam, quis nostrud exerci tation
+                                    ullamcorper suscipit lobortis nisl ut
+                                    aliquip ex ea commodo consequat.
+                                </p>
+                                {/* <textarea
+                                    disabled
+                                    // value={patient.observationComment}
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -135,7 +149,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                     // onChange={(e) =>
                                     //     setObservationComment(e.target.value)
                                     // }
-                                />
+                                /> */}
                             </div>
                         )}
                     </div>
@@ -165,7 +179,9 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <textarea
+                                <p className="">{patient.observationComment}</p>
+                                {/* <textarea
+                                    disabled
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -175,7 +191,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                     // onChange={(e) =>
                                     //     setObservationComment(e.target.value)
                                     // }
-                                />
+                                /> */}
                             </div>
                         )}
                     </div>
@@ -203,7 +219,17 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <textarea
+                                <p className="">
+                                    Lorem ipsum dolor sit amet, consectetuer
+                                    adipiscing elit, sed diam nonummy nibh
+                                    euismod tincidunt ut laoreet dolore magna
+                                    aliquam erat volutpat. Ut wisi enim ad minim
+                                    veniam, quis nostrud exerci tation
+                                    ullamcorper suscipit lobortis nisl ut
+                                    aliquip ex ea commodo consequat.
+                                </p>
+                                {/* <textarea
+                                    disabled
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -213,7 +239,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                     // onChange={(e) =>
                                     //     setObservationComment(e.target.value)
                                     // }
-                                />
+                                /> */}
                             </div>
                         )}
                     </div>
@@ -241,7 +267,17 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <textarea
+                                <p className="">
+                                    Lorem ipsum dolor sit amet, consectetuer
+                                    adipiscing elit, sed diam nonummy nibh
+                                    euismod tincidunt ut laoreet dolore magna
+                                    aliquam erat volutpat. Ut wisi enim ad minim
+                                    veniam, quis nostrud exerci tation
+                                    ullamcorper suscipit lobortis nisl ut
+                                    aliquip ex ea commodo consequat.
+                                </p>
+                                {/* <textarea
+                                    disabled
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -251,7 +287,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                     // onChange={(e) =>
                                     //     setObservationComment(e.target.value)
                                     // }
-                                />
+                                /> */}
                             </div>
                         )}
                     </div>
@@ -263,7 +299,16 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                         Observaciones
                     </h3>
                     <div className="grid grid-cols-1 gap-2">
-                        <textarea
+                        <p className="">
+                            Lorem ipsum dolor sit amet, consectetuer adipiscing
+                            elit, sed diam nonummy nibh euismod tincidunt ut
+                            laoreet dolore magna aliquam erat volutpat. Ut wisi
+                            enim ad minim veniam, quis nostrud exerci tation
+                            ullamcorper suscipit lobortis nisl ut aliquip ex ea
+                            commodo consequat.
+                        </p>
+                        {/* <textarea
+                            disabled
                             id="Observations"
                             name="observations"
                             rows={4}
@@ -273,7 +318,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                             // onChange={(e) =>
                             //     setObservationComment(e.target.value)
                             // }
-                        />
+                        /> */}
                     </div>
                 </div>
             )}
@@ -375,7 +420,17 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <textarea
+                                <p className="">
+                                    Lorem ipsum dolor sit amet, consectetuer
+                                    adipiscing elit, sed diam nonummy nibh
+                                    euismod tincidunt ut laoreet dolore magna
+                                    aliquam erat volutpat. Ut wisi enim ad minim
+                                    veniam, quis nostrud exerci tation
+                                    ullamcorper suscipit lobortis nisl ut
+                                    aliquip ex ea commodo consequat.
+                                </p>
+                                {/* <textarea
+                                    disabled
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -385,7 +440,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                     // onChange={(e) =>
                                     //     setObservationComment(e.target.value)
                                     // }
-                                />
+                                /> */}
                             </div>
                         </div>
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -394,6 +449,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
                                 <textarea
+                                    disabled
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -417,7 +473,17 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <textarea
+                                <p className="">
+                                    Lorem ipsum dolor sit amet, consectetuer
+                                    adipiscing elit, sed diam nonummy nibh
+                                    euismod tincidunt ut laoreet dolore magna
+                                    aliquam erat volutpat. Ut wisi enim ad minim
+                                    veniam, quis nostrud exerci tation
+                                    ullamcorper suscipit lobortis nisl ut
+                                    aliquip ex ea commodo consequat.
+                                </p>
+                                {/* <textarea
+                                    disabled
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -427,7 +493,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                     // onChange={(e) =>
                                     //     setObservationComment(e.target.value)
                                     // }
-                                />
+                                /> */}
                             </div>
                         </div>
                     </div>
@@ -526,7 +592,17 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <textarea
+                                <p className="">
+                                    Lorem ipsum dolor sit amet, consectetuer
+                                    adipiscing elit, sed diam nonummy nibh
+                                    euismod tincidunt ut laoreet dolore magna
+                                    aliquam erat volutpat. Ut wisi enim ad minim
+                                    veniam, quis nostrud exerci tation
+                                    ullamcorper suscipit lobortis nisl ut
+                                    aliquip ex ea commodo consequat.
+                                </p>
+                                {/* <textarea
+                                    disabled
                                     id="Observations"
                                     name="observations"
                                     rows={4}
@@ -536,7 +612,7 @@ const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
                                     // onChange={(e) =>
                                     //     setObservationComment(e.target.value)
                                     // }
-                                />
+                                /> */}
                             </div>
                         </div>
                     </div>

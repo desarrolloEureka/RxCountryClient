@@ -23,11 +23,6 @@ const SignUpHook = () => {
                 .then(() => {
                     setError(false);
                     // setSignIn(true);
-                    // if (isActiveUser) {
-                    //     router.replace("/dashboard");
-                    // } else {
-                    //     router.replace("/sign/inactive-user");
-                    // }
                 })
                 .catch(() => {
                     setError(true);
@@ -45,9 +40,13 @@ const SignUpHook = () => {
     useEffect(() => {
         if (user && userData) {
             // setSignIn(true);
-            userData?.isActive
-                ? router.replace("/dashboard")
-                : router.replace("/sign-in/inactive-user");
+            // userData?.rol !== "Paciente"
+
+            router.replace("/dashboard");
+
+            // user.emailVerified
+            //     ? router.replace("/dashboard")
+            //     : router.replace("/sign-in/inactive-user");
         }
     }, [router, user, userData, userData?.isActive]);
 

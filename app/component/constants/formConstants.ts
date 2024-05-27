@@ -81,9 +81,9 @@ export const widthSlider = ["w-0", "w-1/5", "w-2/5", "w-3/5", "w-4/5", "w-full"]
 export const titles: string[] = [
     "Información",
     "Radiografías",
-    "Tomografía volumétrica 3D en las Sedes Country-Santa",
+    "Tomografía Volumétrica 3D en las Sedes Country-Santa",
     "Diagnósticos/Modelos",
-    "Fotografía clínica",
+    "Fotografía Clínica",
     "Entregas",
 ];
 

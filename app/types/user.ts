@@ -1,6 +1,6 @@
 export type LoginParams = {
-  email: string;
-  password: string;
+    email: string | null;
+    password: string;
 };
 
 export type UserData = {
@@ -23,8 +23,6 @@ export type UserData = {
     state: any;
     city: string;
     email: string;
-    password: string;
-    confirmPassword: string;
     specialty: string;
     contract: string;
     rol: string;

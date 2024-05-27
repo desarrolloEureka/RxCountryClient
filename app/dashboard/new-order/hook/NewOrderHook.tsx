@@ -1,16 +1,20 @@
-import { widthSlider, titles } from "@/app/component/constants/formConstants";
+import { titles, widthSlider } from "@/app/component/constants/formConstants";
 import { dataAllOptions } from "@/app/data/documentsData";
 import { dataPatientObject } from "@/app/data/patientData";
 import useAuth from "@/app/firebase/auth";
 import {
     getAllOptions,
     getAllOrders,
+    getAllPatients,
     getDocumentRef,
     getReference,
     saveOneDocumentFb,
+    updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
+import { addPatient } from "@/app/firebase/user";
+import { DataPatientObject } from "@/app/types/patient";
 import moment from "moment";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef, ChangeEvent } from "react";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -35,9 +39,11 @@ const calculateAge = (birthDate: Date | string): number => {
 };
 
 const NewOrderHook = (props?: Props) => {
-    const { isActiveUser, userData } = useAuth();
+    const { isActiveUser, userData, accessTokenUser } = useAuth();
 
     const { rol } = userData;
+
+    const wrapperRef = useRef<HTMLDivElement>(null);
 
     const [showHelp, setShowHelp] = useState(false);
     const [formStep, setFormStep] = useState(0);
@@ -64,19 +70,47 @@ const NewOrderHook = (props?: Props) => {
 
     const [error, setError] = useState(false);
 
-    const changeHandler = (e: any) => {
+    const [suggestions, setSuggestions] = useState<DataPatientObject[]>([]);
+
+    const [allPatients, setAllPatients] = useState<any>();
+
+    const [patientExist, setPatientExist] = useState(false);
+
+    const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
+    };
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPatientData({ ...patientData, [e.target.name]: value });
+        if (value.length > 0) {
+            const filteredPatients = allPatients?.filter(
+                (patient: DataPatientObject) => patient.id.includes(value),
+            );
+            setSuggestions(filteredPatients);
+        } else {
+            setSuggestions([]);
+        }
     };
 
     const selectChangeHandlerSentTo = (e: any) => {
         setSentToArea(e?.value);
     };
 
-    const selectChangeHandlerIdType = (e: any) => {
-        setPatientData({ ...patientData, ["idType"]: e?.target.value });
+    const selectChangeHandlerIdType = (e: ChangeEvent<HTMLSelectElement>) => {
+        setPatientData({ ...patientData, ["idType"]: e.target.value });
     };
 
-    const dateChangeHandler = (e: any) => {
+    const idChangeHandler = (id: string) => {
+        const patient = suggestions?.find(
+            (patient: DataPatientObject) => patient.id === id,
+        );
+
+        patient && (setPatientData({ ...patient }), setPatientExist(true));
+        setSuggestions([]);
+    };
+
+    const dateChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const dateFormat = moment(e.target.value).format("YYYY-MM-DD");
         setPatientData({
             ...patientData,
@@ -85,13 +119,23 @@ const NewOrderHook = (props?: Props) => {
         });
     };
 
-    const phoneChangeHandler = (e: any) => {
-        setPatientData({ ...patientData, ["phone"]: e });
+    const phoneChangeHandler = (phone: string) => {
+        setPatientData({ ...patientData, ["phone"]: phone });
     };
 
     const handleClose = () => {
         setPatientData(dataPatientObject);
         setError(false);
+        setSuggestions([]);
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (
+            wrapperRef.current &&
+            !wrapperRef.current.contains(event.target as Node)
+        ) {
+            setSuggestions([]);
+        }
     };
 
     const patientVal =
@@ -100,7 +144,9 @@ const NewOrderHook = (props?: Props) => {
         patientData.name &&
         patientData.lastName &&
         patientData.email &&
-        patientData.phone;
+        patientData.phone !== "57" &&
+        patientData.phone !== "" &&
+        patientData.phone.length > 11;
 
     const handleSendForm = async (e?: any) => {
         if (patientVal) {
@@ -127,27 +173,70 @@ const NewOrderHook = (props?: Props) => {
         const count = parseInt(oldOrderId);
         const orderId = `${count + 1}`;
 
-        const documentPatientRef: any = getReference(patientRef);
         const documentNewOrderRef: any = getDocumentRef(newOrderRef, orderId);
 
-        await saveOneDocumentFb(documentPatientRef, {
-            ...patientData,
-            uid: documentPatientRef.id,
-            serviceOrders: [documentNewOrderRef.id],
-            // serviceOrders: [...patientData.serviceOrders, documentNewOrderRef.id],
-        }).then(async () => {
-            await saveOneDocumentFb(documentNewOrderRef, {
-                ...selectedOptions,
-                uid: documentNewOrderRef.id,
-                patientId: documentPatientRef.id,
-                status: "creada",
-                sendTo: sentToArea,
-                isActive: true,
-                isDeleted: false,
-            }).then((res) => {
-                setCurrentOrder(parseInt(res.id));
+        if (patientExist) {
+            const documentPatientRef: any = getDocumentRef(
+                patientRef,
+                patientData.uid,
+            );
+            // Si el paciente existe actualiza la información del paciente
+            await updateDocumentsByIdFb(
+                documentPatientRef.id,
+                {
+                    ...patientData,
+                    serviceOrders: patientData.serviceOrders
+                        ? [...patientData.serviceOrders, documentNewOrderRef.id]
+                        : [documentNewOrderRef.id],
+                },
+                patientRef,
+            ).then(async () => {
+                // Se crea una nueva orden de servicio
+                await saveOneDocumentFb(documentNewOrderRef, {
+                    ...selectedOptions,
+                    uid: documentNewOrderRef.id,
+                    patientId: documentPatientRef.id,
+                    status: "creada",
+                    sendTo: sentToArea,
+                    isActive: true,
+                    isDeleted: false,
+                    modifiedBy: rol,
+                }).then((res) => {
+                    setCurrentOrder(parseInt(res.id));
+                });
             });
-        });
+        } else {
+            const documentPatientRef: any = getReference(patientRef);
+            // Si el paciente es nuevo se crea en Auth de firebase
+            await addPatient({
+                email: patientData.email,
+                password: patientData.id,
+                accessTokenUser,
+                uid: documentPatientRef.id,
+            }).then(async (res: any) => {
+                const patientId = res.data.userId;
+                // Guarda la información del nuevo paciente
+                await saveOneDocumentFb(documentPatientRef, {
+                    ...patientData,
+                    uid: patientId,
+                    serviceOrders: [documentNewOrderRef.id],
+                }).then(async () => {
+                    // Se crea la nueva orden de servicio
+                    await saveOneDocumentFb(documentNewOrderRef, {
+                        ...selectedOptions,
+                        uid: documentNewOrderRef.id,
+                        patientId: documentPatientRef.id,
+                        status: "creada",
+                        sendTo: sentToArea,
+                        isActive: true,
+                        isDeleted: false,
+                        modifiedBy: rol,
+                    }).then((res) => {
+                        setCurrentOrder(parseInt(res.id));
+                    });
+                });
+            });
+        }
     };
 
     const getOptions = useCallback(async () => {
@@ -160,10 +249,23 @@ const NewOrderHook = (props?: Props) => {
         allOrdersData && setOrdersData(allOrdersData);
     }, []);
 
+    const getPatients = useCallback(async () => {
+        const allPatientsData = await getAllPatients();
+        allPatientsData && setAllPatients(allPatientsData);
+    }, []);
+
     useEffect(() => {
         getOptions();
         getOrders();
-    }, [getOptions, getOrders]);
+        getPatients();
+    }, [getOptions, getOrders, getPatients]);
+
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return {
         showHelp,
@@ -182,7 +284,12 @@ const NewOrderHook = (props?: Props) => {
         titles,
         patientVal,
         currentOrder,
+        suggestions,
+        wrapperRef,
+        handleClose,
         changeHandler,
+        idChangeHandler,
+        handleInputChange,
         selectChangeHandlerIdType,
         dateChangeHandler,
         phoneChangeHandler,

@@ -13,7 +13,11 @@ import {
     saveOneDocumentFb,
 } from "@/app/firebase/documents";
 import { uploadFile } from "@/app/firebase/files";
-import { registerFirebase } from "@/app/firebase/user";
+import {
+    registerFirebase,
+    sendEmailToUser,
+    updateProfileFirebase,
+} from "@/app/firebase/user";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -34,6 +38,8 @@ const SignUpHook = (props?: Props) => {
 
     const [specialties, setSpecialties] = useState<any>();
     const [contracts, setContracts] = useState<any>();
+
+    const [errorImg, setErrorImg] = useState("");
 
     const changeHandler = (e: any) => {
         setData({ ...data, [e.target.name]: e.target.value });
@@ -61,7 +67,31 @@ const SignUpHook = (props?: Props) => {
         setData({ ...data, ["contract"]: e?.target.value });
     };
     const handleInputFileChange = (event: { target: any }) => {
-        event.target.files && setFiles([...event.target.files]);
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (file) {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+
+            img.onload = () => {
+                if (img.width <= 400 && img.height <= 400) {
+                    setErrorImg("");
+                    event.target.files && setFiles([...event.target.files]);
+                    // Muestra una vista previa de la imagen
+                } else {
+                    setErrorImg(
+                        "La imagen debe tener un tamaño de 400x200 píxeles o menor.",
+                    );
+                }
+                URL.revokeObjectURL(img.src);
+            };
+
+            img.onerror = () => {
+                setErrorImg("Error al cargar la imagen. Inténtalo de nuevo.");
+                URL.revokeObjectURL(img.src);
+            };
+        }
     };
     const phoneChangeHandler = (e: any) => {
         setData({ ...data, ["phone"]: e });
@@ -87,28 +117,24 @@ const SignUpHook = (props?: Props) => {
         data.confirmPassword &&
         data.phone !== "57" &&
         data.phone !== "" &&
-        data.phone.length > 10;
-    // data.phone2 &&
-    // data.address &&
-    // data.country &&
-    // data.state &&
-    // data.city &&
-    // data.specialty &&
-    // data.contract &&
-    // data.isActive;
-
-    // console.log(professionalsVal);
+        data.phone.length > 11;
 
     const passValidation = data.confirmPassword === data.password;
 
     const uploadHandle = async () => {
-        let newData = data;
-        const res = await registerFirebase(data.email, data.password)
+        const { password, confirmPassword, ...rest } = data;
+        let newUrlPhoto: string = "";
+        const res = await registerFirebase(data.email, password)
             .then(async (result: any) => {
                 const newUser = result.user;
                 if (newUser !== null) {
-                    // console.log(result);
                     setIsSendData(true);
+
+                    const user = newUser.auth.currentUser;
+                    updateProfileFirebase(
+                        user,
+                        `${data.name} ${data.lastName}`,
+                    );
 
                     const reference = "professionals";
                     const documentRef: any = getDocumentRef(
@@ -124,50 +150,44 @@ const SignUpHook = (props?: Props) => {
                             file: record,
                             reference,
                         })
-                            .then((result) => {
-                                // console.log("entré al archivo", {
-                                //     ...data,
-                                //     urlPhoto: urlName,
-                                // });
-                                newData = {
-                                    ...data,
-                                    urlPhoto: urlName,
-                                };
-                                console.log(newData);
+                            .then((res) => {
+                                newUrlPhoto = res;
                             })
                             .catch((err: any) => {
                                 console.log(err);
                             });
                     }
 
-                    // var actionCodeSettings = {
-                    //     url:
-                    //         "https://http://localhost:3000/?email=" +
-                    //         newUser.email,
-                    //     iOS: {
-                    //         bundleId: "com.example.ios",
-                    //     },
-                    //     android: {
-                    //         packageName: "com.example.android",
-                    //         installApp: true,
-                    //         minimumVersion: "12",
-                    //     },
-                    //     handleCodeInApp: false,
-                    //     // When multiple custom dynamic link domains are defined, specify which
-                    //     // one to use.
-                    //     dynamicLinkDomain: "example.page.link",
-                    // };
+                    var actionCodeSettings = {
+                        url: "https://rx-country-client.vercel.app/sign-in",
+                        // url:
+                        //     "https://localhost:3001/sign-in/?email=" +
+                        //     newUser.email,
+                        // iOS: {
+                        //     bundleId: "com.example.ios",
+                        // },
+                        // android: {
+                        //     packageName: "com.example.android",
+                        //     installApp: true,
+                        //     minimumVersion: "12",
+                        // },
+                        handleCodeInApp: false,
+                        // When multiple custom dynamic link domains are defined, specify which
+                        // one to use.
+                        // dynamicLinkDomain: "example.page.link",
+                    };
 
                     saveOneDocumentFb(documentRef, {
-                        ...newData,
+                        ...rest,
+                        urlPhoto: newUrlPhoto,
                         uid: newUser.uid,
                     }).then(() => {
-                        router.push("/sign-up/verification-email-send");
                         setIsSendData(false);
-                        // console.log("entre en el then de saveOneDocument");
-                        // const user = newUser.auth.currentUser;
-                        // sendEmailToUser(user, actionCodeSettings).then(() => {
-                        //     // router.push("/sign-up/verification-email-send");
+                        console.log("entre en el then de saveOneDocument");
+                        const user = newUser.auth.currentUser;
+                        sendEmailToUser(user, actionCodeSettings);
+                        //     .then(() => {
+                        //     router.push("/sign-up/verification-email-send");
                         // });
                     });
                 }
@@ -214,9 +234,12 @@ const SignUpHook = (props?: Props) => {
     useEffect(() => {
         if (user) {
             // setSignUp(true);
-            userData?.isActive
+
+            // router.replace("/dashboard");
+
+            user?.emailVerified
                 ? router.replace("/dashboard")
-                : router.replace("/sign-in/inactive-user");
+                : router.replace("/sign-up/verification-email-send");
         }
     }, [router, user, userData?.isActive]);
 
@@ -235,6 +258,7 @@ const SignUpHook = (props?: Props) => {
         isSendData,
         nextStep,
         professionalsVal,
+        errorImg,
         setNextStep,
         setErrorPass,
         handleClose,

@@ -19,6 +19,7 @@ const useAuth = () => {
     const [userData, setUserData] = useState<UserData>(dataUserObject);
     // const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
+    const [accessTokenUser, setAccessTokenUser] = useState<string>("");
     //   const getRole = useCallback(async () => {
     //     if (user) {
     //       const document = await getDoc(doc(db, 'usersData', user.uid));
@@ -66,14 +67,15 @@ const useAuth = () => {
     }, [user]);
 
     useEffect(() => {
-        if (user !== undefined) {
+        if (user !== undefined && user !== null) {
             setIsLoading(false);
             getUserState();
-            // console.log("soy diferente a indefinido");
+            user?.getIdToken().then((token) => setAccessTokenUser(token));
+            console.log("user", user);
+        } else {
+            console.log("User nulo o Indefinido");
         }
-        console.log("user", user, isActiveUser);
-        // console.log("isActiveUser", isActiveUser);
-    }, [getUserState, isActiveUser, user]);
+    }, [getUserState, user]);
 
     return {
         isLoading,
@@ -81,6 +83,7 @@ const useAuth = () => {
         userData,
         error,
         isActiveUser,
+        accessTokenUser,
     };
 };
 export default useAuth;
