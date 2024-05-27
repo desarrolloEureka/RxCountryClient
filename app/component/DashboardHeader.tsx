@@ -5,11 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { IoAlertCircleSharp } from "react-icons/io5";
+import useAuth from "../firebase/auth";
 import ImagesRequestIcon from "./icons/ImagesRequestIcon.jsx";
 import OrderHistorialIcon from "./icons/OrderHistorialIcon.jsx";
 import OrderIcon from "./icons/OrderIcon.jsx";
-import useAuth from "../firebase/auth";
-import { urlFile } from "../firebase/files";
 
 interface Props {
     selectedMenuItem?: "create-order" | "orders-historial" | "images-query";
@@ -18,26 +17,7 @@ interface Props {
 export default function DashboardHeader({ selectedMenuItem }: Props) {
     const logOut = () => signOut(auth);
     const { isActiveUser, userData } = useAuth();
-    const [urlPhoto, setUrlPhoto] = useState<any>();
-
-    // const getUrlPhoto = () => {
-    //     if (userData) {
-    //         urlFile({
-    //             folder: userData?.uid,
-    //             fileName: userData?.urlPhoto,
-    //             reference: "professionals",
-    //         })
-    //             .then((res: string) => {
-    //                 setUrlPhoto(res);
-    //             })
-    //             .catch(() => {
-    //                 setUrlPhoto("");
-    //             });
-    //     }
-    //     return urlPhoto;
-    // };
-
-    // const photoUrl = getUrlPhoto();
+    const { name, lastName, rol, urlPhoto } = userData;
 
     const [orderIconColor, setOrderIconColor] = useState("white");
     const [orderHistorialIconColor, setOrderHistorialColor] = useState("white");
@@ -125,18 +105,22 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 onClick={() => setOpenProfileMenu(!openProfileMenu)}
                 className="flex flex-col items-center space-y-2 text-white"
             >
-                <Image
-                    src={`https://ui-avatars.com/api/?name=${userData?.name}+${userData?.lastName}?size=150?bold=true`}
-                    width={0}
-                    height={0}
-                    sizes="100px"
-                    style={{ width: "80%", height: "30" }}
-                    alt="avatar"
-                    className="rounded-full shadow-sm"
-                />
+                <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-gray-300">
+                    <Image
+                        src={
+                            urlPhoto
+                                ? urlPhoto
+                                : `https://ui-avatars.com/api/?name=${name}+${lastName}?size=150?bold=true`
+                        }
+                        alt="avatar"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        fill
+                        className="rounded-full object-cover"
+                    />
+                </div>
                 <div className="flex flex-col text-center">
-                    <span className="text-xl">{userData?.name}</span>
-                    <span className="text-sm">{userData?.rol}</span>
+                    <span className="text-xl text-capitalize">{name}</span>
+                    <span className="text-sm text-capitalize">{rol}</span>
                 </div>
             </Link>
             {openProfileMenu && (

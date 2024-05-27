@@ -33,6 +33,7 @@ export default function SignUp() {
         isSendData,
         nextStep,
         professionalsVal,
+        errorImg,
         setNextStep,
         setErrorPass,
         handleClose,
@@ -82,13 +83,14 @@ export default function SignUp() {
                             <>
                                 <div className="col relative flex flex-col w-full space-y-2">
                                     <label
-                                        htmlFor="dni-type"
+                                        htmlFor="idType"
                                         className="text-white"
                                     >
                                         Tipo de Documento&nbsp;
                                         <span className="text-blue-500">*</span>
                                     </label>
                                     <select
+                                        value={data.idType}
                                         id="idType"
                                         name="idType"
                                         required
@@ -285,27 +287,21 @@ export default function SignUp() {
                                         <span className="text-blue-500">*</span>
                                     </label>
                                     <PhoneInput
+                                        autoFormat={false}
                                         inputProps={{
                                             name: "phone",
                                             required: true,
+                                            pattern:
+                                                "^(\\+?\\d{1,4})?\\s?\\d{11,15}$",
+                                            title: "Por favor, ingrese un número de teléfono válido",
                                         }}
+                                        country={"co"}
                                         specialLabel=""
                                         placeholder=""
                                         prefix="+"
-                                        onlyCountries={[]}
-                                        inputStyle={{
-                                            borderColor: "rgb(34, 140, 240)",
-                                            width: "100%",
-                                            height: 40,
-                                            background: "transparent",
-                                            borderRadius: 12,
-                                            color: "white",
-                                            fontSize: 16,
-                                        }}
                                         dropdownStyle={{
                                             color: "black",
                                             borderRadius: 12,
-                                            // background: "black",
                                         }}
                                         value={data.phone}
                                         onChange={phoneChangeHandler}
@@ -339,15 +335,6 @@ export default function SignUp() {
                                         specialLabel=""
                                         placeholder=""
                                         country={"co"}
-                                        inputStyle={{
-                                            borderColor: "rgb(34, 140, 240)",
-                                            width: "100%",
-                                            height: 40,
-                                            background: "transparent",
-                                            borderRadius: 12,
-                                            color: "white",
-                                            fontSize: 16,
-                                        }}
                                         dropdownStyle={{
                                             color: "black",
                                             borderRadius: 12,
@@ -389,6 +376,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.country}
                                         id="country"
                                         name="country"
                                         // required
@@ -425,6 +413,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.state}
                                         id="state"
                                         name="state"
                                         // required
@@ -461,6 +450,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.city}
                                         disabled={!data.state}
                                         id="city"
                                         name="city"
@@ -501,6 +491,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.specialty}
                                         id="specialty"
                                         name="specialty"
                                         // required
@@ -539,6 +530,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.contract}
                                         id="contract"
                                         name="contract"
                                         // required
@@ -604,22 +596,28 @@ export default function SignUp() {
                                 <span className="text-blue-500">*</span> */}
                                     </label>
                                     <input
-                                        className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded-xl border-company-blue border bg-transparent bg-clip-padding px-3 py-[0.32rem] text-base text-white font-normal text-surface transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:me-3 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-e file:border-solid file:border-inherit file:bg-transparent file:px-3 file:py-[0.32rem] file:text-surface focus:border-primary focus:text-white focus:shadow-inset focus:outline-none dark:border-company-blue dark:text-white  file:dark:text-white hover:border-white"
+                                        className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded-xl border-company-blue border bg-transparent bg-clip-padding px-3 pt-[0.45rem] text-base text-white font-normal text-surface transition duration-300 ease-in-out file:-mx-3 file:text-white file:-my-[0.32rem] file:me-3 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-e file:border-solid file:border-inherit file:bg-transparent file:px-3 file:py-[0.32rem] file:text-surface focus:border-primary focus:text-white focus:shadow-inset focus:outline-none dark:border-company-blue dark:text-white file:dark:text-white hover:border-white"
                                         id="urlPhoto"
-                                        value={data.urlPhoto}
                                         name="urlPhoto"
                                         type="file"
+                                        accept=".jpg, .jpeg, .png"
                                         onChange={handleInputFileChange}
                                         // required
                                     />
                                 </div>
                                 <div className="col flex flex-col md:col-span-2 lg:col-span-3 items-end">
-                                    <p
-                                        className="mt-1 text-sm text-center text-company-orange"
-                                        id="file_input_help"
-                                    >
-                                        PNG, JPG (MAX. 400x200px).
-                                    </p>
+                                    {errorImg ? (
+                                        <p style={{ color: "red" }}>
+                                            {errorImg}
+                                        </p>
+                                    ) : (
+                                        <p
+                                            className="mt-1 text-sm text-center text-company-orange"
+                                            id="file_input_help"
+                                        >
+                                            PNG, JPG (MAX. 400x400px).
+                                        </p>
+                                    )}
                                 </div>
                             </>
                         )}

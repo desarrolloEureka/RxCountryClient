@@ -20,29 +20,54 @@ const NewOrderPage = () => {
         widthSlider,
         isEdit,
         userRol,
-        data,
+        optionsData,
+        patientData,
+        titles,
+        patientVal,
+        currentOrder,
+        suggestions,
+        wrapperRef,
+        handleClose,
+        changeHandler,
+        idChangeHandler,
+        handleInputChange,
+        selectChangeHandlerIdType,
+        dateChangeHandler,
+        phoneChangeHandler,
+        setSelectedOptions,
+        handleSendForm,
+        selectChangeHandlerSentTo,
     } = NewOrderHook();
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="create-order" />
-                <div className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
+                <form
+                    onSubmit={handleSendForm}
+                    className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
+                >
                     <div className="flex justify-center items-center">
                         <div className="flex justify-between items-center w-full p-8">
                             <div
                                 className={`flex items-center space-x-8 ${
-                                    formStep === 7 && "hidden"
+                                    formStep === 6 && "hidden"
                                 }`}
                             >
-                                <Link href={"/dashboard/images-query"}>
+                                <Link href={"/dashboard"}>
                                     <IoArrowBackCircleOutline
                                         className="text-company-blue"
                                         size={32}
                                     />
                                 </Link>
                             </div>
-                            <div></div>
+                            <div className="flex flex-1 mx-20">
+                                {formStep < 6 && (
+                                    <h3 className="text-company-blue text-3xl font-bold">
+                                        {titles[formStep]}
+                                    </h3>
+                                )}
+                            </div>
                             {formStep < 6 && (
                                 <div className="flex flex-col items-center space-y-2 text-white text-sm">
                                     <button
@@ -59,11 +84,25 @@ const NewOrderPage = () => {
 
                     <StepByStep
                         formStep={formStep}
+                        wrapperRef={wrapperRef}
                         setFormStep={setFormStep}
                         userRol={userRol}
                         isEdit={isEdit}
-                        setDataSelected={setIsDataSelected}
-                        data={data}
+                        setIsDataSelected={setIsDataSelected}
+                        optionsData={optionsData}
+                        data={patientData}
+                        changeHandler={changeHandler}
+                        selectChangeHandlerIdType={selectChangeHandlerIdType}
+                        dateChangeHandler={dateChangeHandler}
+                        phoneChangeHandler={phoneChangeHandler}
+                        setSelectedOptions={setSelectedOptions}
+                        handleSendForm={handleSendForm}
+                        handleInputChange={handleInputChange}
+                        currentOrder={currentOrder}
+                        suggestions={suggestions}
+                        idChangeHandler={idChangeHandler}
+                        handleClose={handleClose}
+                        selectChangeHandlerSentTo={selectChangeHandlerSentTo}
                     />
 
                     {formStep < 6 && (
@@ -82,13 +121,13 @@ const NewOrderPage = () => {
                     <div
                         className={`flex ${
                             formStep < 6 ? "justify-between" : "justify-end"
-                        } items-center p-8 ${formStep === 7 && "hidden"}`}
+                        } items-center p-8 ${formStep === 6 && "hidden"}`}
                     >
                         {formStep < 6 && (
                             <div className="text-white">Paso {formStep}/5</div>
                         )}
                         <div className="flex items-center space-x-8">
-                            {formStep < 7 && formStep > 0 && (
+                            {formStep < 6 && formStep > 0 && (
                                 <>
                                     <div
                                         onClick={() => {
@@ -102,18 +141,18 @@ const NewOrderPage = () => {
                                         {}
                                         <span>Atrás</span>
                                     </div>
-                                    {/* <div className="flex items-center cursor-pointer text-company-blue">
-                                        <span>Omitir</span>
-                                    </div> */}
                                 </>
                             )}
                             {formStep < 7 && (
-                                <div
+                                <button
+                                    type={patientVal ? "button" : "submit"}
                                     onClick={() => {
-                                        let step = formStep;
-                                        step++;
-                                        setFormStep(step);
-                                        setIsDataSelected(false);
+                                        if (patientVal) {
+                                            let step = formStep;
+                                            step++;
+                                            setFormStep(step);
+                                            setIsDataSelected(false);
+                                        }
                                     }}
                                     className="flex items-center cursor-pointer text-company-blue"
                                 >
@@ -123,11 +162,11 @@ const NewOrderPage = () => {
                                         <span>Omitir</span>
                                     )}
                                     <BiChevronRight size={32} />
-                                </div>
+                                </button>
                             )}
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
             {showHelp && (
                 <>

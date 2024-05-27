@@ -23,10 +23,16 @@ export const uploadFile = async ({
     reference,
 }: UploadFileProps) => {
     // 'file' comes from the Blob or File API
-    return uploadBytes(storageRefProfile(reference, folder, fileName), file);
+    await uploadBytes(storageRefProfile(reference, folder, fileName), file);
+    
+    return await getDownloadURL(storageRefProfile(reference, folder, fileName));
 };
 
-export const urlFile = async ({ folder, fileName, reference }: DownloadFileProps) => {
+export const urlFile = async ({
+    folder,
+    fileName,
+    reference,
+}: DownloadFileProps) => {
     return getDownloadURL(storageRefProfile(reference, folder, fileName));
 };
 

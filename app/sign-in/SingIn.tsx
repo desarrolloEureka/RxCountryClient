@@ -7,6 +7,7 @@ import Spinner from "../component/spinner/Spinner";
 import SignInHook from "./hook/SignInHook";
 
 const SingIn = () => {
+
     const {
         user,
         showPassword,
@@ -14,7 +15,7 @@ const SingIn = () => {
         error,
         password,
         isPatient,
-        isActiveUser,
+        // isActiveUser,
         setError,
         setShowPassword,
         setIsPatient,
@@ -22,9 +23,9 @@ const SingIn = () => {
         handleSignIn,
     } = SignInHook();
 
-    // if (user || user === undefined) {
-    //     return <Spinner />;
-    // }
+    if (user || user === undefined) {
+        return <Spinner />;
+    }
 
     return (
         <main className="flex flex-col bg-login-image bg-cover bg-bottom w-full min-h-screen">
@@ -96,6 +97,7 @@ const SingIn = () => {
                                         Correo
                                     </label>
                                     <input
+                                        value={email}
                                         id="email"
                                         name="email"
                                         type="email"

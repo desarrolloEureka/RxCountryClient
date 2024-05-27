@@ -1,8 +1,21 @@
 import _ from "lodash";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { IoCheckmark, IoEye } from "react-icons/io5";
-import { options } from "./constants/StepByStepConstants";
+import { BsFillGeoAltFill, BsFillPersonVcardFill } from "react-icons/bs";
+import { FaUserDoctor } from "react-icons/fa6";
+import {
+    IoCall,
+    IoCheckmark,
+    IoCloseSharp,
+    IoEye,
+    IoMail,
+    IoPerson,
+} from "react-icons/io5";
+import { MdOutlineDateRange } from "react-icons/md";
+import PhoneInput from "react-phone-input-2";
+import "../style.css";
+import { idTypes } from "./constants/formConstants";
+import { options } from "./constants/stepByStepConstants";
 import DentalSelect from "./orders/dental-select";
 import SelectComponent from "./SelectComponent";
 import DoctorVector from "./vectors/DoctorVector";
@@ -11,9 +24,26 @@ interface Props {
     formStep: number;
     setFormStep: (e: any) => void;
     userRol?: string;
+    currentOrder: number;
+    suggestions?: any[];
     isEdit?: boolean;
-    setDataSelected: (e: any) => void;
+    setIsDataSelected: (e: any) => void;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    selectChangeHandlerIdType: (
+        e: React.ChangeEvent<HTMLSelectElement>,
+    ) => void;
+    dateChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    phoneChangeHandler: (phone: string) => void;
+    idChangeHandler: (id: string) => void;
+    setSelectedOptions: (e: any) => void;
+    handleSendForm: (e: any) => Promise<void>;
+    selectChangeHandlerSentTo: (e: any) => void;
+    handleClose: (e: any) => void;
     data: any;
+    optionsData: any;
+    oldData?: any;
+    wrapperRef?: any;
 }
 
 function StepByStep({
@@ -21,10 +51,42 @@ function StepByStep({
     setFormStep,
     userRol,
     isEdit,
-    setDataSelected,
+    setIsDataSelected,
+    optionsData,
     data,
+    oldData,
+    currentOrder,
+    suggestions,
+    wrapperRef,
+    handleClose,
+    changeHandler,
+    idChangeHandler,
+    selectChangeHandlerIdType,
+    dateChangeHandler,
+    phoneChangeHandler,
+    setSelectedOptions,
+    handleSendForm,
+    selectChangeHandlerSentTo,
+    handleInputChange,
 }: Props) {
     const router = useRouter();
+
+    const [professionalName, setProfessionalName] = useState("");
+    const [professionalSpecialty, setProfessionalSpecialty] = useState("");
+    const [professionalEmail, setProfessionalEmail] = useState("");
+
+    const [observationComment, setObservationComment] = useState<string>("");
+
+    const [diagnosticImpressionComment, setDiagnosticImpressionComment] =
+        useState<string>("");
+
+    const [dentalSelectBoneScan, setDentalSelectBoneScan] = useState<number[]>(
+        [],
+    );
+
+    const [dentalSelectTomography, setDentalSelectTomography] = useState<
+        number[]
+    >([]);
 
     const [selectedIntraOrals, setSelectedIntraOrals] = useState<string[]>([]);
 
@@ -67,22 +129,44 @@ function StepByStep({
         string[]
     >([]);
 
+    // console.log(
+    //     oldData.selectedIntraOrals,
+    //     selectedIntraOrals,
+    //     isEdit && oldData && oldData?.selectedIntraOrals,
+    // );
+
     const allDataSelected = useMemo(
         () => [
-            selectedIntraOrals,
-            selectedExtraOrals,
-            selected3DVolumetricTomography,
-            selectedAdditionalDeliveryMethod,
-            selectedDiagnosis,
-            selectedModels,
-            selectedIntraOralClinicalPhotography,
-            selectedExtraOralClinicalPhotography,
-            selectedPresentation,
-            selectedBackground,
-            selectedClinicalPhotographyDeliveryMethod,
-            selectedDiagnosticPackage,
+            {
+                professionalName,
+                professionalSpecialty,
+                professionalEmail,
+                dentalSelectBoneScan,
+                selectedIntraOrals,
+                selectedExtraOrals,
+                dentalSelectTomography,
+                selected3DVolumetricTomography,
+                selectedAdditionalDeliveryMethod,
+                selectedDiagnosis,
+                selectedModels,
+                selectedIntraOralClinicalPhotography,
+                selectedExtraOralClinicalPhotography,
+                selectedPresentation,
+                selectedBackground,
+                selectedClinicalPhotographyDeliveryMethod,
+                selectedDiagnosticPackage,
+                observationComment,
+                diagnosticImpressionComment,
+            },
         ],
         [
+            professionalName,
+            professionalSpecialty,
+            professionalEmail,
+            dentalSelectBoneScan,
+            dentalSelectTomography,
+            diagnosticImpressionComment,
+            observationComment,
             selected3DVolumetricTomography,
             selectedAdditionalDeliveryMethod,
             selectedBackground,
@@ -99,135 +183,333 @@ function StepByStep({
     );
 
     const valData = useCallback(async () => {
-        setDataSelected(!_.isEmpty(_.flattenDeep(allDataSelected)));
-    }, [allDataSelected, setDataSelected]);
+        setIsDataSelected(
+            _.some(allDataSelected, (obj) =>
+                _.some(obj, (value) => !_.isEmpty(value)),
+            ),
+        );
+        setSelectedOptions(allDataSelected[0]);
+    }, [allDataSelected, setIsDataSelected, setSelectedOptions]);
 
     useEffect(() => {
         valData();
-    }, [allDataSelected, setDataSelected, valData]);
+    }, [allDataSelected, setIsDataSelected, valData]);
+
+    useEffect(() => {
+        if (oldData) {
+            setProfessionalName(oldData.professionalName);
+            setProfessionalSpecialty(oldData.professionalSpecialty);
+            setProfessionalEmail(oldData.professionalEmail);
+            setObservationComment(oldData.observationComment);
+            setDiagnosticImpressionComment(oldData.diagnosticImpressionComment);
+            setDentalSelectBoneScan(oldData.dentalSelectBoneScan);
+            setDentalSelectTomography(oldData.dentalSelectTomography);
+            setSelectedIntraOrals(oldData.selectedIntraOrals);
+            setSelectedExtraOrals(oldData.selectedExtraOrals);
+            setSelected3DVolumetricTomography(
+                oldData.selected3DVolumetricTomography,
+            );
+            setSelectedAdditionalDeliveryMethod(
+                oldData.selectedAdditionalDeliveryMethod,
+            );
+            setSelectedDiagnosis(oldData.selectedDiagnosis);
+            setSelectedModels(oldData.selectedModels);
+            setSelectedIntraOralClinicalPhotography(
+                oldData.selectedIntraOralClinicalPhotography,
+            );
+            setSelectedExtraOralClinicalPhotography(
+                oldData.selectedExtraOralClinicalPhotography,
+            );
+            setSelectedPresentation(oldData.selectedPresentation);
+            setSelectedBackground(oldData.selectedBackground);
+            setSelectedClinicalPhotographyDeliveryMethod(
+                oldData.selectedClinicalPhotographyDeliveryMethod,
+            );
+            setSelectedDiagnosticPackage(oldData.selectedDiagnosticPackage);
+        }
+    }, [oldData]);
 
     return (
-        <div className="flex flex-col">
+        <div>
             {formStep === 0 && (
                 <div className="mx-16 bg-black bg-opacity-50 rounded-2xl p-8 flex flex-col space-y-8">
                     <h3 className="text-2xl text-company-orange">
                         Datos del Paciente
                     </h3>
                     <div className="grid grid-cols-3 gap-4">
-                        <div className="col flex flex-col space-y-2">
+                        <div className="col relative flex flex-col space-y-2">
+                            <label htmlFor="idType" className="text-white">
+                                Tipo de Documento&nbsp;
+                                <span className="text-blue-500">*</span>
+                            </label>
+                            <select
+                                value={data.idType}
+                                id="idType"
+                                name="idType"
+                                required
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                onChange={selectChangeHandlerIdType}
+                            >
+                                <option
+                                    value=""
+                                    hidden
+                                    className=" text-company-orange"
+                                >
+                                    Seleccione...
+                                </option>
+                                {idTypes.map((option, index) => (
+                                    <option
+                                        key={index}
+                                        value={option.value}
+                                        className="bg-black text-white"
+                                    >
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <BsFillPersonVcardFill />
+                            </span>
+                        </div>
+                        <div
+                            className="col relative flex flex-col space-y-2"
+                            ref={wrapperRef}
+                        >
                             <label htmlFor="patientId" className="text-white">
-                                Cédula
+                                Documento&nbsp;
+                                <span className="text-blue-500">*</span>
                             </label>
                             <input
-                                type="number"
-                                name="patientId"
+                                value={data.id}
+                                type="text"
+                                name="id"
+                                required
                                 id="patientId"
                                 min={0}
                                 max={9999999999}
-                                className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                onChange={handleInputChange}
                             />
+                            {suggestions && suggestions?.length > 0 && (
+                                <ul className="absolute top-16 w-full text-white bg-black border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto z-10">
+                                    {suggestions?.map((patient) => (
+                                        <li
+                                            key={patient.id}
+                                            className="p-2 hover:bg-company-blue cursor-pointer"
+                                            onClick={() =>
+                                                idChangeHandler(patient.id)
+                                            }
+                                        >
+                                            {patient.id}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <BsFillPersonVcardFill />
+                            </span>
+                            {data.id && (
+                                <span className="absolute right-2 bottom-2 hover:bg-black/25 rounded-md text-company-blue text-[1.5rem]">
+                                    <IoCloseSharp onClick={handleClose} />
+                                </span>
+                            )}
                         </div>
-                        <div className="col flex flex-col space-y-2">
+                        <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="firstName" className="text-white">
-                                Nombres
+                                Nombres&nbsp;
+                                <span className="text-blue-500">*</span>
                             </label>
                             <input
+                                value={data.name}
                                 type="text"
-                                name="firstName"
+                                name="name"
+                                required
                                 id="firstName"
-                                className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                onChange={changeHandler}
                             />
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <IoPerson />
+                            </span>
                         </div>
-                        <div className="col flex flex-col space-y-2">
+                        <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="lastName" className="text-white">
-                                Apellidos
+                                Apellidos&nbsp;
+                                <span className="text-blue-500">*</span>
                             </label>
                             <input
+                                value={data.lastName}
                                 type="text"
                                 name="lastName"
+                                required
                                 id="lastName"
-                                className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                onChange={changeHandler}
                             />
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <IoPerson />
+                            </span>
                         </div>
-                        <div className="col flex flex-col space-y-2">
+                        <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="email" className="text-white">
-                                Correo
+                                Correo&nbsp;
+                                <span className="text-blue-500">*</span>
                             </label>
                             <input
+                                value={data.email}
                                 type="email"
                                 name="email"
+                                required
                                 id="email"
-                                className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                onChange={changeHandler}
                             />
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <IoMail />
+                            </span>
                         </div>
-                        <div className="col flex flex-col space-y-2">
-                            <label htmlFor="birthday" className="text-white">
-                                Fecha de Nacimiento
+                        <div className="col relative flex flex-col space-y-2">
+                            <label htmlFor="phone" className="text-white">
+                                Celular&nbsp;
+                                <span className="text-blue-500">*</span>
+                            </label>
+                            <PhoneInput
+                                autoFormat={false}
+                                inputProps={{
+                                    name: "phone",
+                                    required: true,
+                                    pattern: "^(\\+?\\d{1,4})?\\s?\\d{11,15}$",
+                                    title: "Por favor, ingrese un número de teléfono válido",
+                                }}
+                                country={"co"}
+                                specialLabel=""
+                                placeholder=""
+                                prefix="+"
+                                dropdownStyle={{
+                                    color: "black",
+                                    borderRadius: 12,
+                                }}
+                                value={data.phone}
+                                onChange={phoneChangeHandler}
+                            />
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <IoCall />
+                            </span>
+                        </div>
+                        <div className="col relative flex flex-col space-y-2">
+                            <label htmlFor="birthDate" className="text-white">
+                                Fecha de Nacimiento&nbsp;(opcional)
                             </label>
                             <input
+                                value={data.birthDate}
                                 type="date"
-                                name="birthday"
-                                id="birthday"
-                                className="calendar-light h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                name="birthDate"
+                                id="birthDate"
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white pl-10 pr-4 calendar-light"
+                                onChange={dateChangeHandler}
                             />
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <MdOutlineDateRange />
+                            </span>
                         </div>
-                        <div className="col flex flex-col space-y-2">
+                        {/* <div className="col flex flex-col space-y-2">
                             <label htmlFor="age" className="text-white">
                                 Edad
                             </label>
                             <input
+                                value={data.age}
                                 disabled
                                 type="number"
                                 name="age"
                                 id="age"
                                 min={0}
-                                max={150}
-                                className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                max={999}
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-4"
                             />
+                        </div> */}
+                        <div className="col relative flex flex-col md:col-span-2 space-y-2">
+                            <label htmlFor="address" className="text-white">
+                                Dirección&nbsp;(opcional)
+                            </label>
+                            <input
+                                value={data.address}
+                                id="address"
+                                name="address"
+                                type="text"
+                                // required
+                                className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-10"
+                                onChange={changeHandler}
+                            />
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <BsFillGeoAltFill />
+                            </span>
                         </div>
                         {userRol === "Recepción/Caja" && (
                             <>
-                                <div className="col flex flex-col space-y-2">
-                                    <label
-                                        htmlFor="Specialty"
-                                        className="text-white"
-                                    >
-                                        Especialidad
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="Specialty"
-                                        id="Specialty"
-                                        className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
-                                    />
-                                </div>
-                                <div className="col flex flex-col space-y-2">
+                                <div className="col relative flex flex-col space-y-2">
                                     <label
                                         htmlFor="Doctor"
                                         className="text-white"
                                     >
-                                        Doctor
+                                        Doctor&nbsp;(opcional)
                                     </label>
                                     <input
+                                        value={data.ProfessionalName}
                                         type="text"
-                                        name="Doctor"
+                                        name="ProfessionalName"
                                         id="Doctor"
-                                        className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                        className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                        onChange={(e) =>
+                                            setProfessionalName(e.target.value)
+                                        }
                                     />
+                                    <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                        <FaUserDoctor />
+                                    </span>
                                 </div>
-                                <div className="col flex flex-col space-y-2">
+                                <div className="col relative flex flex-col space-y-2">
+                                    <label
+                                        htmlFor="Specialty"
+                                        className="text-white"
+                                    >
+                                        Especialidad&nbsp;(opcional)
+                                    </label>
+                                    <input
+                                        value={data.ProfessionalSpecialty}
+                                        type="text"
+                                        name="ProfessionalSpecialty"
+                                        id="Specialty"
+                                        className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                        onChange={(e) =>
+                                            setProfessionalSpecialty(
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                        <FaUserDoctor />
+                                    </span>
+                                </div>
+                                <div className="col relative flex flex-col space-y-2">
                                     <label
                                         htmlFor="emailDoctor"
                                         className="text-white"
                                     >
-                                        Correo Doctor
+                                        Correo Doctor&nbsp;(opcional)
                                     </label>
                                     <input
+                                        value={data.ProfessionalEmail}
                                         type="email"
-                                        name="emailDoctor"
+                                        name="ProfessionalEmail"
                                         id="emailDoctor"
-                                        className="h-10 border border-company-blue rounded-xl bg-transparent text-white px-4"
+                                        className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                        onChange={(e) =>
+                                            setProfessionalEmail(e.target.value)
+                                        }
                                     />
+                                    <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                        <IoMail />
+                                    </span>
                                 </div>
                             </>
                         )}
@@ -236,19 +518,19 @@ function StepByStep({
             )}
             {formStep === 1 && (
                 <div className="flex flex-col mx-20">
-                    <h3 className="text-company-blue text-3xl font-bold pb-5">
-                        Radiografía
-                    </h3>
                     <div className="mx-auto mb-8">
-                        <DentalSelect />
+                        <DentalSelect
+                            setSelected={setDentalSelectBoneScan}
+                            selected={dentalSelectBoneScan}
+                        />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                             <h3 className="text-company-orange text-xl font-bold">
                                 Intra Orales
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                {data.intraOralsOptions.map(
+                            <div className="grid grid-rows-4 grid-flow-col gap-4">
+                                {optionsData.intraOralsOptions.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
@@ -311,8 +593,8 @@ function StepByStep({
                             <h3 className="text-company-orange text-xl font-bold">
                                 Extra Orales
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                {data.extraOralsOptions.map(
+                            <div className="grid grid-rows-4 grid-flow-col gap-4">
+                                {optionsData.extraOralsOptions.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
@@ -376,11 +658,11 @@ function StepByStep({
             )}
             {formStep === 2 && (
                 <div className="flex flex-col mx-20">
-                    <h3 className="text-company-blue text-3xl font-bold pb-5">
-                        Tomografía
-                    </h3>
                     <div className="mx-auto mb-8">
-                        <DentalSelect />
+                        <DentalSelect
+                            setSelected={setDentalSelectTomography}
+                            selected={dentalSelectTomography}
+                        />
                     </div>
                     <div className="grid grid-cols-5 gap-4">
                         <div className="col-span-3 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -388,12 +670,18 @@ function StepByStep({
                                 Tomografía volumétrica 3D
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {data.volumetricTomography.map(
+                                {optionsData.volumetricTomography.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className={`col ${
+                                                    optionsData
+                                                        .volumetricTomography
+                                                        .length -
+                                                        1 ===
+                                                        index && "col-span-2"
+                                                } flex space-x-2 items-center`}
                                             >
                                                 <div className="">
                                                     <div
@@ -457,7 +745,7 @@ function StepByStep({
                                 Forma de entrega adicional
                             </h3>
                             <div className="grid grid-cols-1 gap-4">
-                                {data.additionalDeliveryMethod.map(
+                                {optionsData.additionalDeliveryMethod.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
@@ -521,16 +809,13 @@ function StepByStep({
             )}
             {formStep === 3 && (
                 <div className="flex flex-col mx-20">
-                    <h3 className="text-company-blue text-3xl font-bold pb-5">
-                        Diagnósticos/Modelos
-                    </h3>
                     <div className="grid grid-cols-1 gap-4">
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                             <h3 className="text-company-orange text-xl font-bold">
                                 Diagnóstico
                             </h3>
                             <div className="grid grid-cols-4 gap-4">
-                                {data.diagnosis.map(
+                                {optionsData.diagnosis.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
@@ -580,9 +865,11 @@ function StepByStep({
                                                         )}
                                                     </div>
                                                 </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
+                                                <div className="flex items-start">
+                                                    <span className="text-white">
+                                                        {option}
+                                                    </span>
+                                                </div>
                                             </div>
                                         );
                                     },
@@ -594,57 +881,63 @@ function StepByStep({
                                 Modelos
                             </h3>
                             <div className="grid grid-cols-4 gap-4">
-                                {data.models.map((option: any, index: any) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="col flex space-x-2 items-center"
-                                        >
-                                            <div className="">
-                                                <div
-                                                    onClick={() => {
-                                                        if (
+                                {optionsData.models.map(
+                                    (option: any, index: any) => {
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="col flex space-x-2 items-center"
+                                            >
+                                                <div className="">
+                                                    <div
+                                                        onClick={() => {
+                                                            if (
+                                                                selectedModels.includes(
+                                                                    option,
+                                                                )
+                                                            ) {
+                                                                let selectedList =
+                                                                    selectedModels.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item !==
+                                                                            option,
+                                                                    );
+                                                                setSelectedModels(
+                                                                    selectedList,
+                                                                );
+                                                            } else {
+                                                                setSelectedModels(
+                                                                    [
+                                                                        ...selectedModels,
+                                                                        option,
+                                                                    ],
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
                                                             selectedModels.includes(
                                                                 option,
                                                             )
-                                                        ) {
-                                                            let selectedList =
-                                                                selectedModels.filter(
-                                                                    (item) =>
-                                                                        item !==
-                                                                        option,
-                                                                );
-                                                            setSelectedModels(
-                                                                selectedList,
-                                                            );
-                                                        } else {
-                                                            setSelectedModels([
-                                                                ...selectedModels,
-                                                                option,
-                                                            ]);
-                                                        }
-                                                    }}
-                                                    className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                        selectedModels.includes(
+                                                                ? "bg-company-orange"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                    >
+                                                        {selectedModels.includes(
                                                             option,
-                                                        )
-                                                            ? "bg-company-orange"
-                                                            : "bg-transparent"
-                                                    }`}
-                                                >
-                                                    {selectedModels.includes(
-                                                        option,
-                                                    ) && (
-                                                        <IoCheckmark color="black" />
-                                                    )}
+                                                        ) && (
+                                                            <IoCheckmark color="black" />
+                                                        )}
+                                                    </div>
                                                 </div>
+                                                <span className="text-white">
+                                                    {option}
+                                                </span>
                                             </div>
-                                            <span className="text-white">
-                                                {option}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </div>
                     </div>
@@ -652,21 +945,24 @@ function StepByStep({
             )}
             {formStep === 4 && (
                 <div className="flex flex-col mx-20">
-                    <h3 className="text-company-blue text-3xl font-bold pb-5">
-                        Fotografía clínica
-                    </h3>
                     <div className="grid grid-cols-4 gap-4">
                         <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                             <h3 className="text-company-orange text-xl font-bold">
                                 Intra Orales
                             </h3>
-                            <div className="grid grid-cols-3 gap-4">
-                                {data.intraOralClinicalPhotography.map(
+                            <div className="grid grid-cols-2 gap-4">
+                                {optionsData.intraOralClinicalPhotography.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className={`col ${
+                                                    optionsData
+                                                        .intraOralClinicalPhotography
+                                                        .length -
+                                                        1 ===
+                                                        index && "col-span-2"
+                                                } flex space-x-2 items-center`}
                                             >
                                                 <div className="">
                                                     <div
@@ -724,13 +1020,19 @@ function StepByStep({
                             <h3 className="text-company-orange text-xl font-bold">
                                 Extra Orales
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                {data.extraOralClinicalPhotography.map(
+                            <div className="grid grid-cols-3 gap-4">
+                                {optionsData.extraOralClinicalPhotography.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className={`col ${
+                                                    optionsData
+                                                        .extraOralClinicalPhotography
+                                                        .length -
+                                                        1 ===
+                                                        index && "col-span-2"
+                                                } flex space-x-2 items-center`}
                                             >
                                                 <div className="">
                                                     <div
@@ -789,7 +1091,7 @@ function StepByStep({
                                 Presentación
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {data.presentation.map(
+                                {optionsData.presentation.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
@@ -853,7 +1155,7 @@ function StepByStep({
                                 Fondo
                             </h3>
                             <div className="grid grid-cols-1 gap-4">
-                                {data.background.map(
+                                {optionsData.background.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
@@ -917,7 +1219,7 @@ function StepByStep({
                                 Formas de entrega adicional
                             </h3>
                             <div className="grid grid-cols-1 gap-4">
-                                {data.clinicalPhotographyDeliveryMethod.map(
+                                {optionsData.clinicalPhotographyDeliveryMethod.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
@@ -981,21 +1283,18 @@ function StepByStep({
             )}
             {formStep === 5 && (
                 <div className="flex flex-col mx-20">
-                    <h3 className="text-company-blue text-3xl font-bold pb-5">
-                        Entregas
-                    </h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                             <h3 className="text-company-orange text-xl font-bold">
                                 Paquete de diagnóstico
                             </h3>
                             <div className="grid grid-cols-4 gap-4">
-                                {data.diagnosticPackage.map(
+                                {optionsData.diagnosticPackage.map(
                                     (option: any, index: any) => {
                                         return (
                                             <div
                                                 key={index}
-                                                className="col flex space-x-2 items-center"
+                                                className="col flex space-x-2 items-start"
                                             >
                                                 <div className="">
                                                     <div
@@ -1060,22 +1359,18 @@ function StepByStep({
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
+                                <textarea
+                                    value={observationComment}
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    onChange={(e) =>
+                                        setObservationComment(e.target.value)
+                                    }
+                                />
                             </div>
                         </div>
                         {userRol !== "Recepción/Caja" && (
@@ -1084,31 +1379,27 @@ function StepByStep({
                                     Impresión diagnostica
                                 </h3>
                                 <div className="grid grid-cols-1 gap-2">
-                                    <p>
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Repudiandae
-                                        praesentium ullam pariatur qui
-                                        blanditiis unde sunt a tempora iure
-                                        cumque corrupti, maiores beatae
-                                        explicabo dolores nisi. Error a nam
-                                        possimus.
-                                    </p>
-                                    <p>
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Repudiandae
-                                        praesentium ullam pariatur qui
-                                        blanditiis unde sunt a tempora iure
-                                        cumque corrupti, maiores beatae
-                                        explicabo dolores nisi. Error a nam
-                                        possimus.
-                                    </p>
+                                    <textarea
+                                        value={diagnosticImpressionComment}
+                                        id="DiagnosticImpression"
+                                        name="diagnosticImpression"
+                                        rows={4}
+                                        cols={50}
+                                        className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                        placeholder="Escribe aquí tus observaciones..."
+                                        onChange={(e) =>
+                                            setDiagnosticImpressionComment(
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
             )}
-            {formStep === 6 && (
+            {/* {formStep === 6 && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-1 gap-4">
                         <div className="flex flex-col space-y-4 rounded-xl p-[5%] bg-black bg-opacity-40">
@@ -1132,18 +1423,18 @@ function StepByStep({
                         </div>
                     </div>
                 </div>
-            )}
-            {formStep === 7 && (
+            )} */}
+            {formStep === 6 && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col space-y-4 p-4 mb-[50%]">
                             {isEdit ? (
                                 <h2 className="text-company-orange font-bold text-4xl">
-                                    Examen editado con exito
+                                    Examen Editado con Éxito
                                 </h2>
                             ) : (
                                 <h2 className="text-company-orange font-bold text-4xl">
-                                    Examen finalizado con exito
+                                    Examen Finalizado con Éxito
                                 </h2>
                             )}
                             <p className="text-white w-[80%] xl:w-[80%] text-justify pb-10">
@@ -1160,15 +1451,22 @@ function StepByStep({
                                     <label className="text-company-orange">
                                         Enviar a:
                                     </label>
-                                    <SelectComponent options={options} />
+                                    <SelectComponent
+                                        options={options}
+                                        selectChangeHandlerSentTo={
+                                            selectChangeHandlerSentTo
+                                        }
+                                    />
                                 </div>
                             )}
                             <div className="grid grid-cols-1 xl:grid-cols-2">
                                 <button
-                                    onClick={() => {
-                                        let step = formStep;
-                                        step++;
-                                        setFormStep(step);
+                                    onClick={(e) => {
+                                        handleSendForm(e).then(() => {
+                                            let step = formStep;
+                                            step++;
+                                            setFormStep(step);
+                                        });
                                     }}
                                     className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
                                 >
@@ -1196,16 +1494,17 @@ function StepByStep({
                     </div>
                 </div>
             )}
-            {formStep === 8 && (
+            {formStep === 7 && (
                 <div className="flex flex-col mx-20">
                     <div className="grid grid-cols-1 gap-4">
                         <div className="flex flex-col space-y-4 rounded-xl pr-[40%] pb-[20%] pl-[10%] pt-[15%] bg-black bg-opacity-40">
                             <h2 className="text-company-orange font-bold text-4xl">
-                                La orden #345 ha sido enviada con éxito al área
-                                encargada
+                                {`La orden #${currentOrder} ha sido enviada con éxito al área
+                                    encargada`}
                             </h2>
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pt-10">
                                 <button
+                                    type="button"
                                     onClick={() => {
                                         router.replace(
                                             "/dashboard/orders-historial",
