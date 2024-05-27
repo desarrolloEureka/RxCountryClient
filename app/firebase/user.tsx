@@ -1,3 +1,4 @@
+import { auth, db } from "@/shared/firebase/firebase";
 import {
     confirmPasswordReset,
     createUserWithEmailAndPassword,
@@ -5,7 +6,6 @@ import {
     signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db, auth } from "@/shared/firebase/firebase";
 
 const user = auth.currentUser;
 
@@ -14,11 +14,11 @@ export const saveUserById = async (data: any) => {
     return docRef;
 };
 
-export const getProfileDataByIdFb = async (uid: any, ref: any) => {
+export const getProfileDataByIdFb = async (uid: any, ref: string) => {
     // console.log(uid);
     const docRef = doc(db, ref, uid);
     const docSnap = await getDoc(docRef);
-    let userData = {};
+    let userData: any = {};
 
     if (docSnap.exists()) {
         // console.log("Document data:", docSnap.data());
@@ -30,7 +30,7 @@ export const getProfileDataByIdFb = async (uid: any, ref: any) => {
     return userData;
 };
 
-export const sendEmailToUser = async (user: any, actionCodeSettings: any ) => {
+export const sendEmailToUser = async (user: any, actionCodeSettings: any) => {
     return await user.sendEmailVerification(actionCodeSettings);
 };
 

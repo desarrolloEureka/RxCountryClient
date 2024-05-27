@@ -1,8 +1,9 @@
-import { User, onAuthStateChanged, getAuth } from "firebase/auth";
-import { useCallback, useEffect, useState } from "react";
 import { auth } from "@/shared/firebase/firebase";
-import { getProfileDataByIdFb } from "./user";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { useCallback, useEffect, useState } from "react";
 import { UserData } from "../types/user";
+import { getProfileDataByIdFb } from "./user";
+import { dataUserObject } from "../data/user";
 
 // interface Role {
 //     id: string;
@@ -15,7 +16,7 @@ const useAuth = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isActiveUser, setIsActiveUser] = useState<boolean>();
     const [user, setUser] = useState<User | null>();
-    const [userData, setUserData] = useState<UserData>();
+    const [userData, setUserData] = useState<UserData>(dataUserObject);
     // const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
     //   const getRole = useCallback(async () => {
@@ -52,12 +53,14 @@ const useAuth = () => {
     //   }, [getRole]);
 
     const getUserState = useCallback(async () => {
-        const userId = user?.uid;
+        const userId: string | undefined = user?.uid;
         user &&
             (await getProfileDataByIdFb(userId, "professionals").then(
                 (res: any) => {
                     setIsActiveUser(res.isActive);
-                    setUserData(res);
+                    if (res) {
+                        setUserData(res);
+                    }
                 },
             ));
     }, [user]);

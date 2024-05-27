@@ -1,11 +1,14 @@
 import { db } from "@/shared/firebase/firebase";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
-import { AllRefPropsFirebase } from "../types/userFirebase";
+import { collection, doc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 import moment from "moment";
 
 const currentDate = moment().format();
 
 const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
+
+const docRef = ({ ref, collection }: RefPropsFirebase) =>
+    doc(db, ref, collection);
 
 export const getAllOptions = async (ref?: string) => {
     const querySnapshot = await getDocs(allRef({ ref }));
@@ -19,6 +22,30 @@ export const getAllOptions = async (ref?: string) => {
     }
 
     return allOptions;
+};
+
+export const getAllPatients = async () => {
+    const dataResult: any = [];
+    const querySnapshot = await getDocs(allRef({ ref: "patients" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            dataResult.push(data);
+        });
+    }
+    return dataResult;
+};
+
+export const getAllOrders = async () => {
+    const dataResult: any = [];
+    const querySnapshot = await getDocs(allRef({ ref: "serviceOrders" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            dataResult.push(data);
+        });
+    }
+    return dataResult;
 };
 
 export const getAllSpecialties = async () => {
@@ -50,6 +77,11 @@ export const getDocumentRef = (reference: string, uid: string) => {
     return documentRef;
 };
 
+export const getReference = (reference: string) => {
+    const documentRef = doc(allRef({ ref: reference }));
+    return documentRef;
+};
+
 export const saveOneDocumentFb = async (documentRef: any, data: any) => {
     await setDoc(documentRef, {
         ...data,
@@ -58,4 +90,16 @@ export const saveOneDocumentFb = async (documentRef: any, data: any) => {
 
     // console.log(documentRef,data);
     return documentRef;
+};
+
+export const updateDocumentsByIdFb = async (
+    id: string,
+    newData: any,
+    reference: string,
+) => {
+    const document = docRef({ ref: reference, collection: id });
+    return await updateDoc(document, {
+        ...newData,
+        timestamp: currentDate,
+    });
 };

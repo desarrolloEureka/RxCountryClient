@@ -1,5 +1,10 @@
-import { colombianCitiesData } from "@/app/data/colombianCitiesData";
-import { dataProfessionalObject } from "@/app/data/functionaryData";
+import {
+    colombianStates,
+    countries,
+    getCities,
+    idTypes,
+} from "@/app/component/constants/formConstants";
+import { dataProfessionalObject } from "@/app/data/professionalData";
 import useAuth from "@/app/firebase/auth";
 import {
     getAllContracts,
@@ -9,54 +14,10 @@ import {
 } from "@/app/firebase/documents";
 import { uploadFile } from "@/app/firebase/files";
 import { registerFirebase } from "@/app/firebase/user";
-import AuthValidate from "@/app/hook/AuthValidate";
-import PageHook from "@/app/hook/PageHook";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 type Props = {};
-
-const idTypes = [
-    { value: "CC", label: "CC" },
-    { value: "RC", label: "RC" },
-    { value: "TI", label: "TI" },
-    { value: "CN", label: "CN" },
-    { value: "CD", label: "CD" },
-    { value: "CE", label: "CE" },
-    { value: "PA", label: "PA" },
-    { value: "SC", label: "SC" },
-    { value: "PE", label: "PE" },
-    { value: "AS", label: "AS" },
-    { value: "MS", label: "MS" },
-];
-
-const countries = [{ value: "CO", label: "Colombia" }];
-
-const getCities = (id: number) =>
-    colombianCitiesData[id - 1].ciudades.map((city) => ({
-        value: city,
-        label: city,
-    }));
-
-const colombianStates = colombianCitiesData.map((state) => ({
-    value: state.id + 1,
-    label: state.departamento,
-}));
-
-const isActiveData = [
-    {
-        value: "Activo",
-        label: "Activo",
-        // statusInfo: "success",
-        // color: "#198754",
-    },
-    {
-        value: "Inactivo",
-        label: "Inactivo",
-        // statusInfo: "danger",
-        // color: "#dc3545",
-    },
-];
 
 const SignUpHook = (props?: Props) => {
     const router = useRouter();
@@ -124,7 +85,9 @@ const SignUpHook = (props?: Props) => {
         data.email &&
         data.password &&
         data.confirmPassword &&
-        data.phone;
+        data.phone !== "57" &&
+        data.phone !== "" &&
+        data.phone.length > 10;
     // data.phone2 &&
     // data.address &&
     // data.country &&
@@ -133,6 +96,8 @@ const SignUpHook = (props?: Props) => {
     // data.specialty &&
     // data.contract &&
     // data.isActive;
+
+    // console.log(professionalsVal);
 
     const passValidation = data.confirmPassword === data.password;
 

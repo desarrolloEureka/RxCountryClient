@@ -1,14 +1,22 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IoArrowBackCircleOutline, IoCheckmark, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import useAuth from "../firebase/auth";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
+import {
+    diagnosisMachineTwo,
+    options,
+    suppliers,
+} from "./constants/stepByStepConstants";
+import { getAllOrders, getAllPatients } from "../firebase/documents";
+import { Order } from "../types/order";
+import { Patient } from "../types/patient";
 
-const OrderDetailsContent = () => {
+const OrderDetailsContent = ({ params }: { params: { slug: string } }) => {
     const { isActiveUser, userData } = useAuth();
 
     const router = useRouter();
@@ -19,19 +27,38 @@ const OrderDetailsContent = () => {
     const [selectedDiagnosis, setSelectedDiagnosis] = useState<string[]>([]);
     const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
 
-    //*Aquí para cambiar de vista a recepcionista
-    // const [user, setUser] = useState<string>(`${userData?.rol}`); // user:"Modelos", "Despachos", "Profesional", "Recepción/Caja", "Despachos"
+    const [ordersData, setOrdersData] = useState<any>();
+    const [patientsData, setPatientsData] = useState<any>();
 
-    const suppliers = ["Invisalign", "T-Brux", "Planeación Virtual"];
+    const allDataOrders = ordersData?.flatMap((order: Order) => {
+        const patient = patientsData?.find(
+            (patient: Patient) => patient.uid === order.patientId,
+        );
 
-    const diagnosis = ["Steiner", "Inferior", "Lorem Ipsum"];
+        if (patient) {
+            const { id, name, lastName, phone, email } = patient;
+            return { ...order, id, name, lastName, phone, email };
+        }
 
-    const options: { value: string; label: string }[] = [
-        { value: "modelsScanner", label: "Modelos/Escáner" },
-        { value: "radiologyTomography", label: "Radiología/Tomografía" },
-        { value: "diagnóstico ", label: "Diagnóstico" },
-        { value: "despacho ", label: "Despacho" },
-    ];
+        return [];
+    });
+
+    const patient = allDataOrders?.find((item: any) => item.uid === params.slug);
+
+    const getOrders = useCallback(async () => {
+        const allOrdersData = await getAllOrders();
+        allOrdersData && setOrdersData(allOrdersData);
+    }, []);
+
+    const getPatients = useCallback(async () => {
+        const allPatientsData = await getAllPatients();
+        allPatientsData && setPatientsData(allPatientsData);
+    }, []);
+
+    useEffect(() => {
+        getOrders();
+        getPatients();
+    }, [getOrders, getPatients]);
 
     const handleChecks = (
         option: string,
@@ -56,7 +83,7 @@ const OrderDetailsContent = () => {
                     />
                 </Link>
                 <h2 className="text text-company-orange text-xl">
-                    Orden #123456 - Jhon Doe
+                    {patient && `Orden #${patient?.uid} - ${patient?.name} ${patient?.lastName}`}
                 </h2>
             </div>
             <div className="mx-16">
@@ -98,31 +125,17 @@ const OrderDetailsContent = () => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit. Nam pretium velit ut
-                                    efficitur elementum. Cras ac sapien
-                                    hendrerit, consequat enim ac, faucibus
-                                    tellus. Sed a sagittis lorem. Donec eget
-                                    elit a leo ullamcorper accumsan ac sit amet
-                                    metus. Suspendisse at ligula malesuada,
-                                    euismod elit sed, ultricies leo. Aliquam
-                                    tempus dictum ante, eu tincidunt urna
-                                    aliquam id. Mauris vulputate ex id felis
-                                    euismod, non pretium lorem faucibus. Morbi
-                                    sed iaculis lectus. Duis vulputate, mi quis
-                                    laoreet suscipit, nisi enim maximus ante,
-                                    nec dignissim diam ex id nunc. Maecenas
-                                    sagittis metus libero, ut vehicula velit
-                                    rutrum nec. Vivamus at rutrum lacus, in
-                                    sagittis augue. Phasellus a sem convallis,
-                                    fringilla metus viverra, commodo est.
-                                    Pellentesque elementum posuere quam sit amet
-                                    sodales. Ut ac scelerisque ex. Donec et
-                                    massa nunc. Pellentesque ligula lorem,
-                                    sodales in bibendum eget, pellentesque nec
-                                    metus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         )}
                     </div>
@@ -152,31 +165,17 @@ const OrderDetailsContent = () => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit. Nam pretium velit ut
-                                    efficitur elementum. Cras ac sapien
-                                    hendrerit, consequat enim ac, faucibus
-                                    tellus. Sed a sagittis lorem. Donec eget
-                                    elit a leo ullamcorper accumsan ac sit amet
-                                    metus. Suspendisse at ligula malesuada,
-                                    euismod elit sed, ultricies leo. Aliquam
-                                    tempus dictum ante, eu tincidunt urna
-                                    aliquam id. Mauris vulputate ex id felis
-                                    euismod, non pretium lorem faucibus. Morbi
-                                    sed iaculis lectus. Duis vulputate, mi quis
-                                    laoreet suscipit, nisi enim maximus ante,
-                                    nec dignissim diam ex id nunc. Maecenas
-                                    sagittis metus libero, ut vehicula velit
-                                    rutrum nec. Vivamus at rutrum lacus, in
-                                    sagittis augue. Phasellus a sem convallis,
-                                    fringilla metus viverra, commodo est.
-                                    Pellentesque elementum posuere quam sit amet
-                                    sodales. Ut ac scelerisque ex. Donec et
-                                    massa nunc. Pellentesque ligula lorem,
-                                    sodales in bibendum eget, pellentesque nec
-                                    metus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         )}
                     </div>
@@ -204,31 +203,17 @@ const OrderDetailsContent = () => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit. Nam pretium velit ut
-                                    efficitur elementum. Cras ac sapien
-                                    hendrerit, consequat enim ac, faucibus
-                                    tellus. Sed a sagittis lorem. Donec eget
-                                    elit a leo ullamcorper accumsan ac sit amet
-                                    metus. Suspendisse at ligula malesuada,
-                                    euismod elit sed, ultricies leo. Aliquam
-                                    tempus dictum ante, eu tincidunt urna
-                                    aliquam id. Mauris vulputate ex id felis
-                                    euismod, non pretium lorem faucibus. Morbi
-                                    sed iaculis lectus. Duis vulputate, mi quis
-                                    laoreet suscipit, nisi enim maximus ante,
-                                    nec dignissim diam ex id nunc. Maecenas
-                                    sagittis metus libero, ut vehicula velit
-                                    rutrum nec. Vivamus at rutrum lacus, in
-                                    sagittis augue. Phasellus a sem convallis,
-                                    fringilla metus viverra, commodo est.
-                                    Pellentesque elementum posuere quam sit amet
-                                    sodales. Ut ac scelerisque ex. Donec et
-                                    massa nunc. Pellentesque ligula lorem,
-                                    sodales in bibendum eget, pellentesque nec
-                                    metus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         )}
                     </div>
@@ -256,31 +241,17 @@ const OrderDetailsContent = () => {
                                 <h2 className="font-bold text-xl">
                                     Observaciones
                                 </h2>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit. Nam pretium velit ut
-                                    efficitur elementum. Cras ac sapien
-                                    hendrerit, consequat enim ac, faucibus
-                                    tellus. Sed a sagittis lorem. Donec eget
-                                    elit a leo ullamcorper accumsan ac sit amet
-                                    metus. Suspendisse at ligula malesuada,
-                                    euismod elit sed, ultricies leo. Aliquam
-                                    tempus dictum ante, eu tincidunt urna
-                                    aliquam id. Mauris vulputate ex id felis
-                                    euismod, non pretium lorem faucibus. Morbi
-                                    sed iaculis lectus. Duis vulputate, mi quis
-                                    laoreet suscipit, nisi enim maximus ante,
-                                    nec dignissim diam ex id nunc. Maecenas
-                                    sagittis metus libero, ut vehicula velit
-                                    rutrum nec. Vivamus at rutrum lacus, in
-                                    sagittis augue. Phasellus a sem convallis,
-                                    fringilla metus viverra, commodo est.
-                                    Pellentesque elementum posuere quam sit amet
-                                    sodales. Ut ac scelerisque ex. Donec et
-                                    massa nunc. Pellentesque ligula lorem,
-                                    sodales in bibendum eget, pellentesque nec
-                                    metus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         )}
                     </div>
@@ -292,20 +263,17 @@ const OrderDetailsContent = () => {
                         Observaciones
                     </h3>
                     <div className="grid grid-cols-1 gap-2">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Repudiandae praesentium ullam pariatur qui
-                            blanditiis unde sunt a tempora iure cumque corrupti,
-                            maiores beatae explicabo dolores nisi. Error a nam
-                            possimus.
-                        </p>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Repudiandae praesentium ullam pariatur qui
-                            blanditiis unde sunt a tempora iure cumque corrupti,
-                            maiores beatae explicabo dolores nisi. Error a nam
-                            possimus.
-                        </p>
+                        <textarea
+                            id="Observations"
+                            name="observations"
+                            rows={4}
+                            cols={50}
+                            className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                            placeholder="Escribe aquí tus observaciones..."
+                            // onChange={(e) =>
+                            //     setObservationComment(e.target.value)
+                            // }
+                        />
                     </div>
                 </div>
             )}
@@ -317,7 +285,7 @@ const OrderDetailsContent = () => {
                                 Diagnóstico
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
-                                {diagnosis.map((option, index) => {
+                                {diagnosisMachineTwo.map((option, index) => {
                                     return (
                                         <div
                                             key={index}
@@ -407,22 +375,17 @@ const OrderDetailsContent = () => {
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         </div>
                         <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
@@ -430,22 +393,17 @@ const OrderDetailsContent = () => {
                                 Impresión diagnostica
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         </div>
                     </div>
@@ -459,22 +417,17 @@ const OrderDetailsContent = () => {
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         </div>
                     </div>
@@ -488,7 +441,7 @@ const OrderDetailsContent = () => {
                                 Diagnóstico
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
-                                {diagnosis.map((option, index) => {
+                                {diagnosisMachineTwo.map((option, index) => {
                                     return (
                                         <div
                                             key={index}
@@ -573,22 +526,17 @@ const OrderDetailsContent = () => {
                                 Observaciones
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
-                                <p className="text-white text-justify">
-                                    Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Repudiandae praesentium
-                                    ullam pariatur qui blanditiis unde sunt a
-                                    tempora iure cumque corrupti, maiores beatae
-                                    explicabo dolores nisi. Error a nam
-                                    possimus.
-                                </p>
+                                <textarea
+                                    id="Observations"
+                                    name="observations"
+                                    rows={4}
+                                    cols={50}
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    placeholder="Escribe aquí tus observaciones..."
+                                    // onChange={(e) =>
+                                    //     setObservationComment(e.target.value)
+                                    // }
+                                />
                             </div>
                         </div>
                     </div>

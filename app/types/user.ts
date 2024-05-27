@@ -5,10 +5,17 @@ export type LoginParams = {
 
 export type UserData = {
     uid: string;
+    icon: string;
     idType: string;
     id: string;
     name: string;
+    description: string;
+    personType: string;
+    discount: string;
+    rut: string;
     lastName: string;
+    birthDate: string;
+    age: string;
     phone: any;
     phone2: any;
     address: string;
@@ -18,15 +25,19 @@ export type UserData = {
     email: string;
     password: string;
     confirmPassword: string;
-    // cardNumber: string;
-    // medicalRecord: string;
     specialty: string;
     contract: string;
     rol: string;
+    campus: string;
+    availableCampus: string[];
+    area: string;
+    availableAreas: string[];
     urlPhoto: string;
-    timestamp: any;
+    timestamp: Date;
     isActive: boolean;
+    isDeleted: boolean;
 };
+
 // export interface DemoChangerElement extends HTMLElement {
 //   style: CSSStyleDeclaration;
 // }

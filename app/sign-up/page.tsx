@@ -82,13 +82,14 @@ export default function SignUp() {
                             <>
                                 <div className="col relative flex flex-col w-full space-y-2">
                                     <label
-                                        htmlFor="dni-type"
+                                        htmlFor="idType"
                                         className="text-white"
                                     >
                                         Tipo de Documento&nbsp;
                                         <span className="text-blue-500">*</span>
                                     </label>
                                     <select
+                                        value={data.idType}
                                         id="idType"
                                         name="idType"
                                         required
@@ -285,14 +286,21 @@ export default function SignUp() {
                                         <span className="text-blue-500">*</span>
                                     </label>
                                     <PhoneInput
+                                        autoFormat={false}
                                         inputProps={{
                                             name: "phone",
                                             required: true,
+                                            // pattern:
+                                            //     "^\\+(?:[0-9] ?){7,14}[0-9]$",
+                                            pattern:
+                                                "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
+                                            title: "Por favor, ingrese un número de teléfono válido",
                                         }}
+                                        country={"co"}
                                         specialLabel=""
                                         placeholder=""
                                         prefix="+"
-                                        onlyCountries={[]}
+                                        // onlyCountries={[]}
                                         inputStyle={{
                                             borderColor: "rgb(34, 140, 240)",
                                             width: "100%",
@@ -305,7 +313,6 @@ export default function SignUp() {
                                         dropdownStyle={{
                                             color: "black",
                                             borderRadius: 12,
-                                            // background: "black",
                                         }}
                                         value={data.phone}
                                         onChange={phoneChangeHandler}
@@ -389,6 +396,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.country}
                                         id="country"
                                         name="country"
                                         // required
@@ -425,6 +433,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.state}
                                         id="state"
                                         name="state"
                                         // required
@@ -461,6 +470,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.city}
                                         disabled={!data.state}
                                         id="city"
                                         name="city"
@@ -501,6 +511,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.specialty}
                                         id="specialty"
                                         name="specialty"
                                         // required
@@ -539,6 +550,7 @@ export default function SignUp() {
                                         {/* <span className="text-blue-500">*</span> */}
                                     </label>
                                     <select
+                                        value={data.contract}
                                         id="contract"
                                         name="contract"
                                         // required

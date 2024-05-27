@@ -121,3 +121,7 @@ export const options: { value: string; label: string }[] = [
     { value: "diagnóstico ", label: "Diagnóstico" },
     { value: "despacho ", label: "Despacho" },
 ];
+
+export const suppliers = ["Invisalign", "T-Brux", "Planeación Virtual"];
+
+export const diagnosisMachineTwo = ["Steiner", "Inferior", "Lorem Ipsum"];
