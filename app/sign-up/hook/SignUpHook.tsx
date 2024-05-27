@@ -159,9 +159,7 @@ const SignUpHook = (props?: Props) => {
                     }
 
                     var actionCodeSettings = {
-                        url:
-                            "https://rx-country-client.vercel.app/sign-in/?email=" +
-                            newUser.email,
+                        url: "https://rx-country-client.vercel.app/sign-in",
                         // url:
                         //     "https://localhost:3001/sign-in/?email=" +
                         //     newUser.email,

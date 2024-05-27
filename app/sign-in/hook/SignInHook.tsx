@@ -6,7 +6,7 @@ import { LoginParams } from "@/app/types/user";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const SignUpHook = (params?: { emailQuery?: string | null }) => {
+const SignUpHook = () => {
     const { user, isActiveUser, userData } = useAuth();
     const [error, setError] = useState(false);
     const [data, setData] = useState(LoginData);
