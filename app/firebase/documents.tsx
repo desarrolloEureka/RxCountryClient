@@ -2,6 +2,7 @@ import { db } from "@/shared/firebase/firebase";
 import { collection, doc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 import moment from "moment";
+import { AreasBd, AreasSelector } from "../types/areas";
 
 const currentDate = moment().format();
 
@@ -24,8 +25,37 @@ export const getAllOptions = async (ref?: string) => {
     return allOptions;
 };
 
+export const getAllDocumentsFb = async (ref: string) => {
+    const dataResult: any[] = [];
+    const querySnapshot = await getDocs(allRef({ ref }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            dataResult.push(data);
+        });
+    }
+    return dataResult;
+};
+
+export const getAllAreasOptions = async () => {
+    const dataResult: AreasSelector[] = [];
+    const querySnapshot = await getDocs(allRef({ ref: "areas" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data() as AreasBd;
+            const dataSelector = {
+                value: data.uid,
+                label: data.name,
+                campus: data.availableCampus,
+            };
+            dataResult.push(dataSelector);
+        });
+    }
+    return dataResult;
+};
+
 export const getAllPatients = async () => {
-    const dataResult: any = [];
+    const dataResult: any[] = [];
     const querySnapshot = await getDocs(allRef({ ref: "patients" }));
     if (!querySnapshot.empty) {
         querySnapshot.forEach((doc: any) => {
@@ -37,7 +67,7 @@ export const getAllPatients = async () => {
 };
 
 export const getAllOrders = async () => {
-    const dataResult: any = [];
+    const dataResult: any[] = [];
     const querySnapshot = await getDocs(allRef({ ref: "serviceOrders" }));
     if (!querySnapshot.empty) {
         querySnapshot.forEach((doc: any) => {
@@ -49,7 +79,7 @@ export const getAllOrders = async () => {
 };
 
 export const getAllSpecialties = async () => {
-    const dataResult: any = [];
+    const dataResult: any[] = [];
     const querySnapshot = await getDocs(allRef({ ref: "specialties" }));
     if (!querySnapshot.empty) {
         querySnapshot.forEach((doc: any) => {

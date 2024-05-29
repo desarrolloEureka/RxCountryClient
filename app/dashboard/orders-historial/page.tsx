@@ -37,57 +37,35 @@ const OrderHistorialPage = () => {
         all,
         setAll,
         allDataOrders,
+        ordersByRol,
         formatearFecha,
+        suggestionsOrders,
+        handleSearchInputChange,
     } = OrderHistorialHook();
-
-    // console.log(ordersData);
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="orders-historial" />
                 <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
-                    <div className="flex justify-end items-center border-b-2 border-company-orange p-8">
-                        {/* //todo: Se muestra dependiendo del usuario */}
+                    <div className="flex justify-end items-center p-8">
                         <div
                             className={`grid ${
-                                userRol === "Profesional"
-                                    ? "grid-cols-1"
-                                    : "grid-cols-2"
+                                userRol === "Recepción"
+                                    ? "grid-cols-2"
+                                    : "grid-cols-1"
                             } flex-1 gap-52 xl:gap-80 `}
                         >
-                            <div
-                                onClick={() => {
-                                    userRol !== "Profesional" &&
-                                        setSelectedOrder("received");
-                                }}
-                                className={`col flex flex-col ${
-                                    userRol !== "Profesional"
-                                        ? "cursor-pointer items-end"
-                                        : "items-center"
-                                }`}
-                            >
-                                <h3
-                                    className={`text-2xl ${
-                                        selectedOrder === "received"
-                                            ? "text-company-orange"
-                                            : " text-gray-400"
-                                    }`}
-                                >
-                                    Ordenes Enviadas
-                                </h3>
-                            </div>
-
-                            {userRol !== "Profesional" && (
+                            {userRol === "Recepción" && (
                                 <div
                                     onClick={() => {
-                                        setSelectedOrder("send");
+                                        setSelectedOrder("received");
                                     }}
-                                    className="col flex flex-col cursor-pointer"
+                                    className="col flex flex-col cursor-pointer items-end"
                                 >
                                     <h3
                                         className={`text-2xl ${
-                                            selectedOrder === "send"
+                                            selectedOrder === "received"
                                                 ? "text-company-orange"
                                                 : " text-gray-400"
                                         }`}
@@ -96,6 +74,28 @@ const OrderHistorialPage = () => {
                                     </h3>
                                 </div>
                             )}
+
+                            <div
+                                onClick={() => {
+                                    userRol !== "Profesional" &&
+                                        setSelectedOrder("send");
+                                }}
+                                className={`col flex flex-col ${
+                                    userRol === "Recepción"
+                                        ? "cursor-pointer items-start"
+                                        : "items-center"
+                                }`}
+                            >
+                                <h3
+                                    className={`text-2xl ${
+                                        selectedOrder === "send"
+                                            ? "text-company-orange"
+                                            : " text-gray-400"
+                                    }`}
+                                >
+                                    Ordenes Enviadas
+                                </h3>
+                            </div>
                         </div>
                         <div className="flex flex-col items-center space-y-2 text-white text-sm">
                             <button
@@ -106,6 +106,21 @@ const OrderHistorialPage = () => {
                             </button>
                             <span>Ayuda</span>
                         </div>
+                    </div>
+                    <div
+                        className={`flex flex-row bg-white ${
+                            selectedOrder === "send" && "justify-end"
+                        }  bg-opacity-25 w-full h-[0.1rem]`}
+                    >
+                        <div
+                            className={`col h-[0.2rem] ${
+                                userRol === "Recepción" ? "w-1/2" : "w-full"
+                            } bg-company-orange ${
+                                selectedOrder === "received"
+                                    ? "rounded-r-full"
+                                    : "rounded-l-full"
+                            }`}
+                        />
                     </div>
                     <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-[1280px] py-4">
                         <div className="relative col flex flex-col space-y-2">
@@ -119,6 +134,7 @@ const OrderHistorialPage = () => {
                                 type="search"
                                 placeholder="Ej. Hernandez Rodriguez"
                                 className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10 text-black"
+                                onChange={() => handleSearchInputChange}
                             />
                             <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                         </div>
@@ -241,157 +257,143 @@ const OrderHistorialPage = () => {
                         </div>
                     </div>
 
-                    {selectedOrder !== "received" ? (
-                        <div className="flex flex-col divide-y">
-                            <div className="grid grid-cols-12 items-center text-company-orange py-4">
-                                <div className="col-span-2 flex flex-col text-center">
-                                    <span>Detalle</span>
-                                </div>
-                                <div className="col">
-                                    <span># Orden</span>
-                                </div>
-                                <div className="col">
-                                    <span>Fecha</span>
-                                </div>
-                                <div className="col">
-                                    <span>Estado</span>
-                                </div>
-                                <div className="col">
-                                    <span>Cédula</span>
-                                </div>
-                                <div className="col">
-                                    <span>Nombre</span>
-                                </div>
-                                <div className="col">
-                                    <span>Apellido</span>
-                                </div>
-                                <div className="col-span-2">
-                                    <span>Correo</span>
-                                </div>
-                                <div className="col">
-                                    <span>Teléfono</span>
-                                </div>
+                    <div className="flex flex-col divide-y">
+                        <div className="grid grid-cols-12 items-center text-company-orange py-4 pr-16">
+                            <div className="col-span-2 text-center text-nowrap">
+                                <span>Detalle</span>
                             </div>
-                            {Array.from({
-                                length: 3,
-                            }).map((item, index) => {
+                            <div className="col text-center text-nowrap">
+                                <span># Orden</span>
+                            </div>
+                            <div className="col text-center text-nowrap">
+                                <span>Fecha</span>
+                            </div>
+                            <div className="col text-center text-nowrap">
+                                <span>Estado</span>
+                            </div>
+                            <div className="col text-center text-nowrap">
+                                <span>Tipo Doc.</span>
+                            </div>
+                            <div className="col text-center text-nowrap">
+                                <span>Cédula</span>
+                            </div>
+                            <div className="col text-center text-nowrap">
+                                <span>Nombres</span>
+                            </div>
+                            <div className="col text-center text-nowrap">
+                                <span>Apellidos</span>
+                            </div>
+                            <div className="col-span-2 text-center text-nowrap">
+                                <span>Correo</span>
+                            </div>
+                            <div className="col text-center text-nowrap">
+                                <span>Teléfono</span>
+                            </div>
+                        </div>
+                        {/* {suggestionsOrders */}
+                        {ordersByRol[userRol]?.[selectedOrder]
+                            .reverse()
+                            .map((item: any, index: number) => {
                                 return (
                                     <div
                                         key={index}
                                         onClick={() => {
                                             router.push(
-                                                "/dashboard/orders-historial/details/hola",
+                                                `/dashboard/orders-historial/details/${item.uid}`,
                                             );
                                         }}
-                                        className="grid grid-cols-12 cursor-pointer items-center text-white py-4 hover:bg-gray-700"
+                                        className="grid grid-cols-12 cursor-pointer border-t items-center text-white py-4 hover:bg-gray-700 pr-16"
                                     >
-                                        <div className="col-span-2 flex justify-between text-center text-company-blue px-16">
+                                        <div className="col-span-2 flex justify-between text-nowrap text-company-blue px-10">
                                             <button
+                                                // className="px-22"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                 }}
                                             >
                                                 <IoIosNotifications size={24} />
                                             </button>
+                                            {/* {selectedOrder === "send" && ( */}
                                             <button
+                                                // className="px-2"
                                                 onClick={(e) => {
-                                                    router.push(
-                                                        "/dashboard/new-order",
-                                                    );
-                                                    e.stopPropagation();
+                                                    selectedOrder === "send" &&
+                                                        (router.push(
+                                                            `/dashboard/orders-historial/edit-order/${item.uid}`,
+                                                        ),
+                                                        e.stopPropagation());
                                                 }}
                                             >
                                                 <RiEditBoxFill size={24} />
                                             </button>
+                                            {/* )} */}
                                             <button
+                                                // className="px-2"
                                                 onClick={(e) => {
                                                     router.replace(
-                                                        "/dashboard/new-order/preview-order",
+                                                        `/dashboard/preview-order?id=${item.uid}&from=orders-historial`,
                                                     );
                                                     e.stopPropagation();
                                                 }}
                                             >
                                                 <MdPictureAsPdf size={24} />
                                             </button>
+                                            {/* <button
+                                            // className="px-2"
+                                            // onClick={(e) => {
+                                            //     e.stopPropagation();
+                                            // }}
+                                            >
+                                                <IoIosEye size={24} />
+                                            </button> */}
                                         </div>
-                                        <div className="col">
-                                            <span>#123456</span>
+                                        <div className="text-nowrap text-center">
+                                            <span>{`#${item.uid}`}</span>
                                         </div>
-                                        <div className="col">
-                                            <span>06/03/2024</span>
+                                        <div className="text-center">
+                                            <span>
+                                                {formatearFecha(item.timestamp)}
+                                            </span>
                                         </div>
-                                        <div className="col">
-                                            <span>Diagnóstico</span>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.status}</span>
                                         </div>
-                                        <div className="col">
-                                            <span>12345644</span>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.idType}</span>
                                         </div>
-                                        <div className="col">
-                                            <span>Jhon</span>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.id}</span>
                                         </div>
-                                        <div className="col">
-                                            <span>Doe</span>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.name}</span>
                                         </div>
-                                        <div className="col-span-2">
-                                            <span>demo@example.com</span>
+                                        <div className="text-center">
+                                            <span>{item.lastName}</span>
                                         </div>
-                                        <div className="col">
-                                            <span>3216549870</span>
+                                        <div className="col-span-2 text-center">
+                                            <span>{item.email}</span>
+                                        </div>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.phone}</span>
                                         </div>
                                     </div>
                                 );
                             })}
-                        </div>
-                    ) : (
-                        <div className="flex flex-col overflow-x-auto custom-scrollbar">
-                            <div className="grid grid-cols-12 items-center text-company-orange py-4 pr-16">
-                                <div className="col-span-2 text-center text-nowrap">
-                                    <span>Detalle</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span># Orden</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span>Fecha</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span>Estado</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span>Tipo Doc.</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span>Cédula</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span>Nombres</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span>Apellidos</span>
-                                </div>
-                                <div className="col-span-2 text-center text-nowrap">
-                                    <span>Correo</span>
-                                </div>
-                                <div className="col text-center text-nowrap">
-                                    <span>Teléfono</span>
-                                </div>
-                            </div>
-                            {allDataOrders
-                                ?.reverse()
-                                .map((item: any, index: number) => {
+                        {/* {Array.from({
+                                    length: 3,
+                                }).map((item, index) => {
                                     return (
                                         <div
                                             key={index}
                                             onClick={() => {
                                                 router.push(
-                                                    `/dashboard/orders-historial/details/${item.uid}`,
+                                                    "/dashboard/orders-historial/details/hola",
                                                 );
                                             }}
-                                            className="grid grid-cols-12 cursor-pointer border-t items-center text-white py-4 hover:bg-gray-700 pr-16"
+                                            className="grid grid-cols-12 cursor-pointer items-center text-white py-4 hover:bg-gray-700"
                                         >
-                                            <div className="col-span-2 flex justify-between text-nowrap text-company-blue px-10">
+                                            <div className="col-span-2 flex justify-between text-center text-company-blue px-16">
                                                 <button
-                                                    // className="px-22"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                     }}
@@ -400,12 +402,10 @@ const OrderHistorialPage = () => {
                                                         size={24}
                                                     />
                                                 </button>
-
                                                 <button
-                                                    // className="px-2"
                                                     onClick={(e) => {
                                                         router.push(
-                                                            `/dashboard/orders-historial/edit-order/${item.uid}`,
+                                                            "/dashboard/new-order",
                                                         );
                                                         e.stopPropagation();
                                                     }}
@@ -413,7 +413,6 @@ const OrderHistorialPage = () => {
                                                     <RiEditBoxFill size={24} />
                                                 </button>
                                                 <button
-                                                    // className="px-2"
                                                     onClick={(e) => {
                                                         router.replace(
                                                             "/dashboard/new-order/preview-order",
@@ -423,51 +422,35 @@ const OrderHistorialPage = () => {
                                                 >
                                                     <MdPictureAsPdf size={24} />
                                                 </button>
-                                                <button
-                                                // className="px-2"
-                                                // onClick={(e) => {
-                                                //     e.stopPropagation();
-                                                // }}
-                                                >
-                                                    <IoIosEye size={24} />
-                                                </button>
                                             </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{`#${item.uid}`}</span>
+                                            <div className="col">
+                                                <span>#123456</span>
                                             </div>
-                                            <div className="text-center">
-                                                <span>
-                                                    {formatearFecha(
-                                                        item.timestamp,
-                                                    )}
-                                                </span>
+                                            <div className="col">
+                                                <span>06/03/2024</span>
                                             </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.status}</span>
+                                            <div className="col">
+                                                <span>Diagnóstico</span>
                                             </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.idType}</span>
+                                            <div className="col">
+                                                <span>12345644</span>
                                             </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.id}</span>
+                                            <div className="col">
+                                                <span>Jhon</span>
                                             </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.name}</span>
+                                            <div className="col">
+                                                <span>Doe</span>
                                             </div>
-                                            <div className="text-center">
-                                                <span>{item.lastName}</span>
+                                            <div className="col-span-2">
+                                                <span>demo@example.com</span>
                                             </div>
-                                            <div className="col-span-2 text-center">
-                                                <span>{item.email}</span>
-                                            </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.phone}</span>
+                                            <div className="col">
+                                                <span>3216549870</span>
                                             </div>
                                         </div>
                                     );
-                                })}
-                        </div>
-                    )}
+                                })} */}
+                    </div>
 
                     <div className="flex items-center px-16 py-4 border-t-2 border-company-blue">
                         <button className="flex flex-col items-center text-white w-20 text-[9px]">

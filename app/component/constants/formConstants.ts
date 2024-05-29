@@ -73,10 +73,17 @@ export const areas = [
     { value: "Escáner Modelos", label: "Escáner Modelos" },
     { value: "Modelos", label: "Modelos" },
     { value: "Radiología", label: "Radiología" },
-    { value: "Recepción/Caja", label: "Recepción/Caja" },
+    { value: "Recepción", label: "Recepción" },
 ];
 
-export const widthSlider = ["w-0", "w-1/5", "w-2/5", "w-3/5", "w-4/5", "w-full"];
+export const widthSlider = [
+    "w-0",
+    "w-1/5",
+    "w-2/5",
+    "w-3/5",
+    "w-4/5",
+    "w-full",
+];
 
 export const titles: string[] = [
     "Información",
@@ -86,4 +93,3 @@ export const titles: string[] = [
     "Fotografía Clínica",
     "Entregas",
 ];
-

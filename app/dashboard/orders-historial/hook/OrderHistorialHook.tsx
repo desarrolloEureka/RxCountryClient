@@ -1,24 +1,22 @@
 "use client";
 import useAuth from "@/app/firebase/auth";
 import { getAllOrders, getAllPatients } from "@/app/firebase/documents";
-import { Order } from "@/app/types/order";
+import { Order, OrdersByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, ChangeEvent } from "react";
 
 const OrderHistorialHook = () => {
-    const { isActiveUser, userData } = useAuth();
+    const { isActiveUser, userData, userRol } = useAuth();
 
-    const { rol } = userData;
+    const { campus } = userData;
 
     const router = useRouter();
     const [showFilter, setShowFilter] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState("received");
-
-    //*Aquí para cambiar de vista de especialista a recepcionista
-    // const [userRol, setUserRol] = useState(userData && userData.rol);
+    const [selectedOrder, setSelectedOrder] = useState("send");
+    const [search, setSearch] = useState("");
 
     // filters
     const [orderMinorMajor, setOrderMinorMajor] = useState(false);
@@ -28,6 +26,7 @@ const OrderHistorialHook = () => {
     const [all, setAll] = useState(false);
     const [ordersData, setOrdersData] = useState<any>();
     const [patientsData, setPatientsData] = useState<any>();
+    const [suggestionsOrders, setSuggestionsOrders] = useState<any[]>([]);
 
     const allDataOrders = ordersData?.flatMap((order: Order) => {
         const patient = patientsData?.find(
@@ -41,6 +40,47 @@ const OrderHistorialHook = () => {
 
         return [];
     });
+
+    const ordersByRol: OrdersByRol = {
+        Profesional: {
+            received: allDataOrders?.filter(
+                (order: any) => order.status === "enviada",
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy === userRol && order.status === "creada",
+            ),
+        },
+        Recepción: {
+            received: allDataOrders?.filter(
+                (order: any) => order.status === "enviada",
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy === userRol &&
+                    order.assignedCampus === campus &&
+                    (order.status === "leída" || order.status === "creada"),
+            ),
+        },
+    };
+
+    const orderList = ordersByRol[userRol]?.[selectedOrder];
+
+    const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearch(value);
+        if (value.length > 0) {
+            const filteredOrders = orderList?.filter(
+                (order: any) =>
+                    order.id.includes(value) ||
+                    order.name.includes(value) ||
+                    order.lastName.includes(value),
+            );
+            setSuggestionsOrders(filteredOrders);
+        } else {
+            setSuggestionsOrders(orderList);
+        }
+    };
 
     const formatearFecha = (fechaISO: string): string => {
         return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
@@ -61,6 +101,18 @@ const OrderHistorialHook = () => {
         getPatients();
     }, [getOrders, getPatients]);
 
+    useEffect(() => {
+        if (userRol === "Recepción") {
+            setSelectedOrder("received");
+        }
+    }, [userRol]);
+
+    // useEffect(() => {
+    //     if (search.length < 0) {
+    //     }
+    //     setSuggestionsOrders(orderList);
+    // }, [orderList, search]);
+
     return {
         router,
         showFilter,
@@ -69,7 +121,7 @@ const OrderHistorialHook = () => {
         setShowHelp,
         selectedOrder,
         setSelectedOrder,
-        userRol: rol,
+        userRol,
         orderMinorMajor,
         setOrderMinorMajor,
         nameAZ,
@@ -81,7 +133,10 @@ const OrderHistorialHook = () => {
         all,
         setAll,
         allDataOrders,
+        ordersByRol,
         formatearFecha,
+        suggestionsOrders,
+        handleSearchInputChange,
     };
 };
 
