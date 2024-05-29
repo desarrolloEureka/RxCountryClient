@@ -53,7 +53,8 @@ const OrderHistorialHook = () => {
         },
         Recepción: {
             received: allDataOrders?.filter(
-                (order: any) => order.status === "enviada",
+                (order: any) =>
+                    order.status === "enviada" || order.status === "creada",
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
