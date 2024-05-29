@@ -11,13 +11,14 @@ import OrderHistorialIcon from "./icons/OrderHistorialIcon.jsx";
 import OrderIcon from "./icons/OrderIcon.jsx";
 
 interface Props {
-    selectedMenuItem?: "create-order" | "orders-historial" | "images-query";
+    // selectedMenuItem?: "create-order" | "orders-historial" | "images-query";
+    selectedMenuItem?: string;
 }
 
 export default function DashboardHeader({ selectedMenuItem }: Props) {
     const logOut = () => signOut(auth);
-    const { isActiveUser, userData } = useAuth();
-    const { name, lastName, rol, urlPhoto } = userData;
+    const { isActiveUser, userData, userRol } = useAuth();
+    const { name, lastName, urlPhoto } = userData;
 
     const [orderIconColor, setOrderIconColor] = useState("white");
     const [orderHistorialIconColor, setOrderHistorialColor] = useState("white");
@@ -120,7 +121,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 </div>
                 <div className="flex flex-col text-center">
                     <span className="text-xl text-capitalize">{name}</span>
-                    <span className="text-sm text-capitalize">{rol}</span>
+                    <span className="text-sm text-capitalize">{userRol}</span>
                 </div>
             </Link>
             {openProfileMenu && (

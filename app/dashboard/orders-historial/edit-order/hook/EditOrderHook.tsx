@@ -1,14 +1,16 @@
-import { widthSlider, titles } from "@/app/component/constants/formConstants";
+import { titles, widthSlider } from "@/app/component/constants/formConstants";
 import { dataAllOptions } from "@/app/data/documentsData";
 import { dataPatientObject } from "@/app/data/patientData";
 import useAuth from "@/app/firebase/auth";
 import {
+    getAllAreasOptions,
     getAllOptions,
     getAllOrders,
     getDocumentRef,
-    getReference,
     saveOneDocumentFb,
 } from "@/app/firebase/documents";
+import { AreasSelector } from "@/app/types/areas";
+import { EditedOrderStatusByRol } from "@/app/types/order";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 
@@ -36,15 +38,13 @@ const calculateAge = (birthDate: Date | string): number => {
 };
 
 const EditOrderHook = ({ slug }: Props) => {
-    const { isActiveUser, userData } = useAuth();
+    const { userRol, userData } = useAuth();
 
-    const { rol } = userData;
+    const { campus, rol } = userData;
 
     const [showHelp, setShowHelp] = useState(false);
-    const [formStep, setFormStep] = useState(1);
 
-    //*Aquí para cambiar de vista de especialista a recepcionista
-    // const [userRol, setUserRol] = useState(userData?.rol);
+    const [formStep, setFormStep] = useState(1);
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(true);
@@ -64,6 +64,8 @@ const EditOrderHook = ({ slug }: Props) => {
     const [sentToArea, setSentToArea] = useState<string>("");
 
     const [error, setError] = useState(false);
+
+    const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
 
     const oldData = ordersData?.find((order: any) => order.uid === slug);
 
@@ -97,19 +99,17 @@ const EditOrderHook = ({ slug }: Props) => {
         setError(false);
     };
 
+    const editedOrderStatusByRol: EditedOrderStatusByRol = {
+        Profesional: "enviada",
+        Recepción: "leída",
+    };
+
     const handleSendForm = async (e?: any) => {
-        // if (patientVal) {
         e.preventDefault();
         e.stopPropagation();
         console.log("Editó");
         await uploadHandle();
         handleClose();
-        // } else {
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        //     setError(true);
-        //     console.log("Falló");
-        // }
     };
 
     const uploadHandle = async () => {
@@ -124,11 +124,12 @@ const EditOrderHook = ({ slug }: Props) => {
             ...selectedOptions,
             uid: documentEditOrderRef.id,
             patientId: oldData.patientId,
-            status: "enviada",
+            status: editedOrderStatusByRol[userRol],
             sendTo: sentToArea,
             isActive: true,
             isDeleted: false,
-            modifiedBy: rol,
+            modifiedBy: userRol,
+            assignedCampus: rol === "Funcionario" ? campus : "",
         }).then((res) => {
             setCurrentOrder(parseInt(res.id));
         });
@@ -144,17 +145,24 @@ const EditOrderHook = ({ slug }: Props) => {
         allOrdersData && setOrdersData(allOrdersData);
     }, []);
 
+    const getAreas = useCallback(async () => {
+        const allAreasData = await getAllAreasOptions();
+        allAreasData && setAllAreas(allAreasData);
+    }, []);
+
     useEffect(() => {
         getOptions();
         getOrders();
-    }, [getOptions, getOrders]);
+        getAreas();
+    }, [getOptions, getOrders, getAreas]);
 
     return {
         showHelp,
+        allAreas,
         setShowHelp,
         formStep,
         setFormStep,
-        userRol: rol,
+        userRol,
         isEdit,
         oldData,
         setIsEdit,

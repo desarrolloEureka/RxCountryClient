@@ -12,6 +12,7 @@ import NewOrderHook from "./hook/NewOrderHook";
 const NewOrderPage = () => {
     const {
         showHelp,
+        allAreas,
         setShowHelp,
         formStep,
         setFormStep,
@@ -48,27 +49,23 @@ const NewOrderPage = () => {
                     className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
                 >
                     <div className="flex justify-center items-center">
-                        <div className="flex justify-between items-center w-full p-8">
-                            <div
-                                className={`flex items-center space-x-8 ${
-                                    formStep === 6 && "hidden"
-                                }`}
-                            >
-                                <Link href={"/dashboard"}>
-                                    <IoArrowBackCircleOutline
-                                        className="text-company-blue"
-                                        size={32}
-                                    />
-                                </Link>
-                            </div>
-                            <div className="flex flex-1 mx-20">
-                                {formStep < 6 && (
+                        {formStep < 6 && (
+                            <div className="flex justify-between items-center w-full p-8">
+                                <div className="flex items-center space-x-8">
+                                    <Link href={"/dashboard"}>
+                                        <IoArrowBackCircleOutline
+                                            className="text-company-blue"
+                                            size={32}
+                                        />
+                                    </Link>
+                                </div>
+
+                                <div className="flex flex-1 mx-20">
                                     <h3 className="text-company-blue text-3xl font-bold">
                                         {titles[formStep]}
                                     </h3>
-                                )}
-                            </div>
-                            {formStep < 6 && (
+                                </div>
+
                                 <div className="flex flex-col items-center space-y-2 text-white text-sm">
                                     <button
                                         onClick={() => setShowHelp(true)}
@@ -78,12 +75,13 @@ const NewOrderPage = () => {
                                     </button>
                                     <span>Ayuda</span>
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     <StepByStep
                         formStep={formStep}
+                        allAreas={allAreas}
                         wrapperRef={wrapperRef}
                         setFormStep={setFormStep}
                         userRol={userRol}
@@ -118,39 +116,37 @@ const NewOrderPage = () => {
                             />
                         </div>
                     )}
-                    <div
-                        className={`flex ${
-                            formStep < 6 ? "justify-between" : "justify-end"
-                        } items-center p-8 ${formStep === 6 && "hidden"}`}
-                    >
-                        {formStep < 6 && (
+
+                    {formStep < 6 && (
+                        <div
+                            className={`flex ${
+                                formStep < 6 ? "justify-between" : "justify-end"
+                            } items-center p-8`}
+                        >
                             <div className="text-white">Paso {formStep}/5</div>
-                        )}
-                        <div className="flex items-center space-x-8">
-                            {formStep < 6 && formStep > 0 && (
-                                <>
+                            <div className="flex items-center space-x-8">
+                                {formStep > 0 && (
                                     <div
                                         onClick={() => {
-                                            let step = formStep;
-                                            step--;
-                                            setFormStep(step);
+                                            setFormStep(
+                                                (prevStep: number) =>
+                                                    prevStep - 1,
+                                            );
                                         }}
                                         className="flex items-center cursor-pointer text-company-blue"
                                     >
                                         <BiChevronLeft size={32} />
-                                        {}
                                         <span>Atrás</span>
                                     </div>
-                                </>
-                            )}
-                            {formStep < 7 && (
+                                )}
                                 <button
                                     type={patientVal ? "button" : "submit"}
                                     onClick={() => {
                                         if (patientVal) {
-                                            let step = formStep;
-                                            step++;
-                                            setFormStep(step);
+                                            setFormStep(
+                                                (prevStep: number) =>
+                                                    prevStep + 1,
+                                            );
                                             setIsDataSelected(false);
                                         }
                                     }}
@@ -163,9 +159,9 @@ const NewOrderPage = () => {
                                     )}
                                     <BiChevronRight size={32} />
                                 </button>
-                            )}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </form>
             </div>
             {showHelp && (

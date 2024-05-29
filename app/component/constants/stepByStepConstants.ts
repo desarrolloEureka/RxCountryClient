@@ -116,8 +116,10 @@ export const diagnosticPackage = [
 ];
 
 export const options: { value: string; label: string }[] = [
-    { value: "modelsScanner", label: "Modelos/Escáner" },
-    { value: "radiologyTomography", label: "Radiología/Tomografía" },
+    { value: "modelos", label: "Modelos" },
+    { value: "escáner", label: "Escáner" },
+    { value: "radiología", label: "Radiología" },
+    { value: "tomografía", label: "Tomografía" },
     { value: "diagnóstico ", label: "Diagnóstico" },
     { value: "despacho ", label: "Despacho" },
 ];

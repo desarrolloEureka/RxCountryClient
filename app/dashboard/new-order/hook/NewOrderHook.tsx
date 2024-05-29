@@ -3,6 +3,8 @@ import { dataAllOptions } from "@/app/data/documentsData";
 import { dataPatientObject } from "@/app/data/patientData";
 import useAuth from "@/app/firebase/auth";
 import {
+    getAllAreasOptions,
+    getAllDocumentsFb,
     getAllOptions,
     getAllOrders,
     getAllPatients,
@@ -12,6 +14,7 @@ import {
     updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { addPatient } from "@/app/firebase/user";
+import { AreasSelector } from "@/app/types/areas";
 import { DataPatientObject } from "@/app/types/patient";
 import moment from "moment";
 import { useCallback, useEffect, useState, useRef, ChangeEvent } from "react";
@@ -39,17 +42,16 @@ const calculateAge = (birthDate: Date | string): number => {
 };
 
 const NewOrderHook = (props?: Props) => {
-    const { isActiveUser, userData, accessTokenUser } = useAuth();
+    const { isActiveUser, userData, accessTokenUser, userRol } = useAuth();
 
-    const { rol } = userData;
+    const { campus, rol } = userData;
+
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const [showHelp, setShowHelp] = useState(false);
-    const [formStep, setFormStep] = useState(0);
 
-    //*Aquí para cambiar de vista de especialista a recepcionista
-    // const [userRol, setUserRol] = useState(userData?.rol);
+    const [formStep, setFormStep] = useState(0);
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
@@ -73,6 +75,8 @@ const NewOrderHook = (props?: Props) => {
     const [suggestions, setSuggestions] = useState<DataPatientObject[]>([]);
 
     const [allPatients, setAllPatients] = useState<any>();
+
+    const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
 
     const [patientExist, setPatientExist] = useState(false);
 
@@ -200,7 +204,7 @@ const NewOrderHook = (props?: Props) => {
                     sendTo: sentToArea,
                     isActive: true,
                     isDeleted: false,
-                    modifiedBy: rol,
+                    modifiedBy: userRol,
                 }).then((res) => {
                     setCurrentOrder(parseInt(res.id));
                 });
@@ -230,7 +234,8 @@ const NewOrderHook = (props?: Props) => {
                         sendTo: sentToArea,
                         isActive: true,
                         isDeleted: false,
-                        modifiedBy: rol,
+                        modifiedBy: userRol,
+                        assignedCampus: rol === "Funcionario" ? campus : "",
                     }).then((res) => {
                         setCurrentOrder(parseInt(res.id));
                     });
@@ -254,11 +259,17 @@ const NewOrderHook = (props?: Props) => {
         allPatientsData && setAllPatients(allPatientsData);
     }, []);
 
+    const getAreas = useCallback(async () => {
+        const allAreasData = await getAllAreasOptions();
+        allAreasData && setAllAreas(allAreasData);
+    }, []);
+
     useEffect(() => {
         getOptions();
         getOrders();
         getPatients();
-    }, [getOptions, getOrders, getPatients]);
+        getAreas();
+    }, [getOptions, getOrders, getPatients, getAreas]);
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -269,11 +280,11 @@ const NewOrderHook = (props?: Props) => {
 
     return {
         showHelp,
+        allAreas,
         setShowHelp,
         formStep,
         setFormStep,
-        userRol: rol,
-        // setUserRol,
+        userRol,
         isEdit,
         setIsEdit,
         isDataSelected,

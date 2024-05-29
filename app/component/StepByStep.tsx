@@ -2,6 +2,7 @@ import _ from "lodash";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsFillGeoAltFill, BsFillPersonVcardFill } from "react-icons/bs";
+import { BiChevronLeft, BiBlock } from "react-icons/bi";
 import { FaUserDoctor } from "react-icons/fa6";
 import {
     IoCall,
@@ -14,8 +15,8 @@ import {
 import { MdOutlineDateRange } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
 import "../style.css";
+import { AreasSelector } from "../types/areas";
 import { idTypes } from "./constants/formConstants";
-import { options } from "./constants/stepByStepConstants";
 import DentalSelect from "./orders/dental-select";
 import SelectComponent from "./SelectComponent";
 import DoctorVector from "./vectors/DoctorVector";
@@ -44,10 +45,12 @@ interface Props {
     optionsData: any;
     oldData?: any;
     wrapperRef?: any;
+    allAreas: AreasSelector[];
 }
 
 function StepByStep({
     formStep,
+    allAreas,
     setFormStep,
     userRol,
     isEdit,
@@ -70,6 +73,8 @@ function StepByStep({
     handleInputChange,
 }: Props) {
     const router = useRouter();
+
+    // console.log(oldData?.status);
 
     const [professionalName, setProfessionalName] = useState("");
     const [professionalSpecialty, setProfessionalSpecialty] = useState("");
@@ -129,12 +134,6 @@ function StepByStep({
         string[]
     >([]);
 
-    // console.log(
-    //     oldData.selectedIntraOrals,
-    //     selectedIntraOrals,
-    //     isEdit && oldData && oldData?.selectedIntraOrals,
-    // );
-
     const allDataSelected = useMemo(
         () => [
             {
@@ -155,7 +154,10 @@ function StepByStep({
                 selectedBackground,
                 selectedClinicalPhotographyDeliveryMethod,
                 selectedDiagnosticPackage,
-                observationComment,
+                [userRol !== "Profesional"
+                    ? userRol?.substring(0, 3).toLocaleLowerCase() +
+                      "ObservationComment"
+                    : observationComment]: observationComment,
                 diagnosticImpressionComment,
             },
         ],
@@ -179,6 +181,7 @@ function StepByStep({
             selectedIntraOrals,
             selectedModels,
             selectedPresentation,
+            userRol,
         ],
     );
 
@@ -200,7 +203,14 @@ function StepByStep({
             setProfessionalName(oldData.professionalName);
             setProfessionalSpecialty(oldData.professionalSpecialty);
             setProfessionalEmail(oldData.professionalEmail);
-            setObservationComment(oldData.observationComment);
+            setObservationComment(
+                userRol !== "Profesional"
+                    ? oldData?.[
+                          userRol?.substring(0, 3).toLocaleLowerCase() +
+                              "ObservationComment"
+                      ]
+                    : oldData.observationComment,
+            );
             setDiagnosticImpressionComment(oldData.diagnosticImpressionComment);
             setDentalSelectBoneScan(oldData.dentalSelectBoneScan);
             setDentalSelectTomography(oldData.dentalSelectTomography);
@@ -227,7 +237,7 @@ function StepByStep({
             );
             setSelectedDiagnosticPackage(oldData.selectedDiagnosticPackage);
         }
-    }, [oldData]);
+    }, [oldData, userRol]);
 
     return (
         <div>
@@ -444,7 +454,7 @@ function StepByStep({
                                 <BsFillGeoAltFill />
                             </span>
                         </div>
-                        {userRol === "Recepción/Caja" && (
+                        {userRol === "Recepción" && (
                             <>
                                 <div className="col relative flex flex-col space-y-2">
                                     <label
@@ -454,9 +464,9 @@ function StepByStep({
                                         Doctor&nbsp;(opcional)
                                     </label>
                                     <input
-                                        value={data.ProfessionalName}
+                                        value={professionalName}
                                         type="text"
-                                        name="ProfessionalName"
+                                        name="professionalName"
                                         id="Doctor"
                                         className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
                                         onChange={(e) =>
@@ -472,21 +482,32 @@ function StepByStep({
                                         htmlFor="Specialty"
                                         className="text-white"
                                     >
-                                        Especialidad&nbsp;(opcional)
+                                        Especialidad
                                     </label>
                                     <input
-                                        value={data.ProfessionalSpecialty}
+                                        disabled={professionalName === ""}
+                                        value={professionalSpecialty}
                                         type="text"
-                                        name="ProfessionalSpecialty"
+                                        name="professionalSpecialty"
                                         id="Specialty"
-                                        className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                        className={`rounded-xl h-10 bg-transparent border ${
+                                            professionalName === ""
+                                                ? "border-gray-600"
+                                                : "border-company-blue"
+                                        } text-white px-10`}
                                         onChange={(e) =>
                                             setProfessionalSpecialty(
                                                 e.target.value,
                                             )
                                         }
                                     />
-                                    <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                    <span
+                                        className={`absolute left-2 bottom-2 ${
+                                            professionalName === ""
+                                                ? "text-gray-600"
+                                                : "text-company-blue"
+                                        } text-[1.5rem]`}
+                                    >
                                         <FaUserDoctor />
                                     </span>
                                 </div>
@@ -495,19 +516,30 @@ function StepByStep({
                                         htmlFor="emailDoctor"
                                         className="text-white"
                                     >
-                                        Correo Doctor&nbsp;(opcional)
+                                        Correo Doctor
                                     </label>
                                     <input
-                                        value={data.ProfessionalEmail}
+                                        disabled={professionalName === ""}
+                                        value={professionalEmail}
                                         type="email"
-                                        name="ProfessionalEmail"
+                                        name="professionalEmail"
                                         id="emailDoctor"
-                                        className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                        className={`rounded-xl h-10 bg-transparent border ${
+                                            professionalName === ""
+                                                ? "border-gray-600"
+                                                : "border-company-blue"
+                                        }  text-white px-10`}
                                         onChange={(e) =>
                                             setProfessionalEmail(e.target.value)
                                         }
                                     />
-                                    <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                    <span
+                                        className={`absolute left-2 bottom-2 ${
+                                            professionalName === ""
+                                                ? "text-gray-600"
+                                                : "text-company-blue"
+                                        } text-[1.5rem]`}
+                                    >
                                         <IoMail />
                                     </span>
                                 </div>
@@ -540,32 +572,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedIntraOrals.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedIntraOrals.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedIntraOrals(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedIntraOrals(
-                                                                    [
-                                                                        ...selectedIntraOrals,
+                                                                    selectedIntraOrals.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedIntraOrals.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedIntraOrals,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedIntraOrals.includes(
                                                                 option,
                                                             )
@@ -604,32 +634,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedExtraOrals.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedExtraOrals.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedExtraOrals(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedExtraOrals(
-                                                                    [
-                                                                        ...selectedExtraOrals,
+                                                                    selectedExtraOrals.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedExtraOrals.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedExtraOrals,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedExtraOrals.includes(
                                                                 option,
                                                             )
@@ -686,32 +714,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selected3DVolumetricTomography.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selected3DVolumetricTomography.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelected3DVolumetricTomography(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelected3DVolumetricTomography(
-                                                                    [
-                                                                        ...selected3DVolumetricTomography,
+                                                                    selected3DVolumetricTomography.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selected3DVolumetricTomography.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selected3DVolumetricTomography,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selected3DVolumetricTomography.includes(
                                                                 option,
                                                             )
@@ -755,32 +781,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedAdditionalDeliveryMethod.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedAdditionalDeliveryMethod.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedAdditionalDeliveryMethod(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedAdditionalDeliveryMethod(
-                                                                    [
-                                                                        ...selectedAdditionalDeliveryMethod,
+                                                                    selectedAdditionalDeliveryMethod.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedAdditionalDeliveryMethod.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedAdditionalDeliveryMethod,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedAdditionalDeliveryMethod.includes(
                                                                 option,
                                                             )
@@ -825,32 +849,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedDiagnosis.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedDiagnosis.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedDiagnosis(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedDiagnosis(
-                                                                    [
-                                                                        ...selectedDiagnosis,
+                                                                    selectedDiagnosis.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedDiagnosis.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedDiagnosis,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedDiagnosis.includes(
                                                                 option,
                                                             )
@@ -891,32 +913,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedModels.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedModels.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedModels(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedModels(
-                                                                    [
-                                                                        ...selectedModels,
+                                                                    selectedModels.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedModels.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedModels,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedModels.includes(
                                                                 option,
                                                             )
@@ -967,32 +987,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedIntraOralClinicalPhotography.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedIntraOralClinicalPhotography.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedIntraOralClinicalPhotography(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedIntraOralClinicalPhotography(
-                                                                    [
-                                                                        ...selectedIntraOralClinicalPhotography,
+                                                                    selectedIntraOralClinicalPhotography.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedIntraOralClinicalPhotography.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedIntraOralClinicalPhotography,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedIntraOralClinicalPhotography.includes(
                                                                 option,
                                                             )
@@ -1037,32 +1055,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedExtraOralClinicalPhotography.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedExtraOralClinicalPhotography.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedExtraOralClinicalPhotography(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedExtraOralClinicalPhotography(
-                                                                    [
-                                                                        ...selectedExtraOralClinicalPhotography,
+                                                                    selectedExtraOralClinicalPhotography.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedExtraOralClinicalPhotography.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedExtraOralClinicalPhotography,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedExtraOralClinicalPhotography.includes(
                                                                 option,
                                                             )
@@ -1101,32 +1117,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedPresentation.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedPresentation.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedPresentation(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedPresentation(
-                                                                    [
-                                                                        ...selectedPresentation,
+                                                                    selectedPresentation.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedPresentation.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedPresentation,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedPresentation.includes(
                                                                 option,
                                                             )
@@ -1165,32 +1179,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedBackground.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedBackground.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedBackground(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedBackground(
-                                                                    [
-                                                                        ...selectedBackground,
+                                                                    selectedBackground.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedBackground.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedBackground,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedBackground.includes(
                                                                 option,
                                                             )
@@ -1229,32 +1241,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedClinicalPhotographyDeliveryMethod.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedClinicalPhotographyDeliveryMethod.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedClinicalPhotographyDeliveryMethod(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedClinicalPhotographyDeliveryMethod(
-                                                                    [
-                                                                        ...selectedClinicalPhotographyDeliveryMethod,
+                                                                    selectedClinicalPhotographyDeliveryMethod.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedClinicalPhotographyDeliveryMethod.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedClinicalPhotographyDeliveryMethod,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedClinicalPhotographyDeliveryMethod.includes(
                                                                 option,
                                                             )
@@ -1299,32 +1309,30 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            if (
-                                                                selectedDiagnosticPackage.includes(
-                                                                    option,
-                                                                )
-                                                            ) {
-                                                                let selectedList =
-                                                                    selectedDiagnosticPackage.filter(
-                                                                        (
-                                                                            item,
-                                                                        ) =>
-                                                                            item !==
-                                                                            option,
-                                                                    );
+                                                            (!isEdit ||
+                                                                oldData.status !==
+                                                                    "enviada") &&
                                                                 setSelectedDiagnosticPackage(
-                                                                    selectedList,
-                                                                );
-                                                            } else {
-                                                                setSelectedDiagnosticPackage(
-                                                                    [
-                                                                        ...selectedDiagnosticPackage,
+                                                                    selectedDiagnosticPackage.includes(
                                                                         option,
-                                                                    ],
+                                                                    )
+                                                                        ? selectedDiagnosticPackage.filter(
+                                                                              (
+                                                                                  item,
+                                                                              ) =>
+                                                                                  item !==
+                                                                                  option,
+                                                                          )
+                                                                        : [
+                                                                              ...selectedDiagnosticPackage,
+                                                                              option,
+                                                                          ],
                                                                 );
-                                                            }
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                            !isEdit &&
+                                                            "cursor-pointer"
+                                                        } ${
                                                             selectedDiagnosticPackage.includes(
                                                                 option,
                                                             )
@@ -1350,7 +1358,7 @@ function StepByStep({
                         </div>
                         <div
                             className={`${
-                                userRol !== "Recepción/Caja"
+                                userRol !== "Recepción"
                                     ? "col-span-1"
                                     : "col-span-2"
                             } flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50`}
@@ -1360,12 +1368,13 @@ function StepByStep({
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
                                 <textarea
+                                    // disabled={isEdit}
                                     value={observationComment}
                                     id="Observations"
                                     name="observations"
                                     rows={4}
                                     cols={50}
-                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
                                     placeholder="Escribe aquí tus observaciones..."
                                     onChange={(e) =>
                                         setObservationComment(e.target.value)
@@ -1373,7 +1382,7 @@ function StepByStep({
                                 />
                             </div>
                         </div>
-                        {userRol !== "Recepción/Caja" && (
+                        {userRol !== "Recepción" && (
                             <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                 <h3 className="text-company-orange text-xl font-bold">
                                     Impresión diagnostica
@@ -1385,7 +1394,7 @@ function StepByStep({
                                         name="diagnosticImpression"
                                         rows={4}
                                         cols={50}
-                                        className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent"
+                                        className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
                                         placeholder="Escribe aquí tus observaciones..."
                                         onChange={(e) =>
                                             setDiagnosticImpressionComment(
@@ -1425,9 +1434,9 @@ function StepByStep({
                 </div>
             )} */}
             {formStep === 6 && (
-                <div className="flex flex-col mx-20">
+                <div className="flex flex-col px-20 py-10 relative">
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col space-y-4 p-4 mb-[50%]">
+                        <div className="flex flex-col space-y-4 p-4">
                             {isEdit ? (
                                 <h2 className="text-company-orange font-bold text-4xl">
                                     Examen Editado con Éxito
@@ -1446,13 +1455,13 @@ function StepByStep({
                                 lobortis nisl ut aliquip ex ea commodo
                                 consequat.
                             </p>
-                            {userRol === "Recepción/Caja" && (
+                            {userRol === "Recepción" && (
                                 <div className="pr-10 space-y-4 pb-10">
                                     <label className="text-company-orange">
                                         Enviar a:
                                     </label>
                                     <SelectComponent
-                                        options={options}
+                                        options={allAreas}
                                         selectChangeHandlerSentTo={
                                             selectChangeHandlerSentTo
                                         }
@@ -1463,9 +1472,12 @@ function StepByStep({
                                 <button
                                     onClick={(e) => {
                                         handleSendForm(e).then(() => {
-                                            let step = formStep;
-                                            step++;
-                                            setFormStep(step);
+                                            // let step = formStep;
+                                            // step++;
+                                            setFormStep(
+                                                (prevStep: number) =>
+                                                    prevStep + 1,
+                                            );
                                         });
                                     }}
                                     className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
@@ -1475,7 +1487,7 @@ function StepByStep({
                                 <button
                                     onClick={() => {
                                         router.replace(
-                                            "/dashboard/new-order/preview-order",
+                                            "/dashboard/preview-order",
                                         );
                                     }}
                                     className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white"
@@ -1487,6 +1499,32 @@ function StepByStep({
                                     <span>Previsualizar</span>
                                 </button>
                             </div>
+                            <div className="flex flex-row pt-10 space-x-10">
+                                <button
+                                    onClick={(e) => {
+                                        setFormStep(
+                                            (prevStep: number) => prevStep - 1,
+                                        );
+                                    }}
+                                    className="flex items-center cursor-pointer text-company-blue"
+                                >
+                                    <BiChevronLeft size={32} />
+                                    <span>Atrás</span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        router.replace(
+                                            isEdit
+                                                ? "/dashboard/orders-historial"
+                                                : "/dashboard",
+                                        );
+                                    }}
+                                    className="flex items-center cursor-pointer text-company-blue"
+                                >
+                                    <IoCloseSharp size={28} />
+                                    <span>Cancelar</span>
+                                </button>
+                            </div>
                         </div>
                         <div className="flex flex-col h-auto justify-center items-center absolute left-[50%] -bottom-5">
                             <DoctorVector width={500} height={500} />
@@ -1495,14 +1533,14 @@ function StepByStep({
                 </div>
             )}
             {formStep === 7 && (
-                <div className="flex flex-col mx-20">
+                <div className="flex flex-col p-16 relative">
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="flex flex-col space-y-4 rounded-xl pr-[40%] pb-[20%] pl-[10%] pt-[15%] bg-black bg-opacity-40">
-                            <h2 className="text-company-orange font-bold text-4xl">
-                                {`La orden #${currentOrder} ha sido enviada con éxito al área
+                        <div className="flex flex-row space-x-4 rounded-xl bg-black bg-opacity-40">
+                            <div className="flex flex-col pr-[40%] pb-[15%] pl-[10%] pt-[10%] space-y-8">
+                                <h2 className="text-company-orange font-bold text-4xl">
+                                    {`La orden #${currentOrder} ha sido enviada con éxito al área
                                     encargada`}
-                            </h2>
-                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pt-10">
+                                </h2>
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -1516,7 +1554,7 @@ function StepByStep({
                                 </button>
                             </div>
                         </div>
-                        <div className="flex flex-col justify-center items-center absolute left-[50%] -bottom-4">
+                        <div className="flex flex-col justify-center items-center absolute left-[50%] -bottom-5">
                             <DoctorVector width={500} height={500} />
                         </div>
                     </div>
