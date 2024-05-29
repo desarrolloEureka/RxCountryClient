@@ -140,3 +140,31 @@ input.calendar-light {
 .custom-scrollbar::-webkit-scrollbar-track {
     background: #504f4f;
 }
+
+.custom-scrollbar-textarea::-webkit-scrollbar {
+    height: 5px;
+}
+
+.custom-scrollbar-textarea::-webkit-scrollbar-thumb {
+    /* background-color: transparent; */
+    background-color: #504f4f;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* .custom-scrollbar-textarea:hover::-webkit-scrollbar-thumb {
+    background-color: #2c2c2c;
+    box-shadow: 0 8px 5px rgba(0, 0, 0, 0.2);
+} */
+
+.custom-scrollbar-textarea::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar-textarea::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+.custom-scrollbar-textarea {
+    resize: none;
+}

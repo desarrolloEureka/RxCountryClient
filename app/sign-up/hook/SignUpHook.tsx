@@ -36,7 +36,7 @@ const SignUpHook = (props?: Props) => {
     const [sigUp, setSignUp] = useState(false);
     const [nextStep, setNextStep] = useState(true);
 
-    const [specialties, setSpecialties] = useState<any>();
+    const [specialties, setSpecialties] = useState<any[]>();
     const [contracts, setContracts] = useState<any>();
 
     const [errorImg, setErrorImg] = useState("");
@@ -217,7 +217,7 @@ const SignUpHook = (props?: Props) => {
     };
 
     const getSpecialties = useCallback(async () => {
-        const allSpecialties: any = await getAllSpecialties();
+        const allSpecialties: any[] = await getAllSpecialties();
         allSpecialties && setSpecialties(allSpecialties);
     }, []);
 

@@ -1,9 +1,9 @@
 import { auth } from "@/shared/firebase/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
-import { UserData } from "../types/user";
-import { getProfileDataByIdFb } from "./user";
 import { dataUserObject } from "../data/user";
+import { UserData } from "../types/user";
+import { getAllDocumentsFb } from "./documents";
 
 // interface Role {
 //     id: string;
@@ -14,12 +14,13 @@ import { dataUserObject } from "../data/user";
 const useAuth = () => {
     // const auth = getAuth();
     const [isLoading, setIsLoading] = useState(true);
-    const [isActiveUser, setIsActiveUser] = useState<boolean>();
+    const [isActiveUser, setIsActiveUser] = useState<boolean>(true);
     const [user, setUser] = useState<User | null>();
     const [userData, setUserData] = useState<UserData>(dataUserObject);
     // const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
+    const [userRol, setUserRol] = useState<string>("");
     //   const getRole = useCallback(async () => {
     //     if (user) {
     //       const document = await getDoc(doc(db, 'usersData', user.uid));
@@ -55,15 +56,29 @@ const useAuth = () => {
 
     const getUserState = useCallback(async () => {
         const userId: string | undefined = user?.uid;
-        user &&
-            (await getProfileDataByIdFb(userId, "professionals").then(
-                (res: any) => {
-                    setIsActiveUser(res.isActive);
-                    if (res) {
-                        setUserData(res);
-                    }
-                },
-            ));
+        const professionalsDocs = await getAllDocumentsFb("professionals");
+        const functionaryDocs = await getAllDocumentsFb("functionary");
+        const patientsDocs = await getAllDocumentsFb("patients");
+        const allAreasData = await getAllDocumentsFb("areas");
+        const currentUserData =
+            user &&
+            (functionaryDocs.find((doc: any) => doc.uid === userId) ||
+                professionalsDocs.find((doc: any) => doc.uid === userId) ||
+                patientsDocs.find((doc: any) => doc.uid === userId));
+
+        if (currentUserData) {
+            setUserData(currentUserData);
+            setIsActiveUser(currentUserData.isActive);
+        }
+
+        if (functionaryDocs && allAreasData && currentUserData.area) {
+            const rol = allAreasData?.find(
+                (item: any) => item.uid === currentUserData.area,
+            )?.name;
+            setUserRol(rol);
+        } else {
+            setUserRol(currentUserData.rol);
+        }
     }, [user]);
 
     useEffect(() => {
@@ -80,6 +95,7 @@ const useAuth = () => {
     return {
         isLoading,
         user,
+        userRol,
         userData,
         error,
         isActiveUser,
