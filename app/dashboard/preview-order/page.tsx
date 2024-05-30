@@ -30,7 +30,7 @@ function PreviewOrderPage({
                 <div className="flex items-center space-x-8">
                     <button
                         onClick={() => {
-                            backToDetail ? backToDetail() : backToOrder();
+                            backToDetail!==undefined ? backToDetail() : backToOrder();
                         }}
                     >
                         <IoArrowBackCircleOutline
