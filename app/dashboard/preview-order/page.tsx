@@ -1,6 +1,7 @@
 "use client";
 
 import PDFViewer from "@/app/component/PDFViewer";
+import { PreviewOrderProps } from "@/app/types/order";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -12,12 +13,7 @@ export default function PreviewOrderPage({
     backToOrder,
     isEdit,
     orderId,
-}: {
-    backToOrder: () => void;
-    backToDetail?: () => void;
-    isEdit?: boolean;
-    orderId?: number;
-}) {
+}: PreviewOrderProps) {
     const [urlPDF, setUrlPDF] = useState<string>(
         "/assets/documents/RXOrdenFinal.pdf",
     );
@@ -30,7 +26,9 @@ export default function PreviewOrderPage({
                 <div className="flex items-center space-x-8">
                     <button
                         onClick={() => {
-                            backToDetail!==undefined ? backToDetail() : backToOrder();
+                            backToDetail !== undefined
+                                ? backToDetail()
+                                : backToOrder();
                         }}
                     >
                         <IoArrowBackCircleOutline
