@@ -70,6 +70,14 @@ const OrderDetailsContent = ({
 }: Props) => {
     const router = useRouter();
 
+    const backToOrder = () => {
+        setDetailStep(1);
+    };
+
+    const backToDetail = () => {
+        setDetailStep(0);
+    };
+
     if (!orderAndPatientData || !userRol) {
         return (
             <div className="mx-auto flex flex-col rounded-[2.5rem] bg-company-gray pt-12 w-full max-w-[1440px]">
@@ -722,8 +730,8 @@ const OrderDetailsContent = ({
             )}
             {detailStep === 3 && (
                 <PreviewOrderPage
-                    backToOrder={() => setDetailStep(1)}
-                    backToDetail={() => setDetailStep(0)}
+                    backToOrder={backToOrder}
+                    backToDetail={backToDetail}
                 />
             )}
         </div>

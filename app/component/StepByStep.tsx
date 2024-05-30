@@ -190,6 +190,10 @@ function StepByStep({
         ],
     );
 
+    const backToOrder = () => {
+        setFormStep(6);
+    };
+
     const valData = useCallback(async () => {
         setIsDataSelected(
             _.some(allDataSelected, (obj) =>
@@ -1594,9 +1598,7 @@ function StepByStep({
                     </div>
                 </div>
             )}
-            {formStep === 8 && (
-                <PreviewOrderPage backToOrder={() => setFormStep(6)} />
-            )}
+            {formStep === 8 && <PreviewOrderPage backToOrder={backToOrder} />}
         </div>
     );
 }

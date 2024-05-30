@@ -49,6 +49,10 @@ const OrderHistorialPage = () => {
         setOrderId,
     } = OrderHistorialHook();
 
+    const backToOrder = () => {
+        setShowPdf(false);
+    };
+
     if (!ordersByRol) {
         return (
             <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
@@ -510,7 +514,7 @@ const OrderHistorialPage = () => {
                 )}
                 {showPdf && (
                     <PreviewOrderPage
-                        backToOrder={() => setShowPdf(false)}
+                        backToOrder={backToOrder}
                         isEdit={userRol === "Profesional"}
                         orderId={orderId}
                     />
