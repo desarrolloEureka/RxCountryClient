@@ -16,7 +16,7 @@ interface PreviewOrderProps {
     orderId?: number;
 }
 
-const PreviewOrderPage = (props: PreviewOrderProps) => {
+const PreviewOrderPage = ({backToDetail,backToOrder, isEdit, orderId}: PreviewOrderProps) => {
     const [urlPDF, setUrlPDF] = useState<string>(
         "/assets/documents/RXOrdenFinal.pdf",
     );
@@ -59,9 +59,9 @@ const PreviewOrderPage = (props: PreviewOrderProps) => {
                     ) : ( */}
                     <button
                         onClick={() => {
-                            props.backToDetail
-                                ? props.backToDetail()
-                                : props.backToOrder();
+                            backToDetail
+                                ? backToDetail()
+                                : backToOrder();
                         }}
                     >
                         <IoArrowBackCircleOutline
@@ -78,14 +78,14 @@ const PreviewOrderPage = (props: PreviewOrderProps) => {
                         <PDFViewer fileUrl={urlPDF} />
                         {/* {(searchParams.has("id") ||
                             from !== "orders-historial") && ( */}
-                        {props.isEdit && (
+                        {isEdit && (
                             <>
                                 <div className="grid grid-cols-2 xl:grid-cols-2">
                                     <div className="flex items-center justify-center">
                                         <button
                                             onClick={() => {
                                                 router.replace(
-                                                    `/dashboard/orders-historial/edit-order/${props.orderId}`,
+                                                    `/dashboard/orders-historial/edit-order/${orderId}`,
                                                 );
                                             }}
                                             className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-company-blue hover:text-white"
