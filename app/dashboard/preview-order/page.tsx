@@ -7,7 +7,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
 
-function PreviewOrderPage({
+export function PreviewOrderPage({
     backToDetail,
     backToOrder,
     isEdit,
@@ -79,7 +79,7 @@ function PreviewOrderPage({
     );
 }
 
-export default PreviewOrderPage;
+// export default PreviewOrderPage;
 
 // "use client";
 // // import DashboardHeader from "@/app/component/DashboardHeader";

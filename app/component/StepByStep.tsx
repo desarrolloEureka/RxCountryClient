@@ -14,7 +14,7 @@ import {
 } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
-import PreviewOrderPage from "../dashboard/preview-order/page";
+import { PreviewOrderPage } from "../dashboard/preview-order/page";
 import "../style.css";
 import { AreasSelector } from "../types/areas";
 import { idTypes } from "./constants/formConstants";

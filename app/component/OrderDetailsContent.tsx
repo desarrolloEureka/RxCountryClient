@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { IoArrowBackCircleOutline, IoCheckmark, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
-import PreviewOrderPage from "../dashboard/preview-order/page";
+// import PreviewOrderPage from "../dashboard/preview-order/page";
 import { AreasSelector } from "../types/areas";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
@@ -14,6 +14,7 @@ import {
 } from "./constants/stepByStepConstants";
 import Spinner from "./spinner/Spinner";
 import DoctorVector from "./vectors/DoctorVector";
+import { PreviewOrderPage } from "../dashboard/preview-order/page";
 
 interface Props {
     userRol: string;
