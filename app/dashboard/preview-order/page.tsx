@@ -7,19 +7,19 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
 
-interface PreviewOrderProps {
+type PreviewOrder = {
     backToOrder: () => void;
     backToDetail?: () => void;
     isEdit?: boolean;
     orderId?: number;
-}
+};
 
 function PreviewOrderPage({
     backToDetail,
     backToOrder,
     isEdit,
     orderId,
-}: PreviewOrderProps) {
+}: PreviewOrder) {
     const [urlPDF, setUrlPDF] = useState<string>(
         "/assets/documents/RXOrdenFinal.pdf",
     );
