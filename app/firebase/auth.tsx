@@ -21,6 +21,7 @@ const useAuth = () => {
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
     const [userRol, setUserRol] = useState<string>("");
+    const [userCampus, setUserCampus] = useState<string>("");
     //   const getRole = useCallback(async () => {
     //     if (user) {
     //       const document = await getDoc(doc(db, 'usersData', user.uid));
@@ -54,12 +55,13 @@ const useAuth = () => {
     //     getRole();
     //   }, [getRole]);
 
-    const getUserState = useCallback(async () => {
+    const getUserData = useCallback(async () => {
         const userId: string | undefined = user?.uid;
         const professionalsDocs = await getAllDocumentsFb("professionals");
         const functionaryDocs = await getAllDocumentsFb("functionary");
         const patientsDocs = await getAllDocumentsFb("patients");
         const allAreasData = await getAllDocumentsFb("areas");
+        const allCampusData = await getAllDocumentsFb("campus");
         const currentUserData =
             user &&
             (functionaryDocs.find((doc: any) => doc.uid === userId) ||
@@ -79,23 +81,33 @@ const useAuth = () => {
         } else {
             setUserRol(currentUserData.rol);
         }
+
+        if (functionaryDocs && allCampusData && currentUserData.campus) {
+            const campus = allCampusData?.find(
+                (item: any) => item.uid === currentUserData.campus,
+            )?.name;
+            setUserCampus(campus);
+        } else {
+            setUserCampus("");
+        }
     }, [user]);
 
     useEffect(() => {
         if (user !== undefined && user !== null) {
             setIsLoading(false);
-            getUserState();
+            getUserData();
             user?.getIdToken().then((token) => setAccessTokenUser(token));
             console.log("user", user);
         } else {
             console.log("User nulo o Indefinido");
         }
-    }, [getUserState, user]);
+    }, [getUserData, user]);
 
     return {
         isLoading,
         user,
         userRol,
+        userCampus,
         userData,
         error,
         isActiveUser,

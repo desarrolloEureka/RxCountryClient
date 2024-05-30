@@ -3,6 +3,7 @@ import { collection, doc, getDocs, setDoc, updateDoc } from "firebase/firestore"
 import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 import moment from "moment";
 import { AreasBd, AreasSelector } from "../types/areas";
+import { CampusBd, CampusSelector } from "../types/campus";
 
 const currentDate = moment().format();
 
@@ -47,6 +48,23 @@ export const getAllAreasOptions = async () => {
                 value: data.uid,
                 label: data.name,
                 campus: data.availableCampus,
+            };
+            dataResult.push(dataSelector);
+        });
+    }
+    return dataResult;
+};
+
+export const getAllCampusOptions = async () => {
+    const dataResult: CampusSelector[] = [];
+    const querySnapshot = await getDocs(allRef({ ref: "campus" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data() as CampusBd;
+            const dataSelector = {
+                value: data.uid,
+                label: data.name,
+                areas: data.availableAreas,
             };
             dataResult.push(dataSelector);
         });
