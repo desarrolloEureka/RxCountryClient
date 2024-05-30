@@ -9,7 +9,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
 
-export interface PreviewOrderProps {
+interface PreviewOrderProps {
     backToOrder: () => void;
     backToDetail?: () => void;
     isEdit?: boolean;
