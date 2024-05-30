@@ -5,7 +5,7 @@ import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { IoArrowBackCircleOutline, IoCheckmark, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 // import PreviewOrderPage from "../dashboard/preview-order/page";
-import PreviewOrderPage from "../dashboard/preview-order/page";
+import PreviewOrder from "./PreviewOrder";
 import { AreasSelector } from "../types/areas";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
@@ -730,7 +730,7 @@ const OrderDetailsContent = ({
                 </div>
             )}
             {detailStep === 3 && (
-                <PreviewOrderPage
+                <PreviewOrder
                     backToOrder={backToOrder}
                     backToDetail={backToDetail}
                 />

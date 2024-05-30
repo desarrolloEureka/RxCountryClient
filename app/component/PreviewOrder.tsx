@@ -8,7 +8,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
 
-export default function PreviewOrderPage({
+export default function PreviewOrder({
     backToDetail,
     backToOrder,
     isEdit,

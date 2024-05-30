@@ -15,7 +15,7 @@ import { IoAlertCircleSharp } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
 import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
-import PreviewOrderPage from "../preview-order/page";
+import PreviewOrder from "../../component/PreviewOrder";
 import OrderHistorialHook from "./hook/OrderHistorialHook";
 
 const OrderHistorialPage = () => {
@@ -513,7 +513,7 @@ const OrderHistorialPage = () => {
                     </div>
                 )}
                 {showPdf && (
-                    <PreviewOrderPage
+                    <PreviewOrder
                         backToOrder={backToOrder}
                         isEdit={userRol === "Profesional"}
                         orderId={orderId}
