@@ -14,12 +14,12 @@ interface PreviewOrderProps {
     orderId?: number;
 }
 
-const PreviewOrderPage: React.FC<PreviewOrderProps> = ({
+function PreviewOrderPage({
     backToDetail,
     backToOrder,
     isEdit,
     orderId,
-}) => {
+}: PreviewOrderProps) {
     const [urlPDF, setUrlPDF] = useState<string>(
         "/assets/documents/RXOrdenFinal.pdf",
     );
@@ -79,7 +79,7 @@ const PreviewOrderPage: React.FC<PreviewOrderProps> = ({
             </div>
         </div>
     );
-};
+}
 
 export default PreviewOrderPage;
 
