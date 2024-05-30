@@ -25,7 +25,7 @@ const NewOrderPage = () => {
         patientData,
         titles,
         patientVal,
-        currentOrder,
+        currentOrderId,
         suggestions,
         wrapperRef,
         handleClose,
@@ -96,7 +96,7 @@ const NewOrderPage = () => {
                         setSelectedOptions={setSelectedOptions}
                         handleSendForm={handleSendForm}
                         handleInputChange={handleInputChange}
-                        currentOrder={currentOrder}
+                        currentOrderId={currentOrderId}
                         suggestions={suggestions}
                         idChangeHandler={idChangeHandler}
                         handleClose={handleClose}

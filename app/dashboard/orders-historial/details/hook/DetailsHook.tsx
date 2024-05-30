@@ -1,14 +1,17 @@
 import useAuth from "@/app/firebase/auth";
 import {
     getAllAreasOptions,
+    getAllCampusOptions,
     getAllOrders,
     getAllPatients,
     getDocumentRef,
     saveOneDocumentFb,
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
+import { CampusSelector } from "@/app/types/campus";
 import { EditedOrderStatusByRol, Order } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
+import _ from "lodash";
 import { useCallback, useEffect, useState } from "react";
 
 type Props = {
@@ -36,6 +39,7 @@ const DetailsHook = ({ slug }: Props) => {
     const [ordersData, setOrdersData] = useState<any>();
     const [patientsData, setPatientsData] = useState<any>();
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
+    const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
 
     const allDataOrders = ordersData?.flatMap((order: Order) => {
         const patient = patientsData?.find(
@@ -55,6 +59,17 @@ const DetailsHook = ({ slug }: Props) => {
     );
 
     const currentOrderData = ordersData?.find((item: any) => item.uid === slug);
+
+    const areasByCampus = () => {
+        const filteredIdAreas = allCampus?.find(
+            (item) => item.value === campus,
+        )?.areas;
+
+        const result = allAreas?.filter((area) =>
+            filteredIdAreas?.includes(area.value),
+        );
+        return result;
+    };
 
     const selectChangeHandlerSentTo = (e: any) => {
         setSentToArea(e?.value);
@@ -93,17 +108,50 @@ const DetailsHook = ({ slug }: Props) => {
             currentOrderData.uid,
         );
 
+        // console.log({
+        //     ...currentOrderData,
+        //     status: editedOrderStatusByRol[userRol],
+        //     sendTo: sentToArea ? sentToArea : currentOrderData.sendTo,
+        //     modifiedBy: userRol,
+        //     assignedCampus: campus,
+        //     [userRol?.substring(0, 3).toLocaleLowerCase() +
+        //     "ObservationComment"]: observationComment
+        //         ? observationComment
+        //         : currentOrderData?.[
+        //               userRol?.substring(0, 3).toLocaleLowerCase() +
+        //                   "ObservationComment"
+        //           ]
+        //         ? currentOrderData?.[
+        //               userRol?.substring(0, 3).toLocaleLowerCase() +
+        //                   "ObservationComment"
+        //           ]
+        //         : "",
+        //     diagnosticImpressionComment: diagnosticImpressionComment
+        //         ? diagnosticImpressionComment
+        //         : currentOrderData.diagnosticImpressionComment,
+        // });
+
         await saveOneDocumentFb(documentEditOrderRef, {
             ...currentOrderData,
-            diagnosticImpressionComment,
             status: editedOrderStatusByRol[userRol],
-            sendTo: sentToArea,
+            sendTo: sentToArea ? sentToArea : currentOrderData.sendTo,
             modifiedBy: userRol,
             assignedCampus: campus,
             [userRol?.substring(0, 3).toLocaleLowerCase() +
-            "ObservationComment"]: observationComment,
-            [userRol?.substring(0, 3).toLocaleLowerCase() +
-            "DiagnosticImpressionComment"]: diagnosticImpressionComment,
+            "ObservationComment"]: observationComment
+                ? observationComment
+                : currentOrderData?.[
+                      userRol?.substring(0, 3).toLocaleLowerCase() +
+                          "ObservationComment"
+                  ]
+                ? currentOrderData?.[
+                      userRol?.substring(0, 3).toLocaleLowerCase() +
+                          "ObservationComment"
+                  ]
+                : "",
+            diagnosticImpressionComment: diagnosticImpressionComment
+                ? diagnosticImpressionComment
+                : currentOrderData.diagnosticImpressionComment,
         });
     };
 
@@ -122,15 +170,21 @@ const DetailsHook = ({ slug }: Props) => {
         allAreasData && setAllAreas(allAreasData);
     }, []);
 
+    const getCampus = useCallback(async () => {
+        const allCampusData = await getAllCampusOptions();
+        allCampusData && setAllCampus(allCampusData);
+    }, []);
+
     useEffect(() => {
         getOrders();
         getPatients();
         getAreas();
-    }, [getOrders, getPatients, getAreas]);
+        getCampus();
+    }, [getOrders, getPatients, getAreas, getCampus]);
 
     return {
         userRol,
-        allAreas,
+        allAreas: _.sortBy(areasByCampus(), "label"),
         expandReceptionData,
         setExpandReceptionData,
         expandSpecialist,

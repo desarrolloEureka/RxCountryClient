@@ -4,13 +4,16 @@ import { dataPatientObject } from "@/app/data/patientData";
 import useAuth from "@/app/firebase/auth";
 import {
     getAllAreasOptions,
+    getAllCampusOptions,
     getAllOptions,
     getAllOrders,
     getDocumentRef,
     saveOneDocumentFb,
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
+import { CampusSelector } from "@/app/types/campus";
 import { EditedOrderStatusByRol } from "@/app/types/order";
+import _ from "lodash";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 
@@ -59,7 +62,7 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [patientData, setPatientData] = useState(dataPatientObject);
 
-    const [currentOrder, setCurrentOrder] = useState<number>(1);
+    const [currentOrderId, setCurrentOrderId] = useState<number>(1);
 
     const [sentToArea, setSentToArea] = useState<string>("");
 
@@ -67,10 +70,23 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
 
+    const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
+
     const oldData = ordersData?.find((order: any) => order.uid === slug);
 
     const changeHandler = (e: any) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
+    };
+
+    const areasByCampus = () => {
+        const filteredIdAreas = allCampus?.find(
+            (item) => item.value === campus,
+        )?.areas;
+
+        const result = allAreas?.filter((area) =>
+            filteredIdAreas?.includes(area.value),
+        );
+        return result;
     };
 
     const selectChangeHandlerSentTo = (e: any) => {
@@ -120,18 +136,30 @@ const EditOrderHook = ({ slug }: Props) => {
             oldData.uid,
         );
 
+        // console.log({
+        //     ...selectedOptions,
+        //     uid: documentEditOrderRef.id,
+        //     patientId: oldData.patientId,
+        //     status: editedOrderStatusByRol[userRol],
+        //     sendTo: oldData.sendTo || sentToArea,
+        //     isActive: true,
+        //     isDeleted: false,
+        //     modifiedBy: userRol,
+        //     assignedCampus: rol === "Funcionario" ? campus : "",
+        // });
+
         await saveOneDocumentFb(documentEditOrderRef, {
             ...selectedOptions,
             uid: documentEditOrderRef.id,
             patientId: oldData.patientId,
             status: editedOrderStatusByRol[userRol],
-            sendTo: sentToArea,
+            sendTo: oldData.sendTo || sentToArea,
             isActive: true,
             isDeleted: false,
             modifiedBy: userRol,
             assignedCampus: rol === "Funcionario" ? campus : "",
         }).then((res) => {
-            setCurrentOrder(parseInt(res.id));
+            setCurrentOrderId(parseInt(res.id));
         });
     };
 
@@ -150,15 +178,21 @@ const EditOrderHook = ({ slug }: Props) => {
         allAreasData && setAllAreas(allAreasData);
     }, []);
 
+    const getCampus = useCallback(async () => {
+        const allCampusData = await getAllCampusOptions();
+        allCampusData && setAllCampus(allCampusData);
+    }, []);
+
     useEffect(() => {
         getOptions();
         getOrders();
         getAreas();
-    }, [getOptions, getOrders, getAreas]);
+        getCampus();
+    }, [getOptions, getOrders, getAreas, getCampus]);
 
     return {
         showHelp,
-        allAreas,
+        allAreas: _.sortBy(areasByCampus(), "label"),
         setShowHelp,
         formStep,
         setFormStep,
@@ -172,7 +206,7 @@ const EditOrderHook = ({ slug }: Props) => {
         optionsData,
         patientData,
         titles,
-        currentOrder,
+        currentOrderId,
         changeHandler,
         selectChangeHandlerIdType,
         dateChangeHandler,

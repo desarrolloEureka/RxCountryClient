@@ -1,8 +1,8 @@
 import _ from "lodash";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { BiChevronLeft } from "react-icons/bi";
 import { BsFillGeoAltFill, BsFillPersonVcardFill } from "react-icons/bs";
-import { BiChevronLeft, BiBlock } from "react-icons/bi";
 import { FaUserDoctor } from "react-icons/fa6";
 import {
     IoCall,
@@ -14,6 +14,7 @@ import {
 } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
+import PreviewOrderPage from "../dashboard/preview-order/page";
 import "../style.css";
 import { AreasSelector } from "../types/areas";
 import { idTypes } from "./constants/formConstants";
@@ -25,7 +26,7 @@ interface Props {
     formStep: number;
     setFormStep: (e: any) => void;
     userRol?: string;
-    currentOrder: number;
+    currentOrderId: number;
     suggestions?: any[];
     isEdit?: boolean;
     setIsDataSelected: (e: any) => void;
@@ -58,7 +59,7 @@ function StepByStep({
     optionsData,
     data,
     oldData,
-    currentOrder,
+    currentOrderId,
     suggestions,
     wrapperRef,
     handleClose,
@@ -74,7 +75,7 @@ function StepByStep({
 }: Props) {
     const router = useRouter();
 
-    // console.log(oldData?.status);
+    // console.log(oldData);
 
     const [professionalName, setProfessionalName] = useState("");
     const [professionalSpecialty, setProfessionalSpecialty] = useState("");
@@ -154,10 +155,13 @@ function StepByStep({
                 selectedBackground,
                 selectedClinicalPhotographyDeliveryMethod,
                 selectedDiagnosticPackage,
-                [userRol !== "Profesional"
-                    ? userRol?.substring(0, 3).toLocaleLowerCase() +
-                      "ObservationComment"
-                    : observationComment]: observationComment,
+                observationComment:
+                    userRol === "Profesional"
+                        ? observationComment
+                        : oldData?.observationComment,
+                [userRol?.substring(0, 3).toLocaleLowerCase() +
+                "ObservationComment"]:
+                    userRol !== "Profesional" ? observationComment : "",
                 diagnosticImpressionComment,
             },
         ],
@@ -182,6 +186,7 @@ function StepByStep({
             selectedModels,
             selectedPresentation,
             userRol,
+            oldData,
         ],
     );
 
@@ -196,7 +201,7 @@ function StepByStep({
 
     useEffect(() => {
         valData();
-    }, [allDataSelected, setIsDataSelected, valData]);
+    }, [valData]);
 
     useEffect(() => {
         if (oldData) {
@@ -204,12 +209,26 @@ function StepByStep({
             setProfessionalSpecialty(oldData.professionalSpecialty);
             setProfessionalEmail(oldData.professionalEmail);
             setObservationComment(
-                userRol !== "Profesional"
+                userRol !== "Profesional" &&
+                    oldData?.[
+                        userRol?.substring(0, 3).toLocaleLowerCase() +
+                            "ObservationComment"
+                    ]
                     ? oldData?.[
                           userRol?.substring(0, 3).toLocaleLowerCase() +
                               "ObservationComment"
                       ]
-                    : oldData.observationComment,
+                    : oldData?.[
+                          userRol?.substring(0, 3).toLocaleLowerCase() +
+                              "ObservationComment"
+                      ] &&
+                      oldData?.observationComment !==
+                          oldData?.[
+                              userRol?.substring(0, 3).toLocaleLowerCase() +
+                                  "ObservationComment"
+                          ]
+                    ? oldData.observationComment
+                    : "",
             );
             setDiagnosticImpressionComment(oldData.diagnosticImpressionComment);
             setDentalSelectBoneScan(oldData.dentalSelectBoneScan);
@@ -461,7 +480,7 @@ function StepByStep({
                                         htmlFor="Doctor"
                                         className="text-white"
                                     >
-                                        Doctor&nbsp;(opcional)
+                                        Profesional&nbsp;(opcional)
                                     </label>
                                     <input
                                         value={professionalName}
@@ -516,7 +535,7 @@ function StepByStep({
                                         htmlFor="emailDoctor"
                                         className="text-white"
                                     >
-                                        Correo Doctor
+                                        Correo del Profesional
                                     </label>
                                     <input
                                         disabled={professionalName === ""}
@@ -552,7 +571,11 @@ function StepByStep({
                 <div className="flex flex-col mx-20">
                     <div className="mx-auto mb-8">
                         <DentalSelect
-                            setSelected={setDentalSelectBoneScan}
+                            setSelected={
+                                !isEdit || oldData?.status !== "enviada"
+                                    ? setDentalSelectBoneScan
+                                    : () => {}
+                            }
                             selected={dentalSelectBoneScan}
                         />
                     </div>
@@ -688,7 +711,11 @@ function StepByStep({
                 <div className="flex flex-col mx-20">
                     <div className="mx-auto mb-8">
                         <DentalSelect
-                            setSelected={setDentalSelectTomography}
+                            setSelected={
+                                !isEdit || oldData?.status !== "enviada"
+                                    ? setDentalSelectBoneScan
+                                    : () => {}
+                            }
                             selected={dentalSelectTomography}
                         />
                     </div>
@@ -1472,8 +1499,6 @@ function StepByStep({
                                 <button
                                     onClick={(e) => {
                                         handleSendForm(e).then(() => {
-                                            // let step = formStep;
-                                            // step++;
                                             setFormStep(
                                                 (prevStep: number) =>
                                                     prevStep + 1,
@@ -1484,24 +1509,31 @@ function StepByStep({
                                 >
                                     <span>Guardar y enviar</span>
                                 </button>
-                                <button
-                                    onClick={() => {
-                                        router.replace(
-                                            "/dashboard/preview-order",
-                                        );
+                                <div
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setFormStep(8);
+                                        // router.replace(
+                                        //     isEdit
+                                        //         ? "/dashboard/preview-order"
+                                        //         : "/dashboard/preview-order?from=new-order",
+                                        // );
                                     }}
-                                    className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white"
+                                    className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white cursor-pointer"
                                 >
                                     <IoEye
                                         className="text-company-blue"
                                         size={24}
                                     />
                                     <span>Previsualizar</span>
-                                </button>
+                                </div>
                             </div>
                             <div className="flex flex-row pt-10 space-x-10">
-                                <button
+                                <div
                                     onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
                                         setFormStep(
                                             (prevStep: number) => prevStep - 1,
                                         );
@@ -1510,9 +1542,11 @@ function StepByStep({
                                 >
                                     <BiChevronLeft size={32} />
                                     <span>Atrás</span>
-                                </button>
-                                <button
-                                    onClick={() => {
+                                </div>
+                                <div
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
                                         router.replace(
                                             isEdit
                                                 ? "/dashboard/orders-historial"
@@ -1523,7 +1557,7 @@ function StepByStep({
                                 >
                                     <IoCloseSharp size={28} />
                                     <span>Cancelar</span>
-                                </button>
+                                </div>
                             </div>
                         </div>
                         <div className="flex flex-col h-auto justify-center items-center absolute left-[50%] -bottom-5">
@@ -1538,7 +1572,7 @@ function StepByStep({
                         <div className="flex flex-row space-x-4 rounded-xl bg-black bg-opacity-40">
                             <div className="flex flex-col pr-[40%] pb-[15%] pl-[10%] pt-[10%] space-y-8">
                                 <h2 className="text-company-orange font-bold text-4xl">
-                                    {`La orden #${currentOrder} ha sido enviada con éxito al área
+                                    {`La orden #${currentOrderId} ha sido enviada con éxito al área
                                     encargada`}
                                 </h2>
                                 <button
@@ -1559,6 +1593,9 @@ function StepByStep({
                         </div>
                     </div>
                 </div>
+            )}
+            {formStep === 8 && (
+                <PreviewOrderPage backToOrder={() => setFormStep(6)} />
             )}
         </div>
     );

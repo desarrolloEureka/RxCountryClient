@@ -17,7 +17,7 @@ interface Props {
 
 export default function DashboardHeader({ selectedMenuItem }: Props) {
     const logOut = () => signOut(auth);
-    const { isActiveUser, userData, userRol } = useAuth();
+    const { isActiveUser, userData, userRol, userCampus } = useAuth();
     const { name, lastName, urlPhoto } = userData;
 
     const [orderIconColor, setOrderIconColor] = useState("white");
@@ -26,6 +26,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
         useState("white");
     const [openProfileMenu, setOpenProfileMenu] = useState(false);
     const [openLogOutMenu, setOpenLogOutMenu] = useState(false);
+
     return (
         <div className="relative rounded-2xl shadow-md h-36 bg-gray-700 px-8 bg-opacity-80 flex justify-between items-center">
             <Link href="/dashboard">
@@ -121,7 +122,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 </div>
                 <div className="flex flex-col text-center">
                     <span className="text-xl text-capitalize">{name}</span>
-                    <span className="text-sm text-capitalize">{userRol}</span>
+                    <span className="text-sm text-capitalize">{`${userRol} ${userCampus}`}</span>
                 </div>
             </Link>
             {openProfileMenu && (
