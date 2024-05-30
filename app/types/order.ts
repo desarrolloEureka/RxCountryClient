@@ -12,3 +12,10 @@ export interface OrdersByRol {
 export interface EditedOrderStatusByRol {
     [key: string]: string;
 }
+
+export interface PreviewOrderProps {
+    backToOrder: () => void;
+    backToDetail?: () => void;
+    isEdit?: boolean;
+    orderId?: number;
+}

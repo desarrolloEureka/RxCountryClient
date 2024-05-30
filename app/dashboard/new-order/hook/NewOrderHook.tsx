@@ -4,7 +4,7 @@ import { dataPatientObject } from "@/app/data/patientData";
 import useAuth from "@/app/firebase/auth";
 import {
     getAllAreasOptions,
-    getAllDocumentsFb,
+    getAllCampusOptions,
     getAllOptions,
     getAllOrders,
     getAllPatients,
@@ -15,9 +15,11 @@ import {
 } from "@/app/firebase/documents";
 import { addPatient } from "@/app/firebase/user";
 import { AreasSelector } from "@/app/types/areas";
+import { CampusSelector } from "@/app/types/campus";
 import { DataPatientObject } from "@/app/types/patient";
+import _ from "lodash";
 import moment from "moment";
-import { useCallback, useEffect, useState, useRef, ChangeEvent } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -46,7 +48,6 @@ const NewOrderHook = (props?: Props) => {
 
     const { campus, rol } = userData;
 
-
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const [showHelp, setShowHelp] = useState(false);
@@ -66,7 +67,7 @@ const NewOrderHook = (props?: Props) => {
 
     const [patientData, setPatientData] = useState(dataPatientObject);
 
-    const [currentOrder, setCurrentOrder] = useState<number>(1);
+    const [currentOrderId, setCurrentOrderId] = useState<number>(1);
 
     const [sentToArea, setSentToArea] = useState<string>("");
 
@@ -77,6 +78,8 @@ const NewOrderHook = (props?: Props) => {
     const [allPatients, setAllPatients] = useState<any>();
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
+
+    const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
 
     const [patientExist, setPatientExist] = useState(false);
 
@@ -95,6 +98,17 @@ const NewOrderHook = (props?: Props) => {
         } else {
             setSuggestions([]);
         }
+    };
+
+    const areasByCampus = () => {
+        const filteredIdAreas = allCampus?.find(
+            (item) => item.value === campus,
+        )?.areas;
+
+        const result = allAreas?.filter((area) =>
+            filteredIdAreas?.includes(area.value),
+        );
+        return result;
     };
 
     const selectChangeHandlerSentTo = (e: any) => {
@@ -206,7 +220,7 @@ const NewOrderHook = (props?: Props) => {
                     isDeleted: false,
                     modifiedBy: userRol,
                 }).then((res) => {
-                    setCurrentOrder(parseInt(res.id));
+                    setCurrentOrderId(parseInt(res.id));
                 });
             });
         } else {
@@ -237,7 +251,7 @@ const NewOrderHook = (props?: Props) => {
                         modifiedBy: userRol,
                         assignedCampus: rol === "Funcionario" ? campus : "",
                     }).then((res) => {
-                        setCurrentOrder(parseInt(res.id));
+                        setCurrentOrderId(parseInt(res.id));
                     });
                 });
             });
@@ -264,12 +278,18 @@ const NewOrderHook = (props?: Props) => {
         allAreasData && setAllAreas(allAreasData);
     }, []);
 
+    const getCampus = useCallback(async () => {
+        const allCampusData = await getAllCampusOptions();
+        allCampusData && setAllCampus(allCampusData);
+    }, []);
+
     useEffect(() => {
         getOptions();
         getOrders();
         getPatients();
         getAreas();
-    }, [getOptions, getOrders, getPatients, getAreas]);
+        getCampus();
+    }, [getOptions, getOrders, getPatients, getAreas, getCampus]);
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -280,7 +300,7 @@ const NewOrderHook = (props?: Props) => {
 
     return {
         showHelp,
-        allAreas,
+        allAreas: _.sortBy(areasByCampus(), "label"),
         setShowHelp,
         formStep,
         setFormStep,
@@ -294,7 +314,7 @@ const NewOrderHook = (props?: Props) => {
         patientData,
         titles,
         patientVal,
-        currentOrder,
+        currentOrderId,
         suggestions,
         wrapperRef,
         handleClose,

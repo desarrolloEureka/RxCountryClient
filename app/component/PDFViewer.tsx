@@ -9,15 +9,24 @@ interface PDFViewerProps {
     fileUrl: string;
 }
 
-const PDFViewerComponent: React.FC<PDFViewerProps> = ({ fileUrl }) => {
-
+const PDFViewerComponent = ({ fileUrl }: PDFViewerProps) => {
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
-    const { activateTab, attachmentPluginInstance, thumbnailPluginInstance, toggleTab, toolbarPluginInstance } = defaultLayoutPluginInstance;
+    const {
+        activateTab,
+        attachmentPluginInstance,
+        thumbnailPluginInstance,
+        toggleTab,
+        toolbarPluginInstance,
+    } = defaultLayoutPluginInstance;
 
     return (
         <div>
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} theme="dark" />
+                <Viewer
+                    fileUrl={fileUrl}
+                    plugins={[defaultLayoutPluginInstance]}
+                    theme="dark"
+                />
             </Worker>
         </div>
     );

@@ -1,19 +1,21 @@
 "use client";
 import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
+import Spinner from "@/app/component/spinner/Spinner";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
+import _ from "lodash";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";
 import {
     IoIosArrowBack,
     IoIosArrowForward,
     IoIosNotifications,
     IoMdSearch,
-    IoIosEye,
 } from "react-icons/io";
 import { IoAlertCircleSharp } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
 import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
+import PreviewOrder from "../../component/PreviewOrder";
 import OrderHistorialHook from "./hook/OrderHistorialHook";
 
 const OrderHistorialPage = () => {
@@ -41,345 +43,383 @@ const OrderHistorialPage = () => {
         formatearFecha,
         suggestionsOrders,
         handleSearchInputChange,
+        showPdf,
+        setShowPdf,
+        orderId,
+        setOrderId,
     } = OrderHistorialHook();
+
+    const backToOrder = () => {
+        setShowPdf(false);
+    };
+
+    if (!ordersByRol) {
+        return (
+            <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
+                <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
+                    <DashboardHeader selectedMenuItem="orders-historial" />
+                    <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
+                        <Spinner
+                            background="bg-transparent"
+                            screenH="min-h-96"
+                        />
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="orders-historial" />
-                <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
-                    <div className="flex justify-end items-center p-8">
-                        <div
-                            className={`grid ${
-                                userRol === "Recepción"
-                                    ? "grid-cols-2"
-                                    : "grid-cols-1"
-                            } flex-1 gap-52 xl:gap-80 `}
-                        >
-                            {userRol === "Recepción" && (
+                {!showPdf && (
+                    <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
+                        <div className="flex justify-end items-center p-8">
+                            <div
+                                className={`grid ${
+                                    userRol === "Recepción"
+                                        ? "grid-cols-2"
+                                        : "grid-cols-1"
+                                } flex-1 gap-52 xl:gap-80 `}
+                            >
+                                {userRol === "Recepción" && (
+                                    <div
+                                        onClick={() => {
+                                            setSelectedOrder("received");
+                                        }}
+                                        className="col flex flex-col cursor-pointer items-end"
+                                    >
+                                        <h3
+                                            className={`text-2xl ${
+                                                selectedOrder === "received"
+                                                    ? "text-company-orange"
+                                                    : " text-gray-400"
+                                            }`}
+                                        >
+                                            Ordenes Recibidas
+                                        </h3>
+                                    </div>
+                                )}
+
                                 <div
                                     onClick={() => {
-                                        setSelectedOrder("received");
+                                        userRol !== "Profesional" &&
+                                            setSelectedOrder("send");
                                     }}
-                                    className="col flex flex-col cursor-pointer items-end"
+                                    className={`col flex flex-col ${
+                                        userRol === "Recepción"
+                                            ? "cursor-pointer items-start"
+                                            : "items-center"
+                                    }`}
                                 >
                                     <h3
                                         className={`text-2xl ${
-                                            selectedOrder === "received"
+                                            selectedOrder === "send"
                                                 ? "text-company-orange"
                                                 : " text-gray-400"
                                         }`}
                                     >
-                                        Ordenes Recibidas
+                                        Ordenes Enviadas
                                     </h3>
                                 </div>
-                            )}
-
-                            <div
-                                onClick={() => {
-                                    userRol !== "Profesional" &&
-                                        setSelectedOrder("send");
-                                }}
-                                className={`col flex flex-col ${
-                                    userRol === "Recepción"
-                                        ? "cursor-pointer items-start"
-                                        : "items-center"
-                                }`}
-                            >
-                                <h3
-                                    className={`text-2xl ${
-                                        selectedOrder === "send"
-                                            ? "text-company-orange"
-                                            : " text-gray-400"
-                                    }`}
+                            </div>
+                            <div className="flex flex-col items-center space-y-2 text-white text-sm">
+                                <button
+                                    onClick={() => setShowHelp(true)}
+                                    className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
                                 >
-                                    Ordenes Enviadas
-                                </h3>
+                                    <LightIcon color="#5696D3" />
+                                </button>
+                                <span>Ayuda</span>
                             </div>
                         </div>
-                        <div className="flex flex-col items-center space-y-2 text-white text-sm">
-                            <button
-                                onClick={() => setShowHelp(true)}
-                                className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
-                            >
-                                <LightIcon color="#5696D3" />
-                            </button>
-                            <span>Ayuda</span>
-                        </div>
-                    </div>
-                    <div
-                        className={`flex flex-row bg-white ${
-                            selectedOrder === "send" && "justify-end"
-                        }  bg-opacity-25 w-full h-[0.1rem]`}
-                    >
                         <div
-                            className={`col h-[0.2rem] ${
-                                userRol === "Recepción" ? "w-1/2" : "w-full"
-                            } bg-company-orange ${
-                                selectedOrder === "received"
-                                    ? "rounded-r-full"
-                                    : "rounded-l-full"
-                            }`}
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-[1280px] py-4">
-                        <div className="relative col flex flex-col space-y-2">
-                            <label
-                                htmlFor="search"
-                                className="text-white text-sm"
-                            >
-                                Buscar imágenes por paciente
-                            </label>
-                            <input
-                                type="search"
-                                placeholder="Ej. Hernandez Rodriguez"
-                                className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10 text-black"
-                                onChange={() => handleSearchInputChange}
+                            className={`flex flex-row bg-white ${
+                                selectedOrder === "send" && "justify-end"
+                            }  bg-opacity-25 w-full h-[0.1rem]`}
+                        >
+                            <div
+                                className={`col h-[0.2rem] ${
+                                    userRol === "Recepción" ? "w-1/2" : "w-full"
+                                } bg-company-orange ${
+                                    selectedOrder === "received"
+                                        ? "rounded-r-full"
+                                        : "rounded-l-full"
+                                }`}
                             />
-                            <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                         </div>
-                        <div className="relative flex items-end h-full space-x-8 w-full">
-                            <button
-                                onClick={() => setShowFilter(!showFilter)}
-                                className="rounded-full w-24 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
-                            >
-                                <LuSettings2 size={24} />
-                            </button>
-                            <div className="relative col flex flex-col space-y-2 w-full">
+                        <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-[1280px] py-4">
+                            <div className="relative col flex flex-col space-y-2">
                                 <label
                                     htmlFor="search"
                                     className="text-white text-sm"
                                 >
-                                    Desde:
+                                    Buscar imágenes por paciente
                                 </label>
                                 <input
-                                    type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
+                                    type="search"
+                                    placeholder="Ej. Hernandez Rodriguez"
+                                    className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10 text-black"
+                                    onChange={() => handleSearchInputChange}
                                 />
+                                <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                             </div>
-                            <div className="relative col flex flex-col space-y-2 w-full">
-                                <label
-                                    htmlFor="search"
-                                    className="text-white text-sm"
+                            <div className="relative flex items-end h-full space-x-8 w-full">
+                                <button
+                                    onClick={() => setShowFilter(!showFilter)}
+                                    className="rounded-full w-24 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
                                 >
-                                    Hasta:
-                                </label>
-                                <input
-                                    type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
-                                />
-                            </div>
-                            {showFilter && (
-                                <div className="absolute top-7 left-4 bg-white shadow-xl rounded-2xl p-4 w-72">
-                                    <div className="flex justify-between items-ce">
-                                        <h2 className="text-xl text-company-blue font-bold">
-                                            Filtrar por
-                                        </h2>
-                                        <button
-                                            onClick={() => setShowFilter(false)}
-                                            className="text-gray-400"
-                                        >
-                                            <MdClose size={28} />
-                                        </button>
-                                    </div>
-                                    <div className="flex flex-wrap mt-4">
-                                        <button
-                                            onClick={() =>
-                                                setOrderMinorMajor(
-                                                    !orderMinorMajor,
-                                                )
-                                            }
-                                            className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
-                                                orderMinorMajor
-                                                    ? "bg-company-blue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            Ordenar de menor a mayor
-                                        </button>
-                                        <button
-                                            onClick={() => setNameAZ(!nameAZ)}
-                                            className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
-                                                nameAZ
-                                                    ? "bg-company-blue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            Nombre A-Z
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                setDateMinorMajor(
-                                                    !dateMinorMajor,
-                                                )
-                                            }
-                                            className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
-                                                dateMinorMajor
-                                                    ? "bg-company-blue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            Fecha de menor a mayor
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                setDateMajorMinor(
-                                                    !dateMajorMinor,
-                                                )
-                                            }
-                                            className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
-                                                dateMajorMinor
-                                                    ? "bg-company-blue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            Fecha de mayor a menor
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setOrderMinorMajor(!all);
-                                                setNameAZ(!all);
-                                                setDateMinorMajor(!all);
-                                                setDateMajorMinor(!all);
-                                                setAll(!all);
-                                            }}
-                                            className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
-                                                all
-                                                    ? "bg-company-blue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            Todos
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col divide-y">
-                        <div className="grid grid-cols-12 items-center text-company-orange py-4 pr-16">
-                            <div className="col-span-2 text-center text-nowrap">
-                                <span>Detalle</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span># Orden</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span>Fecha</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span>Estado</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span>Tipo Doc.</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span>Cédula</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span>Nombres</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span>Apellidos</span>
-                            </div>
-                            <div className="col-span-2 text-center text-nowrap">
-                                <span>Correo</span>
-                            </div>
-                            <div className="col text-center text-nowrap">
-                                <span>Teléfono</span>
-                            </div>
-                        </div>
-                        {/* {suggestionsOrders */}
-                        {ordersByRol[userRol]?.[selectedOrder]
-                            .reverse()
-                            .map((item: any, index: number) => {
-                                return (
-                                    <div
-                                        key={index}
-                                        onClick={() => {
-                                            router.push(
-                                                `/dashboard/orders-historial/details/${item.uid}`,
-                                            );
-                                        }}
-                                        className="grid grid-cols-12 cursor-pointer border-t items-center text-white py-4 hover:bg-gray-700 pr-16"
+                                    <LuSettings2 size={24} />
+                                </button>
+                                <div className="relative col flex flex-col space-y-2 w-full">
+                                    <label
+                                        htmlFor="search"
+                                        className="text-white text-sm"
                                     >
-                                        <div className="col-span-2 flex justify-between text-nowrap text-company-blue px-10">
+                                        Desde:
+                                    </label>
+                                    <input
+                                        type="date"
+                                        className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
+                                    />
+                                </div>
+                                <div className="relative col flex flex-col space-y-2 w-full">
+                                    <label
+                                        htmlFor="search"
+                                        className="text-white text-sm"
+                                    >
+                                        Hasta:
+                                    </label>
+                                    <input
+                                        type="date"
+                                        className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
+                                    />
+                                </div>
+                                {showFilter && (
+                                    <div className="absolute top-7 left-4 bg-white shadow-xl rounded-2xl p-4 w-72">
+                                        <div className="flex justify-between items-ce">
+                                            <h2 className="text-xl text-company-blue font-bold">
+                                                Filtrar por
+                                            </h2>
                                             <button
-                                                // className="px-22"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                }}
+                                                onClick={() =>
+                                                    setShowFilter(false)
+                                                }
+                                                className="text-gray-400"
                                             >
-                                                <IoIosNotifications size={24} />
+                                                <MdClose size={28} />
                                             </button>
-                                            {/* {selectedOrder === "send" && ( */}
+                                        </div>
+                                        <div className="flex flex-wrap mt-4">
                                             <button
-                                                // className="px-2"
-                                                onClick={(e) => {
-                                                    selectedOrder === "send" &&
-                                                        (router.push(
+                                                onClick={() =>
+                                                    setOrderMinorMajor(
+                                                        !orderMinorMajor,
+                                                    )
+                                                }
+                                                className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
+                                                    orderMinorMajor
+                                                        ? "bg-company-blue text-white"
+                                                        : "bg-white text-black"
+                                                }`}
+                                            >
+                                                Ordenar de menor a mayor
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    setNameAZ(!nameAZ)
+                                                }
+                                                className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
+                                                    nameAZ
+                                                        ? "bg-company-blue text-white"
+                                                        : "bg-white text-black"
+                                                }`}
+                                            >
+                                                Nombre A-Z
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    setDateMinorMajor(
+                                                        !dateMinorMajor,
+                                                    )
+                                                }
+                                                className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
+                                                    dateMinorMajor
+                                                        ? "bg-company-blue text-white"
+                                                        : "bg-white text-black"
+                                                }`}
+                                            >
+                                                Fecha de menor a mayor
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    setDateMajorMinor(
+                                                        !dateMajorMinor,
+                                                    )
+                                                }
+                                                className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
+                                                    dateMajorMinor
+                                                        ? "bg-company-blue text-white"
+                                                        : "bg-white text-black"
+                                                }`}
+                                            >
+                                                Fecha de mayor a menor
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setOrderMinorMajor(!all);
+                                                    setNameAZ(!all);
+                                                    setDateMinorMajor(!all);
+                                                    setDateMajorMinor(!all);
+                                                    setAll(!all);
+                                                }}
+                                                className={`flex flex-wrap m-2 justify-center items-center text-center py-2 w-28 text-[9px] rounded-xl border border-company-blue shadow-md ${
+                                                    all
+                                                        ? "bg-company-blue text-white"
+                                                        : "bg-white text-black"
+                                                }`}
+                                            >
+                                                Todos
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col divide-y">
+                            <div className="grid grid-cols-12 items-center text-company-orange py-4 pr-16">
+                                <div className="col-span-2 text-center text-nowrap">
+                                    <span>Detalle</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span># Orden</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span>Fecha</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span>Estado</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span>Tipo Doc.</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span>Cédula</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span>Nombres</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span>Apellidos</span>
+                                </div>
+                                <div className="col-span-2 text-center text-nowrap">
+                                    <span>Correo</span>
+                                </div>
+                                <div className="col text-center text-nowrap">
+                                    <span>Teléfono</span>
+                                </div>
+                            </div>
+                            {/* {suggestionsOrders */}
+                            {_.sortBy(ordersByRol[userRol]?.[selectedOrder], [
+                                "timestamp",
+                            ])
+                                .reverse()
+                                .map((item: any, index: number) => {
+                                    return (
+                                        <div
+                                            key={index}
+                                            onClick={() => {
+                                                router.push(
+                                                    `/dashboard/orders-historial/details/${item.uid}`,
+                                                );
+                                            }}
+                                            className="grid grid-cols-12 cursor-pointer border-t items-center text-white py-4 hover:bg-gray-700 pr-16"
+                                        >
+                                            <div className="col-span-2 flex justify-between text-nowrap text-company-blue px-10">
+                                                <button
+                                                    // className="px-22"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                >
+                                                    <IoIosNotifications
+                                                        size={24}
+                                                    />
+                                                </button>
+                                                {/* {selectedOrder === "send" && ( */}
+                                                <button
+                                                    // className="px-2"
+                                                    onClick={(e) => {
+                                                        // selectedOrder ===
+                                                        //     "send" &&
+                                                        router.push(
                                                             `/dashboard/orders-historial/edit-order/${item.uid}`,
                                                         ),
-                                                        e.stopPropagation());
-                                                }}
-                                            >
-                                                <RiEditBoxFill size={24} />
-                                            </button>
-                                            {/* )} */}
-                                            <button
-                                                // className="px-2"
-                                                onClick={(e) => {
-                                                    router.replace(
-                                                        `/dashboard/preview-order?id=${item.uid}&from=orders-historial`,
-                                                    );
-                                                    e.stopPropagation();
-                                                }}
-                                            >
-                                                <MdPictureAsPdf size={24} />
-                                            </button>
-                                            {/* <button
+                                                            e.stopPropagation();
+                                                    }}
+                                                >
+                                                    <RiEditBoxFill size={24} />
+                                                </button>
+                                                {/* )} */}
+                                                <button
+                                                    // className="px-2"
+                                                    onClick={(e) => {
+                                                        // router.replace(
+                                                        //     `/dashboard/preview-order?id=${item.uid}&from=orders-historial`,
+                                                        // );
+                                                        setShowPdf(true);
+                                                        setOrderId(item.uid);
+                                                        e.stopPropagation();
+                                                    }}
+                                                >
+                                                    <MdPictureAsPdf size={24} />
+                                                </button>
+                                                {/* <button
                                             // className="px-2"
                                             // onClick={(e) => {
                                             //     e.stopPropagation();
                                             // }}
                                             >
-                                                <IoIosEye size={24} />
+                                                < size={24} />
                                             </button> */}
+                                            </div>
+                                            <div className="text-nowrap text-center">
+                                                <span>{`#${item.uid}`}</span>
+                                            </div>
+                                            <div className="text-center">
+                                                <span>
+                                                    {formatearFecha(
+                                                        item.timestamp,
+                                                    )}
+                                                </span>
+                                            </div>
+                                            <div className="text-nowrap text-center">
+                                                <span>{item.status}</span>
+                                            </div>
+                                            <div className="text-nowrap text-center">
+                                                <span>{item.idType}</span>
+                                            </div>
+                                            <div className="text-nowrap text-center">
+                                                <span>{item.id}</span>
+                                            </div>
+                                            <div className="text-nowrap text-center">
+                                                <span>{item.name}</span>
+                                            </div>
+                                            <div className="text-center">
+                                                <span>{item.lastName}</span>
+                                            </div>
+                                            <div className="col-span-2 text-center">
+                                                <span>{item.email}</span>
+                                            </div>
+                                            <div className="text-nowrap text-center">
+                                                <span>{item.phone}</span>
+                                            </div>
                                         </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{`#${item.uid}`}</span>
-                                        </div>
-                                        <div className="text-center">
-                                            <span>
-                                                {formatearFecha(item.timestamp)}
-                                            </span>
-                                        </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.status}</span>
-                                        </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.idType}</span>
-                                        </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.id}</span>
-                                        </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.name}</span>
-                                        </div>
-                                        <div className="text-center">
-                                            <span>{item.lastName}</span>
-                                        </div>
-                                        <div className="col-span-2 text-center">
-                                            <span>{item.email}</span>
-                                        </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.phone}</span>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        {/* {Array.from({
+                                    );
+                                })}
+                            {/* {Array.from({
                                     length: 3,
                                 }).map((item, index) => {
                                     return (
@@ -450,27 +490,35 @@ const OrderHistorialPage = () => {
                                         </div>
                                     );
                                 })} */}
-                    </div>
+                        </div>
 
-                    <div className="flex items-center px-16 py-4 border-t-2 border-company-blue">
-                        <button className="flex flex-col items-center text-white w-20 text-[9px]">
-                            <BsFileEarmarkExcelFill
-                                className="text-company-blue"
-                                size={32}
-                            />
-                            <span>Descargar Excel</span>
-                        </button>
-                        <div className="flex items-center text-white justify-end w-full">
-                            <button>
-                                <IoIosArrowBack size={24} />
+                        <div className="flex items-center px-16 py-4 border-t-2 border-company-blue">
+                            <button className="flex flex-col items-center text-white w-20 text-[9px]">
+                                <BsFileEarmarkExcelFill
+                                    className="text-company-blue"
+                                    size={32}
+                                />
+                                <span>Descargar Excel</span>
                             </button>
-                            <span className="mx-4">Pag 1/1</span>
-                            <button>
-                                <IoIosArrowForward size={24} />
-                            </button>
+                            <div className="flex items-center text-white justify-end w-full">
+                                <button>
+                                    <IoIosArrowBack size={24} />
+                                </button>
+                                <span className="mx-4">Pag 1/1</span>
+                                <button>
+                                    <IoIosArrowForward size={24} />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
+                {showPdf && (
+                    <PreviewOrder
+                        backToOrder={backToOrder}
+                        isEdit={userRol === "Profesional"}
+                        orderId={orderId}
+                    />
+                )}
             </div>
             {showHelp && (
                 <>

@@ -15,8 +15,10 @@ const OrderHistorialHook = () => {
     const router = useRouter();
     const [showFilter, setShowFilter] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
+    const [showPdf, setShowPdf] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState("send");
     const [search, setSearch] = useState("");
+    const [orderId, setOrderId] = useState<any>();
 
     // filters
     const [orderMinorMajor, setOrderMinorMajor] = useState(false);
@@ -48,7 +50,8 @@ const OrderHistorialHook = () => {
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
-                    order.modifiedBy === userRol && order.status === "creada",
+                    // order.modifiedBy === userRol &&
+                    (order.status === "creada" || order.status === "enviada"),
             ),
         },
         Recepción: {
@@ -138,6 +141,10 @@ const OrderHistorialHook = () => {
         formatearFecha,
         suggestionsOrders,
         handleSearchInputChange,
+        showPdf,
+        setShowPdf,
+        orderId,
+        setOrderId,
     };
 };
 

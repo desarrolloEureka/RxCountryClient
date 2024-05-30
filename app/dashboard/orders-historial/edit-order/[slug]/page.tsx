@@ -25,7 +25,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         optionsData,
         patientData,
         titles,
-        currentOrder,
+        currentOrderId,
         changeHandler,
         selectChangeHandlerIdType,
         dateChangeHandler,
@@ -89,7 +89,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         phoneChangeHandler={phoneChangeHandler}
                         setSelectedOptions={setSelectedOptions}
                         handleSendForm={handleSendForm}
-                        currentOrder={currentOrder}
+                        currentOrderId={currentOrderId}
                         idChangeHandler={() => {}}
                         handleClose={() => {}}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
