@@ -232,7 +232,10 @@ function StepByStep({
             return userRoleComment;
         }
 
-        if (userRoleComment && generalComment !== userRoleComment) {
+        if (
+            (userRoleComment && generalComment !== userRoleComment) ||
+            isProfessional
+        ) {
             return generalComment;
         }
 
@@ -299,7 +302,7 @@ function StepByStep({
             );
             setSelectedDiagnosticPackage(oldData.selectedDiagnosticPackage);
         }
-    }, [oldData, userRol]);
+    }, [oldData, userComment, userRol]);
 
     return (
         <div>
