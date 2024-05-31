@@ -89,8 +89,8 @@ const EditOrderHook = ({ slug }: Props) => {
         return result;
     };
 
-    const selectChangeHandlerSentTo = (e: any) => {
-        setSentToArea(e?.value);
+    const selectChangeHandlerSentTo = (value: any) => {
+        setSentToArea(value);
     };
 
     const selectChangeHandlerIdType = (e: any) => {
@@ -153,7 +153,7 @@ const EditOrderHook = ({ slug }: Props) => {
             uid: documentEditOrderRef.id,
             patientId: oldData.patientId,
             status: editedOrderStatusByRol[userRol],
-            sendTo: oldData.sendTo || sentToArea,
+            sendTo: sentToArea ? sentToArea : oldData.sendTo,
             isActive: true,
             isDeleted: false,
             modifiedBy: userRol,

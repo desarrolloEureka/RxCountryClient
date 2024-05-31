@@ -2,11 +2,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { IoArrowBackCircleOutline, IoCheckmark, IoEye } from "react-icons/io5";
+import {
+    IoArrowBackCircleOutline,
+    IoCheckmark,
+    IoCloseSharp,
+    IoEye,
+} from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 // import PreviewOrderPage from "../dashboard/preview-order/page";
-import PreviewOrder from "./PreviewOrder";
+import { useState } from "react";
 import { AreasSelector } from "../types/areas";
+import PreviewOrder from "./PreviewOrder";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
 import {
@@ -43,6 +49,8 @@ interface Props {
     setObservationComment: (e: any) => void;
     setDiagnosticImpressionComment: (e: any) => void;
     allAreas: AreasSelector[];
+    observationComment: string;
+    diagnosticImpressionComment: string;
 }
 
 const OrderDetailsContent = ({
@@ -68,6 +76,8 @@ const OrderDetailsContent = ({
     handleSendForm,
     setObservationComment,
     setDiagnosticImpressionComment,
+    observationComment,
+    diagnosticImpressionComment,
 }: Props) => {
     const router = useRouter();
 
@@ -78,6 +88,8 @@ const OrderDetailsContent = ({
     const backToDetail = () => {
         setDetailStep(0);
     };
+
+    const [areaSelected, setAreaSelected] = useState<any>();
 
     if (!orderAndPatientData || !userRol) {
         return (
@@ -308,6 +320,21 @@ const OrderDetailsContent = ({
                                 <div className="grid grid-cols-1 gap-2">
                                     <textarea
                                         // disabled
+                                        value={
+                                            orderAndPatientData?.[
+                                                userRol
+                                                    ?.substring(0, 3)
+                                                    .toLocaleLowerCase() +
+                                                    "ObservationComment"
+                                            ]
+                                                ? orderAndPatientData?.[
+                                                      userRol
+                                                          ?.substring(0, 3)
+                                                          .toLocaleLowerCase() +
+                                                          "ObservationComment"
+                                                  ]
+                                                : observationComment
+                                        }
                                         id="Observations"
                                         name="observations"
                                         rows={6}
@@ -416,9 +443,13 @@ const OrderDetailsContent = ({
                                         </label>
                                         <SelectComponent
                                             options={allAreas}
-                                            selectChangeHandlerSentTo={
-                                                selectChangeHandlerSentTo
-                                            }
+                                            selectChangeHandlerSentTo={(e) => {
+                                                selectChangeHandlerSentTo(
+                                                    e.value,
+                                                );
+                                                setAreaSelected(e);
+                                            }}
+                                            optionSelected={areaSelected}
                                         />
                                     </div>
                                 </div>
@@ -429,6 +460,7 @@ const OrderDetailsContent = ({
                                     <div className="grid grid-cols-1 gap-2">
                                         <textarea
                                             // disabled
+                                            value={observationComment}
                                             id="Observations"
                                             name="observations"
                                             rows={4}
@@ -450,6 +482,7 @@ const OrderDetailsContent = ({
                                     <div className="grid grid-cols-1 gap-2">
                                         <textarea
                                             // disabled
+                                            value={diagnosticImpressionComment}
                                             id="Observations"
                                             name="observations"
                                             rows={4}
@@ -474,6 +507,7 @@ const OrderDetailsContent = ({
                                 <div className="grid grid-cols-1 gap-2">
                                     <textarea
                                         // disabled
+                                        value={observationComment}
                                         id="Observations"
                                         name="observations"
                                         rows={4}
@@ -591,6 +625,7 @@ const OrderDetailsContent = ({
                                     <div className="grid grid-cols-1 gap-2">
                                         <textarea
                                             disabled
+                                            value={observationComment}
                                             id="Observations"
                                             name="observations"
                                             rows={4}
@@ -630,7 +665,7 @@ const OrderDetailsContent = ({
                                 }}
                                 className="flex items-center cursor-pointer text-lg text-company-blue"
                             >
-                                <span>Guardar</span>
+                                <span>Siguiente</span>
                                 <BiChevronRight size={32} />
                             </button>
                         </div>
@@ -640,7 +675,7 @@ const OrderDetailsContent = ({
             {detailStep === 1 && (
                 <div className="flex flex-col px-20 py-10 relative">
                     <div className="grid grid-cols-2 gap-4 ">
-                        <div className="flex flex-col space-y-4 p-4 mb-[20%]">
+                        <div className="flex flex-col space-y-4 p-4">
                             <h2 className="text-company-orange font-bold text-4xl">
                                 Examen Finalizado con Éxito
                             </h2>
@@ -660,9 +695,11 @@ const OrderDetailsContent = ({
                                     </label>
                                     <SelectComponent
                                         options={allAreas}
-                                        selectChangeHandlerSentTo={
-                                            selectChangeHandlerSentTo
-                                        }
+                                        selectChangeHandlerSentTo={(e) => {
+                                            selectChangeHandlerSentTo(e.value);
+                                            setAreaSelected(e);
+                                        }}
+                                        optionSelected={areaSelected}
                                     />
                                 </div>
                             )}
@@ -692,6 +729,34 @@ const OrderDetailsContent = ({
                                     />
                                     <span>Previsualizar</span>
                                 </button>
+                            </div>
+                            <div className="flex flex-row pt-10 space-x-10">
+                                <div
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setDetailStep(
+                                            (prevStep: number) => prevStep - 1,
+                                        );
+                                    }}
+                                    className="flex items-center cursor-pointer text-company-blue"
+                                >
+                                    <BiChevronLeft size={32} />
+                                    <span>Atrás</span>
+                                </div>
+                                <div
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        router.replace(
+                                            "/dashboard/orders-historial",
+                                        );
+                                    }}
+                                    className="flex items-center cursor-pointer text-company-blue"
+                                >
+                                    <IoCloseSharp size={28} />
+                                    <span>Cancelar</span>
+                                </div>
                             </div>
                         </div>
                         <div className="flex flex-col h-auto justify-end items-center left-[50%] absolute -bottom-5">

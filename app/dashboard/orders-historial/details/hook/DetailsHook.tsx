@@ -205,6 +205,8 @@ const DetailsHook = ({ slug }: Props) => {
         handleSendForm,
         setObservationComment,
         setDiagnosticImpressionComment,
+        observationComment,
+        diagnosticImpressionComment,
     };
 };
 

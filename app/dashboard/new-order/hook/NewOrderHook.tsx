@@ -111,8 +111,8 @@ const NewOrderHook = (props?: Props) => {
         return result;
     };
 
-    const selectChangeHandlerSentTo = (e: any) => {
-        setSentToArea(e?.value);
+    const selectChangeHandlerSentTo = (value: any) => {
+        setSentToArea(value);
     };
 
     const selectChangeHandlerIdType = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -184,12 +184,21 @@ const NewOrderHook = (props?: Props) => {
     const uploadHandle = async () => {
         const patientRef = "patients";
         const newOrderRef = "serviceOrders";
-        const oldOrderId =
-            ordersData.length > 0
-                ? ordersData?.map((order: any) => order.uid).at(-1)
-                : "0";
-        const count = parseInt(oldOrderId);
-        const orderId = `${count + 1}`;
+        const oldOrderId = ordersData.reduce((maxId: any, order: any) => {
+            const orderId = parseInt(order.uid, 10);
+            return orderId > maxId ? orderId : maxId;
+        }, 0);
+
+        const orderId = (oldOrderId + 1).toString();
+
+        // const oldOrderId =
+        //     ordersData.length > 0
+        //         ? `${Math.max(
+        //               ordersData?.map((order: any) => parseInt(order.uid)),
+        //           )}`
+        //         : "0";
+        // const count = parseInt(oldOrderId);
+        // const orderId = `${count + 1}`;
 
         const documentNewOrderRef: any = getDocumentRef(newOrderRef, orderId);
 
@@ -249,7 +258,7 @@ const NewOrderHook = (props?: Props) => {
                         isActive: true,
                         isDeleted: false,
                         modifiedBy: userRol,
-                        assignedCampus: rol === "Funcionario" ? campus : "",
+                        assignedCampus: rol !== "Profesional" ? campus : "",
                     }).then((res) => {
                         setCurrentOrderId(parseInt(res.id));
                     });
