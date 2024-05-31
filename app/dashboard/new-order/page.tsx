@@ -46,7 +46,7 @@ const NewOrderPage = () => {
                 <DashboardHeader selectedMenuItem="create-order" />
                 <form
                     onSubmit={handleSendForm}
-                    className="flex flex-col rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
+                    className="flex flex-col rounded-[2.5rem] shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
                 >
                     <div className="flex justify-center items-center">
                         {formStep < 6 && (
