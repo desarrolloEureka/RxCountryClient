@@ -27,6 +27,8 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
         handleSendForm,
         setObservationComment,
         setDiagnosticImpressionComment,
+        observationComment,
+        diagnosticImpressionComment,
     } = DetailsHook({ slug });
 
     return (
@@ -58,6 +60,8 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
                         setDiagnosticImpressionComment
                     }
                     allAreas={allAreas}
+                    observationComment={observationComment}
+                    diagnosticImpressionComment={diagnosticImpressionComment}
                 />
             </div>
         </main>

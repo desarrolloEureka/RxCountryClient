@@ -16,6 +16,7 @@
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.11",
     "firebase": "^10.9.0",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
@@ -26,7 +27,8 @@
     "react-dom": "^18",
     "react-icons": "^5.0.1",
     "react-phone-input-2": "^2.15.1",
-    "react-select": "^5.8.0"
+    "react-select": "^5.8.0",
+    "react-tailwindcss-datepicker": "^1.6.6"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
