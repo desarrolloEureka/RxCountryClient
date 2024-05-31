@@ -3,7 +3,7 @@ import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
 import Spinner from "@/app/component/spinner/Spinner";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
-import _ from "lodash";
+import { Suspense } from "react";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";
 import {
     IoIosArrowBack,
@@ -15,6 +15,7 @@ import { IoAlertCircleSharp } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
 import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
+import Datepicker from "react-tailwindcss-datepicker";
 import PreviewOrder from "../../component/PreviewOrder";
 import OrderHistorialHook from "./hook/OrderHistorialHook";
 
@@ -41,17 +42,21 @@ const OrderHistorialPage = () => {
         allDataOrders,
         ordersByRol,
         formatearFecha,
-        suggestionsOrders,
         handleSearchInputChange,
+        // handleStartDateChange,
+        // handleEndDateChange,
+        // startDate,
+        // endDate,
+        filteredOrders,
         showPdf,
         setShowPdf,
         orderId,
         setOrderId,
+        downloadCSV,
+        value,
+        handleValueChange,
+        backToOrder,
     } = OrderHistorialHook();
-
-    const backToOrder = () => {
-        setShowPdf(false);
-    };
 
     if (!ordersByRol) {
         return (
@@ -155,36 +160,49 @@ const OrderHistorialPage = () => {
                                     htmlFor="search"
                                     className="text-white text-sm"
                                 >
-                                    Buscar imágenes por paciente
+                                    Buscar Ordenes por Paciente
                                 </label>
                                 <input
                                     type="search"
                                     placeholder="Ej. Hernandez Rodriguez"
                                     className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10 text-black"
-                                    onChange={() => handleSearchInputChange}
+                                    onChange={handleSearchInputChange}
                                 />
                                 <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                             </div>
                             <div className="relative flex items-end h-full space-x-8 w-full">
                                 <button
                                     onClick={() => setShowFilter(!showFilter)}
-                                    className="rounded-full w-24 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
+                                    className="rounded-full w-10 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
                                 >
                                     <LuSettings2 size={24} />
                                 </button>
+
                                 <div className="relative col flex flex-col space-y-2 w-full">
                                     <label
                                         htmlFor="search"
                                         className="text-white text-sm"
                                     >
-                                        Desde:
+                                        Rango de fecha:
                                     </label>
-                                    <input
+                                    {/* <input
                                         type="date"
                                         className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
+                                        value={startDate}
+                                        onChange={handleStartDateChange}
+                                    /> */}
+                                    <Datepicker
+                                        inputClassName="bg-white rounded-xl w-full shadow-lg h-10 px-4 text-black"
+                                        onChange={handleValueChange}
+                                        value={value}
+                                        primaryColor={"amber"}
+                                        separator={"al"}
+                                        displayFormat={"DD/MM/YYYY"}
+                                        readOnly={true}
+                                        i18n={"es"}
                                     />
                                 </div>
-                                <div className="relative col flex flex-col space-y-2 w-full">
+                                {/* <div className="relative col flex flex-col space-y-2 w-full">
                                     <label
                                         htmlFor="search"
                                         className="text-white text-sm"
@@ -194,8 +212,11 @@ const OrderHistorialPage = () => {
                                     <input
                                         type="date"
                                         className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
+                                        value={endDate}
+                                        onChange={handleEndDateChange}
                                     />
-                                </div>
+                                </div> */}
+
                                 {showFilter && (
                                     <div className="absolute top-7 left-4 bg-white shadow-xl rounded-2xl p-4 w-72">
                                         <div className="flex justify-between items-ce">
@@ -321,62 +342,55 @@ const OrderHistorialPage = () => {
                                     <span>Teléfono</span>
                                 </div>
                             </div>
-                            {/* {suggestionsOrders */}
-                            {_.sortBy(ordersByRol[userRol]?.[selectedOrder], [
-                                "timestamp",
-                            ])
-                                .reverse()
-                                .map((item: any, index: number) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            onClick={() => {
-                                                router.push(
-                                                    `/dashboard/orders-historial/details/${item.uid}`,
-                                                );
-                                            }}
-                                            className="grid grid-cols-12 cursor-pointer border-t items-center text-white py-4 hover:bg-gray-700 pr-16"
-                                        >
-                                            <div className="col-span-2 flex justify-between text-nowrap text-company-blue px-10">
-                                                <button
-                                                    // className="px-22"
-                                                    onClick={(e) => {
+                            {filteredOrders?.map((item: any, index: number) => {
+                                return (
+                                    <div
+                                        key={index}
+                                        onClick={() => {
+                                            router.push(
+                                                `/dashboard/orders-historial/details/${item.uid}`,
+                                            );
+                                        }}
+                                        className="grid grid-cols-12 cursor-pointer border-t items-center text-white py-4 hover:bg-gray-700 pr-16"
+                                    >
+                                        <div className="col-span-2 flex justify-between text-nowrap text-company-blue px-10">
+                                            <button
+                                                // className="px-22"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <IoIosNotifications size={24} />
+                                            </button>
+                                            {/* {selectedOrder === "send" && ( */}
+                                            <button
+                                                // className="px-2"
+                                                onClick={(e) => {
+                                                    // selectedOrder ===
+                                                    //     "send" &&
+                                                    router.push(
+                                                        `/dashboard/orders-historial/edit-order/${item.uid}`,
+                                                    ),
                                                         e.stopPropagation();
-                                                    }}
-                                                >
-                                                    <IoIosNotifications
-                                                        size={24}
-                                                    />
-                                                </button>
-                                                {/* {selectedOrder === "send" && ( */}
-                                                <button
-                                                    // className="px-2"
-                                                    onClick={(e) => {
-                                                        // selectedOrder ===
-                                                        //     "send" &&
-                                                        router.push(
-                                                            `/dashboard/orders-historial/edit-order/${item.uid}`,
-                                                        ),
-                                                            e.stopPropagation();
-                                                    }}
-                                                >
-                                                    <RiEditBoxFill size={24} />
-                                                </button>
-                                                {/* )} */}
-                                                <button
-                                                    // className="px-2"
-                                                    onClick={(e) => {
-                                                        // router.replace(
-                                                        //     `/dashboard/preview-order?id=${item.uid}&from=orders-historial`,
-                                                        // );
-                                                        setShowPdf(true);
-                                                        setOrderId(item.uid);
-                                                        e.stopPropagation();
-                                                    }}
-                                                >
-                                                    <MdPictureAsPdf size={24} />
-                                                </button>
-                                                {/* <button
+                                                }}
+                                            >
+                                                <RiEditBoxFill size={24} />
+                                            </button>
+                                            {/* )} */}
+                                            <button
+                                                // className="px-2"
+                                                onClick={(e) => {
+                                                    // router.replace(
+                                                    //     `/dashboard/preview-order?id=${item.uid}&from=orders-historial`,
+                                                    // );
+                                                    setShowPdf(true);
+                                                    setOrderId(item.uid);
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <MdPictureAsPdf size={24} />
+                                            </button>
+                                            {/* <button
                                             // className="px-2"
                                             // onClick={(e) => {
                                             //     e.stopPropagation();
@@ -384,41 +398,39 @@ const OrderHistorialPage = () => {
                                             >
                                                 < size={24} />
                                             </button> */}
-                                            </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{`#${item.uid}`}</span>
-                                            </div>
-                                            <div className="text-center">
-                                                <span>
-                                                    {formatearFecha(
-                                                        item.timestamp,
-                                                    )}
-                                                </span>
-                                            </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.status}</span>
-                                            </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.idType}</span>
-                                            </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.id}</span>
-                                            </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.name}</span>
-                                            </div>
-                                            <div className="text-center">
-                                                <span>{item.lastName}</span>
-                                            </div>
-                                            <div className="col-span-2 text-center">
-                                                <span>{item.email}</span>
-                                            </div>
-                                            <div className="text-nowrap text-center">
-                                                <span>{item.phone}</span>
-                                            </div>
                                         </div>
-                                    );
-                                })}
+                                        <div className="text-nowrap text-center">
+                                            <span>{`#${item.uid}`}</span>
+                                        </div>
+                                        <div className="text-center">
+                                            <span>
+                                                {formatearFecha(item.timestamp)}
+                                            </span>
+                                        </div>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.status}</span>
+                                        </div>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.idType}</span>
+                                        </div>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.id}</span>
+                                        </div>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.name}</span>
+                                        </div>
+                                        <div className="text-center">
+                                            <span>{item.lastName}</span>
+                                        </div>
+                                        <div className="col-span-2 text-center">
+                                            <span>{item.email}</span>
+                                        </div>
+                                        <div className="text-nowrap text-center">
+                                            <span>{item.phone}</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                             {/* {Array.from({
                                     length: 3,
                                 }).map((item, index) => {
@@ -493,7 +505,12 @@ const OrderHistorialPage = () => {
                         </div>
 
                         <div className="flex items-center px-16 py-4 border-t-2 border-company-blue">
-                            <button className="flex flex-col items-center text-white w-20 text-[9px]">
+                            <button
+                                onClick={() =>
+                                    downloadCSV(filteredOrders, "Pacientes")
+                                }
+                                className="flex flex-col items-center text-white w-20 text-[9px]"
+                            >
                                 <BsFileEarmarkExcelFill
                                     className="text-company-blue"
                                     size={32}
@@ -550,4 +567,12 @@ const OrderHistorialPage = () => {
     );
 };
 
-export default OrderHistorialPage;
+export default function Page() {
+    return (
+        <Suspense fallback={<Spinner background="bg-gray-image" />}>
+            <OrderHistorialPage />
+        </Suspense>
+    );
+}
+
+// export default OrderHistorialPage;

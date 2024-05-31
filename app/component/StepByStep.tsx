@@ -80,6 +80,7 @@ function StepByStep({
     const [professionalName, setProfessionalName] = useState("");
     const [professionalSpecialty, setProfessionalSpecialty] = useState("");
     const [professionalEmail, setProfessionalEmail] = useState("");
+    const [areaSelected, setAreaSelected] = useState<any>();
 
     const [observationComment, setObservationComment] = useState<string>("");
 
@@ -158,10 +159,9 @@ function StepByStep({
                 observationComment:
                     userRol === "Profesional"
                         ? observationComment
-                        : oldData?.observationComment,
-                [userRol?.substring(0, 3).toLocaleLowerCase() +
-                "ObservationComment"]:
-                    userRol !== "Profesional" ? observationComment : "",
+                        : oldData?.observationComment
+                        ? oldData?.observationComment
+                        : "",
                 diagnosticImpressionComment,
             },
         ],
@@ -195,13 +195,51 @@ function StepByStep({
     };
 
     const valData = useCallback(async () => {
-        setIsDataSelected(
-            _.some(allDataSelected, (obj) =>
-                _.some(obj, (value) => !_.isEmpty(value)),
-            ),
-        );
-        setSelectedOptions(allDataSelected[0]);
-    }, [allDataSelected, setIsDataSelected, setSelectedOptions]);
+        const dataSelected: {
+            [key: string]: string | number[] | string[];
+        } = { ...allDataSelected[0] };
+
+        if (userRol !== "Profesional") {
+            //crea propiedad según rol
+            dataSelected[
+                userRol?.substring(0, 3).toLocaleLowerCase() +
+                    "ObservationComment"
+            ] = observationComment;
+        }
+
+        setIsDataSelected(_.some(dataSelected, (value) => !_.isEmpty(value)));
+
+        setSelectedOptions(dataSelected);
+    }, [
+        allDataSelected,
+        observationComment,
+        setIsDataSelected,
+        setSelectedOptions,
+        userRol,
+    ]);
+
+    const getObservationComment = (
+        userRol: string | undefined,
+        oldData: Record<string, any>,
+    ) => {
+        const isProfessional = userRol === "Profesional";
+        const userRoleKey =
+            userRol?.substring(0, 3).toLocaleLowerCase() + "ObservationComment";
+        const userRoleComment = oldData?.[userRoleKey];
+        const generalComment = oldData?.observationComment;
+
+        if (!isProfessional && userRoleComment) {
+            return userRoleComment;
+        }
+
+        if (userRoleComment && generalComment !== userRoleComment) {
+            return generalComment;
+        }
+
+        return "";
+    };
+
+    const userComment = getObservationComment(userRol, oldData);
 
     useEffect(() => {
         valData();
@@ -212,28 +250,29 @@ function StepByStep({
             setProfessionalName(oldData.professionalName);
             setProfessionalSpecialty(oldData.professionalSpecialty);
             setProfessionalEmail(oldData.professionalEmail);
-            setObservationComment(
-                userRol !== "Profesional" &&
-                    oldData?.[
-                        userRol?.substring(0, 3).toLocaleLowerCase() +
-                            "ObservationComment"
-                    ]
-                    ? oldData?.[
-                          userRol?.substring(0, 3).toLocaleLowerCase() +
-                              "ObservationComment"
-                      ]
-                    : oldData?.[
-                          userRol?.substring(0, 3).toLocaleLowerCase() +
-                              "ObservationComment"
-                      ] &&
-                      oldData?.observationComment !==
-                          oldData?.[
-                              userRol?.substring(0, 3).toLocaleLowerCase() +
-                                  "ObservationComment"
-                          ]
-                    ? oldData.observationComment
-                    : "",
-            );
+            setObservationComment(userComment);
+            // setObservationComment(
+            //     userRol !== "Profesional" &&
+            //         oldData?.[
+            //             userRol?.substring(0, 3).toLocaleLowerCase() +
+            //                 "ObservationComment"
+            //         ]
+            //         ? oldData?.[
+            //               userRol?.substring(0, 3).toLocaleLowerCase() +
+            //                   "ObservationComment"
+            //           ]
+            //         : oldData?.[
+            //               userRol?.substring(0, 3).toLocaleLowerCase() +
+            //                   "ObservationComment"
+            //           ] &&
+            //           oldData?.observationComment !==
+            //               oldData?.[
+            //                   userRol?.substring(0, 3).toLocaleLowerCase() +
+            //                       "ObservationComment"
+            //               ]
+            //         ? oldData.observationComment
+            //         : "",
+            // );
             setDiagnosticImpressionComment(oldData.diagnosticImpressionComment);
             setDentalSelectBoneScan(oldData.dentalSelectBoneScan);
             setDentalSelectTomography(oldData.dentalSelectTomography);
@@ -717,7 +756,7 @@ function StepByStep({
                         <DentalSelect
                             setSelected={
                                 !isEdit || oldData?.status !== "enviada"
-                                    ? setDentalSelectBoneScan
+                                    ? setDentalSelectTomography
                                     : () => {}
                             }
                             selected={dentalSelectTomography}
@@ -1493,9 +1532,11 @@ function StepByStep({
                                     </label>
                                     <SelectComponent
                                         options={allAreas}
-                                        selectChangeHandlerSentTo={
-                                            selectChangeHandlerSentTo
-                                        }
+                                        selectChangeHandlerSentTo={(e) => {
+                                            selectChangeHandlerSentTo(e.value);
+                                            setAreaSelected(e);
+                                        }}
+                                        optionSelected={areaSelected}
                                     />
                                 </div>
                             )}
@@ -1518,11 +1559,6 @@ function StepByStep({
                                         e.preventDefault();
                                         e.stopPropagation();
                                         setFormStep(8);
-                                        // router.replace(
-                                        //     isEdit
-                                        //         ? "/dashboard/preview-order"
-                                        //         : "/dashboard/preview-order?from=new-order",
-                                        // );
                                     }}
                                     className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white cursor-pointer"
                                 >
@@ -1583,7 +1619,9 @@ function StepByStep({
                                     type="button"
                                     onClick={() => {
                                         router.replace(
-                                            "/dashboard/orders-historial",
+                                            oldData
+                                                ? "/dashboard/orders-historial/?to=send"
+                                                : "/dashboard/orders-historial",
                                         );
                                     }}
                                     className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-company-gray shadow-lg"
