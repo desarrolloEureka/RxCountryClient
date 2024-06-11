@@ -5,12 +5,18 @@ import StepByStep from "@/app/component/StepByStep";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
 import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { IoAlertCircleSharp, IoArrowBackCircleOutline } from "react-icons/io5";
+import {
+    IoAlertCircleSharp,
+    IoArrowBackCircleOutline,
+    IoSave,
+} from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import EditOrderHook from "../hook/EditOrderHook";
 
 const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
+        router,
+        showSave,
         showHelp,
         allAreas,
         setShowHelp,
@@ -33,6 +39,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
+        // isNewPatientData,
     } = EditOrderHook({ slug });
 
     return (
@@ -117,7 +124,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         >
                             <div className="text-white">Paso {formStep}/5</div>
                             <div className="flex items-center space-x-8">
-                                {formStep > 1 && (
+                                {formStep > 0 && (
                                     <div
                                         onClick={() => {
                                             setFormStep(
@@ -131,22 +138,36 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                         <span>Atrás</span>
                                     </div>
                                 )}
-                                <div
-                                    onClick={() => {
-                                        setFormStep(
-                                            (prevStep: number) => prevStep + 1,
-                                        );
-                                        setIsDataSelected(false);
-                                    }}
-                                    className="flex items-center cursor-pointer text-company-blue"
-                                >
-                                    {isDataSelected || formStep === 0 ? (
-                                        <span>Siguiente</span>
-                                    ) : (
-                                        <span>Omitir</span>
-                                    )}
-                                    <BiChevronRight size={32} />
-                                </div>
+                                {showSave ? (
+                                    <div className="flex items-center cursor-pointer text-company-blue space-x-2 my-1 mx-2">
+                                        <button type="submit">
+                                            <span>Guardar</span>
+                                        </button>
+                                        <IoSave size={20} />
+                                    </div>
+                                ) : (
+                                    <div
+                                        onClick={() => {
+                                            formStep === 5
+                                                ? router.replace(
+                                                      "/dashboard/orders-historial",
+                                                  )
+                                                : setFormStep(
+                                                      (prevStep: number) =>
+                                                          prevStep + 1,
+                                                  );
+                                            setIsDataSelected(false);
+                                        }}
+                                        className="flex items-center cursor-pointer text-company-blue"
+                                    >
+                                        {formStep < 5 ? (
+                                            <span>Siguiente</span>
+                                        ) : (
+                                            <span>Cerrar</span>
+                                        )}
+                                        <BiChevronRight size={32} />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
