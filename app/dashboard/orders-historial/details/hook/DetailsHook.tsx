@@ -12,6 +12,7 @@ import { CampusSelector } from "@/app/types/campus";
 import { EditedOrderStatusByRol, Order } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
 import _ from "lodash";
+import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 
 type Props = {
@@ -23,6 +24,8 @@ const DetailsHook = ({ slug }: Props) => {
     const { userRol, userData } = useAuth();
 
     const { campus } = userData;
+
+    const currentDate = moment().format();
 
     const [expandReceptionData, setExpandReceptionData] = useState(false);
     const [expandSpecialist, setExpandSpecialist] = useState(false);
@@ -40,6 +43,8 @@ const DetailsHook = ({ slug }: Props) => {
     const [patientsData, setPatientsData] = useState<any>();
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
     const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
+
+    const [areaSelected, setAreaSelected] = useState<any>();
 
     const allDataOrders = ordersData?.flatMap((order: Order) => {
         const patient = patientsData?.find(
@@ -71,8 +76,21 @@ const DetailsHook = ({ slug }: Props) => {
         return result;
     };
 
-    const selectChangeHandlerSentTo = (e: any) => {
-        setSentToArea(e?.value);
+    const backToOrder = () => {
+        setDetailStep(1);
+    };
+
+    const backToDetail = () => {
+        setDetailStep(0);
+    };
+
+    const selectChangeHandlerSentTo = (value: any) => {
+        setSentToArea(value);
+        console.log(value);
+    };
+
+    const commentChangeHandler = (e: any) => {
+        setObservationComment(e.target.value);
     };
 
     const handleChecks = (
@@ -89,8 +107,8 @@ const DetailsHook = ({ slug }: Props) => {
     };
 
     const editedOrderStatusByRol: EditedOrderStatusByRol = {
-        Profesional: "enviada",
-        Recepción: "leída",
+        ZWb0Zs42lnKOjetXH5lq: "enviada",
+        Ll6KGdzqdtmLLk0D5jhk: "asignada",
     };
 
     const handleSendForm = async (e?: any) => {
@@ -110,48 +128,84 @@ const DetailsHook = ({ slug }: Props) => {
 
         // console.log({
         //     ...currentOrderData,
-        //     status: editedOrderStatusByRol[userRol],
+        //     status: editedOrderStatusByRol[userRol?.uid!],
         //     sendTo: sentToArea ? sentToArea : currentOrderData.sendTo,
         //     modifiedBy: userRol,
         //     assignedCampus: campus,
-        //     [userRol?.substring(0, 3).toLocaleLowerCase() +
-        //     "ObservationComment"]: observationComment
-        //         ? observationComment
-        //         : currentOrderData?.[
-        //               userRol?.substring(0, 3).toLocaleLowerCase() +
-        //                   "ObservationComment"
-        //           ]
-        //         ? currentOrderData?.[
-        //               userRol?.substring(0, 3).toLocaleLowerCase() +
-        //                   "ObservationComment"
-        //           ]
-        //         : "",
+        //     [userRol?.name.substring(0, 3).toLocaleLowerCase() +
+        //     "ObservationComment"]: observationComment,
         //     diagnosticImpressionComment: diagnosticImpressionComment
         //         ? diagnosticImpressionComment
         //         : currentOrderData.diagnosticImpressionComment,
+        //     updateLog: currentOrderData.updateLog
+        //         ? [
+        //               ...currentOrderData.updateLog,
+        //               {
+        //                   lastUserId: userData?.uid,
+        //                   lastUpdate: currentDate,
+        //                   lastComment: observationComment,
+        //               },
+        //           ]
+        //         : [
+        //               {
+        //                   lastUserId: userData?.uid,
+        //                   lastUpdate: currentDate,
+        //                   lastComment: observationComment,
+        //                   // lastComment:
+        //                   //     userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+        //                   //         ? currentOrderData.observationComment
+        //                   //         : currentOrderData?.[
+        //                   //               userRol?.name
+        //                   //                   .substring(0, 3)
+        //                   //                   .toLocaleLowerCase() +
+        //                   //                   "ObservationComment"
+        //                   //           ],
+        //               },
+        //           ],
         // });
 
         await saveOneDocumentFb(documentEditOrderRef, {
             ...currentOrderData,
-            status: editedOrderStatusByRol[userRol],
+            status: editedOrderStatusByRol[userRol?.uid!],
             sendTo: sentToArea ? sentToArea : currentOrderData.sendTo,
-            modifiedBy: userRol,
-            assignedCampus: campus,
-            [userRol?.substring(0, 3).toLocaleLowerCase() +
-            "ObservationComment"]: observationComment
-                ? observationComment
-                : currentOrderData?.[
-                      userRol?.substring(0, 3).toLocaleLowerCase() +
-                          "ObservationComment"
-                  ]
-                ? currentOrderData?.[
-                      userRol?.substring(0, 3).toLocaleLowerCase() +
-                          "ObservationComment"
-                  ]
-                : "",
+            modifiedBy: {
+                userRolId: userRol?.uid,
+                userId: userData?.uid,
+            },
+            assignedCampus: campus ? campus : "",
+            [userRol?.name.substring(0, 3).toLocaleLowerCase() +
+            "ObservationComment"]: observationComment,
+            // [userRol?.name.substring(0, 3).toLocaleLowerCase() +
+            // "ObservationComment"]: observationComment
+            //     ? observationComment
+            //     : currentOrderData?.[
+            //           userRol?.name.substring(0, 3).toLocaleLowerCase() +
+            //               "ObservationComment"
+            //       ]
+            //     ? currentOrderData?.[
+            //           userRol?.name.substring(0, 3).toLocaleLowerCase() +
+            //               "ObservationComment"
+            //       ]
+            //     : "",
             diagnosticImpressionComment: diagnosticImpressionComment
                 ? diagnosticImpressionComment
                 : currentOrderData.diagnosticImpressionComment,
+            updateLog: currentOrderData.updateLog
+                ? [
+                      ...currentOrderData.updateLog,
+                      {
+                          lastUserId: userData?.uid,
+                          lastUpdate: currentDate,
+                          lastComment: observationComment,
+                      },
+                  ]
+                : [
+                      {
+                          lastUserId: userData?.uid,
+                          lastUpdate: currentDate,
+                          lastComment: observationComment,
+                      },
+                  ],
         });
     };
 
@@ -182,6 +236,19 @@ const DetailsHook = ({ slug }: Props) => {
         getCampus();
     }, [getOrders, getPatients, getAreas, getCampus]);
 
+    useEffect(() => {
+        currentOrderData?.[
+            userRol?.name.substring(0, 3).toLocaleLowerCase() +
+                "ObservationComment"
+        ] &&
+            setObservationComment(
+                currentOrderData?.[
+                    userRol?.name.substring(0, 3).toLocaleLowerCase() +
+                        "ObservationComment"
+                ],
+            );
+    }, [currentOrderData, userRol?.name]);
+
     return {
         userRol,
         allAreas: _.sortBy(areasByCampus(), "label"),
@@ -203,10 +270,14 @@ const DetailsHook = ({ slug }: Props) => {
         detailStep,
         setDetailStep,
         handleSendForm,
-        setObservationComment,
+        commentChangeHandler,
         setDiagnosticImpressionComment,
         observationComment,
         diagnosticImpressionComment,
+        areaSelected,
+        setAreaSelected,
+        backToOrder,
+        backToDetail,
     };
 };
 

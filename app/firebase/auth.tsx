@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { dataUserObject } from "../data/user";
 import { UserData } from "../types/user";
 import { getAllDocumentsFb } from "./documents";
+import { RolesBd } from "../types/roles";
 
 // interface Role {
 //     id: string;
@@ -20,7 +21,10 @@ const useAuth = () => {
     // const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
-    const [userRol, setUserRol] = useState<string>("");
+    const [userRol, setUserRol] = useState<RolesBd | undefined>({
+        name: "",
+        uid: "",
+    });
     const [userCampus, setUserCampus] = useState<string>("");
     //   const getRole = useCallback(async () => {
     //     if (user) {
@@ -60,27 +64,34 @@ const useAuth = () => {
         const professionalsDocs = await getAllDocumentsFb("professionals");
         const functionaryDocs = await getAllDocumentsFb("functionary");
         const patientsDocs = await getAllDocumentsFb("patients");
+
         const allAreasData = await getAllDocumentsFb("areas");
         const allCampusData = await getAllDocumentsFb("campus");
+        const allRolesData: RolesBd[] = await getAllDocumentsFb("roles");
         const currentUserData =
             user &&
             (functionaryDocs.find((doc: any) => doc.uid === userId) ||
                 professionalsDocs.find((doc: any) => doc.uid === userId) ||
                 patientsDocs.find((doc: any) => doc.uid === userId));
 
+        const currentUserRol: RolesBd | undefined = allRolesData.find(
+            (doc: RolesBd) => doc.uid === currentUserData.rol,
+        );
+
         if (currentUserData) {
             setUserData(currentUserData);
             setIsActiveUser(currentUserData.isActive);
+            setUserRol(currentUserRol);
         }
 
-        if (functionaryDocs && allAreasData && currentUserData.area) {
-            const rol = allAreasData?.find(
-                (item: any) => item.uid === currentUserData.area,
-            )?.name;
-            setUserRol(rol);
-        } else {
-            setUserRol(currentUserData.rol);
-        }
+        // if (functionaryDocs && allAreasData && currentUserData.area) {
+        //     const rol = allAreasData?.find(
+        //         (item: any) => item.uid === currentUserData.area,
+        //     )?.name;
+        //     setUserRol(rol);
+        // } else {
+        //     setUserRol(currentUserData.rol);
+        // }
 
         if (functionaryDocs && allCampusData && currentUserData.campus) {
             const campus = allCampusData?.find(

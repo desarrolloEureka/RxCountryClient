@@ -7,15 +7,19 @@ import {
     getAllCampusOptions,
     getAllOptions,
     getAllOrders,
+    getAllPatients,
     getDocumentRef,
     saveOneDocumentFb,
+    updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
-import { EditedOrderStatusByRol } from "@/app/types/order";
+// import { EditedOrderStatusByRol } from "@/app/types/order";
+import { DataPatientObject } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -43,11 +47,15 @@ const calculateAge = (birthDate: Date | string): number => {
 const EditOrderHook = ({ slug }: Props) => {
     const { userRol, userData } = useAuth();
 
-    const { campus, rol } = userData;
+    const router = useRouter();
+
+    const { campus } = userData;
+
+    const currentDate = moment().format();
 
     const [showHelp, setShowHelp] = useState(false);
 
-    const [formStep, setFormStep] = useState(1);
+    const [formStep, setFormStep] = useState(0);
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(true);
@@ -72,7 +80,15 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
 
-    const oldData = ordersData?.find((order: any) => order.uid === slug);
+    const [allPatients, setAllPatients] = useState<any>();
+
+    const [showSave, setShowSave] = useState<boolean>(false);
+
+    const oldDataOrder = ordersData?.find((order: any) => order.uid === slug);
+
+    const oldPatientData = allPatients?.find(
+        (patient: DataPatientObject) => patient.uid === oldDataOrder.patientId,
+    );
 
     const changeHandler = (e: any) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
@@ -88,6 +104,16 @@ const EditOrderHook = ({ slug }: Props) => {
         );
         return result;
     };
+
+    // const isNewPatientData = (): boolean => {
+    //     setShowSave(
+    //         (patientData &&
+    //             oldPatientData &&
+    //             !_.isEqual(patientData, oldPatientData)) ||
+    //             false,
+    //     );
+    //     return showSave;
+    // };
 
     const selectChangeHandlerSentTo = (value: any) => {
         setSentToArea(value);
@@ -115,25 +141,26 @@ const EditOrderHook = ({ slug }: Props) => {
         setError(false);
     };
 
-    const editedOrderStatusByRol: EditedOrderStatusByRol = {
-        Profesional: "enviada",
-        Recepción: "leída",
-    };
+    // const editedOrderStatusByRol: EditedOrderStatusByRol = {
+    //     ZWb0Zs42lnKOjetXH5lq: "enviada",
+    //     Ll6KGdzqdtmLLk0D5jhk: "leída",
+    // };
 
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
         e.stopPropagation();
         console.log("Editó");
         await uploadHandle();
-        handleClose();
+        // handleClose();
     };
 
     const uploadHandle = async () => {
         const reference = "serviceOrders";
+        const patientRef = "patients";
 
         const documentEditOrderRef: any = getDocumentRef(
             reference,
-            oldData.uid,
+            oldDataOrder.uid,
         );
 
         // console.log({
@@ -148,18 +175,38 @@ const EditOrderHook = ({ slug }: Props) => {
         //     assignedCampus: rol === "Funcionario" ? campus : "",
         // });
 
-        await saveOneDocumentFb(documentEditOrderRef, {
-            ...selectedOptions,
-            uid: documentEditOrderRef.id,
-            patientId: oldData.patientId,
-            status: editedOrderStatusByRol[userRol],
-            sendTo: sentToArea ? sentToArea : oldData.sendTo,
-            isActive: true,
-            isDeleted: false,
-            modifiedBy: userRol,
-            assignedCampus: rol === "Funcionario" ? campus : "",
-        }).then((res) => {
-            setCurrentOrderId(parseInt(res.id));
+        await updateDocumentsByIdFb(
+            oldPatientData.uid,
+            patientData,
+            patientRef,
+        ).then(async () => {
+            await saveOneDocumentFb(documentEditOrderRef, {
+                ...selectedOptions,
+                ...oldDataOrder,
+                uid: documentEditOrderRef.id,
+                patientId: oldDataOrder.patientId,
+                // status: editedOrderStatusByRol[userRol?.uid!],
+                status: "enviada",
+                sendTo: sentToArea ? sentToArea : oldDataOrder.sendTo,
+                isActive: true,
+                isDeleted: false,
+                modifiedBy: {
+                    userRolId: userRol?.uid,
+                    userId: userData?.uid,
+                },
+                assignedCampus: campus ? campus : "",
+                timestamp: oldDataOrder.timestamp,
+                updateLog: [
+                    {
+                        lastUserId: userData?.uid,
+                        lastUpdate: currentDate,
+                        lastComment: selectedOptions.observationComment,
+                    },
+                ],
+            }).then((res) => {
+                setCurrentOrderId(parseInt(res.id));
+                setShowSave(false);
+            });
         });
     };
 
@@ -183,14 +230,38 @@ const EditOrderHook = ({ slug }: Props) => {
         allCampusData && setAllCampus(allCampusData);
     }, []);
 
+    const getPatients = useCallback(async () => {
+        const allPatientsData = await getAllPatients();
+        allPatientsData && setAllPatients(allPatientsData);
+    }, []);
+
+    const saveNewPatientData = useCallback(() => {
+        patientData &&
+            oldPatientData &&
+            setShowSave(!_.isEqual(patientData, oldPatientData));
+    }, [patientData, oldPatientData]);
+
     useEffect(() => {
         getOptions();
         getOrders();
         getAreas();
         getCampus();
-    }, [getOptions, getOrders, getAreas, getCampus]);
+        getPatients();
+    }, [getOptions, getOrders, getAreas, getCampus, getPatients]);
+
+    useEffect(() => {
+        if (isEdit && oldPatientData) {
+            setPatientData(oldPatientData);
+        }
+    }, [isEdit, oldPatientData]);
+
+    useEffect(() => {
+        saveNewPatientData();
+    }, [saveNewPatientData]);
 
     return {
+        router,
+        showSave,
         showHelp,
         allAreas: _.sortBy(areasByCampus(), "label"),
         setShowHelp,
@@ -198,7 +269,7 @@ const EditOrderHook = ({ slug }: Props) => {
         setFormStep,
         userRol,
         isEdit,
-        oldData,
+        oldData: oldDataOrder,
         setIsEdit,
         isDataSelected,
         setIsDataSelected,
@@ -214,6 +285,7 @@ const EditOrderHook = ({ slug }: Props) => {
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
+        // isNewPatientData,
     };
 };
 

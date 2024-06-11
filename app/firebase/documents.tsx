@@ -1,5 +1,11 @@
 import { db } from "@/shared/firebase/firebase";
-import { collection, doc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import {
+    collection,
+    doc,
+    getDocs,
+    setDoc,
+    updateDoc,
+} from "firebase/firestore";
 import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 import moment from "moment";
 import { AreasBd, AreasSelector } from "../types/areas";
@@ -84,6 +90,30 @@ export const getAllPatients = async () => {
     return dataResult;
 };
 
+export const getAllFunctionaries = async () => {
+    const dataResult: any[] = [];
+    const querySnapshot = await getDocs(allRef({ ref: "functionary" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            dataResult.push(data);
+        });
+    }
+    return dataResult;
+};
+
+export const getAllProfessionals = async () => {
+    const dataResult: any[] = [];
+    const querySnapshot = await getDocs(allRef({ ref: "professionals" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            dataResult.push(data);
+        });
+    }
+    return dataResult;
+};
+
 export const getAllOrders = async () => {
     const dataResult: any[] = [];
     const querySnapshot = await getDocs(allRef({ ref: "serviceOrders" }));
@@ -133,7 +163,7 @@ export const getReference = (reference: string) => {
 export const saveOneDocumentFb = async (documentRef: any, data: any) => {
     await setDoc(documentRef, {
         ...data,
-        timestamp: currentDate,
+        timestamp: data.timestamp ? data.timestamp : currentDate,
     });
 
     // console.log(documentRef,data);
@@ -148,6 +178,6 @@ export const updateDocumentsByIdFb = async (
     const document = docRef({ ref: reference, collection: id });
     return await updateDoc(document, {
         ...newData,
-        timestamp: currentDate,
+        timestamp: newData.timestamp ? newData.timestamp : currentDate,
     });
 };
