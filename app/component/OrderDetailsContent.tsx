@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import {
     IoArrowBackCircleOutline,
@@ -10,8 +9,9 @@ import {
 } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 // import PreviewOrderPage from "../dashboard/preview-order/page";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AreasSelector } from "../types/areas";
+import { RolesBd } from "../types/roles";
 import PreviewOrder from "./PreviewOrder";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
@@ -23,7 +23,7 @@ import Spinner from "./spinner/Spinner";
 import DoctorVector from "./vectors/DoctorVector";
 
 interface Props {
-    userRol: string;
+    userRol?: RolesBd;
     expandReceptionData: boolean;
     setExpandReceptionData: (e: any) => void;
     expandSpecialist: boolean;
@@ -46,11 +46,15 @@ interface Props {
     detailStep: number;
     setDetailStep: (e: any) => void;
     handleSendForm: (e: any) => Promise<void>;
-    setObservationComment: (e: any) => void;
+    commentChangeHandler: (e: any) => void;
     setDiagnosticImpressionComment: (e: any) => void;
     allAreas: AreasSelector[];
     observationComment: string;
     diagnosticImpressionComment: string;
+    areaSelected: any;
+    setAreaSelected: (e: any) => void;
+    backToOrder: () => void;
+    backToDetail: () => void;
 }
 
 const OrderDetailsContent = ({
@@ -74,22 +78,16 @@ const OrderDetailsContent = ({
     detailStep,
     setDetailStep,
     handleSendForm,
-    setObservationComment,
+    commentChangeHandler,
     setDiagnosticImpressionComment,
     observationComment,
     diagnosticImpressionComment,
+    areaSelected,
+    setAreaSelected,
+    backToOrder,
+    backToDetail,
 }: Props) => {
     const router = useRouter();
-
-    const backToOrder = () => {
-        setDetailStep(1);
-    };
-
-    const backToDetail = () => {
-        setDetailStep(0);
-    };
-
-    const [areaSelected, setAreaSelected] = useState<any>();
 
     if (!orderAndPatientData || !userRol) {
         return (
@@ -109,8 +107,8 @@ const OrderDetailsContent = ({
                 detailStep !== 3 && "pt-12"
             } w-full max-w-[1440px]`}
         >
-            {(userRol === "Profesional" ||
-                orderAndPatientData?.status !== "enviada") &&
+            {(userRol.uid === "ZWb0Zs42lnKOjetXH5lq" ||
+                orderAndPatientData?.status === "asignada") &&
                 detailStep === 0 && (
                     <div className="flex items-center space-x-8 px-12">
                         <Link href={"/dashboard/orders-historial"}>
@@ -125,7 +123,6 @@ const OrderDetailsContent = ({
                         </h2>
                     </div>
                 )}
-
             {detailStep === 0 && (
                 <div className="mx-28 my-10">
                     <button
@@ -139,14 +136,13 @@ const OrderDetailsContent = ({
                     </button>
                 </div>
             )}
-
-            {(userRol === "Profesional" ||
-                orderAndPatientData?.status !== "enviada") &&
+            {(userRol.uid === "ZWb0Zs42lnKOjetXH5lq" ||
+                orderAndPatientData?.status === "asignada") &&
                 detailStep === 0 && (
                     <div className="pb-10">
                         {/* Reception data */}
                         {(orderAndPatientData?.recObservationComment ||
-                            userRol === "Recepción") && (
+                            userRol.uid === "Ll6KGdzqdtmLLk0D5jhk") && (
                             <div
                                 className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
                                     expandReceptionData
@@ -175,12 +171,8 @@ const OrderDetailsContent = ({
                                             Observaciones
                                         </h2>
                                         <p className="">
-                                            {orderAndPatientData?.[
-                                                userRol
-                                                    ?.substring(0, 3)
-                                                    .toLocaleLowerCase() +
-                                                    "ObservationComment"
-                                            ] || "Sin comentarios"}
+                                            {orderAndPatientData?.recObservationComment ||
+                                                "Sin comentarios"}
                                         </p>
                                     </div>
                                 )}
@@ -189,7 +181,7 @@ const OrderDetailsContent = ({
 
                         {/* specialist */}
                         {(orderAndPatientData?.observationComment ||
-                            userRol === "Profesional") && (
+                            userRol.uid === "ZWb0Zs42lnKOjetXH5lq") && (
                             <div
                                 className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
                                     expandSpecialist
@@ -308,11 +300,11 @@ const OrderDetailsContent = ({
                     </div>
                 )}
 
-            {userRol !== "Profesional" &&
+            {userRol.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                 orderAndPatientData?.status === "enviada" &&
                 detailStep === 0 && (
                     <>
-                        {userRol === "Recepción" && (
+                        {userRol.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
                             <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 my-10 mx-28">
                                 <h3 className="text-company-orange text-xl font-bold">
                                     Observaciones
@@ -320,37 +312,34 @@ const OrderDetailsContent = ({
                                 <div className="grid grid-cols-1 gap-2">
                                     <textarea
                                         // disabled
-                                        value={
-                                            orderAndPatientData?.[
-                                                userRol
-                                                    ?.substring(0, 3)
-                                                    .toLocaleLowerCase() +
-                                                    "ObservationComment"
-                                            ]
-                                                ? orderAndPatientData?.[
-                                                      userRol
-                                                          ?.substring(0, 3)
-                                                          .toLocaleLowerCase() +
-                                                          "ObservationComment"
-                                                  ]
-                                                : observationComment
-                                        }
+                                        // value={
+                                        //     orderAndPatientData?.[
+                                        //         userRol.name
+                                        //             ?.substring(0, 3)
+                                        //             .toLocaleLowerCase() +
+                                        //             "ObservationComment"
+                                        //     ]
+                                        //         ? orderAndPatientData?.[
+                                        //               userRol.name
+                                        //                   ?.substring(0, 3)
+                                        //                   .toLocaleLowerCase() +
+                                        //                   "ObservationComment"
+                                        //           ]
+                                        //         : observationComment
+                                        // }
+                                        value={observationComment}
                                         id="Observations"
                                         name="observations"
                                         rows={6}
                                         cols={50}
                                         className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
                                         placeholder="Escribe aquí tus observaciones..."
-                                        onChange={(e) =>
-                                            setObservationComment(
-                                                e.target.value,
-                                            )
-                                        }
+                                        onChange={commentChangeHandler}
                                     />
                                 </div>
                             </div>
                         )}
-                        {userRol === "Modelos" && (
+                        {userRol.uid === "g9xGywTJG7WSJ5o1bTsH" && (
                             <div className="grid grid-cols-2 gap-4 my-10 mx-28">
                                 <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
                                     <h3 className="text-company-orange text-xl font-bold">
@@ -467,11 +456,7 @@ const OrderDetailsContent = ({
                                             cols={50}
                                             className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
                                             placeholder="Escribe aquí tus observaciones..."
-                                            onChange={(e) =>
-                                                setObservationComment(
-                                                    e.target.value,
-                                                )
-                                            }
+                                            onChange={commentChangeHandler}
                                         />
                                     </div>
                                 </div>
@@ -499,7 +484,7 @@ const OrderDetailsContent = ({
                                 </div>
                             </div>
                         )}
-                        {userRol === "Diagnostico" && (
+                        {userRol.uid === "chbFffCzpRibjYRyoWIx" && (
                             <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 my-10 mx-28">
                                 <h3 className="text-company-orange text-xl font-bold">
                                     Observaciones
@@ -514,16 +499,12 @@ const OrderDetailsContent = ({
                                         cols={50}
                                         className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
                                         placeholder="Escribe aquí tus observaciones..."
-                                        onChange={(e) =>
-                                            setObservationComment(
-                                                e.target.value,
-                                            )
-                                        }
+                                        onChange={commentChangeHandler}
                                     />
                                 </div>
                             </div>
                         )}
-                        {userRol === "Despachos" && (
+                        {userRol.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
                             <div className="grid grid-cols-2 gap-4 my-10 mx-28">
                                 <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
                                     <h1 className="text-company-orange text-2xl font-bold">
@@ -632,11 +613,7 @@ const OrderDetailsContent = ({
                                             cols={50}
                                             className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
                                             placeholder="Escribe aquí tus observaciones..."
-                                            onChange={(e) =>
-                                                setObservationComment(
-                                                    e.target.value,
-                                                )
-                                            }
+                                            onChange={commentChangeHandler}
                                         />
                                     </div>
                                 </div>
@@ -671,7 +648,6 @@ const OrderDetailsContent = ({
                         </div>
                     </>
                 )}
-
             {detailStep === 1 && (
                 <div className="flex flex-col px-20 py-10 relative">
                     <div className="grid grid-cols-2 gap-4 ">
@@ -688,7 +664,7 @@ const OrderDetailsContent = ({
                                 lobortis nisl ut aliquip ex ea commodo
                                 consequat.
                             </p>
-                            {userRol === "Recepción" && (
+                            {userRol.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
                                 <div className="pr-10 space-y-4 pb-10">
                                     <label className="text-company-orange">
                                         Enviar a:

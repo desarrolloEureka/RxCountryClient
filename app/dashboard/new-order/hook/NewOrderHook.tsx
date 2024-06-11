@@ -16,6 +16,7 @@ import {
 import { addPatient } from "@/app/firebase/user";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
+import { EditedOrderStatusByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
@@ -46,7 +47,9 @@ const calculateAge = (birthDate: Date | string): number => {
 const NewOrderHook = (props?: Props) => {
     const { isActiveUser, userData, accessTokenUser, userRol } = useAuth();
 
-    const { campus, rol } = userData;
+    const { campus } = userData;
+
+    const currentDate = moment().format();
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -156,11 +159,18 @@ const NewOrderHook = (props?: Props) => {
         }
     };
 
+    const editedOrderStatusByRol: EditedOrderStatusByRol = {
+        ZWb0Zs42lnKOjetXH5lq: "enviada",
+        Ll6KGdzqdtmLLk0D5jhk: "asignada",
+    };
+
     const patientVal =
         patientData.idType &&
         patientData.id &&
         patientData.name &&
         patientData.lastName &&
+        patientData.age &&
+        patientData.birthDate &&
         patientData.email &&
         patientData.phone !== "57" &&
         patientData.phone !== "" &&
@@ -191,15 +201,6 @@ const NewOrderHook = (props?: Props) => {
 
         const orderId = (oldOrderId + 1).toString();
 
-        // const oldOrderId =
-        //     ordersData.length > 0
-        //         ? `${Math.max(
-        //               ordersData?.map((order: any) => parseInt(order.uid)),
-        //           )}`
-        //         : "0";
-        // const count = parseInt(oldOrderId);
-        // const orderId = `${count + 1}`;
-
         const documentNewOrderRef: any = getDocumentRef(newOrderRef, orderId);
 
         if (patientExist) {
@@ -223,11 +224,27 @@ const NewOrderHook = (props?: Props) => {
                     ...selectedOptions,
                     uid: documentNewOrderRef.id,
                     patientId: documentPatientRef.id,
-                    status: "creada",
+                    status: editedOrderStatusByRol[userRol?.uid!],
                     sendTo: sentToArea,
                     isActive: true,
                     isDeleted: false,
-                    modifiedBy: userRol,
+                    modifiedBy: {
+                        userRolId: userRol?.uid,
+                        userId: userData?.uid,
+                    },
+                    createdBy: {
+                        userRol: userRol?.uid,
+                        userId: userData?.uid,
+                    },
+                    assignedCampus: campus ? campus : "",
+                    timestamp: currentDate,
+                    updateLog: [
+                        {
+                            lastUserId: userData?.uid,
+                            lastUpdate: currentDate,
+                            lastComment: selectedOptions.observationComment,
+                        },
+                    ],
                 }).then((res) => {
                     setCurrentOrderId(parseInt(res.id));
                 });
@@ -253,12 +270,27 @@ const NewOrderHook = (props?: Props) => {
                         ...selectedOptions,
                         uid: documentNewOrderRef.id,
                         patientId: documentPatientRef.id,
-                        status: "creada",
+                        status: editedOrderStatusByRol[userRol?.uid!],
                         sendTo: sentToArea,
                         isActive: true,
                         isDeleted: false,
-                        modifiedBy: userRol,
-                        assignedCampus: rol !== "Profesional" ? campus : "",
+                        modifiedBy: {
+                            userRolId: userRol?.uid,
+                            userId: userData?.uid,
+                        },
+                        createdBy: {
+                            userRol: userRol?.uid,
+                            userId: userData?.uid,
+                        },
+                        assignedCampus: campus ? campus : "",
+                        timestamp: currentDate,
+                        updateLog: [
+                            {
+                                lastUserId: userData?.uid,
+                                lastUpdate: currentDate,
+                                lastComment: selectedOptions.observationComment,
+                            },
+                        ],
                     }).then((res) => {
                         setCurrentOrderId(parseInt(res.id));
                     });

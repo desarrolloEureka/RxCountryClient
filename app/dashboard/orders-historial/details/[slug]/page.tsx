@@ -25,10 +25,14 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
         detailStep,
         setDetailStep,
         handleSendForm,
-        setObservationComment,
+        commentChangeHandler,
         setDiagnosticImpressionComment,
         observationComment,
         diagnosticImpressionComment,
+        areaSelected,
+        setAreaSelected,
+        backToOrder,
+        backToDetail,
     } = DetailsHook({ slug });
 
     return (
@@ -55,13 +59,17 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
                     detailStep={detailStep}
                     setDetailStep={setDetailStep}
                     handleSendForm={handleSendForm}
-                    setObservationComment={setObservationComment}
+                    commentChangeHandler={commentChangeHandler}
                     setDiagnosticImpressionComment={
                         setDiagnosticImpressionComment
                     }
                     allAreas={allAreas}
                     observationComment={observationComment}
                     diagnosticImpressionComment={diagnosticImpressionComment}
+                    areaSelected={areaSelected}
+                    setAreaSelected={setAreaSelected}
+                    backToOrder={backToOrder}
+                    backToDetail={backToDetail}
                 />
             </div>
         </main>

@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { BsFillGeoAltFill, BsFillPersonVcardFill } from "react-icons/bs";
+import { FaCircle } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import {
     IoCall,
@@ -14,18 +15,19 @@ import {
 } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
-import PreviewOrder from "./PreviewOrder";
 import "../style.css";
 import { AreasSelector } from "../types/areas";
+import { RolesBd } from "../types/roles";
 import { idTypes } from "./constants/formConstants";
 import DentalSelect from "./orders/dental-select";
+import PreviewOrder from "./PreviewOrder";
 import SelectComponent from "./SelectComponent";
 import DoctorVector from "./vectors/DoctorVector";
 
 interface Props {
     formStep: number;
     setFormStep: (e: any) => void;
-    userRol?: string;
+    userRol?: RolesBd;
     currentOrderId: number;
     suggestions?: any[];
     isEdit?: boolean;
@@ -157,7 +159,7 @@ function StepByStep({
                 selectedClinicalPhotographyDeliveryMethod,
                 selectedDiagnosticPackage,
                 observationComment:
-                    userRol === "Profesional"
+                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
                         ? observationComment
                         : oldData?.observationComment
                         ? oldData?.observationComment
@@ -199,10 +201,10 @@ function StepByStep({
             [key: string]: string | number[] | string[];
         } = { ...allDataSelected[0] };
 
-        if (userRol !== "Profesional") {
+        if (userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
             //crea propiedad según rol
             dataSelected[
-                userRol?.substring(0, 3).toLocaleLowerCase() +
+                userRol?.name.substring(0, 3).toLocaleLowerCase() +
                     "ObservationComment"
             ] = observationComment;
         }
@@ -219,12 +221,13 @@ function StepByStep({
     ]);
 
     const getObservationComment = (
-        userRol: string | undefined,
         oldData: Record<string, any>,
+        userRol?: RolesBd,
     ) => {
-        const isProfessional = userRol === "Profesional";
+        const isProfessional = userRol?.uid === "ZWb0Zs42lnKOjetXH5lq";
         const userRoleKey =
-            userRol?.substring(0, 3).toLocaleLowerCase() + "ObservationComment";
+            userRol?.name.substring(0, 3).toLocaleLowerCase() +
+            "ObservationComment";
         const userRoleComment = oldData?.[userRoleKey];
         const generalComment = oldData?.observationComment;
 
@@ -242,7 +245,7 @@ function StepByStep({
         return "";
     };
 
-    const userComment = getObservationComment(userRol, oldData);
+    const userComment = getObservationComment(oldData, userRol);
 
     useEffect(() => {
         valData();
@@ -304,6 +307,8 @@ function StepByStep({
         }
     }, [oldData, userComment, userRol]);
 
+    // console.log(data);
+
     return (
         <div>
             {formStep === 0 && (
@@ -318,7 +323,7 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <select
-                                value={data.idType}
+                                value={data && data?.idType}
                                 id="idType"
                                 name="idType"
                                 required
@@ -355,7 +360,7 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
-                                value={data.id}
+                                value={data && data?.id}
                                 type="text"
                                 name="id"
                                 required
@@ -363,7 +368,9 @@ function StepByStep({
                                 min={0}
                                 max={9999999999}
                                 className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
-                                onChange={handleInputChange}
+                                onChange={
+                                    isEdit ? changeHandler : handleInputChange
+                                }
                             />
                             {suggestions && suggestions?.length > 0 && (
                                 <ul className="absolute top-16 w-full text-white bg-black border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto z-10">
@@ -383,7 +390,7 @@ function StepByStep({
                             <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                 <BsFillPersonVcardFill />
                             </span>
-                            {data.id && (
+                            {data && data?.id && !isEdit && (
                                 <span className="absolute right-2 bottom-2 hover:bg-black/25 rounded-md text-company-blue text-[1.5rem]">
                                     <IoCloseSharp onClick={handleClose} />
                                 </span>
@@ -395,7 +402,7 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
-                                value={data.name}
+                                value={data && data?.name}
                                 type="text"
                                 name="name"
                                 required
@@ -413,7 +420,7 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
-                                value={data.lastName}
+                                value={data && data?.lastName}
                                 type="text"
                                 name="lastName"
                                 required
@@ -431,7 +438,7 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
-                                value={data.email}
+                                value={data && data?.email}
                                 type="email"
                                 name="email"
                                 required
@@ -464,7 +471,7 @@ function StepByStep({
                                     color: "black",
                                     borderRadius: 12,
                                 }}
-                                value={data.phone}
+                                value={data?.phone}
                                 onChange={phoneChangeHandler}
                             />
                             <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
@@ -473,10 +480,12 @@ function StepByStep({
                         </div>
                         <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="birthDate" className="text-white">
-                                Fecha de Nacimiento&nbsp;(opcional)
+                                Fecha de Nacimiento&nbsp;
+                                <span className="text-blue-500">*</span>
                             </label>
                             <input
-                                value={data.birthDate}
+                                required
+                                value={data && data?.birthDate}
                                 type="date"
                                 name="birthDate"
                                 id="birthDate"
@@ -487,27 +496,31 @@ function StepByStep({
                                 <MdOutlineDateRange />
                             </span>
                         </div>
-                        {/* <div className="col flex flex-col space-y-2">
+                        <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="age" className="text-white">
-                                Edad
+                                Edad&nbsp;
+                                <span className="text-blue-500">*</span>
                             </label>
                             <input
-                                value={data.age}
+                                value={data && data?.age}
                                 disabled
                                 type="number"
                                 name="age"
                                 id="age"
                                 min={0}
                                 max={999}
-                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-4"
+                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
                             />
-                        </div> */}
-                        <div className="col relative flex flex-col md:col-span-2 space-y-2">
+                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                <MdOutlineDateRange />
+                            </span>
+                        </div>
+                        <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="address" className="text-white">
                                 Dirección&nbsp;(opcional)
                             </label>
                             <input
-                                value={data.address}
+                                value={data && data?.address}
                                 id="address"
                                 name="address"
                                 type="text"
@@ -519,7 +532,7 @@ function StepByStep({
                                 <BsFillGeoAltFill />
                             </span>
                         </div>
-                        {userRol === "Recepción" && (
+                        {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
                             <>
                                 <div className="col relative flex flex-col space-y-2">
                                     <label
@@ -618,9 +631,7 @@ function StepByStep({
                     <div className="mx-auto mb-8">
                         <DentalSelect
                             setSelected={
-                                !isEdit || oldData?.status !== "enviada"
-                                    ? setDentalSelectBoneScan
-                                    : () => {}
+                                !isEdit ? setDentalSelectBoneScan : () => {}
                             }
                             selected={dentalSelectBoneScan}
                         />
@@ -641,9 +652,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedIntraOrals(
                                                                     selectedIntraOrals.includes(
                                                                         option,
@@ -703,9 +712,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedExtraOrals(
                                                                     selectedExtraOrals.includes(
                                                                         option,
@@ -758,9 +765,7 @@ function StepByStep({
                     <div className="mx-auto mb-8">
                         <DentalSelect
                             setSelected={
-                                !isEdit || oldData?.status !== "enviada"
-                                    ? setDentalSelectTomography
-                                    : () => {}
+                                !isEdit ? setDentalSelectTomography : () => {}
                             }
                             selected={dentalSelectTomography}
                         />
@@ -787,9 +792,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelected3DVolumetricTomography(
                                                                     selected3DVolumetricTomography.includes(
                                                                         option,
@@ -854,9 +857,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedAdditionalDeliveryMethod(
                                                                     selectedAdditionalDeliveryMethod.includes(
                                                                         option,
@@ -922,9 +923,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedDiagnosis(
                                                                     selectedDiagnosis.includes(
                                                                         option,
@@ -986,9 +985,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedModels(
                                                                     selectedModels.includes(
                                                                         option,
@@ -1060,9 +1057,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedIntraOralClinicalPhotography(
                                                                     selectedIntraOralClinicalPhotography.includes(
                                                                         option,
@@ -1128,9 +1123,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedExtraOralClinicalPhotography(
                                                                     selectedExtraOralClinicalPhotography.includes(
                                                                         option,
@@ -1190,9 +1183,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedPresentation(
                                                                     selectedPresentation.includes(
                                                                         option,
@@ -1252,41 +1243,27 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedBackground(
-                                                                    selectedBackground.includes(
-                                                                        option,
-                                                                    )
-                                                                        ? selectedBackground.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedBackground,
-                                                                              option,
-                                                                          ],
+                                                                    option,
                                                                 );
                                                         }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                        className={`flex border border-white justify-center items-center rounded-full h-4 w-4 ${
                                                             !isEdit &&
                                                             "cursor-pointer"
                                                         } ${
-                                                            selectedBackground.includes(
-                                                                option,
-                                                            )
+                                                            selectedBackground ===
+                                                            option
                                                                 ? "bg-company-orange"
                                                                 : "bg-transparent"
                                                         }`}
                                                     >
-                                                        {selectedBackground.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
+                                                        {selectedBackground ===
+                                                            option && (
+                                                            <FaCircle
+                                                                color="black"
+                                                                size={10}
+                                                            />
                                                         )}
                                                     </div>
                                                 </div>
@@ -1314,9 +1291,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedClinicalPhotographyDeliveryMethod(
                                                                     selectedClinicalPhotographyDeliveryMethod.includes(
                                                                         option,
@@ -1382,9 +1357,7 @@ function StepByStep({
                                                 <div className="">
                                                     <div
                                                         onClick={() => {
-                                                            (!isEdit ||
-                                                                oldData.status !==
-                                                                    "enviada") &&
+                                                            !isEdit &&
                                                                 setSelectedDiagnosticPackage(
                                                                     selectedDiagnosticPackage.includes(
                                                                         option,
@@ -1431,7 +1404,7 @@ function StepByStep({
                         </div>
                         <div
                             className={`${
-                                userRol !== "Recepción"
+                                userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
                                     ? "col-span-1"
                                     : "col-span-2"
                             } flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50`}
@@ -1441,7 +1414,7 @@ function StepByStep({
                             </h3>
                             <div className="grid grid-cols-1 gap-2">
                                 <textarea
-                                    // disabled={isEdit}
+                                    disabled={isEdit}
                                     value={observationComment}
                                     id="Observations"
                                     name="observations"
@@ -1455,13 +1428,14 @@ function StepByStep({
                                 />
                             </div>
                         </div>
-                        {userRol !== "Recepción" && (
+                        {userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk" && (
                             <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                 <h3 className="text-company-orange text-xl font-bold">
                                     Impresión diagnostica
                                 </h3>
                                 <div className="grid grid-cols-1 gap-2">
                                     <textarea
+                                        disabled={isEdit}
                                         value={diagnosticImpressionComment}
                                         id="DiagnosticImpression"
                                         name="diagnosticImpression"
@@ -1528,7 +1502,7 @@ function StepByStep({
                                 lobortis nisl ut aliquip ex ea commodo
                                 consequat.
                             </p>
-                            {userRol === "Recepción" && (
+                            {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
                                 <div className="pr-10 space-y-4 pb-10">
                                     <label className="text-company-orange">
                                         Enviar a:

@@ -1,8 +1,15 @@
 "use client";
 import useAuth from "@/app/firebase/auth";
-import { getAllOrders, getAllPatients } from "@/app/firebase/documents";
+import {
+    getAllFunctionaries,
+    getAllOrders,
+    getAllPatients,
+    getAllProfessionals,
+    updateDocumentsByIdFb,
+} from "@/app/firebase/documents";
 import { Order, OrdersByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
+import { DataProfessionalObject } from "@/app/types/professionals";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,7 +18,7 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 const OrderHistorialHook = () => {
     const { isActiveUser, userData, userRol } = useAuth();
 
-    const { campus } = userData;
+    const { campus, area } = userData;
 
     const searchParams = useSearchParams();
 
@@ -25,7 +32,7 @@ const OrderHistorialHook = () => {
     const [selectedOrder, setSelectedOrder] = useState("send");
     const [search, setSearch] = useState("");
     const [orderId, setOrderId] = useState<any>();
-    const [filter, setFilter] = useState<any>("timestamp");
+    const [filter, setFilter] = useState<any>("uid");
 
     // filters
     const [orderMinorMajor, setOrderMinorMajor] = useState(false);
@@ -36,17 +43,24 @@ const OrderHistorialHook = () => {
 
     const [ordersData, setOrdersData] = useState<any>();
     const [patientsData, setPatientsData] = useState<any>();
+    const [functionaryData, setFunctionaryData] = useState<any>();
+    const [professionalsData, setProfessionalsData] = useState<any>();
 
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     const [value, setValue] = useState({
         startDate: null,
         endDate: null,
     });
 
-    const handleValueChange = (newValue: any) => {
-        setValue(newValue);
+    const backToOrder = () => {
+        setShowPdf(false);
+    };
+
+    const formatearFecha = (fechaISO: string): string => {
+        return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
     };
 
     const allDataOrders = ordersData?.flatMap((order: Order) => {
@@ -63,52 +77,33 @@ const OrderHistorialHook = () => {
     });
 
     const ordersByRol: OrdersByRol = {
-        Profesional: {
-            received: allDataOrders?.filter(
-                (order: any) => order.status === "enviada",
-            ),
+        //Profesional
+        ZWb0Zs42lnKOjetXH5lq: {
+            // received: allDataOrders?.filter(
+            //     (order: any) => order.status === "enviada",
+            // ),
             send: allDataOrders?.filter(
                 (order: any) =>
-                    // order.modifiedBy === userRol &&
-                    order.status === "creada" || order.status === "enviada",
+                    // order.modifiedBy.userRolId === userRol?.uid &&
+                    order.status === "enviada",
             ),
         },
-        Recepción: {
+        //Recepción
+        Ll6KGdzqdtmLLk0D5jhk: {
             received: allDataOrders?.filter(
                 (order: any) =>
-                    order.status === "enviada" || order.status === "creada",
+                    order.status === "leída" || order.status === "enviada",
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
-                    order.modifiedBy === userRol &&
+                    order.modifiedBy.userRolId === userRol?.uid &&
                     order.assignedCampus === campus &&
-                    (order.status === "leída" || order.status === "creada"),
+                    order.status === "asignada",
             ),
         },
     };
 
-    const orderList = ordersByRol[userRol]?.[selectedOrder];
-
-    const backToOrder = () => {
-        setShowPdf(false);
-    };
-
-    // const handleStartDateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    //     setStartDate(e.target.value);
-    // };
-
-    // const handleEndDateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    //     setEndDate(e.target.value);
-    // };
-
-    const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSearch(value);
-    };
-
-    const formatearFecha = (fechaISO: string): string => {
-        return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
-    };
+    const orderList = ordersByRol[userRol?.uid!]?.[selectedOrder];
 
     let filteredOrders: any[] = orderList?.filter((order: any) => {
         const itemDate = moment(order.timestamp);
@@ -130,6 +125,14 @@ const OrderHistorialHook = () => {
 
     filteredOrders = _.sortBy(filteredOrders, filter).reverse();
 
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+
+    filteredOrders = filteredOrders.slice(
+        startIndex,
+        startIndex + itemsPerPage,
+    );
+
     if (orderMinorMajor) {
         filteredOrders = _.sortBy(filteredOrders, (obj) =>
             parseInt(obj.uid, 10),
@@ -149,6 +152,72 @@ const OrderHistorialHook = () => {
             (obj) => obj.timestamp,
         ).reverse();
     }
+
+    const handleValueChange = (newValue: any) => {
+        setValue(newValue);
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearch(value);
+    };
+
+    const setStatusOpenOrder = async (uid: string, timestamp: string) => {
+        const orderRef = "serviceOrders";
+        const modifiedBy = {
+            userRolId: userRol?.uid,
+            userId: userData?.uid,
+        };
+        await updateDocumentsByIdFb(
+            uid,
+            {
+                modifiedBy,
+                assignedCampus: campus ? campus : "",
+                timestamp,
+            },
+            orderRef,
+        );
+    };
+
+    const getOrderStatus = (item: any) => {
+        const isModifiedByUser = item.modifiedBy.userRolId === userRol?.uid;
+        const isSentToUserArea = item.sendTo === area;
+
+        if (!item.sendTo && userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
+            return isModifiedByUser ? "leída" : "recibida";
+        }
+
+        if (isSentToUserArea) {
+            return isModifiedByUser ? "leída" : "recibida";
+        }
+
+        return item.status;
+    };
+
+    const getLastUserData = (id: string) => {
+        const functionary: DataProfessionalObject = functionaryData?.find(
+            (functionary: DataProfessionalObject) => functionary.uid === id,
+        );
+
+        const professional: DataProfessionalObject = professionalsData?.find(
+            (professional: DataProfessionalObject) => professional.uid === id,
+        );
+        const result = functionary || professional;
+
+        return result.name;
+    };
 
     const downloadCSV = (array: any[], tableTitle: string) => {
         const link = document.createElement("a");
@@ -204,13 +273,28 @@ const OrderHistorialHook = () => {
         allPatientsData && setPatientsData(allPatientsData);
     }, []);
 
+    const getFunctionary = useCallback(async () => {
+        const allFunctionaryData = await getAllFunctionaries();
+        allFunctionaryData && setFunctionaryData(allFunctionaryData);
+    }, []);
+
+    const getProfessionals = useCallback(async () => {
+        const allProfessionalsData = await getAllProfessionals();
+        allProfessionalsData && setProfessionalsData(allProfessionalsData);
+    }, []);
+
     useEffect(() => {
         getOrders();
         getPatients();
-    }, [getOrders, getPatients]);
+        getFunctionary();
+        getProfessionals();
+    }, [getOrders, getPatients, getFunctionary, getProfessionals]);
 
     useEffect(() => {
-        if (userRol === "Recepción" && !searchParams.has("to")) {
+        if (
+            userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" &&
+            !searchParams.has("to")
+        ) {
             setSelectedOrder("received");
         }
     }, [userRol, searchParams]);
@@ -221,14 +305,8 @@ const OrderHistorialHook = () => {
         }
     }, [fromEdit, searchParams]);
 
-    // useEffect(() => {
-    //     if (search.length > 0) {
-    //         console.log(search);
-    //         setSuggestionsOrders(filteredOrders);
-    //     }
-    // }, [filteredOrders, orderList, search]);
-
     return {
+        userArea: area,
         router,
         showFilter,
         setShowFilter,
@@ -251,10 +329,6 @@ const OrderHistorialHook = () => {
         ordersByRol,
         formatearFecha,
         handleSearchInputChange,
-        // handleStartDateChange,
-        // handleEndDateChange,
-        // startDate,
-        // endDate,
         filteredOrders,
         showPdf,
         setShowPdf,
@@ -264,6 +338,16 @@ const OrderHistorialHook = () => {
         value,
         handleValueChange,
         backToOrder,
+        handlePreviousPage,
+        handleNextPage,
+        currentPage,
+        totalPages,
+        setItemsPerPage,
+        ordersData,
+        setCurrentPage,
+        setStatusOpenOrder,
+        getOrderStatus,
+        getLastUserData,
     };
 };
 

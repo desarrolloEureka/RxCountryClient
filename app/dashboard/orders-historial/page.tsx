@@ -8,6 +8,7 @@ import { BsFileEarmarkExcelFill } from "react-icons/bs";
 import {
     IoIosArrowBack,
     IoIosArrowForward,
+    IoIosEye,
     IoIosNotifications,
     IoMdSearch,
 } from "react-icons/io";
@@ -21,6 +22,7 @@ import OrderHistorialHook from "./hook/OrderHistorialHook";
 
 const OrderHistorialPage = () => {
     const {
+        userArea,
         router,
         showFilter,
         setShowFilter,
@@ -43,10 +45,6 @@ const OrderHistorialPage = () => {
         ordersByRol,
         formatearFecha,
         handleSearchInputChange,
-        // handleStartDateChange,
-        // handleEndDateChange,
-        // startDate,
-        // endDate,
         filteredOrders,
         showPdf,
         setShowPdf,
@@ -56,6 +54,16 @@ const OrderHistorialPage = () => {
         value,
         handleValueChange,
         backToOrder,
+        handlePreviousPage,
+        handleNextPage,
+        currentPage,
+        totalPages,
+        setItemsPerPage,
+        ordersData,
+        setCurrentPage,
+        setStatusOpenOrder,
+        getOrderStatus,
+        getLastUserData,
     } = OrderHistorialHook();
 
     if (!ordersByRol) {
@@ -83,15 +91,16 @@ const OrderHistorialPage = () => {
                         <div className="flex justify-end items-center p-8">
                             <div
                                 className={`grid ${
-                                    userRol === "Recepción"
+                                    userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk"
                                         ? "grid-cols-2"
                                         : "grid-cols-1"
                                 } flex-1 gap-52 xl:gap-80 `}
                             >
-                                {userRol === "Recepción" && (
+                                {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
                                     <div
                                         onClick={() => {
                                             setSelectedOrder("received");
+                                            setCurrentPage(1);
                                         }}
                                         className="col flex flex-col cursor-pointer items-end"
                                     >
@@ -109,11 +118,13 @@ const OrderHistorialPage = () => {
 
                                 <div
                                     onClick={() => {
-                                        userRol !== "Profesional" &&
+                                        userRol?.uid !==
+                                            "ZWb0Zs42lnKOjetXH5lq" &&
                                             setSelectedOrder("send");
+                                        setCurrentPage(1);
                                     }}
                                     className={`col flex flex-col ${
-                                        userRol === "Recepción"
+                                        userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk"
                                             ? "cursor-pointer items-start"
                                             : "items-center"
                                     }`}
@@ -146,7 +157,9 @@ const OrderHistorialPage = () => {
                         >
                             <div
                                 className={`col h-[0.2rem] ${
-                                    userRol === "Recepción" ? "w-1/2" : "w-full"
+                                    userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk"
+                                        ? "w-1/2"
+                                        : "w-full"
                                 } bg-company-orange ${
                                     selectedOrder === "received"
                                         ? "rounded-r-full"
@@ -185,12 +198,7 @@ const OrderHistorialPage = () => {
                                     >
                                         Rango de fecha:
                                     </label>
-                                    {/* <input
-                                        type="date"
-                                        className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
-                                        value={startDate}
-                                        onChange={handleStartDateChange}
-                                    /> */}
+
                                     <Datepicker
                                         inputClassName="bg-white rounded-xl w-full shadow-lg h-10 px-4 text-black"
                                         onChange={handleValueChange}
@@ -202,20 +210,6 @@ const OrderHistorialPage = () => {
                                         i18n={"es"}
                                     />
                                 </div>
-                                {/* <div className="relative col flex flex-col space-y-2 w-full">
-                                    <label
-                                        htmlFor="search"
-                                        className="text-white text-sm"
-                                    >
-                                        Hasta:
-                                    </label>
-                                    <input
-                                        type="date"
-                                        className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
-                                        value={endDate}
-                                        onChange={handleEndDateChange}
-                                    />
-                                </div> */}
 
                                 {showFilter && (
                                     <div className="absolute top-7 left-4 bg-white shadow-xl rounded-2xl p-4 w-72">
@@ -309,51 +303,57 @@ const OrderHistorialPage = () => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col divide-y">
-                            <div className="grid grid-cols-12 items-center text-company-orange py-4 pr-16">
-                                <div className="col-span-2 text-center text-nowrap">
+                        <div className="flex flex-col divide-y overflow-x-auto custom-scrollbar pb-3 mb-5">
+                            <div className="grid grid-cols-12 min-w-max items-center text-company-orange py-4 px-12">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Detalle</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span># Orden</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Fecha</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Estado</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Tipo Doc.</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Cédula</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Nombres</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Apellidos</span>
                                 </div>
-                                <div className="col-span-2 text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Correo</span>
                                 </div>
-                                <div className="col text-center text-nowrap">
+                                <div className="col text-center text-nowrap w-48">
                                     <span>Teléfono</span>
+                                </div>
+                                <div className="col text-center text-nowrap w-48">
+                                    <span>Ultima Actualización</span>
+                                </div>
+                                <div className="col text-center text-nowrap w-48">
+                                    <span>Ultimo Usuario</span>
                                 </div>
                             </div>
                             {filteredOrders?.map((item: any, index: number) => {
                                 return (
                                     <div
                                         key={index}
-                                        onClick={() => {
-                                            router.push(
-                                                `/dashboard/orders-historial/details/${item.uid}`,
-                                            );
-                                        }}
-                                        className="grid grid-cols-12 cursor-pointer border-t items-center text-white py-4 hover:bg-gray-700 pr-16"
+                                        // onClick={() => {
+                                        //     router.push(
+                                        //         `/dashboard/orders-historial/details/${item.uid}`,
+                                        //     );
+                                        // }}
+                                        className="grid grid-cols-12 min-w-max border-t items-center text-white py-4 hover:bg-gray-700 px-12"
                                     >
-                                        <div className="col-span-2 flex justify-between text-nowrap text-company-blue px-10">
+                                        <div className="col flex justify-between text-nowrap text-company-blue w-48 px-5">
                                             <button
                                                 // className="px-22"
                                                 onClick={(e) => {
@@ -362,27 +362,32 @@ const OrderHistorialPage = () => {
                                             >
                                                 <IoIosNotifications size={24} />
                                             </button>
-                                            {/* {selectedOrder === "send" && ( */}
                                             <button
                                                 // className="px-2"
                                                 onClick={(e) => {
-                                                    // selectedOrder ===
-                                                    //     "send" &&
-                                                    router.push(
-                                                        `/dashboard/orders-historial/edit-order/${item.uid}`,
-                                                    ),
-                                                        e.stopPropagation();
+                                                    e.stopPropagation();
+                                                    item.status === "enviada" &&
+                                                    userRol?.uid !==
+                                                        item.modifiedBy
+                                                            .userRolId
+                                                        ? setStatusOpenOrder(
+                                                              item.uid,
+                                                              item.timestamp,
+                                                          ).then(() => {
+                                                              router.push(
+                                                                  `/dashboard/orders-historial/edit-order/${item.uid}`,
+                                                              );
+                                                          })
+                                                        : router.push(
+                                                              `/dashboard/orders-historial/edit-order/${item.uid}`,
+                                                          );
                                                 }}
                                             >
                                                 <RiEditBoxFill size={24} />
                                             </button>
-                                            {/* )} */}
                                             <button
                                                 // className="px-2"
                                                 onClick={(e) => {
-                                                    // router.replace(
-                                                    //     `/dashboard/preview-order?id=${item.uid}&from=orders-historial`,
-                                                    // );
                                                     setShowPdf(true);
                                                     setOrderId(item.uid);
                                                     e.stopPropagation();
@@ -390,43 +395,95 @@ const OrderHistorialPage = () => {
                                             >
                                                 <MdPictureAsPdf size={24} />
                                             </button>
-                                            {/* <button
-                                            // className="px-2"
-                                            // onClick={(e) => {
-                                            //     e.stopPropagation();
-                                            // }}
+                                            <button
+                                                // className="px-2"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    (item.status ===
+                                                        "enviada" ||
+                                                        item.status ===
+                                                            "asignada") &&
+                                                    userRol?.uid !==
+                                                        item.modifiedBy
+                                                            .userRolId
+                                                        ? setStatusOpenOrder(
+                                                              item.uid,
+                                                              item.timestamp,
+                                                          ).then(() => {
+                                                              router.push(
+                                                                  `/dashboard/orders-historial/details/${item.uid}`,
+                                                              );
+                                                          })
+                                                        : router.push(
+                                                              `/dashboard/orders-historial/details/${item.uid}`,
+                                                          );
+                                                }}
                                             >
-                                                < size={24} />
-                                            </button> */}
+                                                <IoIosEye size={24} />
+                                            </button>
                                         </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{`#${item.uid}`}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">{`#${item.uid}`}</p>
                                         </div>
                                         <div className="text-center">
-                                            <span>
+                                            <p className="truncate">
                                                 {formatearFecha(item.timestamp)}
-                                            </span>
+                                            </p>
                                         </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.status}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {getOrderStatus(item)}
+                                            </p>
                                         </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.idType}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.idType}
+                                            </p>
                                         </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.id}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.id}
+                                            </p>
                                         </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.name}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.name}
+                                            </p>
                                         </div>
-                                        <div className="text-center">
-                                            <span>{item.lastName}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.lastName}
+                                            </p>
                                         </div>
-                                        <div className="col-span-2 text-center">
-                                            <span>{item.email}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.email}
+                                            </p>
                                         </div>
-                                        <div className="text-nowrap text-center">
-                                            <span>{item.phone}</span>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.phone}
+                                            </p>
+                                        </div>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.updateLog
+                                                    ? formatearFecha(
+                                                          item.updateLog.at(-1)
+                                                              .lastUpdate,
+                                                      )
+                                                    : ""}
+                                            </p>
+                                        </div>
+                                        <div className="text-nowrap text-center w-48">
+                                            <p className="truncate">
+                                                {item.updateLog
+                                                    ? getLastUserData(
+                                                          item.updateLog.at(-1)
+                                                              .lastUserId,
+                                                      )
+                                                    : ""}
+                                            </p>
                                         </div>
                                     </div>
                                 );
@@ -517,22 +574,85 @@ const OrderHistorialPage = () => {
                                 />
                                 <span>Descargar Excel</span>
                             </button>
-                            <div className="flex items-center text-white justify-end w-full">
-                                <button>
-                                    <IoIosArrowBack size={24} />
-                                </button>
-                                <span className="mx-4">Pag 1/1</span>
-                                <button>
-                                    <IoIosArrowForward size={24} />
-                                </button>
-                            </div>
+
+                            {totalPages > 0 && (
+                                <div className="flex items-center text-white justify-end w-full">
+                                    <select
+                                        className="rounded-xl h-8 bg-transparent border-company-blue border text-white px-2"
+                                        onChange={(e) => {
+                                            setItemsPerPage(
+                                                parseInt(e.target.value),
+                                            );
+                                            setCurrentPage(1);
+                                        }}
+                                    >
+                                        {Array.from(
+                                            {
+                                                length: 6,
+                                            },
+                                            (_, i) => 5 + i * 5,
+                                        ).map((item: number, index: number) => {
+                                            return (
+                                                <option
+                                                    key={index}
+                                                    value={item}
+                                                    className="bg-black/80 text-company-orange"
+                                                >
+                                                    {item}
+                                                </option>
+                                            );
+                                        })}
+                                        <option
+                                            value={ordersData.length}
+                                            className="bg-black/80 text-company-orange"
+                                        >
+                                            Todos
+                                        </option>
+                                    </select>
+
+                                    <div className="flex items-center w-40 justify-end space-x-3">
+                                        {currentPage > 1 &&
+                                            currentPage <= totalPages && (
+                                                <button
+                                                    className={`px-2 py-2 ${
+                                                        currentPage === 1
+                                                            ? "cursor-not-allowed opacity-50"
+                                                            : "hover:text-company-blue hover:bg-gray-700 rounded-full text-white"
+                                                    }`}
+                                                    onClick={handlePreviousPage}
+                                                    disabled={currentPage === 1}
+                                                >
+                                                    <IoIosArrowBack size={24} />
+                                                </button>
+                                            )}
+                                        <span className="px-0">
+                                            {currentPage} / {totalPages}
+                                        </span>
+                                        {currentPage < totalPages && (
+                                            <button
+                                                className={`px-2 py-2 ${
+                                                    currentPage === totalPages
+                                                        ? "cursor-not-allowed opacity-50"
+                                                        : "hover:text-company-blue hover:bg-gray-700 rounded-full text-white"
+                                                }`}
+                                                onClick={handleNextPage}
+                                                disabled={
+                                                    currentPage === totalPages
+                                                }
+                                            >
+                                                <IoIosArrowForward size={24} />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
                 {showPdf && (
                     <PreviewOrder
                         backToOrder={backToOrder}
-                        isEdit={userRol === "Profesional"}
+                        isEdit={userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"}
                         orderId={orderId}
                     />
                 )}

@@ -122,7 +122,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 </div>
                 <div className="flex flex-col text-center">
                     <span className="text-xl text-capitalize">{name}</span>
-                    <span className="text-sm text-capitalize">{`${userRol} ${userCampus}`}</span>
+                    <span className="text-sm text-capitalize">{`${userRol?.name} ${userCampus}`}</span>
                 </div>
             </Link>
             {openProfileMenu && (

@@ -10,7 +10,7 @@ export interface OrdersByRol {
 }
 
 export interface EditedOrderStatusByRol {
-    [key: string]: string;
+    [key: string]: string | undefined;
 }
 
 export interface PreviewOrderProps {
