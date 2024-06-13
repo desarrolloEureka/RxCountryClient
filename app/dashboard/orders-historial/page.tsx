@@ -91,40 +91,44 @@ const OrderHistorialPage = () => {
                         <div className="flex justify-end items-center p-8">
                             <div
                                 className={`grid ${
-                                    userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk"
+                                    userRol?.uid &&
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
                                         ? "grid-cols-2"
                                         : "grid-cols-1"
                                 } flex-1 gap-52 xl:gap-80 `}
                             >
-                                {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
-                                    <div
-                                        onClick={() => {
-                                            setSelectedOrder("received");
-                                            setCurrentPage(1);
-                                        }}
-                                        className="col flex flex-col cursor-pointer items-end"
-                                    >
-                                        <h3
-                                            className={`text-2xl ${
-                                                selectedOrder === "received"
-                                                    ? "text-company-orange"
-                                                    : " text-gray-400"
-                                            }`}
+                                {userRol?.uid &&
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" && (
+                                        <div
+                                            onClick={() => {
+                                                setSelectedOrder("received");
+                                                setCurrentPage(1);
+                                            }}
+                                            className="col flex flex-col cursor-pointer items-end"
                                         >
-                                            Ordenes Recibidas
-                                        </h3>
-                                    </div>
-                                )}
+                                            <h3
+                                                className={`text-2xl ${
+                                                    selectedOrder === "received"
+                                                        ? "text-company-orange"
+                                                        : " text-gray-400"
+                                                }`}
+                                            >
+                                                Ordenes Recibidas
+                                            </h3>
+                                        </div>
+                                    )}
 
                                 <div
                                     onClick={() => {
-                                        userRol?.uid !==
-                                            "ZWb0Zs42lnKOjetXH5lq" &&
+                                        userRol?.uid &&
+                                            userRol?.uid !==
+                                                "ZWb0Zs42lnKOjetXH5lq" &&
                                             setSelectedOrder("send");
                                         setCurrentPage(1);
                                     }}
                                     className={`col flex flex-col ${
-                                        userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk"
+                                        userRol?.uid &&
+                                        userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
                                             ? "cursor-pointer items-start"
                                             : "items-center"
                                     }`}
@@ -157,6 +161,7 @@ const OrderHistorialPage = () => {
                         >
                             <div
                                 className={`col h-[0.2rem] ${
+                                    userRol?.uid &&
                                     userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk"
                                         ? "w-1/2"
                                         : "w-full"
@@ -176,6 +181,7 @@ const OrderHistorialPage = () => {
                                     Buscar Ordenes por Paciente
                                 </label>
                                 <input
+                                    id="search"
                                     type="search"
                                     placeholder="Ej. Hernandez Rodriguez"
                                     className="bg-white rounded-full shadow-lg h-10 pl-4 pr-10 text-black"
@@ -193,13 +199,15 @@ const OrderHistorialPage = () => {
 
                                 <div className="relative col flex flex-col space-y-2 w-full">
                                     <label
-                                        htmlFor="search"
+                                        htmlFor="data-picker"
                                         className="text-white text-sm"
                                     >
                                         Rango de fecha:
                                     </label>
 
                                     <Datepicker
+                                        inputId="data-picker"
+                                        inputName="data-picker"
                                         inputClassName="bg-white rounded-xl w-full shadow-lg h-10 px-4 text-black"
                                         onChange={handleValueChange}
                                         value={value}
@@ -372,7 +380,7 @@ const OrderHistorialPage = () => {
                                                             .userRolId
                                                         ? setStatusOpenOrder(
                                                               item.uid,
-                                                              item.timestamp,
+                                                              //   item.timestamp,
                                                           ).then(() => {
                                                               router.push(
                                                                   `/dashboard/orders-historial/edit-order/${item.uid}`,
@@ -408,7 +416,7 @@ const OrderHistorialPage = () => {
                                                             .userRolId
                                                         ? setStatusOpenOrder(
                                                               item.uid,
-                                                              item.timestamp,
+                                                              //   item.timestamp,
                                                           ).then(() => {
                                                               router.push(
                                                                   `/dashboard/orders-historial/details/${item.uid}`,
@@ -578,6 +586,8 @@ const OrderHistorialPage = () => {
                             {totalPages > 0 && (
                                 <div className="flex items-center text-white justify-end w-full">
                                     <select
+                                        id="pagination"
+                                        name="pagination"
                                         className="rounded-xl h-8 bg-transparent border-company-blue border text-white px-2"
                                         onChange={(e) => {
                                             setItemsPerPage(

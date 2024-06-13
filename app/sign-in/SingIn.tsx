@@ -1,26 +1,34 @@
 "use client";
+import _ from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import { ImKey } from "react-icons/im";
+import { IoIosBusiness } from "react-icons/io";
 import { IoEye, IoEyeOff, IoMail } from "react-icons/io5";
+import { MdWork } from "react-icons/md";
 import Spinner from "../component/spinner/Spinner";
 import SignInHook from "./hook/SignInHook";
 
 const SingIn = () => {
-
     const {
         user,
         showPassword,
         email,
         error,
         password,
-        isPatient,
+        userLogin,
         // isActiveUser,
+        allCampus,
+        allAreasByCampus,
+        selectedCampus,
+        clearFields,
         setError,
         setShowPassword,
         setIsPatient,
         changeHandler,
         handleSignIn,
+        selectChangeHandlerCampus,
+        selectChangeHandlerArea,
     } = SignInHook();
 
     if (user || user === undefined) {
@@ -36,7 +44,7 @@ const SingIn = () => {
                     }}
                     className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80"
                 >
-                    {!isPatient && (
+                    {userLogin === "Profesional" && (
                         <div className="w-full">
                             <Link
                                 href="/sign-up"
@@ -63,31 +71,48 @@ const SingIn = () => {
                             placeholder="blur"
                             blurDataURL={"/assets/logo.png"}
                         />
-                        <div className="grid grid-cols-2 justify-between w-full px-16">
-                            <div className="flex space-x-2 items-center text-white">
+                        <div className="flex flex-row justify-between w-full px-16">
+                            <div className="flex space-x-2 justify-center items-center text-white">
                                 <input
+                                    id="radio-1"
                                     type="radio"
-                                    checked={!isPatient}
+                                    checked={userLogin === "Funcionario"}
                                     onChange={(_) => {
-                                        setIsPatient(false);
+                                        setIsPatient("Funcionario");
+                                        clearFields();
                                     }}
                                     className="w-8 h-8 border-2"
                                 />
-                                <span>Profesional</span>
+                                <label htmlFor="radio-1">Funcionario</label>
                             </div>
-                            <div className="flex space-x-2 justify-end items-center text-white">
+                            <div className="flex space-x-2 justify-center items-center text-white">
                                 <input
+                                    id="radio-2"
                                     type="radio"
-                                    checked={isPatient}
+                                    checked={userLogin === "Profesional"}
                                     onChange={(_) => {
-                                        setIsPatient(true);
+                                        setIsPatient("Profesional");
+                                        clearFields();
+                                    }}
+                                    className="w-8 h-8 border-2"
+                                />
+                                <label htmlFor="radio-2">Profesional</label>
+                            </div>
+                            <div className="flex space-x-2 justify-center items-center text-white">
+                                <input
+                                    id="radio-3"
+                                    type="radio"
+                                    checked={userLogin === "Paciente"}
+                                    onChange={(_) => {
+                                        setIsPatient("Paciente");
+                                        clearFields();
                                     }}
                                     className="w-8 h-8 border-0"
                                 />
-                                <span>Paciente</span>
+                                <label htmlFor="radio-3">Paciente</label>
                             </div>
                         </div>
-                        {!isPatient && (
+                        {userLogin !== "Paciente" && (
                             <>
                                 <div className="relative flex flex-col w-full px-16 space-y-2">
                                     <label
@@ -116,6 +141,7 @@ const SingIn = () => {
                                         Contraseña
                                     </label>
                                     <input
+                                        value={password}
                                         id="password"
                                         name="password"
                                         type={
@@ -123,6 +149,8 @@ const SingIn = () => {
                                         }
                                         required
                                         className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                        title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres"
+                                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                                         onChange={changeHandler}
                                     />
                                     <ImKey className="ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
@@ -141,6 +169,96 @@ const SingIn = () => {
                                         </span>
                                     </Link>
                                 </div>
+                                {userLogin === "Funcionario" && (
+                                    <>
+                                        <div className="relative flex flex-col w-full px-16 space-y-2">
+                                            <label
+                                                htmlFor="campus"
+                                                className="text-white"
+                                            >
+                                                Seleccione Sede:
+                                            </label>
+                                            <select
+                                                id="campus"
+                                                required
+                                                className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                                onChange={
+                                                    selectChangeHandlerCampus
+                                                }
+                                            >
+                                                <option
+                                                    value=""
+                                                    hidden
+                                                    className=" text-company-orange"
+                                                >
+                                                    Seleccione...
+                                                </option>
+                                                {allCampus.map(
+                                                    (option, index) =>
+                                                        !_.isEmpty(
+                                                            option.areas,
+                                                        ) && (
+                                                            <option
+                                                                key={index}
+                                                                value={
+                                                                    option.value
+                                                                }
+                                                                className="bg-black text-white"
+                                                            >
+                                                                {option.label}
+                                                            </option>
+                                                        ),
+                                                )}
+                                            </select>
+
+                                            <IoIosBusiness className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                                        </div>
+                                        {selectedCampus && (
+                                            <div className="relative flex flex-col w-full px-16 space-y-2">
+                                                <label
+                                                    htmlFor="area"
+                                                    className="text-white"
+                                                >
+                                                    Seleccione Área:
+                                                </label>
+                                                <select
+                                                    id="area"
+                                                    required
+                                                    className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                                    onChange={
+                                                        selectChangeHandlerArea
+                                                    }
+                                                >
+                                                    <option
+                                                        value=""
+                                                        hidden={
+                                                            !_.isEmpty(
+                                                                allAreasByCampus,
+                                                            )
+                                                        }
+                                                    >
+                                                        Seleccione...
+                                                    </option>
+                                                    {allAreasByCampus.map(
+                                                        (option, index) => (
+                                                            <option
+                                                                key={index}
+                                                                value={
+                                                                    option.value
+                                                                }
+                                                                className="bg-black text-white"
+                                                            >
+                                                                {option.label}
+                                                            </option>
+                                                        ),
+                                                    )}
+                                                </select>
+
+                                                <MdWork className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                                            </div>
+                                        )}
+                                    </>
+                                )}
                             </>
                         )}
                         {/* {!isPatient && (
@@ -153,7 +271,7 @@ const SingIn = () => {
                                 </Link>
                             </div>
                         )} */}
-                        {isPatient && (
+                        {userLogin === "Paciente" && (
                             <div className="flex flex-col w-full px-16 space-y-2">
                                 <label htmlFor="user" className="text-white">
                                     Usuario (Cédula)
@@ -185,10 +303,7 @@ const SingIn = () => {
                                     </svg>
                                     <span>
                                         <div className="text-xs">
-                                            <strong>
-                                                Las credenciales son
-                                                incorrectas!
-                                            </strong>
+                                            <strong>{error}</strong>
                                             &nbsp;Intenta de nuevo
                                         </div>
                                     </span>
@@ -197,7 +312,7 @@ const SingIn = () => {
                                         className="ms-auto -mx-1.5 -my-1.5 bg-blue-50 text-blue-500 rounded-lg focus:ring-2 focus:ring-blue-400 p-1.5 hover:bg-blue-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700"
                                         data-dismiss-target="#alert-border-1"
                                         aria-label="Close"
-                                        onClick={() => setError(false)}
+                                        onClick={() => setError("")}
                                     >
                                         <span className="sr-only">Dismiss</span>
                                         <svg
@@ -222,12 +337,7 @@ const SingIn = () => {
                         <button
                             type="submit"
                             className="bg-company-blue rounded-2xl px-5 py-3 text-white"
-                            onClick={() =>
-                                handleSignIn({
-                                    email,
-                                    password,
-                                })
-                            }
+                            onClick={handleSignIn}
                         >
                             Iniciar Sesión
                         </button>

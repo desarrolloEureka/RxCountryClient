@@ -21,7 +21,7 @@ const useAuth = () => {
     // const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
-    const [userRol, setUserRol] = useState<RolesBd | undefined>({
+    const [userRol, setUserRol] = useState<RolesBd>({
         name: "",
         uid: "",
     });
@@ -65,17 +65,17 @@ const useAuth = () => {
         const functionaryDocs = await getAllDocumentsFb("functionary");
         const patientsDocs = await getAllDocumentsFb("patients");
 
-        const allAreasData = await getAllDocumentsFb("areas");
+        // const allAreasData = await getAllDocumentsFb("areas");
         const allCampusData = await getAllDocumentsFb("campus");
-        const allRolesData: RolesBd[] = await getAllDocumentsFb("roles");
+        const allRolesData = await getAllDocumentsFb("roles");
         const currentUserData =
             user &&
             (functionaryDocs.find((doc: any) => doc.uid === userId) ||
                 professionalsDocs.find((doc: any) => doc.uid === userId) ||
                 patientsDocs.find((doc: any) => doc.uid === userId));
 
-        const currentUserRol: RolesBd | undefined = allRolesData.find(
-            (doc: RolesBd) => doc.uid === currentUserData.rol,
+        const currentUserRol = allRolesData.find(
+            (doc: any) => doc.uid === currentUserData.rol,
         );
 
         if (currentUserData) {
