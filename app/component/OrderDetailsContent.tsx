@@ -32,6 +32,12 @@ interface Props {
     setExpandRx1: (e: any) => void;
     expandRx2: boolean;
     setExpandRx2: (e: any) => void;
+    expandRx3: boolean;
+    setExpandRx3: (e: any) => void;
+    expandRx4: boolean;
+    setExpandRx4: (e: any) => void;
+    expandRx5: boolean;
+    setExpandRx5: (e: any) => void;
     selectedDiagnosis: string[];
     setSelectedDiagnosis: (e: any) => void;
     selectedSuppliers: string[];
@@ -55,10 +61,14 @@ interface Props {
     setAreaSelected: (e: any) => void;
     backToOrder: () => void;
     backToDetail: () => void;
+    area: string;
+    fileName: string;
+    handleFileChange: (e: any) => void;
 }
 
 const OrderDetailsContent = ({
     userRol,
+    area,
     allAreas,
     expandReceptionData,
     setExpandReceptionData,
@@ -68,6 +78,12 @@ const OrderDetailsContent = ({
     setExpandRx1,
     expandRx2,
     setExpandRx2,
+    expandRx3,
+    setExpandRx3,
+    expandRx4,
+    setExpandRx4,
+    expandRx5,
+    setExpandRx5,
     selectedDiagnosis,
     setSelectedDiagnosis,
     selectedSuppliers,
@@ -86,10 +102,16 @@ const OrderDetailsContent = ({
     setAreaSelected,
     backToOrder,
     backToDetail,
+    fileName,
+    handleFileChange,
 }: Props) => {
     const router = useRouter();
 
-    if (!orderAndPatientData || !userRol) {
+    if (
+        !orderAndPatientData ||
+        !userRol ||
+        (!area && userRol.uid !== "ZWb0Zs42lnKOjetXH5lq")
+    ) {
         return (
             <div className="mx-auto flex flex-col rounded-[2.5rem] bg-company-gray pt-12 w-full max-w-[1440px]">
                 <Spinner
@@ -108,7 +130,7 @@ const OrderDetailsContent = ({
             } w-full max-w-[1440px]`}
         >
             {(userRol.uid === "ZWb0Zs42lnKOjetXH5lq" ||
-                orderAndPatientData?.status === "asignada") &&
+                orderAndPatientData?.sendTo !== area) &&
                 detailStep === 0 && (
                     <div className="flex items-center space-x-8 px-12">
                         <Link href={"/dashboard/orders-historial"}>
@@ -137,7 +159,7 @@ const OrderDetailsContent = ({
                 </div>
             )}
             {(userRol.uid === "ZWb0Zs42lnKOjetXH5lq" ||
-                orderAndPatientData?.status === "asignada") &&
+                orderAndPatientData?.sendTo !== area) &&
                 detailStep === 0 && (
                     <div className="pb-10">
                         {/* Reception data */}
@@ -228,83 +250,231 @@ const OrderDetailsContent = ({
                             </div>
                         )}
 
-                        {/* Rx1 */}
-                        {/* <div
-                        className={`flex flex-col mx-16 transition-transform rounded-xl ${
-                            expandRx1
-                                ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                : "bg-company-blue text-white"
-                        }`}
-                    >
-                        <button
-                            onClick={() => setExpandRx1(!expandRx1)}
-                            className="flex justify-between items-center py-2 px-4"
-                        >
-                            Rx 1
-                            {expandRx1 ? (
-                                <RiArrowUpSLine size={32} />
-                            ) : (
-                                <RiArrowDownSLine size={32} />
-                            )}
-                        </button>
-                        {expandRx1 && (
-                            <div className="flex flex-col p-4 space-y-2 text-white">
-                                <h2 className="font-bold text-xl">
-                                    Observaciones
-                                </h2>
-                                <p className="">
-                                    {orderAndPatientData?.[
-                                        userRol?.substring(0, 3)
-                                            .toLocaleLowerCase() +
-                                            "ObservationComment"
-                                    ] || "Sin comentarios"}
-                                </p>
+                        {/* Modelos */}
+                        {(orderAndPatientData?.modObservationComment ||
+                            userRol.uid === "g9xGywTJG7WSJ5o1bTsH") && (
+                            <div
+                                className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                    expandRx1
+                                        ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                        : "bg-company-blue text-white"
+                                }`}
+                            >
+                                <button
+                                    onClick={() => setExpandRx1(!expandRx1)}
+                                    className="flex justify-between items-center py-2 px-4"
+                                >
+                                    Modelos
+                                    {expandRx1 ? (
+                                        <RiArrowUpSLine size={32} />
+                                    ) : (
+                                        <RiArrowDownSLine size={32} />
+                                    )}
+                                </button>
+                                {expandRx1 && (
+                                    <div className="flex flex-col p-4 space-y-2 text-white">
+                                        <h2 className="font-bold text-xl">
+                                            Observaciones
+                                        </h2>
+
+                                        <p className="">
+                                            {orderAndPatientData?.modObservationComment ||
+                                                "Sin comentarios"}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         )}
-                    </div> */}
+
+                        {/* Escáner Digital */}
+                        {(orderAndPatientData?.escObservationComment ||
+                            userRol.uid === "VEGkDuMXs2mCGxXUPCWI") && (
+                            <div
+                                className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                    expandRx2
+                                        ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                        : "bg-company-blue text-white"
+                                }`}
+                            >
+                                <button
+                                    onClick={() => setExpandRx2(!expandRx2)}
+                                    className="flex justify-between items-center py-2 px-4"
+                                >
+                                    Escáner Digital
+                                    {expandRx2 ? (
+                                        <RiArrowUpSLine size={32} />
+                                    ) : (
+                                        <RiArrowDownSLine size={32} />
+                                    )}
+                                </button>
+                                {expandRx2 && (
+                                    <div className="flex flex-col p-4 space-y-2 text-white">
+                                        <h2 className="font-bold text-xl">
+                                            Observaciones
+                                        </h2>
+
+                                        <p className="">
+                                            {orderAndPatientData?.escObservationComment ||
+                                                "Sin comentarios"}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Laboratorio */}
+                        {(orderAndPatientData?.labObservationComment ||
+                            userRol.uid === "chbFffCzpRibjYRyoWIx") && (
+                            <div
+                                className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                    expandRx3
+                                        ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                        : "bg-company-blue text-white"
+                                }`}
+                            >
+                                <button
+                                    onClick={() => setExpandRx3(!expandRx3)}
+                                    className="flex justify-between items-center py-2 px-4"
+                                >
+                                    Laboratorio
+                                    {expandRx3 ? (
+                                        <RiArrowUpSLine size={32} />
+                                    ) : (
+                                        <RiArrowDownSLine size={32} />
+                                    )}
+                                </button>
+                                {expandRx3 && (
+                                    <div className="flex flex-col p-4 space-y-2 text-white">
+                                        <h2 className="font-bold text-xl">
+                                            Observaciones
+                                        </h2>
+
+                                        <p className="">
+                                            {orderAndPatientData?.labObservationComment ||
+                                                "Sin comentarios"}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Radiología */}
+                        {(orderAndPatientData?.radObservationComment ||
+                            userRol.uid === "V5iMSnSlSYsiSDFs4UpI") && (
+                            <div
+                                className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                    expandRx4
+                                        ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                        : "bg-company-blue text-white"
+                                }`}
+                            >
+                                <button
+                                    onClick={() => setExpandRx4(!expandRx4)}
+                                    className="flex justify-between items-center py-2 px-4"
+                                >
+                                    Radiología
+                                    {expandRx4 ? (
+                                        <RiArrowUpSLine size={32} />
+                                    ) : (
+                                        <RiArrowDownSLine size={32} />
+                                    )}
+                                </button>
+                                {expandRx4 && (
+                                    <div className="flex flex-col p-4 space-y-2 text-white">
+                                        <h2 className="font-bold text-xl">
+                                            Observaciones
+                                        </h2>
+
+                                        <p className="">
+                                            {orderAndPatientData?.radObservationComment ||
+                                                "Sin comentarios"}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Despacho */}
+                        {(orderAndPatientData?.desObservationComment ||
+                            userRol.uid === "9RZ9uhaiwMC7VcTyIzhl") && (
+                            <div
+                                className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                    expandRx5
+                                        ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                        : "bg-company-blue text-white"
+                                }`}
+                            >
+                                <button
+                                    onClick={() => setExpandRx5(!expandRx5)}
+                                    className="flex justify-between items-center py-2 px-4"
+                                >
+                                    Despacho
+                                    {expandRx5 ? (
+                                        <RiArrowUpSLine size={32} />
+                                    ) : (
+                                        <RiArrowDownSLine size={32} />
+                                    )}
+                                </button>
+                                {expandRx5 && (
+                                    <div className="flex flex-col p-4 space-y-2 text-white">
+                                        <h2 className="font-bold text-xl">
+                                            Observaciones
+                                        </h2>
+
+                                        <p className="">
+                                            {orderAndPatientData?.desObservationComment ||
+                                                "Sin comentarios"}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         {/* Rx2 */}
                         {/* <div
-                        className={`flex flex-col mx-16 transition-transform rounded-xl ${
-                            expandRx2
-                                ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                : "bg-company-blue text-white"
-                        }`}
-                    >
-                        <button
-                            onClick={() => setExpandRx2(!expandRx2)}
-                            className="flex justify-between items-center py-2 px-4"
+                            className={`flex flex-col mx-16 transition-transform rounded-xl ${
+                                expandRx3
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
                         >
-                            Rx 2
-                            {expandRx2 ? (
-                                <RiArrowUpSLine size={32} />
-                            ) : (
-                                <RiArrowDownSLine size={32} />
+                            <button
+                                onClick={() => setExpandRx2(!expandRx3)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Rx 2
+                                {expandRx3 ? (
+                                    <RiArrowUpSLine size={32} />
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx3 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+                                    <p className="">
+                                        {orderAndPatientData?.[
+                                            userRol
+                                                ?.substring(0, 3)
+                                                .toLocaleLowerCase() +
+                                                "ObservationComment"
+                                        ] || "Sin comentarios"}
+                                    </p>
+                                </div>
                             )}
-                        </button>
-                        {expandRx2 && (
-                            <div className="flex flex-col p-4 space-y-2 text-white">
-                                <h2 className="font-bold text-xl">
-                                    Observaciones
-                                </h2>
-                                <p className="">
-                                    {orderAndPatientData?.[
-                                        userRol?.substring(0, 3)
-                                            .toLocaleLowerCase() +
-                                            "ObservationComment"
-                                    ] || "Sin comentarios"}
-                                </p>
-                            </div>
-                        )}
-                    </div> */}
+                        </div> */}
                     </div>
                 )}
 
             {userRol.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
-                orderAndPatientData?.status === "enviada" &&
+                orderAndPatientData?.sendTo === area &&
                 detailStep === 0 && (
                     <>
-                        {userRol.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
+                        {/* Recepción  y Despacho*/}
+                        {(userRol.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
+                            userRol.uid === "Ll6KGdzqdtmLLk0D5jhk") && (
                             <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 my-10 mx-28">
                                 <h3 className="text-company-orange text-xl font-bold">
                                     Observaciones
@@ -339,8 +509,11 @@ const OrderDetailsContent = ({
                                 </div>
                             </div>
                         )}
-                        {userRol.uid === "g9xGywTJG7WSJ5o1bTsH" && (
-                            <div className="grid grid-cols-2 gap-4 my-10 mx-28">
+
+                        {/* Laboratorio y Radiología */}
+                        {(userRol.uid === "chbFffCzpRibjYRyoWIx" ||
+                            userRol.uid === "V5iMSnSlSYsiSDFs4UpI") && (
+                            <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
                                 <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Diagnóstico
@@ -484,7 +657,9 @@ const OrderDetailsContent = ({
                                 </div>
                             </div>
                         )}
-                        {userRol.uid === "chbFffCzpRibjYRyoWIx" && (
+
+                        {/* {(userRol.uid === "g9xGywTJG7WSJ5o1bTsH" ||
+                            userRol.uid === "VEGkDuMXs2mCGxXUPCWI") && (
                             <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 my-10 mx-28">
                                 <h3 className="text-company-orange text-xl font-bold">
                                     Observaciones
@@ -503,9 +678,12 @@ const OrderDetailsContent = ({
                                     />
                                 </div>
                             </div>
-                        )}
-                        {userRol.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
-                            <div className="grid grid-cols-2 gap-4 my-10 mx-28">
+                        )} */}
+
+                        {/* Modelos/Fotografía y Escáner Digital */}
+                        {(userRol.uid === "g9xGywTJG7WSJ5o1bTsH" ||
+                            userRol.uid === "VEGkDuMXs2mCGxXUPCWI") && (
+                            <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
                                 <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
                                     <h1 className="text-company-orange text-2xl font-bold">
                                         Diagnóstico
@@ -596,8 +774,11 @@ const OrderDetailsContent = ({
                                         })}
                                     </div>
                                 </div>
-                                <div className="col-span-2 flex flex-col pb-5 space-y-4 w-48">
-                                    <InputFileUpload />
+                                <div className="col-span-2 flex flex-col pb-5 space-y-4 w-60">
+                                    <InputFileUpload
+                                        fileName={fileName}
+                                        handleFileChange={handleFileChange}
+                                    />
                                 </div>
                                 <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                     <h3 className="text-company-orange text-xl font-bold">
@@ -619,6 +800,7 @@ const OrderDetailsContent = ({
                                 </div>
                             </div>
                         )}
+
                         <div className="flex flex-row items-center overflow-visible bg-company-blue/70 w-full h-[0.2rem]" />
                         <div
                             className={`flex justify-end px-16 py-4 items-center space-x-8`}

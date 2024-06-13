@@ -212,7 +212,7 @@ const NewOrderHook = (props?: Props) => {
             await updateDocumentsByIdFb(
                 documentPatientRef.id,
                 {
-                    ...patientData,
+                    // ...patientData,
                     serviceOrders: patientData.serviceOrders
                         ? [...patientData.serviceOrders, documentNewOrderRef.id]
                         : [documentNewOrderRef.id],
@@ -225,7 +225,7 @@ const NewOrderHook = (props?: Props) => {
                     uid: documentNewOrderRef.id,
                     patientId: documentPatientRef.id,
                     status: editedOrderStatusByRol[userRol?.uid!],
-                    sendTo: sentToArea,
+                    sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
                     isActive: true,
                     isDeleted: false,
                     modifiedBy: {
@@ -271,7 +271,7 @@ const NewOrderHook = (props?: Props) => {
                         uid: documentNewOrderRef.id,
                         patientId: documentPatientRef.id,
                         status: editedOrderStatusByRol[userRol?.uid!],
-                        sendTo: sentToArea,
+                        sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
                         isActive: true,
                         isDeleted: false,
                         modifiedBy: {

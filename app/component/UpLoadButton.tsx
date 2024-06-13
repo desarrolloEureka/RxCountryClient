@@ -1,32 +1,29 @@
-import { IconButton } from "@mui/material";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import { AiFillFileAdd } from "react-icons/ai";
 
-const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-    borderRadius: "50%",
-});
-
-export default function InputFileUpload() {
+export default function InputFileUpload({
+    fileName,
+    handleFileChange,
+}: {
+    fileName: string;
+    handleFileChange: (e: any) => void;
+}) {
     return (
-        <Button
-            component="label"
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<AiFillFileAdd size={45} />}
-            sx={{ textAlign:"center" }}
-        >
-            Subir Archivo
-            <VisuallyHiddenInput type="file" />
-        </Button>
+        <div className="flex items-center justify-center">
+            <label
+                htmlFor="urlImage"
+                className="relative cursor-pointer bg-blue-500 text-white font-semibold rounded-md py-2 px-4 flex items-center space-x-2"
+            >
+                <AiFillFileAdd size={45} />
+                <span>{fileName}</span>
+                <input
+                    id="urlImage"
+                    name="urlImage"
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={handleFileChange}
+                />
+            </label>
+        </div>
     );
 }

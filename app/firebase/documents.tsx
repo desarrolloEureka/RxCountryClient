@@ -90,6 +90,18 @@ export const getAllPatients = async () => {
     return dataResult;
 };
 
+export const getAllRoles = async () => {
+    const dataResult: any[] = [];
+    const querySnapshot = await getDocs(allRef({ ref: "roles" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            dataResult.push(data);
+        });
+    }
+    return dataResult;
+};
+
 export const getAllFunctionaries = async () => {
     const dataResult: any[] = [];
     const querySnapshot = await getDocs(allRef({ ref: "functionary" }));
@@ -178,6 +190,6 @@ export const updateDocumentsByIdFb = async (
     const document = docRef({ ref: reference, collection: id });
     return await updateDoc(document, {
         ...newData,
-        timestamp: newData.timestamp ? newData.timestamp : currentDate,
+        // timestamp: newData.timestamp ? newData.timestamp : currentDate,
     });
 };

@@ -1,6 +1,6 @@
 import { UserData } from "../types/user";
 
-export const LoginData = {
+export const loginData = {
     fullName: "",
     email: "",
     password: "",

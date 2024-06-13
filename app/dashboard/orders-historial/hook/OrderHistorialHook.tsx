@@ -91,14 +91,83 @@ const OrderHistorialHook = () => {
         //Recepción
         Ll6KGdzqdtmLLk0D5jhk: {
             received: allDataOrders?.filter(
-                (order: any) =>
-                    order.status === "leída" || order.status === "enviada",
+                (order: any) => order.status === "enviada",
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     order.assignedCampus === campus &&
                     order.status === "asignada",
+            ),
+        },
+        //Modelos
+        g9xGywTJG7WSJ5o1bTsH: {
+            received: allDataOrders?.filter(
+                (order: any) =>
+                    order.status === "asignada" && order.sendTo === area,
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    // order.status === "asignada",
+                    order.sendTo !== area,
+            ),
+        },
+        //Laboratorio
+        chbFffCzpRibjYRyoWIx: {
+            received: allDataOrders?.filter(
+                (order: any) =>
+                    order.status === "asignada" && order.sendTo === area,
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    // order.status === "asignada",
+                    order.sendTo !== area,
+            ),
+        },
+        //Radiología
+        V5iMSnSlSYsiSDFs4UpI: {
+            received: allDataOrders?.filter(
+                (order: any) =>
+                    order.status === "asignada" && order.sendTo === area,
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    // order.status === "asignada",
+                    order.sendTo !== area,
+            ),
+        },
+        //Escáner Digital
+        VEGkDuMXs2mCGxXUPCWI: {
+            received: allDataOrders?.filter(
+                (order: any) =>
+                    order.status === "asignada" && order.sendTo === area,
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    // order.status === "asignada",
+                    order.sendTo !== area,
+            ),
+        },
+        //Despacho
+        ["9RZ9uhaiwMC7VcTyIzhl"]: {
+            received: allDataOrders?.filter(
+                (order: any) =>
+                    order.status === "asignada" && order.sendTo === area,
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    // order.status === "asignada",
+                    order.sendTo !== area,
             ),
         },
     };
@@ -174,18 +243,19 @@ const OrderHistorialHook = () => {
         setSearch(value);
     };
 
-    const setStatusOpenOrder = async (uid: string, timestamp: string) => {
+    const setStatusOpenOrder = async (uid: string) => {
         const orderRef = "serviceOrders";
         const modifiedBy = {
             userRolId: userRol?.uid,
             userId: userData?.uid,
         };
+        console.log("si se modificó al abrir");
         await updateDocumentsByIdFb(
             uid,
             {
                 modifiedBy,
                 assignedCampus: campus ? campus : "",
-                timestamp,
+                // timestamp,
             },
             orderRef,
         );
@@ -292,12 +362,15 @@ const OrderHistorialHook = () => {
 
     useEffect(() => {
         if (
-            userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" &&
+            userRol?.uid &&
+            userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
             !searchParams.has("to")
         ) {
             setSelectedOrder("received");
+        } else {
+            setSelectedOrder("send");
         }
-    }, [userRol, searchParams]);
+    }, [userRol, searchParams, userData]);
 
     useEffect(() => {
         if (searchParams.has("to") && fromEdit === "send") {
