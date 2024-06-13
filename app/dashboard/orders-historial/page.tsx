@@ -595,6 +595,7 @@ const OrderHistorialPage = () => {
                                             );
                                             setCurrentPage(1);
                                         }}
+                                        defaultValue={ordersData.length}
                                     >
                                         {Array.from(
                                             {

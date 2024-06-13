@@ -21,6 +21,7 @@ const SingIn = () => {
         allCampus,
         allAreasByCampus,
         selectedCampus,
+        selectedArea,
         clearFields,
         setError,
         setShowPassword,
@@ -179,6 +180,7 @@ const SingIn = () => {
                                                 Seleccione Sede:
                                             </label>
                                             <select
+                                                value={selectedCampus}
                                                 id="campus"
                                                 required
                                                 className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
@@ -222,6 +224,7 @@ const SingIn = () => {
                                                     Seleccione Área:
                                                 </label>
                                                 <select
+                                                    value={selectedArea}
                                                     id="area"
                                                     required
                                                     className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"

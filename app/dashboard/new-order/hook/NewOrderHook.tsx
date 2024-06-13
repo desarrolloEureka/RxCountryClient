@@ -21,6 +21,7 @@ import { DataPatientObject } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import Swal from "sweetalert2";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -42,6 +43,18 @@ const calculateAge = (birthDate: Date | string): number => {
     }
 
     return age;
+};
+
+const confirmAlert = () => {
+    Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `Guardando...`,
+        showConfirmButton: false,
+        timer: 1500,
+        background: "#404040",
+        color: "#e9a225",
+    });
 };
 
 const NewOrderHook = (props?: Props) => {
@@ -212,7 +225,7 @@ const NewOrderHook = (props?: Props) => {
             await updateDocumentsByIdFb(
                 documentPatientRef.id,
                 {
-                    // ...patientData,
+                    ...patientData,
                     serviceOrders: patientData.serviceOrders
                         ? [...patientData.serviceOrders, documentNewOrderRef.id]
                         : [documentNewOrderRef.id],
@@ -247,6 +260,7 @@ const NewOrderHook = (props?: Props) => {
                     ],
                 }).then((res) => {
                     setCurrentOrderId(parseInt(res.id));
+                    confirmAlert();
                 });
             });
         } else {
@@ -293,6 +307,7 @@ const NewOrderHook = (props?: Props) => {
                         ],
                     }).then((res) => {
                         setCurrentOrderId(parseInt(res.id));
+                        confirmAlert();
                     });
                 });
             });
