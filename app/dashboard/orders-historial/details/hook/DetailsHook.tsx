@@ -7,6 +7,7 @@ import {
     getDocumentRef,
     saveOneDocumentFb,
 } from "@/app/firebase/documents";
+import { uploadFileImage } from "@/app/firebase/files";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 import { EditedOrderStatusByRol, Order } from "@/app/types/order";
@@ -23,7 +24,7 @@ type Props = {
 const DetailsHook = ({ slug }: Props) => {
     const { userRol, userData } = useAuth();
 
-    const { campus } = userData;
+    const { campus, area } = userData;
 
     const currentDate = moment().format();
 
@@ -31,6 +32,9 @@ const DetailsHook = ({ slug }: Props) => {
     const [expandSpecialist, setExpandSpecialist] = useState(false);
     const [expandRx1, setExpandRx1] = useState(false);
     const [expandRx2, setExpandRx2] = useState(false);
+    const [expandRx3, setExpandRx3] = useState(false);
+    const [expandRx4, setExpandRx4] = useState(false);
+    const [expandRx5, setExpandRx5] = useState(false);
     const [selectedDiagnosis, setSelectedDiagnosis] = useState<string[]>([]);
     const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
     const [sentToArea, setSentToArea] = useState<string>("");
@@ -43,6 +47,9 @@ const DetailsHook = ({ slug }: Props) => {
     const [patientsData, setPatientsData] = useState<any>();
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
     const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
+
+    const [fileName, setFileName] = useState("SUBIR ARCHIVO");
+    const [files, setFiles] = useState<any[]>([]);
 
     const [areaSelected, setAreaSelected] = useState<any>();
 
@@ -84,9 +91,18 @@ const DetailsHook = ({ slug }: Props) => {
         setDetailStep(0);
     };
 
+    const handleFileChange = (e: any) => {
+        if (e.target.files.length > 0) {
+            setFileName(e.target.files[0].name);
+            setFiles([...e.target.files]);
+        } else {
+            setFileName("SUBIR ARCHIVO");
+            setFiles([]);
+        }
+    };
+
     const selectChangeHandlerSentTo = (value: any) => {
         setSentToArea(value);
-        console.log(value);
     };
 
     const commentChangeHandler = (e: any) => {
@@ -107,8 +123,20 @@ const DetailsHook = ({ slug }: Props) => {
     };
 
     const editedOrderStatusByRol: EditedOrderStatusByRol = {
+        //Profesional
         ZWb0Zs42lnKOjetXH5lq: "enviada",
+        //Recepción
         Ll6KGdzqdtmLLk0D5jhk: "asignada",
+        //Modelos
+        g9xGywTJG7WSJ5o1bTsH: "asignada",
+        //Laboratorio
+        chbFffCzpRibjYRyoWIx: "asignada",
+        //Radiología
+        V5iMSnSlSYsiSDFs4UpI: "asignada",
+        //Escáner Digital
+        VEGkDuMXs2mCGxXUPCWI: "asignada",
+        //Despacho
+        "9RZ9uhaiwMC7VcTyIzhl": "asignada",
     };
 
     const handleSendForm = async (e?: any) => {
@@ -126,12 +154,41 @@ const DetailsHook = ({ slug }: Props) => {
             currentOrderData.uid,
         );
 
+        const orderImagesUrl: string[] = [];
+
+        for (const record of files) {
+            const urlName = record.name.split(".")[0];
+            await uploadFileImage({
+                folder: currentOrderData.patientId,
+                fileName: urlName.split(" ").join("_"),
+                file: record,
+                reference,
+            })
+                .then((res) => {
+                    orderImagesUrl.push(res);
+                })
+                .catch((err: any) => {
+                    console.log(err);
+                });
+        }
+
         // console.log({
         //     ...currentOrderData,
         //     status: editedOrderStatusByRol[userRol?.uid!],
-        //     sendTo: sentToArea ? sentToArea : currentOrderData.sendTo,
-        //     modifiedBy: userRol,
-        //     assignedCampus: campus,
+        //     sendTo: sentToArea
+        //          ? sentToArea
+        //          : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
+        //          userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
+        //          ? "9RZ9uhaiwMC7VcTyIzhl"
+        //          : currentOrderData.sendTo,
+        //     modifiedBy: {
+        //         userRolId: userRol?.uid,
+        //         userId: userData?.uid,
+        //     },
+        //     orderImagesUrl,
+        //     selectedSuppliers: selectedSuppliers ? selectedSuppliers : "",
+        //     selectedDiagnosis: selectedDiagnosis ? selectedDiagnosis : "",
+        //     assignedCampus: campus ? campus : "",
         //     [userRol?.name.substring(0, 3).toLocaleLowerCase() +
         //     "ObservationComment"]: observationComment,
         //     diagnosticImpressionComment: diagnosticImpressionComment
@@ -167,11 +224,19 @@ const DetailsHook = ({ slug }: Props) => {
         await saveOneDocumentFb(documentEditOrderRef, {
             ...currentOrderData,
             status: editedOrderStatusByRol[userRol?.uid!],
-            sendTo: sentToArea ? sentToArea : currentOrderData.sendTo,
+            sendTo: sentToArea
+                ? sentToArea
+                : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
+                  userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
+                ? "0OaigBxmSmUa90dvawB1"
+                : currentOrderData.sendTo,
             modifiedBy: {
                 userRolId: userRol?.uid,
                 userId: userData?.uid,
             },
+            orderImagesUrl,
+            selectedSuppliers: selectedSuppliers ? selectedSuppliers : "",
+            selectedDiagnosis: selectedDiagnosis ? selectedDiagnosis : "",
             assignedCampus: campus ? campus : "",
             [userRol?.name.substring(0, 3).toLocaleLowerCase() +
             "ObservationComment"]: observationComment,
@@ -251,6 +316,7 @@ const DetailsHook = ({ slug }: Props) => {
 
     return {
         userRol,
+        area,
         allAreas: _.sortBy(areasByCampus(), "label"),
         expandReceptionData,
         setExpandReceptionData,
@@ -260,6 +326,12 @@ const DetailsHook = ({ slug }: Props) => {
         setExpandRx1,
         expandRx2,
         setExpandRx2,
+        expandRx3,
+        setExpandRx3,
+        expandRx4,
+        setExpandRx4,
+        expandRx5,
+        setExpandRx5,
         selectedDiagnosis,
         setSelectedDiagnosis,
         selectedSuppliers,
@@ -278,6 +350,8 @@ const DetailsHook = ({ slug }: Props) => {
         setAreaSelected,
         backToOrder,
         backToDetail,
+        fileName,
+        handleFileChange,
     };
 };
 

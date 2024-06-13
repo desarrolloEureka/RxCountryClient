@@ -6,6 +6,7 @@ import DetailsHook from "../hook/DetailsHook";
 const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
         userRol,
+        area,
         allAreas,
         expandReceptionData,
         setExpandReceptionData,
@@ -15,6 +16,12 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
         setExpandRx1,
         expandRx2,
         setExpandRx2,
+        expandRx3,
+        setExpandRx3,
+        expandRx4,
+        setExpandRx4,
+        expandRx5,
+        setExpandRx5,
         selectedDiagnosis,
         setSelectedDiagnosis,
         selectedSuppliers,
@@ -33,6 +40,8 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
         setAreaSelected,
         backToOrder,
         backToDetail,
+        fileName,
+        handleFileChange,
     } = DetailsHook({ slug });
 
     return (
@@ -49,6 +58,12 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
                     setExpandRx1={setExpandRx1}
                     expandRx2={expandRx2}
                     setExpandRx2={setExpandRx2}
+                    expandRx3={expandRx3}
+                    setExpandRx3={setExpandRx3}
+                    expandRx4={expandRx4}
+                    setExpandRx4={setExpandRx4}
+                    expandRx5={expandRx5}
+                    setExpandRx5={setExpandRx5}
                     selectedDiagnosis={selectedDiagnosis}
                     setSelectedDiagnosis={setSelectedDiagnosis}
                     selectedSuppliers={selectedSuppliers}
@@ -70,6 +85,9 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
                     setAreaSelected={setAreaSelected}
                     backToOrder={backToOrder}
                     backToDetail={backToDetail}
+                    area={area}
+                    fileName={fileName}
+                    handleFileChange={handleFileChange}
                 />
             </div>
         </main>
