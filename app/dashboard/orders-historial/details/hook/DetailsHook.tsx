@@ -15,10 +15,23 @@ import { Patient } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 type Props = {
     // setDataSelected: (e: any) => void;
     slug: string;
+};
+
+const confirmAlert = () => {
+    Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `Guardando...`,
+        showConfirmButton: false,
+        timer: 1500,
+        background: "#404040",
+        color: "#e9a225",
+    });
 };
 
 const DetailsHook = ({ slug }: Props) => {
@@ -271,7 +284,7 @@ const DetailsHook = ({ slug }: Props) => {
                           lastComment: observationComment,
                       },
                   ],
-        });
+        }).then(confirmAlert);
     };
 
     const getOrders = useCallback(async () => {

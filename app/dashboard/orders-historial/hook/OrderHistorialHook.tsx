@@ -32,7 +32,7 @@ const OrderHistorialHook = () => {
     const [selectedOrder, setSelectedOrder] = useState("send");
     const [search, setSearch] = useState("");
     const [orderId, setOrderId] = useState<any>();
-    const [filter, setFilter] = useState<any>("uid");
+    // const [defaultOption, setDefaultOption] = useState<any>("uid");
 
     // filters
     const [orderMinorMajor, setOrderMinorMajor] = useState(false);
@@ -48,7 +48,7 @@ const OrderHistorialHook = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(30);
 
     const [value, setValue] = useState({
         startDate: null,
@@ -192,7 +192,9 @@ const OrderHistorialHook = () => {
         return isWithinDateRange && matchesSearchTerm;
     });
 
-    filteredOrders = _.sortBy(filteredOrders, filter).reverse();
+    filteredOrders = _.sortBy(filteredOrders, (obj) =>
+        parseInt(obj.uid, 10),
+    ).reverse();
 
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
