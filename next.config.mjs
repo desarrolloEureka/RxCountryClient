@@ -9,6 +9,10 @@ const nextConfig = {
             },
             {
                 protocol: "https",
+                hostname: "ui-avatars.com",
+            },
+            {
+                protocol: "https",
                 hostname:
                     "firebasestorage.googleapis.com/v0/b/rxcountry-backoffice.appspot.com",
             },
