@@ -20,6 +20,7 @@ import _ from "lodash";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -146,6 +147,19 @@ const EditOrderHook = ({ slug }: Props) => {
     //     Ll6KGdzqdtmLLk0D5jhk: "leída",
     // };
 
+    const confirmAlert = () => {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: `Se guardó correctamente en la información del paciente ${patientData.name} ${patientData.lastName}`,
+            showConfirmButton: false,
+            timer: 1500,
+            width: "900",
+            background: "#404040",
+            color: "#e9a225",
+        });
+    };
+
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
         e.stopPropagation();
@@ -186,7 +200,7 @@ const EditOrderHook = ({ slug }: Props) => {
                 uid: documentEditOrderRef.id,
                 patientId: oldDataOrder.patientId,
                 // status: editedOrderStatusByRol[userRol?.uid!],
-                status: "enviada",
+                status: oldDataOrder.status ? oldDataOrder.status : "enviada",
                 sendTo: sentToArea ? sentToArea : oldDataOrder.sendTo,
                 isActive: true,
                 isDeleted: false,
@@ -206,6 +220,7 @@ const EditOrderHook = ({ slug }: Props) => {
             }).then((res) => {
                 setCurrentOrderId(parseInt(res.id));
                 setShowSave(false);
+                confirmAlert();
             });
         });
     };

@@ -38,8 +38,7 @@ const SignUpHook = () => {
     const [emailsProfessionalsData, setEmailsProfessionalsData] =
         useState<any>();
 
-    const [emailsFunctionariesData, setEmailsFunctionariesData] =
-        useState<any>();
+    const [currentFunctionary, setCurrentFunctionary] = useState<any>();
 
     const handleSignIn = async () => {
         if (!email || !password) {
@@ -67,7 +66,7 @@ const SignUpHook = () => {
 
         const isUserFound =
             (userLogin !== "Profesional" &&
-                emailsFunctionariesData?.includes(email)) ||
+                currentFunctionary.email === email) ||
             (userLogin === "Profesional" &&
                 emailsProfessionalsData?.includes(email));
 
@@ -122,16 +121,24 @@ const SignUpHook = () => {
 
     const getFunctionaries = useCallback(async () => {
         const allFunctionariesData = await getAllFunctionaries();
-        const emailFunctionaries = allFunctionariesData.map(
-            (user) => user.email,
+
+        const functionaryData = allFunctionariesData.find(
+            (user) => user.email === email,
         );
-        allFunctionariesData && setEmailsFunctionariesData(emailFunctionaries);
-    }, []);
+        functionaryData && setCurrentFunctionary(functionaryData);
+    }, [email]);
 
     const getRoles = useCallback(async () => {
         const allRolesData = await getAllRoles();
         allRolesData && setAllRoles(allRolesData);
     }, []);
+
+    useEffect(() => {
+        if (currentFunctionary && currentFunctionary.email === email) {
+            setSelectedCampus(currentFunctionary.campus);
+            setSelectedArea(currentFunctionary.area);
+        }
+    }, [currentFunctionary, email]);
 
     useEffect(() => {
         getCampus();
@@ -188,6 +195,7 @@ const SignUpHook = () => {
         allCampus,
         allAreasByCampus,
         selectedCampus,
+        selectedArea,
         clearFields,
         handleSignIn,
         setError,
