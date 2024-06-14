@@ -337,7 +337,7 @@ const OrderHistorialPage = () => {
                                 <div className="col text-center text-nowrap w-48">
                                     <span>Apellidos</span>
                                 </div>
-                                <div className="col text-center text-nowrap w-48">
+                                <div className="col text-center text-nowrap w-52">
                                     <span>Correo</span>
                                 </div>
                                 <div className="col text-center text-nowrap w-48">
@@ -463,14 +463,17 @@ const OrderHistorialPage = () => {
                                                 {item.lastName}
                                             </p>
                                         </div>
-                                        <div className="text-nowrap text-center w-48">
+                                        <div className="text-nowrap text-center w-52">
                                             <p className="truncate">
                                                 {item.email}
                                             </p>
                                         </div>
                                         <div className="text-nowrap text-center w-48">
                                             <p className="truncate">
-                                                {item.phone}
+                                                {"+" +
+                                                    item.phone.substring(0, 2) +
+                                                    " " +
+                                                    item.phone.substring(2)}
                                             </p>
                                         </div>
                                         <div className="text-nowrap text-center w-48">

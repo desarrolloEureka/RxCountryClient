@@ -33,6 +33,8 @@ const SignUpHook = () => {
 
     const [selectedArea, setSelectedArea] = useState<string>("");
 
+    const [allFunctionaries, setAllFunctionaries] = useState<any>();
+
     const [allRoles, setAllRoles] = useState<any>();
 
     const [emailsProfessionalsData, setEmailsProfessionalsData] =
@@ -66,7 +68,7 @@ const SignUpHook = () => {
 
         const isUserFound =
             (userLogin !== "Profesional" &&
-                currentFunctionary.email === email) ||
+                currentFunctionary?.email === email) ||
             (userLogin === "Profesional" &&
                 emailsProfessionalsData?.includes(email));
 
@@ -79,6 +81,17 @@ const SignUpHook = () => {
 
     const changeHandler = (e: any) => {
         setData({ ...data, [e.target.name]: e.target.value });
+
+        const functionaryData = allFunctionaries?.find(
+            (user: any) => user.email === e.target.value,
+        );
+
+        e.target.name === "email" && setCurrentFunctionary(functionaryData);
+
+        e.target.name === "email" &&
+            functionaryData &&
+            (setSelectedArea(functionaryData?.area),
+            setSelectedCampus(functionaryData?.campus));
     };
 
     const selectChangeHandlerCampus = (e: any) => {
@@ -122,23 +135,13 @@ const SignUpHook = () => {
     const getFunctionaries = useCallback(async () => {
         const allFunctionariesData = await getAllFunctionaries();
 
-        const functionaryData = allFunctionariesData.find(
-            (user) => user.email === email,
-        );
-        functionaryData && setCurrentFunctionary(functionaryData);
-    }, [email]);
+        allFunctionariesData && setAllFunctionaries(allFunctionariesData);
+    }, []);
 
     const getRoles = useCallback(async () => {
         const allRolesData = await getAllRoles();
         allRolesData && setAllRoles(allRolesData);
     }, []);
-
-    useEffect(() => {
-        if (currentFunctionary && currentFunctionary.email === email) {
-            setSelectedCampus(currentFunctionary.campus);
-            setSelectedArea(currentFunctionary.area);
-        }
-    }, [currentFunctionary, email]);
 
     useEffect(() => {
         getCampus();
