@@ -9,10 +9,10 @@ import { MdPictureAsPdf } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
 
 export default function PreviewOrder({
-    backToDetail,
-    backToOrder,
-    isEdit,
-    orderId,
+    // backToDetail,
+    // backToOrder,
+    // isEdit,
+    // orderId,
 }: PreviewOrderProps) {
     const [urlPDF, setUrlPDF] = useState<string>(
         "/assets/documents/RXOrdenFinal.pdf",
@@ -22,13 +22,14 @@ export default function PreviewOrder({
 
     return (
         <div className="flex flex-col rounded-[2.5rem] shadow-lg bg-black bg-opacity-50 w-full max-w-screen mx-auto relative">
-            <div className="flex justify-between items-center w-full p-8">
+            {/* <div className="flex justify-between items-center w-full p-8">
                 <div className="flex items-center space-x-8">
                     <button
                         onClick={() => {
-                            backToDetail !== undefined
-                                ? backToDetail()
-                                : backToOrder();
+                            // backToDetail !== undefined
+                            //     ? backToDetail()
+                            //     :
+                            backToOrder();
                         }}
                     >
                         <IoArrowBackCircleOutline
@@ -37,12 +38,12 @@ export default function PreviewOrder({
                         />
                     </button>
                 </div>
-            </div>
-            <div className="flex flex-col mx-20">
+            </div> */}
+            <div className="flex flex-col mb-20 mx-20">
                 <div className="grid grid-cols-1 gap-4">
                     <div className="flex flex-col space-y-4 p-4">
                         <PDFViewer fileUrl={urlPDF} />
-                        {isEdit && (
+                        {/* {isEdit && (
                             <>
                                 <div className="grid grid-cols-2 xl:grid-cols-2">
                                     <div className="flex items-center justify-center">
@@ -69,7 +70,7 @@ export default function PreviewOrder({
                                     </div>
                                 </div>
                             </>
-                        )}
+                        )} */}
                     </div>
                 </div>
             </div>

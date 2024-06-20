@@ -14,8 +14,8 @@ export interface EditedOrderStatusByRol {
 }
 
 export interface PreviewOrderProps {
-    backToOrder: () => void;
-    backToDetail?: () => void;
-    isEdit?: boolean;
-    orderId?: number;
+    // backToOrder: () => void;
+    // backToDetail?: () => void;
+    // isEdit?: boolean;
+    // orderId?: number;
 }

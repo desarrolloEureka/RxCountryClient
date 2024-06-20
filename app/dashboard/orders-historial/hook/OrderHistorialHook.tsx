@@ -1,6 +1,7 @@
 "use client";
 import useAuth from "@/app/firebase/auth";
 import {
+    arrayUnionFb,
     getAllFunctionaries,
     getAllOrders,
     getAllPatients,
@@ -25,6 +26,8 @@ const OrderHistorialHook = () => {
     const fromEdit = searchParams.get("to");
 
     const router = useRouter();
+
+    const currentDate = moment().format();
 
     const [showFilter, setShowFilter] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
@@ -257,6 +260,11 @@ const OrderHistorialHook = () => {
             {
                 modifiedBy,
                 assignedCampus: campus ? campus : "",
+                updateLog: arrayUnionFb({
+                    lastUserId: userData?.uid,
+                    lastUpdate: currentDate,
+                    lastComment: "La orden fue abierta",
+                }),
                 // timestamp,
             },
             orderRef,

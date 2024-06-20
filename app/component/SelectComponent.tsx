@@ -13,9 +13,11 @@ const SelectComponent = ({
     optionSelected,
 }: SelectComponentProps) => (
     <Select
-        value={optionSelected}
-        isClearable={true}
+        required
+        value={optionSelected ? optionSelected : []}
+        isClearable
         options={options}
+        defaultValue={optionSelected}
         className="text-black"
         onChange={selectChangeHandlerSentTo}
     />

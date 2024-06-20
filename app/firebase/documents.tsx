@@ -5,6 +5,7 @@ import {
     getDocs,
     setDoc,
     updateDoc,
+    arrayUnion,
 } from "firebase/firestore";
 import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 import moment from "moment";
@@ -14,6 +15,8 @@ import { CampusBd, CampusSelector } from "../types/campus";
 const currentDate = moment().format();
 
 const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
+
+export const arrayUnionFb = (data: any) => arrayUnion(data);
 
 const docRef = ({ ref, collection }: RefPropsFirebase) =>
     doc(db, ref, collection);
