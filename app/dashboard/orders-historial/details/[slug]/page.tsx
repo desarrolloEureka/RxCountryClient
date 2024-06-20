@@ -7,7 +7,6 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
         userRol,
         area,
-        allAreas,
         expandReceptionData,
         setExpandReceptionData,
         expandSpecialist,
@@ -22,26 +21,11 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
         setExpandRx4,
         expandRx5,
         setExpandRx5,
-        selectedDiagnosis,
-        setSelectedDiagnosis,
-        selectedSuppliers,
-        setSelectedSuppliers,
         orderAndPatientData,
-        handleChecks,
-        selectChangeHandlerSentTo,
         detailStep,
-        setDetailStep,
-        handleSendForm,
-        commentChangeHandler,
-        setDiagnosticImpressionComment,
-        observationComment,
-        diagnosticImpressionComment,
-        areaSelected,
-        setAreaSelected,
-        backToOrder,
-        backToDetail,
-        fileName,
-        handleFileChange,
+        // setDetailStep,
+        formatearFecha,
+        getLastUserData,
     } = DetailsHook({ slug });
 
     return (
@@ -64,30 +48,12 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
                     setExpandRx4={setExpandRx4}
                     expandRx5={expandRx5}
                     setExpandRx5={setExpandRx5}
-                    selectedDiagnosis={selectedDiagnosis}
-                    setSelectedDiagnosis={setSelectedDiagnosis}
-                    selectedSuppliers={selectedSuppliers}
-                    setSelectedSuppliers={setSelectedSuppliers}
                     orderAndPatientData={orderAndPatientData}
-                    handleChecks={handleChecks}
-                    selectChangeHandlerSentTo={selectChangeHandlerSentTo}
                     detailStep={detailStep}
-                    setDetailStep={setDetailStep}
-                    handleSendForm={handleSendForm}
-                    commentChangeHandler={commentChangeHandler}
-                    setDiagnosticImpressionComment={
-                        setDiagnosticImpressionComment
-                    }
-                    allAreas={allAreas}
-                    observationComment={observationComment}
-                    diagnosticImpressionComment={diagnosticImpressionComment}
-                    areaSelected={areaSelected}
-                    setAreaSelected={setAreaSelected}
-                    backToOrder={backToOrder}
-                    backToDetail={backToDetail}
+                    // setDetailStep={setDetailStep}
                     area={area}
-                    fileName={fileName}
-                    handleFileChange={handleFileChange}
+                    formatearFecha={formatearFecha}
+                    getLastUserData={getLastUserData}
                 />
             </div>
         </main>

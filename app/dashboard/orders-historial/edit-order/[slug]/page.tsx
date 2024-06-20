@@ -15,6 +15,7 @@ import EditOrderHook from "../hook/EditOrderHook";
 
 const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
+        uid,
         router,
         showSave,
         showHelp,
@@ -22,7 +23,6 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         setShowHelp,
         formStep,
         setFormStep,
-        isDataSelected,
         setIsDataSelected,
         widthSlider,
         isEdit,
@@ -32,6 +32,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         patientData,
         titles,
         currentOrderId,
+        selectedDiagnosisTwo,
+        setSelectedDiagnosisTwo,
+        selectedSuppliers,
+        setSelectedSuppliers,
         changeHandler,
         selectChangeHandlerIdType,
         dateChangeHandler,
@@ -39,7 +43,9 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
-        // isNewPatientData,
+        handleChecks,
+        fileName,
+        handleFileChange,
     } = EditOrderHook({ slug });
 
     return (
@@ -62,26 +68,33 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                     </Link>
                                 </div>
 
-                                <div className="flex flex-1 mx-20">
-                                    <h3 className="text-company-blue text-3xl font-bold">
-                                        {titles[formStep]}
-                                    </h3>
-                                </div>
-
-                                <div className="flex flex-col items-center space-y-2 text-white text-sm">
-                                    <button
-                                        onClick={() => setShowHelp(true)}
-                                        className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
-                                    >
-                                        <LightIcon color="#5696D3" />
-                                    </button>
-                                    <span>Ayuda</span>
-                                </div>
+                                {(formStep === 0 ||
+                                    userRol.uid === "ZWb0Zs42lnKOjetXH5lq") && (
+                                    <>
+                                        <div className="flex flex-1 mx-20">
+                                            <h3 className="text-company-blue text-3xl font-bold">
+                                                {titles[formStep]}
+                                            </h3>
+                                        </div>
+                                        <div className="flex flex-col items-center space-y-2 text-white text-sm">
+                                            <button
+                                                onClick={() =>
+                                                    setShowHelp(true)
+                                                }
+                                                className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
+                                            >
+                                                <LightIcon color="#5696D3" />
+                                            </button>
+                                            <span>Ayuda</span>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>
 
                     <StepByStep
+                        uid={uid}
                         oldData={oldData}
                         formStep={formStep}
                         setFormStep={setFormStep}
@@ -90,6 +103,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         setIsDataSelected={setIsDataSelected}
                         optionsData={optionsData}
                         data={patientData}
+                        selectedDiagnosisTwo={selectedDiagnosisTwo}
+                        setSelectedDiagnosisTwo={setSelectedDiagnosisTwo}
+                        selectedSuppliers={selectedSuppliers}
+                        setSelectedSuppliers={setSelectedSuppliers}
                         changeHandler={changeHandler}
                         selectChangeHandlerIdType={selectChangeHandlerIdType}
                         dateChangeHandler={dateChangeHandler}
@@ -101,28 +118,48 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         handleClose={() => {}}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
                         allAreas={allAreas}
+                        handleChecks={handleChecks}
+                        fileName={fileName}
+                        handleFileChange={handleFileChange}
                     />
 
                     {formStep < 6 && (
-                        <div className="flex flex-row items-center mt-8 overflow-visible bg-company-blue bg-opacity-25 w-full h-[0.1rem]">
-                            <div
-                                className={`h-[0.3rem] ${
-                                    widthSlider[formStep]
-                                } bg-company-blue ${
-                                    formStep < 5
-                                        ? "rounded-r-full"
-                                        : "rounded-none"
-                                }`}
-                            />
+                        <div
+                            className={`flex flex-row items-center mt-8 overflow-visible  ${
+                                userRol.uid === "ZWb0Zs42lnKOjetXH5lq"
+                                    ? "bg-company-blue/25"
+                                    : "bg-company-blue/70"
+                            }  w-full h-[0.2rem]`}
+                        >
+                            {userRol.uid === "ZWb0Zs42lnKOjetXH5lq" && (
+                                <div
+                                    className={`h-[0.3rem] ${
+                                        widthSlider[formStep]
+                                    } bg-company-blue ${
+                                        formStep < 5
+                                            ? "rounded-r-full"
+                                            : "rounded-none"
+                                    }`}
+                                />
+                            )}
                         </div>
                     )}
+
                     {formStep < 6 && (
                         <div
                             className={`flex ${
-                                formStep < 6 ? "justify-between" : "justify-end"
+                                userRol.uid === "ZWb0Zs42lnKOjetXH5lq" &&
+                                formStep < 6
+                                    ? "justify-between"
+                                    : "justify-end"
                             } items-center p-8`}
                         >
-                            <div className="text-white">Paso {formStep}/5</div>
+                            {userRol.uid === "ZWb0Zs42lnKOjetXH5lq" && (
+                                <div className="text-white">
+                                    Paso {formStep}/5
+                                </div>
+                            )}
+
                             <div className="flex items-center space-x-8">
                                 {formStep > 0 && (
                                     <div
@@ -148,7 +185,11 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                 ) : (
                                     <div
                                         onClick={() => {
-                                            formStep === 5
+                                            userRol.uid !==
+                                                "ZWb0Zs42lnKOjetXH5lq" &&
+                                            formStep === 1
+                                                ? setFormStep(6)
+                                                : formStep === 5
                                                 ? router.replace(
                                                       "/dashboard/orders-historial",
                                                   )

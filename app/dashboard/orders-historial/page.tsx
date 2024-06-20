@@ -3,6 +3,7 @@ import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
 import Spinner from "@/app/component/spinner/Spinner";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
+import Link from "next/link";
 import { Suspense } from "react";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";
 import {
@@ -15,10 +16,11 @@ import {
 import { IoAlertCircleSharp } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
 import { MdClose, MdPictureAsPdf } from "react-icons/md";
+import { IoIosMore } from "react-icons/io";
 import { RiEditBoxFill } from "react-icons/ri";
 import Datepicker from "react-tailwindcss-datepicker";
-import PreviewOrder from "../../component/PreviewOrder";
 import OrderHistorialHook from "./hook/OrderHistorialHook";
+import Swal from "sweetalert2";
 
 const OrderHistorialPage = () => {
     const {
@@ -65,6 +67,37 @@ const OrderHistorialPage = () => {
         getOrderStatus,
         getLastUserData,
     } = OrderHistorialHook();
+
+    const modalLastUpdate = (item: any) => {
+        const swalWithCustomClass = Swal.mixin({
+            customClass: {
+                // confirmButton:
+                //     "bg-company-blue text-white px-3 py-2 rounded-xl",
+                title: "text-company-orange",
+            },
+            // buttonsStyling: false,
+        });
+        swalWithCustomClass.fire({
+            position: "center",
+            title: "Ultima Actualización",
+            html: `Fecha: ${
+                item.updateLog.at(-1).lastUpdate
+                    ? formatearFecha(item.updateLog.at(-1).lastUpdate)
+                    : "Sin Registro"
+            }<br/><br/> Usuario: ${
+                item.updateLog.at(-1).lastUserId
+                    ? getLastUserData(item.updateLog.at(-1).lastUserId)
+                    : "No Registrado"
+            }<br/><br/> Comentario: ${
+                item.updateLog.at(-1).lastComment
+                    ? item.updateLog.at(-1).lastComment
+                    : "Sin Comentario"
+            }`,
+            background: "#404040",
+            color: "white",
+            confirmButtonColor: "#228cf0",
+        });
+    };
 
     if (!ordersByRol) {
         return (
@@ -312,7 +345,7 @@ const OrderHistorialPage = () => {
                         </div>
 
                         <div className="flex flex-col divide-y overflow-x-auto custom-scrollbar pb-3 mb-5">
-                            <div className="grid grid-cols-12 min-w-max items-center text-company-orange py-4 px-12">
+                            <div className="grid grid-cols-11 min-w-max items-center text-company-orange py-4 px-12">
                                 <div className="col text-center text-nowrap w-48">
                                     <span>Detalle</span>
                                 </div>
@@ -346,63 +379,53 @@ const OrderHistorialPage = () => {
                                 <div className="col text-center text-nowrap w-48">
                                     <span>Ultima Actualización</span>
                                 </div>
-                                <div className="col text-center text-nowrap w-48">
-                                    <span>Ultimo Usuario</span>
-                                </div>
                             </div>
                             {filteredOrders?.map((item: any, index: number) => {
                                 return (
                                     <div
                                         key={index}
-                                        // onClick={() => {
-                                        //     router.push(
-                                        //         `/dashboard/orders-historial/details/${item.uid}`,
-                                        //     );
-                                        // }}
-                                        className="grid grid-cols-12 min-w-max border-t items-center text-white py-4 hover:bg-gray-700 px-12"
+                                        className="grid grid-cols-11 min-w-max border-t items-center text-white py-4 hover:bg-gray-700 px-12"
                                     >
                                         <div className="col flex justify-between text-nowrap text-company-blue w-48 px-5">
                                             <button
-                                                // className="px-22"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                 }}
                                             >
                                                 <IoIosNotifications size={24} />
                                             </button>
-                                            <button
-                                                // className="px-2"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    item.status === "enviada" &&
-                                                    userRol?.uid !==
+                                            {item.status === "enviada" && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        userRol?.uid !==
                                                         item.modifiedBy
                                                             .userRolId
-                                                        ? setStatusOpenOrder(
-                                                              item.uid,
-                                                              //   item.timestamp,
-                                                          ).then(() => {
-                                                              router.push(
+                                                            ? setStatusOpenOrder(
+                                                                  item.uid,
+                                                                  //   item.timestamp,
+                                                              ).then(() => {
+                                                                  router.push(
+                                                                      `/dashboard/orders-historial/edit-order/${item.uid}`,
+                                                                  );
+                                                              })
+                                                            : router.push(
                                                                   `/dashboard/orders-historial/edit-order/${item.uid}`,
                                                               );
-                                                          })
-                                                        : router.push(
-                                                              `/dashboard/orders-historial/edit-order/${item.uid}`,
-                                                          );
-                                                }}
+                                                    }}
+                                                >
+                                                    <RiEditBoxFill size={24} />
+                                                </button>
+                                            )}
+                                            <Link
+                                                href="/dashboard/preview-order"
+                                                rel="noopener noreferrer"
+                                                target="_blank"
                                             >
-                                                <RiEditBoxFill size={24} />
-                                            </button>
-                                            <button
-                                                // className="px-2"
-                                                onClick={(e) => {
-                                                    setShowPdf(true);
-                                                    setOrderId(item.uid);
-                                                    e.stopPropagation();
-                                                }}
-                                            >
-                                                <MdPictureAsPdf size={24} />
-                                            </button>
+                                                <button type="button">
+                                                    <MdPictureAsPdf size={24} />
+                                                </button>
+                                            </Link>
                                             <button
                                                 // className="px-2"
                                                 onClick={(e) => {
@@ -476,25 +499,14 @@ const OrderHistorialPage = () => {
                                                     item.phone.substring(2)}
                                             </p>
                                         </div>
-                                        <div className="text-nowrap text-center w-48">
-                                            <p className="truncate">
-                                                {item.updateLog
-                                                    ? formatearFecha(
-                                                          item.updateLog.at(-1)
-                                                              .lastUpdate,
-                                                      )
-                                                    : ""}
-                                            </p>
-                                        </div>
-                                        <div className="text-nowrap text-center w-48">
-                                            <p className="truncate">
-                                                {item.updateLog
-                                                    ? getLastUserData(
-                                                          item.updateLog.at(-1)
-                                                              .lastUserId,
-                                                      )
-                                                    : ""}
-                                            </p>
+                                        <div className="col flex justify-center text-nowrap text-company-blue w-48 px-5">
+                                            <button
+                                                onClick={() => {
+                                                    modalLastUpdate(item);
+                                                }}
+                                            >
+                                                <IoIosMore size={24} />
+                                            </button>
                                         </div>
                                     </div>
                                 );
@@ -663,13 +675,13 @@ const OrderHistorialPage = () => {
                         </div>
                     </div>
                 )}
-                {showPdf && (
+                {/* {showPdf && (
                     <PreviewOrder
-                        backToOrder={backToOrder}
-                        isEdit={userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"}
-                        orderId={orderId}
+                        // backToOrder={backToOrder}
+                        // isEdit={userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"}
+                        // orderId={orderId}
                     />
-                )}
+                )} */}
             </div>
             {showHelp && (
                 <>

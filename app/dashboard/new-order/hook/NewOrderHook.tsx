@@ -47,7 +47,7 @@ const calculateAge = (birthDate: Date | string): number => {
 
 const confirmAlert = () => {
     Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: "success",
         title: `Guardando...`,
         showConfirmButton: false,
@@ -60,7 +60,7 @@ const confirmAlert = () => {
 const NewOrderHook = (props?: Props) => {
     const { isActiveUser, userData, accessTokenUser, userRol } = useAuth();
 
-    const { campus } = userData;
+    const { campus, uid } = userData;
 
     const currentDate = moment().format();
 
@@ -194,7 +194,9 @@ const NewOrderHook = (props?: Props) => {
             e.preventDefault();
             e.stopPropagation();
             console.log("Entró");
-            await uploadHandle();
+            await uploadHandle().then(() => {
+                setFormStep((prevStep: number) => prevStep + 1);
+            });
             handleClose();
         } else {
             e.preventDefault();
@@ -215,6 +217,41 @@ const NewOrderHook = (props?: Props) => {
         const orderId = (oldOrderId + 1).toString();
 
         const documentNewOrderRef: any = getDocumentRef(newOrderRef, orderId);
+
+        // console.log({
+        //     ...selectedOptions,
+        //     uid: documentNewOrderRef.id,
+        //     patientId: patientData.uid,
+        //     status: editedOrderStatusByRol[userRol?.uid!],
+        //     sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
+        //     isActive: true,
+        //     isDeleted: false,
+        //     modifiedBy: {
+        //         userRolId: userRol?.uid,
+        //         userId: userData?.uid,
+        //     },
+        //     createdBy: {
+        //         userRol: userRol?.uid,
+        //         userId: userData?.uid,
+        //     },
+        //     assignedCampus: campus ? campus : "",
+        //     timestamp: currentDate,
+        //     updateLog: [
+        //         {
+        //             lastUserId: userData?.uid,
+        //             lastUpdate: currentDate,
+        //             lastComment:
+        //                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
+        //                     ? selectedOptions[
+        //                           userRol?.name
+        //                               .substring(0, 3)
+        //                               .toLocaleLowerCase() +
+        //                               "ObservationComment"
+        //                       ].message
+        //                     : selectedOptions.observationComment.message,
+        //         },
+        //     ],
+        // });
 
         if (patientExist) {
             const documentPatientRef: any = getDocumentRef(
@@ -255,7 +292,16 @@ const NewOrderHook = (props?: Props) => {
                         {
                             lastUserId: userData?.uid,
                             lastUpdate: currentDate,
-                            lastComment: selectedOptions.observationComment,
+                            lastComment:
+                                userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
+                                    ? selectedOptions[
+                                          userRol?.name
+                                              .substring(0, 3)
+                                              .toLocaleLowerCase() +
+                                              "ObservationComment"
+                                      ].message
+                                    : selectedOptions.observationComment
+                                          .message,
                         },
                     ],
                 }).then((res) => {
@@ -302,7 +348,16 @@ const NewOrderHook = (props?: Props) => {
                             {
                                 lastUserId: userData?.uid,
                                 lastUpdate: currentDate,
-                                lastComment: selectedOptions.observationComment,
+                                lastComment:
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
+                                        ? selectedOptions[
+                                              userRol?.name
+                                                  .substring(0, 3)
+                                                  .toLocaleLowerCase() +
+                                                  "ObservationComment"
+                                          ].message
+                                        : selectedOptions.observationComment
+                                              .message,
                             },
                         ],
                     }).then((res) => {
@@ -356,6 +411,7 @@ const NewOrderHook = (props?: Props) => {
 
     return {
         showHelp,
+        uid,
         allAreas: _.sortBy(areasByCampus(), "label"),
         setShowHelp,
         formStep,

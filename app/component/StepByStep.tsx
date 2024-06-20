@@ -1,4 +1,6 @@
 import _ from "lodash";
+import moment from "moment";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
@@ -19,12 +21,17 @@ import "../style.css";
 import { AreasSelector } from "../types/areas";
 import { RolesBd } from "../types/roles";
 import { idTypes } from "./constants/formConstants";
+import {
+    diagnosisMachineTwo,
+    suppliers,
+} from "./constants/stepByStepConstants";
 import DentalSelect from "./orders/dental-select";
-import PreviewOrder from "./PreviewOrder";
 import SelectComponent from "./SelectComponent";
+import InputFileUpload from "./UpLoadButton";
 import DoctorVector from "./vectors/DoctorVector";
 
 interface Props {
+    uid?: string;
     formStep: number;
     setFormStep: (e: any) => void;
     userRol?: RolesBd;
@@ -49,10 +56,22 @@ interface Props {
     oldData?: any;
     wrapperRef?: any;
     allAreas: AreasSelector[];
+    handleChecks: (
+        option: string,
+        selected: string[],
+        setSelected: (e: any) => void,
+    ) => void;
+    selectedDiagnosisTwo: string[];
+    setSelectedDiagnosisTwo: (e: any) => void;
+    selectedSuppliers: string[];
+    setSelectedSuppliers: (e: any) => void;
+    fileName?: string;
+    handleFileChange?: (e: any) => void;
 }
 
 function StepByStep({
     formStep,
+    uid,
     allAreas,
     setFormStep,
     userRol,
@@ -65,6 +84,7 @@ function StepByStep({
     suggestions,
     wrapperRef,
     handleClose,
+    handleChecks,
     changeHandler,
     idChangeHandler,
     selectChangeHandlerIdType,
@@ -74,15 +94,25 @@ function StepByStep({
     handleSendForm,
     selectChangeHandlerSentTo,
     handleInputChange,
+    selectedDiagnosisTwo,
+    setSelectedDiagnosisTwo,
+    selectedSuppliers,
+    setSelectedSuppliers,
+    fileName,
+    handleFileChange,
 }: Props) {
     const router = useRouter();
+
+    const currentDate = moment().format();
 
     // console.log(oldData);
 
     const [professionalName, setProfessionalName] = useState("");
     const [professionalSpecialty, setProfessionalSpecialty] = useState("");
     const [professionalEmail, setProfessionalEmail] = useState("");
-    const [areaSelected, setAreaSelected] = useState<any>();
+    const [areaSelected, setAreaSelected] = useState<any>(null);
+
+    const [lastStep, setLastStep] = useState<number>(0);
 
     const [observationComment, setObservationComment] = useState<string>("");
 
@@ -192,13 +222,14 @@ function StepByStep({
         ],
     );
 
-    const backToOrder = () => {
-        setFormStep(6);
-    };
+    // const backToOrder = () => {
+    //     lastStep !== 0 && setFormStep(lastStep);
+    //     setLastStep(0);
+    // };
 
     const valData = useCallback(async () => {
         const dataSelected: {
-            [key: string]: string | number[] | string[];
+            [key: string]: string | number[] | string[] | any;
         } = { ...allDataSelected[0] };
 
         if (userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
@@ -206,7 +237,17 @@ function StepByStep({
             dataSelected[
                 userRol?.name.substring(0, 3).toLocaleLowerCase() +
                     "ObservationComment"
-            ] = observationComment;
+            ] = {
+                timestamp: currentDate,
+                userId: uid,
+                message: observationComment,
+            };
+        } else {
+            dataSelected.observationComment = {
+                timestamp: currentDate,
+                userId: uid,
+                message: observationComment,
+            };
         }
 
         setIsDataSelected(_.some(dataSelected, (value) => !_.isEmpty(value)));
@@ -214,9 +255,11 @@ function StepByStep({
         setSelectedOptions(dataSelected);
     }, [
         allDataSelected,
+        currentDate,
         observationComment,
         setIsDataSelected,
         setSelectedOptions,
+        uid,
         userRol,
     ]);
 
@@ -232,14 +275,14 @@ function StepByStep({
         const generalComment = oldData?.observationComment;
 
         if (!isProfessional && userRoleComment) {
-            return userRoleComment;
+            return userRoleComment?.message;
         }
 
         if (
             (userRoleComment && generalComment !== userRoleComment) ||
             isProfessional
         ) {
-            return generalComment;
+            return generalComment?.message;
         }
 
         return "";
@@ -311,6 +354,7 @@ function StepByStep({
 
     return (
         <div>
+            {/* Datos Paciente */}
             {formStep === 0 && (
                 <div className="mx-16 bg-black bg-opacity-50 rounded-2xl p-8 flex flex-col space-y-8">
                     <h3 className="text-2xl text-company-orange">
@@ -458,6 +502,7 @@ function StepByStep({
                             <PhoneInput
                                 autoFormat={false}
                                 inputProps={{
+                                    id: "phone",
                                     name: "phone",
                                     required: true,
                                     pattern: "^(\\+?\\d{1,4})?\\s?\\d{11,15}$",
@@ -626,860 +671,1224 @@ function StepByStep({
                     </div>
                 </div>
             )}
-            {formStep === 1 && (
-                <div className="flex flex-col mx-20">
-                    <div className="mx-auto mb-8">
-                        <DentalSelect
-                            setSelected={
-                                !isEdit ? setDentalSelectBoneScan : () => {}
-                            }
-                            selected={dentalSelectBoneScan}
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Intra Orales
-                            </h3>
-                            <div className="grid grid-rows-4 grid-flow-col gap-4">
-                                {optionsData.intraOralsOptions.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
+
+            {isEdit && userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" ? (
+                <>
+                    {/* Flujo de acción */}
+                    {formStep === 1 && (
+                        <>
+                            {/* Visualizar PDF */}
+                            <div className="mx-28 mb-16 mt-5">
+                                <Link
+                                    href="/dashboard/preview-order"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                >
+                                    <button
+                                        type="button"
+                                        className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                                    >
+                                        <IoEye
+                                            className="text-company-blue"
+                                            size={24}
+                                        />
+                                        <span>Previsualizar PDF</span>
+                                    </button>
+                                </Link>
+                            </div>
+
+                            {/* Recepción  y Despacho*/}
+                            {(userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
+                                userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk") && (
+                                <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 my-10 mx-28">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Observaciones
+                                    </h3>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        <textarea
+                                            value={observationComment}
+                                            id="Observations"
+                                            name="observations"
+                                            rows={6}
+                                            cols={50}
+                                            className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                            placeholder="Escribe aquí tus observaciones..."
+                                            // onChange={commentChangeHandler}
+                                            onChange={(e) =>
+                                                setObservationComment(
+                                                    e.target.value,
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Laboratorio y Radiología */}
+                            {(userRol?.uid === "chbFffCzpRibjYRyoWIx" ||
+                                userRol?.uid === "V5iMSnSlSYsiSDFs4UpI") && (
+                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
+                                    <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Diagnóstico
+                                        </h3>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            {diagnosisMachineTwo.map(
+                                                (option, index) => {
+                                                    return (
+                                                        <div
+                                                            key={index}
+                                                            className="col flex space-x-2 items-center"
+                                                        >
+                                                            <div
+                                                                onClick={() =>
+                                                                    handleChecks(
+                                                                        option,
+                                                                        selectedDiagnosisTwo,
+                                                                        setSelectedDiagnosisTwo,
+                                                                    )
+                                                                }
+                                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                                    selectedDiagnosisTwo?.includes(
+                                                                        option,
+                                                                    )
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedDiagnosisTwo?.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                            <span className="text-white">
+                                                                {option}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                },
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Proveedores
+                                        </h3>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            {suppliers.map((option, index) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedIntraOrals(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div
+                                                            onClick={() =>
+                                                                handleChecks(
+                                                                    option,
+                                                                    selectedSuppliers,
+                                                                    setSelectedSuppliers,
+                                                                )
+                                                            }
+                                                            className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                                selectedSuppliers?.includes(
+                                                                    option,
+                                                                )
+                                                                    ? "bg-company-orange"
+                                                                    : "bg-transparent"
+                                                            }`}
+                                                        >
+                                                            {selectedSuppliers?.includes(
+                                                                option,
+                                                            ) && (
+                                                                <IoCheckmark color="black" />
+                                                            )}
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2 flex flex-auto pb-5">
+                                        <div className="space-y-4 w-2/6">
+                                            <label className="text-company-orange">
+                                                Área de destino
+                                            </label>
+                                            <SelectComponent
+                                                options={allAreas}
+                                                selectChangeHandlerSentTo={(
+                                                    e,
+                                                ) => {
+                                                    selectChangeHandlerSentTo(
+                                                        e?.value,
+                                                    );
+                                                    setAreaSelected(e);
+                                                }}
+                                                optionSelected={areaSelected}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Observaciones
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <textarea
+                                                // disabled
+                                                value={observationComment}
+                                                id="Observations"
+                                                name="observations"
+                                                rows={4}
+                                                cols={50}
+                                                className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                                placeholder="Escribe aquí tus observaciones..."
+                                                // onChange={
+                                                //     commentChangeHandler
+                                                // }
+                                                onChange={(e) =>
+                                                    setObservationComment(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Impresión diagnostica
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <textarea
+                                                // disabled
+                                                value={
+                                                    diagnosticImpressionComment
+                                                }
+                                                id="Observations"
+                                                name="observations"
+                                                rows={4}
+                                                cols={50}
+                                                className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                                placeholder="Escribe aquí tus observaciones..."
+                                                onChange={(e) =>
+                                                    setDiagnosticImpressionComment(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Modelos/Fotografía y Escáner Digital */}
+                            {(userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" ||
+                                userRol?.uid === "VEGkDuMXs2mCGxXUPCWI") && (
+                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
+                                    <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
+                                        <h1 className="text-company-orange text-2xl font-bold">
+                                            Diagnóstico
+                                        </h1>
+                                        <h2 className="text-company-orange">
+                                            Proceso Completado
+                                        </h2>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            {diagnosisMachineTwo.map(
+                                                (option, index) => {
+                                                    return (
+                                                        <div
+                                                            key={index}
+                                                            className="col flex space-x-2 items-center"
+                                                        >
+                                                            <div
+                                                                onClick={() =>
+                                                                    handleChecks(
+                                                                        option,
+                                                                        selectedDiagnosisTwo,
+                                                                        setSelectedDiagnosisTwo,
+                                                                    )
+                                                                }
+                                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                                    selectedDiagnosisTwo?.includes(
+                                                                        option,
+                                                                    )
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedDiagnosisTwo?.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                            <span className="text-white">
+                                                                {option}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                },
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
+                                        <h1 className="text-company-orange text-xl font-bold">
+                                            Proveedores
+                                        </h1>
+                                        <h2 className="text-company-orange">
+                                            Proceso Completado
+                                        </h2>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            {suppliers.map((option, index) => {
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div
+                                                            onClick={() =>
+                                                                handleChecks(
+                                                                    option,
+                                                                    selectedSuppliers,
+                                                                    setSelectedSuppliers,
+                                                                )
+                                                            }
+                                                            className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
+                                                                selectedSuppliers?.includes(
+                                                                    option,
+                                                                )
+                                                                    ? "bg-company-orange"
+                                                                    : "bg-transparent"
+                                                            }`}
+                                                        >
+                                                            {selectedSuppliers?.includes(
+                                                                option,
+                                                            ) && (
+                                                                <IoCheckmark color="black" />
+                                                            )}
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2 flex flex-col pb-5 space-y-4 w-60">
+                                        <InputFileUpload
+                                            fileName={fileName}
+                                            handleFileChange={handleFileChange}
+                                        />
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Observaciones
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <textarea
+                                                disabled
+                                                value={observationComment}
+                                                id="Observations"
+                                                name="observations"
+                                                rows={4}
+                                                cols={50}
+                                                className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                                placeholder="Escribe aquí tus observaciones..."
+                                                // onChange={
+                                                //     commentChangeHandler
+                                                // }
+                                                onChange={(e) =>
+                                                    setObservationComment(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* <div className="flex flex-row items-center overflow-visible bg-company-blue/70 w-full h-[0.2rem]" />
+                                <div
+                                    className={`flex justify-end px-16 py-4 items-center space-x-8`}
+                                >
+                                    <button
+                                        onClick={() => {
+                                            router.replace(
+                                                "/dashboard/orders-historial",
+                                            );
+                                        }}
+                                        className="flex items-center cursor-pointer text-lg text-company-blue"
+                                    >
+                                        <BiChevronLeft size={32} />
+                                        <span>Atrás</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setDetailStep(
+                                                (prevStep: number) =>
+                                                    prevStep + 1,
+                                            );
+                                        }}
+                                        className="flex items-center cursor-pointer text-lg text-company-blue"
+                                    >
+                                        <span>Siguiente</span>
+                                        <BiChevronRight size={32} />
+                                    </button>
+                                </div> */}
+                        </>
+                    )}
+                </>
+            ) : (
+                <>
+                    {formStep === 1 && (
+                        <div className="flex flex-col mx-20">
+                            <div className="mx-auto mb-8">
+                                <DentalSelect
+                                    setSelected={
+                                        !isEdit
+                                            ? setDentalSelectBoneScan
+                                            : () => {}
+                                    }
+                                    selected={dentalSelectBoneScan}
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Intra Orales
+                                    </h3>
+                                    <div className="grid grid-rows-4 grid-flow-col gap-4">
+                                        {optionsData.intraOralsOptions.map(
+                                            (option: any, index: any) => {
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedIntraOrals(
+                                                                            selectedIntraOrals.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedIntraOrals.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedIntraOrals,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedIntraOrals.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedIntraOrals.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedIntraOrals,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedIntraOrals.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedIntraOrals.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedIntraOrals.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Extra Orales
-                            </h3>
-                            <div className="grid grid-rows-4 grid-flow-col gap-4">
-                                {optionsData.extraOralsOptions.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Extra Orales
+                                    </h3>
+                                    <div className="grid grid-rows-4 grid-flow-col gap-4">
+                                        {optionsData.extraOralsOptions.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedExtraOrals(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedExtraOrals(
+                                                                            selectedExtraOrals.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedExtraOrals.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedExtraOrals,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedExtraOrals.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedExtraOrals.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedExtraOrals,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedExtraOrals.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedExtraOrals.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedExtraOrals.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
-            {formStep === 2 && (
-                <div className="flex flex-col mx-20">
-                    <div className="mx-auto mb-8">
-                        <DentalSelect
-                            setSelected={
-                                !isEdit ? setDentalSelectTomography : () => {}
-                            }
-                            selected={dentalSelectTomography}
-                        />
-                    </div>
-                    <div className="grid grid-cols-5 gap-4">
-                        <div className="col-span-3 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Tomografía volumétrica 3D
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                {optionsData.volumetricTomography.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`col ${
-                                                    optionsData
-                                                        .volumetricTomography
-                                                        .length -
-                                                        1 ===
-                                                        index && "col-span-2"
-                                                } flex space-x-2 items-center`}
-                                            >
-                                                <div className="">
+                    )}
+                    {formStep === 2 && (
+                        <div className="flex flex-col mx-20">
+                            <div className="mx-auto mb-8">
+                                <DentalSelect
+                                    setSelected={
+                                        !isEdit
+                                            ? setDentalSelectTomography
+                                            : () => {}
+                                    }
+                                    selected={dentalSelectTomography}
+                                />
+                            </div>
+                            <div className="grid grid-cols-5 gap-4">
+                                <div className="col-span-3 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Tomografía volumétrica 3D
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {optionsData.volumetricTomography.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelected3DVolumetricTomography(
+                                                        key={index}
+                                                        className={`col ${
+                                                            optionsData
+                                                                .volumetricTomography
+                                                                .length -
+                                                                1 ===
+                                                                index &&
+                                                            "col-span-2"
+                                                        } flex space-x-2 items-center`}
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelected3DVolumetricTomography(
+                                                                            selected3DVolumetricTomography.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selected3DVolumetricTomography.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selected3DVolumetricTomography,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selected3DVolumetricTomography.includes(
                                                                         option,
                                                                     )
-                                                                        ? selected3DVolumetricTomography.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selected3DVolumetricTomography,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selected3DVolumetricTomography.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selected3DVolumetricTomography.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark
-                                                                color="black"
-                                                                // className="text-xl"
-                                                            />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selected3DVolumetricTomography.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark
+                                                                        color="black"
+                                                                        // className="text-xl"
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="">
+                                                            <span className="text-white">
+                                                                {option}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="">
-                                                    <span className="text-white">
-                                                        {option}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        );
-                                    },
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Forma de entrega adicional
-                            </h3>
-                            <div className="grid grid-cols-1 gap-4">
-                                {optionsData.additionalDeliveryMethod.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Forma de entrega adicional
+                                    </h3>
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {optionsData.additionalDeliveryMethod.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedAdditionalDeliveryMethod(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedAdditionalDeliveryMethod(
+                                                                            selectedAdditionalDeliveryMethod.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedAdditionalDeliveryMethod.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedAdditionalDeliveryMethod,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedAdditionalDeliveryMethod.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedAdditionalDeliveryMethod.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedAdditionalDeliveryMethod,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedAdditionalDeliveryMethod.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedAdditionalDeliveryMethod.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedAdditionalDeliveryMethod.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
-            {formStep === 3 && (
-                <div className="flex flex-col mx-20">
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Diagnóstico
-                            </h3>
-                            <div className="grid grid-cols-4 gap-4">
-                                {optionsData.diagnosis.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
+                    )}
+                    {formStep === 3 && (
+                        <div className="flex flex-col mx-20">
+                            <div className="grid grid-cols-1 gap-4">
+                                <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Diagnóstico
+                                    </h3>
+                                    <div className="grid grid-cols-4 gap-4">
+                                        {optionsData.diagnosis.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedDiagnosis(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedDiagnosis(
+                                                                            selectedDiagnosis.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedDiagnosis.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedDiagnosis,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedDiagnosis.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedDiagnosis.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedDiagnosis,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedDiagnosis.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedDiagnosis.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedDiagnosis.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-start">
+                                                            <span className="text-white">
+                                                                {option}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="flex items-start">
-                                                    <span className="text-white">
-                                                        {option}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        );
-                                    },
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Modelos
-                            </h3>
-                            <div className="grid grid-cols-4 gap-4">
-                                {optionsData.models.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Modelos
+                                    </h3>
+                                    <div className="grid grid-cols-4 gap-4">
+                                        {optionsData.models.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedModels(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedModels(
+                                                                            selectedModels.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedModels.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedModels,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedModels.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedModels.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedModels,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedModels.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedModels.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedModels.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
-            {formStep === 4 && (
-                <div className="flex flex-col mx-20">
-                    <div className="grid grid-cols-4 gap-4">
-                        <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Intra Orales
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                {optionsData.intraOralClinicalPhotography.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`col ${
-                                                    optionsData
-                                                        .intraOralClinicalPhotography
-                                                        .length -
-                                                        1 ===
-                                                        index && "col-span-2"
-                                                } flex space-x-2 items-center`}
-                                            >
-                                                <div className="">
+                    )}
+                    {formStep === 4 && (
+                        <div className="flex flex-col mx-20">
+                            <div className="grid grid-cols-4 gap-4">
+                                <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Intra Orales
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {optionsData.intraOralClinicalPhotography.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedIntraOralClinicalPhotography(
+                                                        key={index}
+                                                        className={`col ${
+                                                            optionsData
+                                                                .intraOralClinicalPhotography
+                                                                .length -
+                                                                1 ===
+                                                                index &&
+                                                            "col-span-2"
+                                                        } flex space-x-2 items-center`}
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedIntraOralClinicalPhotography(
+                                                                            selectedIntraOralClinicalPhotography.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedIntraOralClinicalPhotography.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedIntraOralClinicalPhotography,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedIntraOralClinicalPhotography.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedIntraOralClinicalPhotography.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedIntraOralClinicalPhotography,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedIntraOralClinicalPhotography.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedIntraOralClinicalPhotography.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedIntraOralClinicalPhotography.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Extra Orales
-                            </h3>
-                            <div className="grid grid-cols-3 gap-4">
-                                {optionsData.extraOralClinicalPhotography.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`col ${
-                                                    optionsData
-                                                        .extraOralClinicalPhotography
-                                                        .length -
-                                                        1 ===
-                                                        index && "col-span-2"
-                                                } flex space-x-2 items-center`}
-                                            >
-                                                <div className="">
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Extra Orales
+                                    </h3>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {optionsData.extraOralClinicalPhotography.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedExtraOralClinicalPhotography(
+                                                        key={index}
+                                                        className={`col ${
+                                                            optionsData
+                                                                .extraOralClinicalPhotography
+                                                                .length -
+                                                                1 ===
+                                                                index &&
+                                                            "col-span-2"
+                                                        } flex space-x-2 items-center`}
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedExtraOralClinicalPhotography(
+                                                                            selectedExtraOralClinicalPhotography.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedExtraOralClinicalPhotography.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedExtraOralClinicalPhotography,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedExtraOralClinicalPhotography.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedExtraOralClinicalPhotography.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedExtraOralClinicalPhotography,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedExtraOralClinicalPhotography.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedExtraOralClinicalPhotography.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedExtraOralClinicalPhotography.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Presentación
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                {optionsData.presentation.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Presentación
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {optionsData.presentation.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedPresentation(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedPresentation(
+                                                                            selectedPresentation.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedPresentation.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedPresentation,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedPresentation.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedPresentation.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedPresentation,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedPresentation.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedPresentation.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Fondo
-                            </h3>
-                            <div className="grid grid-cols-1 gap-4">
-                                {optionsData.background.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
-                                                    <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedBackground(
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedPresentation.includes(
                                                                     option,
-                                                                );
-                                                        }}
-                                                        className={`flex border border-white justify-center items-center rounded-full h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedBackground ===
-                                                            option
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedBackground ===
-                                                            option && (
-                                                            <FaCircle
-                                                                color="black"
-                                                                size={10}
-                                                            />
-                                                        )}
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Formas de entrega adicional
-                            </h3>
-                            <div className="grid grid-cols-1 gap-4">
-                                {optionsData.clinicalPhotographyDeliveryMethod.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-center"
-                                            >
-                                                <div className="">
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Fondo
+                                    </h3>
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {optionsData.background.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedClinicalPhotographyDeliveryMethod(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedBackground(
+                                                                            option,
+                                                                        );
+                                                                }}
+                                                                className={`flex border border-white justify-center items-center rounded-full h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
+                                                                    selectedBackground ===
+                                                                    option
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedBackground ===
+                                                                    option && (
+                                                                    <FaCircle
+                                                                        color="black"
+                                                                        size={
+                                                                            10
+                                                                        }
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Formas de entrega adicional
+                                    </h3>
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {optionsData.clinicalPhotographyDeliveryMethod.map(
+                                            (option: any, index: any) => {
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className="col flex space-x-2 items-center"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedClinicalPhotographyDeliveryMethod(
+                                                                            selectedClinicalPhotographyDeliveryMethod.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedClinicalPhotographyDeliveryMethod.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedClinicalPhotographyDeliveryMethod,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedClinicalPhotographyDeliveryMethod.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedClinicalPhotographyDeliveryMethod.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedClinicalPhotographyDeliveryMethod,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedClinicalPhotographyDeliveryMethod.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedClinicalPhotographyDeliveryMethod.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedClinicalPhotographyDeliveryMethod.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
-                                )}
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
-            {formStep === 5 && (
-                <div className="flex flex-col mx-20">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Paquete de diagnóstico
-                            </h3>
-                            <div className="grid grid-cols-4 gap-4">
-                                {optionsData.diagnosticPackage.map(
-                                    (option: any, index: any) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="col flex space-x-2 items-start"
-                                            >
-                                                <div className="">
+                    )}
+                    {formStep === 5 && (
+                        <div className="flex flex-col mx-20">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Paquete de diagnóstico
+                                    </h3>
+                                    <div className="grid grid-cols-4 gap-4">
+                                        {optionsData.diagnosticPackage.map(
+                                            (option: any, index: any) => {
+                                                return (
                                                     <div
-                                                        onClick={() => {
-                                                            !isEdit &&
-                                                                setSelectedDiagnosticPackage(
+                                                        key={index}
+                                                        className="col flex space-x-2 items-start"
+                                                    >
+                                                        <div className="">
+                                                            <div
+                                                                onClick={() => {
+                                                                    !isEdit &&
+                                                                        setSelectedDiagnosticPackage(
+                                                                            selectedDiagnosticPackage.includes(
+                                                                                option,
+                                                                            )
+                                                                                ? selectedDiagnosticPackage.filter(
+                                                                                      (
+                                                                                          item,
+                                                                                      ) =>
+                                                                                          item !==
+                                                                                          option,
+                                                                                  )
+                                                                                : [
+                                                                                      ...selectedDiagnosticPackage,
+                                                                                      option,
+                                                                                  ],
+                                                                        );
+                                                                }}
+                                                                className={`border border-white rounded-[4px] h-4 w-4 ${
+                                                                    !isEdit &&
+                                                                    "cursor-pointer"
+                                                                } ${
                                                                     selectedDiagnosticPackage.includes(
                                                                         option,
                                                                     )
-                                                                        ? selectedDiagnosticPackage.filter(
-                                                                              (
-                                                                                  item,
-                                                                              ) =>
-                                                                                  item !==
-                                                                                  option,
-                                                                          )
-                                                                        : [
-                                                                              ...selectedDiagnosticPackage,
-                                                                              option,
-                                                                          ],
-                                                                );
-                                                        }}
-                                                        className={`border border-white rounded-[4px] h-4 w-4 ${
-                                                            !isEdit &&
-                                                            "cursor-pointer"
-                                                        } ${
-                                                            selectedDiagnosticPackage.includes(
-                                                                option,
-                                                            )
-                                                                ? "bg-company-orange"
-                                                                : "bg-transparent"
-                                                        }`}
-                                                    >
-                                                        {selectedDiagnosticPackage.includes(
-                                                            option,
-                                                        ) && (
-                                                            <IoCheckmark color="black" />
-                                                        )}
+                                                                        ? "bg-company-orange"
+                                                                        : "bg-transparent"
+                                                                }`}
+                                                            >
+                                                                {selectedDiagnosticPackage.includes(
+                                                                    option,
+                                                                ) && (
+                                                                    <IoCheckmark color="black" />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-white">
+                                                            {option}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                                <span className="text-white">
-                                                    {option}
-                                                </span>
-                                            </div>
-                                        );
-                                    },
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </div>
+                                <div
+                                    className={`${
+                                        userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                            ? "col-span-1"
+                                            : "col-span-2"
+                                    } flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50`}
+                                >
+                                    <h3 className="text-company-orange text-xl font-bold">
+                                        Observaciones
+                                    </h3>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        <textarea
+                                            disabled={isEdit}
+                                            value={observationComment}
+                                            id="Observations"
+                                            name="observations"
+                                            rows={4}
+                                            cols={50}
+                                            className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                            placeholder="Escribe aquí tus observaciones..."
+                                            onChange={(e) =>
+                                                setObservationComment(
+                                                    e.target.value,
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                {userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk" && (
+                                    <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Impresión diagnostica
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <textarea
+                                                disabled={isEdit}
+                                                value={
+                                                    diagnosticImpressionComment
+                                                }
+                                                id="DiagnosticImpression"
+                                                name="diagnosticImpression"
+                                                rows={4}
+                                                cols={50}
+                                                className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                                placeholder="Escribe aquí tus observaciones..."
+                                                onChange={(e) =>
+                                                    setDiagnosticImpressionComment(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         </div>
-                        <div
-                            className={`${
-                                userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
-                                    ? "col-span-1"
-                                    : "col-span-2"
-                            } flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50`}
-                        >
-                            <h3 className="text-company-orange text-xl font-bold">
-                                Observaciones
-                            </h3>
-                            <div className="grid grid-cols-1 gap-2">
-                                <textarea
-                                    disabled={isEdit}
-                                    value={observationComment}
-                                    id="Observations"
-                                    name="observations"
-                                    rows={4}
-                                    cols={50}
-                                    className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
-                                    placeholder="Escribe aquí tus observaciones..."
-                                    onChange={(e) =>
-                                        setObservationComment(e.target.value)
-                                    }
-                                />
-                            </div>
-                        </div>
-                        {userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk" && (
-                            <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                                <h3 className="text-company-orange text-xl font-bold">
-                                    Impresión diagnostica
-                                </h3>
-                                <div className="grid grid-cols-1 gap-2">
-                                    <textarea
-                                        disabled={isEdit}
-                                        value={diagnosticImpressionComment}
-                                        id="DiagnosticImpression"
-                                        name="diagnosticImpression"
-                                        rows={4}
-                                        cols={50}
-                                        className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
-                                        placeholder="Escribe aquí tus observaciones..."
-                                        onChange={(e) =>
-                                            setDiagnosticImpressionComment(
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                    )}
+                </>
             )}
-            {/* {formStep === 6 && (
-                <div className="flex flex-col mx-20">
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className="flex flex-col space-y-4 rounded-xl p-[5%] bg-black bg-opacity-40">
-                            <div className="flex flex-col space-y-8 justify-center mx-32">
-                                <h2 className="text-company-orange font-bold text-4xl text-center">
-                                    CONSENTIMIENTO INFORMADO
-                                </h2>
-                                <div className="px-[20%] pb-5">
-                                    <p className="text-white text-justify font-bold">
-                                        Autorizo a Rx Country a realizar ayudas
-                                        diagnósticas según orden de servicio,
-                                        después de haber leído el documento
-                                        titulado. Consentimiento informado
-                                    </p>
-                                </div>
-                                <div className="mt-10 space-y-8 text-white">
-                                    <h5>FIRMA:</h5>
-                                    <p className="border-b-2"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )} */}
+
             {formStep === 6 && (
                 <div className="flex flex-col px-20 py-10 relative">
                     <div className="grid grid-cols-2 gap-4">
@@ -1504,13 +1913,16 @@ function StepByStep({
                             </p>
                             {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
                                 <div className="pr-10 space-y-4 pb-10">
-                                    <label className="text-company-orange">
-                                        Enviar a:
+                                    <label className="text-company-orange text-xl">
+                                        <span className="text-company-orange">
+                                            *
+                                        </span>
+                                        &nbsp; Enviar a:
                                     </label>
                                     <SelectComponent
                                         options={allAreas}
                                         selectChangeHandlerSentTo={(e) => {
-                                            selectChangeHandlerSentTo(e.value);
+                                            selectChangeHandlerSentTo(e?.value);
                                             setAreaSelected(e);
                                         }}
                                         optionSelected={areaSelected}
@@ -1519,41 +1931,42 @@ function StepByStep({
                             )}
                             <div className="grid grid-cols-1 xl:grid-cols-2">
                                 <button
+                                    type={areaSelected ? "button" : "submit"}
                                     onClick={(e) => {
-                                        handleSendForm(e).then(() => {
-                                            setFormStep(
-                                                (prevStep: number) =>
-                                                    prevStep + 1,
-                                            );
-                                        });
+                                        areaSelected && handleSendForm(e);
                                     }}
                                     className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
                                 >
                                     <span>Guardar y enviar</span>
                                 </button>
-                                <div
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setFormStep(8);
-                                    }}
-                                    className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white cursor-pointer"
+                                <Link
+                                    href="/dashboard/preview-order"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
                                 >
-                                    <IoEye
-                                        className="text-company-blue"
-                                        size={24}
-                                    />
-                                    <span>Previsualizar</span>
-                                </div>
+                                    <button
+                                        type="button"
+                                        className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white cursor-pointer"
+                                    >
+                                        <IoEye
+                                            className="text-company-blue"
+                                            size={24}
+                                        />
+                                        <span>Previsualizar</span>
+                                    </button>
+                                </Link>
                             </div>
                             <div className="flex flex-row pt-10 space-x-10">
                                 <div
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        setFormStep(
-                                            (prevStep: number) => prevStep - 1,
-                                        );
+                                        isEdit && formStep === 6
+                                            ? setFormStep(1)
+                                            : setFormStep(
+                                                  (prevStep: number) =>
+                                                      prevStep - 1,
+                                              );
                                     }}
                                     className="flex items-center cursor-pointer text-company-blue"
                                 >
@@ -1590,7 +2003,11 @@ function StepByStep({
                             <div className="flex flex-col pr-[40%] pb-[15%] pl-[10%] pt-[10%] space-y-8">
                                 <h2 className="text-company-orange font-bold text-4xl">
                                     {`La orden #${currentOrderId} ha sido enviada con éxito al área
-                                    encargada`}
+                                    encargada${
+                                        areaSelected
+                                            ? ": " + areaSelected.label + "."
+                                            : "."
+                                    }`}
                                 </h2>
                                 <button
                                     type="button"
@@ -1613,7 +2030,6 @@ function StepByStep({
                     </div>
                 </div>
             )}
-            {formStep === 8 && <PreviewOrder backToOrder={backToOrder} />}
         </div>
     );
 }

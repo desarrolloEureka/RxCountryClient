@@ -43,25 +43,28 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
             </Link>
 
             <>
-                <Link
-                    href={isActiveUser ? "/dashboard/new-order" : ""}
-                    onMouseEnter={() => setOrderIconColor("#E9A225")}
-                    onMouseLeave={() => setOrderIconColor("white")}
-                    className={`flex flex-col justify-center h-36 items-center space-y-2 ${
-                        selectedMenuItem === "create-order"
-                            ? "text-company-orange border-b-2 border-company-orange"
-                            : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
-                    }`}
-                >
-                    <OrderIcon
-                        color={
+                {(userRol.uid === "Ll6KGdzqdtmLLk0D5jhk" ||
+                    userRol.uid === "ZWb0Zs42lnKOjetXH5lq") && (
+                    <Link
+                        href={isActiveUser ? "/dashboard/new-order" : ""}
+                        onMouseEnter={() => setOrderIconColor("#E9A225")}
+                        onMouseLeave={() => setOrderIconColor("white")}
+                        className={`flex flex-col justify-center h-36 items-center space-y-2 ${
                             selectedMenuItem === "create-order"
-                                ? "#E9A225"
-                                : orderIconColor
-                        }
-                    />
-                    <span>Crear Nueva Orden</span>
-                </Link>
+                                ? "text-company-orange border-b-2 border-company-orange"
+                                : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
+                        }`}
+                    >
+                        <OrderIcon
+                            color={
+                                selectedMenuItem === "create-order"
+                                    ? "#E9A225"
+                                    : orderIconColor
+                            }
+                        />
+                        <span>Crear Nueva Orden</span>
+                    </Link>
+                )}
                 <Link
                     href={isActiveUser ? "/dashboard/orders-historial" : ""}
                     onMouseEnter={() => setOrderHistorialColor("#E9A225")}

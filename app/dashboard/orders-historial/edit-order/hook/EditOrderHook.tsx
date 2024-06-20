@@ -10,16 +10,18 @@ import {
     getAllPatients,
     getDocumentRef,
     saveOneDocumentFb,
-    updateDocumentsByIdFb,
+    updateDocumentsByIdFb
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 // import { EditedOrderStatusByRol } from "@/app/types/order";
+import { uploadFileImage } from "@/app/firebase/files";
+import { EditedOrderStatusByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
-import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 type Props = {
@@ -50,7 +52,7 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const router = useRouter();
 
-    const { campus } = userData;
+    const { campus, area, uid } = userData;
 
     const currentDate = moment().format();
 
@@ -75,7 +77,7 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [sentToArea, setSentToArea] = useState<string>("");
 
-    const [error, setError] = useState(false);
+    // const [error, setError] = useState(false);
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
 
@@ -85,15 +87,21 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [showSave, setShowSave] = useState<boolean>(false);
 
+    const [fileName, setFileName] = useState("SUBIR ARCHIVO");
+
+    const [files, setFiles] = useState<any[]>([]);
+
+    const [selectedDiagnosisTwo, setSelectedDiagnosisTwo] = useState<string[]>(
+        [],
+    );
+
+    const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
+
     const oldDataOrder = ordersData?.find((order: any) => order.uid === slug);
 
     const oldPatientData = allPatients?.find(
         (patient: DataPatientObject) => patient.uid === oldDataOrder.patientId,
     );
-
-    const changeHandler = (e: any) => {
-        setPatientData({ ...patientData, [e.target.name]: e.target.value });
-    };
 
     const areasByCampus = () => {
         const filteredIdAreas = allCampus?.find(
@@ -106,16 +114,9 @@ const EditOrderHook = ({ slug }: Props) => {
         return result;
     };
 
-    // const isNewPatientData = (): boolean => {
-    //     setShowSave(
-    //         (patientData &&
-    //             oldPatientData &&
-    //             !_.isEqual(patientData, oldPatientData)) ||
-    //             false,
-    //     );
-    //     return showSave;
-    // };
-
+    const changeHandler = (e: any) => {
+        setPatientData({ ...patientData, [e.target.name]: e.target.value });
+    };
     const selectChangeHandlerSentTo = (value: any) => {
         setSentToArea(value);
     };
@@ -139,13 +140,48 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const handleClose = () => {
         setPatientData(dataPatientObject);
-        setError(false);
+        // setError(false);
     };
 
-    // const editedOrderStatusByRol: EditedOrderStatusByRol = {
-    //     ZWb0Zs42lnKOjetXH5lq: "enviada",
-    //     Ll6KGdzqdtmLLk0D5jhk: "leída",
-    // };
+    const handleChecks = (
+        option: string,
+        selected: string[],
+        setSelected: (e: any) => void,
+    ) => {
+        if (selected?.includes(option)) {
+            let selectedList = selected.filter((item) => item !== option);
+            setSelected(selectedList);
+        } else {
+            setSelected([...selected, option]);
+        }
+    };
+
+    const handleFileChange = (e: any) => {
+        if (e.target.files.length > 0) {
+            setFileName(e.target.files[0].name);
+            setFiles([...e.target.files]);
+        } else {
+            setFileName("SUBIR ARCHIVO");
+            setFiles([]);
+        }
+    };
+
+    const editedOrderStatusByRol: EditedOrderStatusByRol = {
+        //Profesional
+        ZWb0Zs42lnKOjetXH5lq: "enviada",
+        //Recepción
+        Ll6KGdzqdtmLLk0D5jhk: "asignada",
+        //Modelos
+        g9xGywTJG7WSJ5o1bTsH: "asignada",
+        //Laboratorio
+        chbFffCzpRibjYRyoWIx: "asignada",
+        //Radiología
+        V5iMSnSlSYsiSDFs4UpI: "asignada",
+        //Escáner Digital
+        VEGkDuMXs2mCGxXUPCWI: "asignada",
+        //Despacho
+        "9RZ9uhaiwMC7VcTyIzhl": "asignada",
+    };
 
     const confirmAlert = () => {
         Swal.fire({
@@ -160,11 +196,25 @@ const EditOrderHook = ({ slug }: Props) => {
         });
     };
 
+    const confirmAlertTwo = () => {
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `Guardando...`,
+            showConfirmButton: false,
+            timer: 1500,
+            background: "#404040",
+            color: "#e9a225",
+        });
+    };
+
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
         e.stopPropagation();
         console.log("Editó");
-        await uploadHandle();
+        await uploadHandle().then(() => {
+            setFormStep((prevStep: number) => prevStep + 1);
+        });
         // handleClose();
     };
 
@@ -177,17 +227,24 @@ const EditOrderHook = ({ slug }: Props) => {
             oldDataOrder.uid,
         );
 
-        // console.log({
-        //     ...selectedOptions,
-        //     uid: documentEditOrderRef.id,
-        //     patientId: oldData.patientId,
-        //     status: editedOrderStatusByRol[userRol],
-        //     sendTo: oldData.sendTo || sentToArea,
-        //     isActive: true,
-        //     isDeleted: false,
-        //     modifiedBy: userRol,
-        //     assignedCampus: rol === "Funcionario" ? campus : "",
-        // });
+        const orderImagesUrl: string[] = [];
+
+        for (const record of files) {
+            const urlName = record.name.split(".")[0];
+            await uploadFileImage({
+                folder: oldDataOrder.patientId,
+                fileName: urlName.split(" ").join("_"),
+                file: record,
+                reference,
+            })
+                .then((res: string) => {
+                    orderImagesUrl.push(res);
+                })
+                .catch((err: any) => {
+                    console.log(err);
+                });
+        }
+
 
         await updateDocumentsByIdFb(
             oldPatientData.uid,
@@ -199,24 +256,62 @@ const EditOrderHook = ({ slug }: Props) => {
                 ...oldDataOrder,
                 uid: documentEditOrderRef.id,
                 patientId: oldDataOrder.patientId,
-                // status: editedOrderStatusByRol[userRol?.uid!],
-                status: oldDataOrder.status ? oldDataOrder.status : "enviada",
-                sendTo: sentToArea ? sentToArea : oldDataOrder.sendTo,
+                status: editedOrderStatusByRol[userRol?.uid!],
+                // status: oldDataOrder.status ? oldDataOrder.status : "enviada",
+                // sendTo: sentToArea ? sentToArea : oldDataOrder.sendTo,
+                sendTo: sentToArea
+                    ? sentToArea
+                    : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
+                      userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
+                    ? "0OaigBxmSmUa90dvawB1"
+                    : oldDataOrder.sendTo,
                 isActive: true,
                 isDeleted: false,
                 modifiedBy: {
                     userRolId: userRol?.uid,
                     userId: userData?.uid,
                 },
+                orderImagesUrl,
+                selectedSuppliers: selectedSuppliers ? selectedSuppliers : "",
+                selectedDiagnosis: selectedDiagnosisTwo
+                    ? selectedDiagnosisTwo
+                    : "",
                 assignedCampus: campus ? campus : "",
                 timestamp: oldDataOrder.timestamp,
-                updateLog: [
-                    {
-                        lastUserId: userData?.uid,
-                        lastUpdate: currentDate,
-                        lastComment: selectedOptions.observationComment,
-                    },
-                ],
+                updateLog: oldDataOrder.updateLog
+                    ? [
+                          ...oldDataOrder.updateLog,
+                          {
+                              lastUserId: userData?.uid,
+                              lastUpdate: currentDate,
+                              lastComment:
+                                  userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                                      ? selectedOptions.observationComment
+                                            .message
+                                      : selectedOptions[
+                                            userRol?.name
+                                                .substring(0, 3)
+                                                .toLocaleLowerCase() +
+                                                "ObservationComment"
+                                        ].message,
+                          },
+                      ]
+                    : [
+                          {
+                              lastUserId: userData?.uid,
+                              lastUpdate: currentDate,
+                              lastComment:
+                                  userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                                      ? selectedOptions.observationComment
+                                            .message
+                                      : selectedOptions[
+                                            userRol?.name
+                                                .substring(0, 3)
+                                                .toLocaleLowerCase() +
+                                                "ObservationComment"
+                                        ].message,
+                          },
+                      ],
             }).then((res) => {
                 setCurrentOrderId(parseInt(res.id));
                 setShowSave(false);
@@ -276,6 +371,8 @@ const EditOrderHook = ({ slug }: Props) => {
 
     return {
         router,
+        area,
+        uid,
         showSave,
         showHelp,
         allAreas: _.sortBy(areasByCampus(), "label"),
@@ -293,6 +390,10 @@ const EditOrderHook = ({ slug }: Props) => {
         patientData,
         titles,
         currentOrderId,
+        selectedDiagnosisTwo,
+        setSelectedDiagnosisTwo,
+        selectedSuppliers,
+        setSelectedSuppliers,
         changeHandler,
         selectChangeHandlerIdType,
         dateChangeHandler,
@@ -300,7 +401,9 @@ const EditOrderHook = ({ slug }: Props) => {
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
-        // isNewPatientData,
+        handleChecks,
+        fileName,
+        handleFileChange,
     };
 };
 
