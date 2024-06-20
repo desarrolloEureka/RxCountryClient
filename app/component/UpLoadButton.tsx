@@ -4,8 +4,8 @@ export default function InputFileUpload({
     fileName,
     handleFileChange,
 }: {
-    fileName: string;
-    handleFileChange: (e: any) => void;
+    fileName?: string;
+    handleFileChange?: (e: any) => void;
 }) {
     return (
         <div className="flex items-center justify-center">

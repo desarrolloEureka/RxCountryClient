@@ -12,6 +12,7 @@ import NewOrderHook from "./hook/NewOrderHook";
 const NewOrderPage = () => {
     const {
         showHelp,
+        uid,
         allAreas,
         setShowHelp,
         formStep,
@@ -80,6 +81,7 @@ const NewOrderPage = () => {
                     </div>
 
                     <StepByStep
+                        uid={uid}
                         formStep={formStep}
                         allAreas={allAreas}
                         wrapperRef={wrapperRef}
@@ -101,6 +103,11 @@ const NewOrderPage = () => {
                         idChangeHandler={idChangeHandler}
                         handleClose={handleClose}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
+                        handleChecks={() => {}}
+                        selectedDiagnosisTwo={[]}
+                        setSelectedDiagnosisTwo={() => {}}
+                        selectedSuppliers={[]}
+                        setSelectedSuppliers={() => {}}
                     />
 
                     {formStep < 6 && (
