@@ -394,7 +394,7 @@ const OrderHistorialPage = () => {
                                             >
                                                 <IoIosNotifications size={24} />
                                             </button>
-                                            {item.status === "enviada" && (
+                                            {userArea === item.sendTo && (
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();

@@ -46,6 +46,12 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         handleChecks,
         fileName,
         handleFileChange,
+        allDiagnoses,
+        allDiagnostician,
+        selectChangeHandlerDiagnoses,
+        selectChangeHandlerDiagnostician,
+        diagnoses,
+        diagnostician,
     } = EditOrderHook({ slug });
 
     return (
@@ -121,6 +127,14 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         handleChecks={handleChecks}
                         fileName={fileName}
                         handleFileChange={handleFileChange}
+                        allDiagnoses={allDiagnoses}
+                        allDiagnostician={allDiagnostician}
+                        selectChangeHandlerDiagnoses={
+                            selectChangeHandlerDiagnoses
+                        }
+                        selectChangeHandlerDiagnostician={
+                            selectChangeHandlerDiagnostician
+                        }
                     />
 
                     {formStep < 6 && (

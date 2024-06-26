@@ -29,6 +29,8 @@ import DentalSelect from "./orders/dental-select";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
 import DoctorVector from "./vectors/DoctorVector";
+import { DiagnosesSelector } from "../types/diagnoses";
+import { DiagnosticianSelector } from "../types/diagnostician";
 
 interface Props {
     uid?: string;
@@ -67,6 +69,10 @@ interface Props {
     setSelectedSuppliers: (e: any) => void;
     fileName?: string;
     handleFileChange?: (e: any) => void;
+    allDiagnoses?: DiagnosesSelector[];
+    allDiagnostician?: DiagnosticianSelector[];
+    selectChangeHandlerDiagnoses: (value: any) => void;
+    selectChangeHandlerDiagnostician: (value: any) => void;
 }
 
 function StepByStep({
@@ -100,6 +106,10 @@ function StepByStep({
     setSelectedSuppliers,
     fileName,
     handleFileChange,
+    allDiagnoses,
+    allDiagnostician,
+    selectChangeHandlerDiagnoses,
+    selectChangeHandlerDiagnostician,
 }: Props) {
     const router = useRouter();
 
@@ -111,6 +121,9 @@ function StepByStep({
     const [professionalSpecialty, setProfessionalSpecialty] = useState("");
     const [professionalEmail, setProfessionalEmail] = useState("");
     const [areaSelected, setAreaSelected] = useState<any>(null);
+    const [diagnosesSelected, setDiagnosesSelected] = useState<any>(null);
+    const [diagnosticianSelected, setDiagnosticianSelected] =
+        useState<any>(null);
 
     const [lastStep, setLastStep] = useState<number>(0);
 
@@ -679,22 +692,22 @@ function StepByStep({
                         <>
                             {/* Visualizar PDF */}
                             <div className="mx-28 mb-16 mt-5">
-                                <Link
-                                    href="/dashboard/preview-order"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
+                                <button
+                                    type="button"
+                                    className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                                 >
-                                    <button
-                                        type="button"
-                                        className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                                    <IoEye
+                                        className="text-company-blue"
+                                        size={24}
+                                    />
+                                    <Link
+                                        href="/dashboard/preview-order"
+                                        rel="noopener noreferrer"
+                                        target="_blank"
                                     >
-                                        <IoEye
-                                            className="text-company-blue"
-                                            size={24}
-                                        />
                                         <span>Previsualizar PDF</span>
-                                    </button>
-                                </Link>
+                                    </Link>
+                                </button>
                             </div>
 
                             {/* Recepción  y Despacho*/}
@@ -730,10 +743,22 @@ function StepByStep({
                                 <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
                                     <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
                                         <h3 className="text-company-orange text-xl font-bold">
-                                            Diagnóstico
+                                            Diagnósticos
                                         </h3>
                                         <div className="grid grid-cols-3 gap-4">
-                                            {diagnosisMachineTwo.map(
+                                            <SelectComponent
+                                                options={allDiagnoses}
+                                                selectChangeHandler={(e) => {
+                                                    selectChangeHandlerDiagnoses(
+                                                        e?.value,
+                                                    );
+                                                    setDiagnosesSelected(e);
+                                                }}
+                                                optionSelected={
+                                                    diagnosesSelected
+                                                }
+                                            />
+                                            {/* {diagnosisMachineTwo.map(
                                                 (option, index) => {
                                                     return (
                                                         <div
@@ -768,15 +793,27 @@ function StepByStep({
                                                         </div>
                                                     );
                                                 },
-                                            )}
+                                            )} */}
                                         </div>
                                     </div>
                                     <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
                                         <h3 className="text-company-orange text-xl font-bold">
-                                            Proveedores
+                                            Diagnosticadores
                                         </h3>
                                         <div className="grid grid-cols-3 gap-4">
-                                            {suppliers.map((option, index) => {
+                                            <SelectComponent
+                                                options={allDiagnostician}
+                                                selectChangeHandler={(e) => {
+                                                    selectChangeHandlerDiagnostician(
+                                                        e?.value,
+                                                    );
+                                                    setDiagnosticianSelected(e);
+                                                }}
+                                                optionSelected={
+                                                    diagnosticianSelected
+                                                }
+                                            />
+                                            {/* {suppliers.map((option, index) => {
                                                 return (
                                                     <div
                                                         key={index}
@@ -809,7 +846,7 @@ function StepByStep({
                                                         </span>
                                                     </div>
                                                 );
-                                            })}
+                                            })} */}
                                         </div>
                                     </div>
                                     <div className="col-span-2 flex flex-auto pb-5">
@@ -819,9 +856,7 @@ function StepByStep({
                                             </label>
                                             <SelectComponent
                                                 options={allAreas}
-                                                selectChangeHandlerSentTo={(
-                                                    e,
-                                                ) => {
+                                                selectChangeHandler={(e) => {
                                                     selectChangeHandlerSentTo(
                                                         e?.value,
                                                     );
@@ -889,13 +924,25 @@ function StepByStep({
                                 <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
                                     <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
-                                            Diagnóstico
+                                            Diagnósticos
                                         </h1>
                                         <h2 className="text-company-orange">
                                             Proceso Completado
                                         </h2>
-                                        <div className="grid grid-cols-3 gap-4">
-                                            {diagnosisMachineTwo.map(
+                                        <div className="grid grid-cols-1 gap-4">
+                                            <SelectComponent
+                                                options={allDiagnoses}
+                                                selectChangeHandler={(e) => {
+                                                    selectChangeHandlerDiagnoses(
+                                                        e?.value,
+                                                    );
+                                                    setDiagnosesSelected(e);
+                                                }}
+                                                optionSelected={
+                                                    diagnosesSelected
+                                                }
+                                            />
+                                            {/* {diagnosisMachineTwo.map(
                                                 (option, index) => {
                                                     return (
                                                         <div
@@ -930,18 +977,30 @@ function StepByStep({
                                                         </div>
                                                     );
                                                 },
-                                            )}
+                                            )} */}
                                         </div>
                                     </div>
                                     <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
-                                        <h1 className="text-company-orange text-xl font-bold">
-                                            Proveedores
+                                        <h1 className="text-company-orange text-2xl font-bold">
+                                            Diagnosticadores
                                         </h1>
                                         <h2 className="text-company-orange">
                                             Proceso Completado
                                         </h2>
-                                        <div className="grid grid-cols-3 gap-4">
-                                            {suppliers.map((option, index) => {
+                                        <div className="grid grid-cols-1 gap-4">
+                                            <SelectComponent
+                                                options={allDiagnostician}
+                                                selectChangeHandler={(e) => {
+                                                    selectChangeHandlerDiagnostician(
+                                                        e?.value,
+                                                    );
+                                                    setDiagnosticianSelected(e);
+                                                }}
+                                                optionSelected={
+                                                    diagnosticianSelected
+                                                }
+                                            />
+                                            {/* {suppliers.map((option, index) => {
                                                 return (
                                                     <div
                                                         key={index}
@@ -974,7 +1033,7 @@ function StepByStep({
                                                         </span>
                                                     </div>
                                                 );
-                                            })}
+                                            })} */}
                                         </div>
                                     </div>
                                     <div className="col-span-2 flex flex-col pb-5 space-y-4 w-60">
@@ -1921,7 +1980,7 @@ function StepByStep({
                                     </label>
                                     <SelectComponent
                                         options={allAreas}
-                                        selectChangeHandlerSentTo={(e) => {
+                                        selectChangeHandler={(e) => {
                                             selectChangeHandlerSentTo(e?.value);
                                             setAreaSelected(e);
                                         }}
