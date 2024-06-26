@@ -1,42 +1,28 @@
 "use client";
 import useAuth from "@/app/firebase/auth";
 import {
-    arrayUnionFb,
     getAllFunctionaries,
     getAllOrders,
     getAllPatients,
     getAllProfessionals,
-    updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
-import { Order, OrdersByRol } from "@/app/types/order";
+import { Order, OrdersImagesByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import { DataProfessionalObject } from "@/app/types/professionals";
 import _ from "lodash";
 import moment from "moment";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
-const OrderHistorialHook = () => {
-    const { isActiveUser, userData, userRol } = useAuth();
-
-    const { campus, area } = userData;
-
-    const searchParams = useSearchParams();
-
-    const fromEdit = searchParams.get("to");
-
+const ImagesQueryHook = () => {
     const router = useRouter();
-
-    const currentDate = moment().format();
+    const { userData, userRol } = useAuth();
+    const { campus, area } = userData;
 
     const [showFilter, setShowFilter] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
-    const [showPdf, setShowPdf] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState("send");
     const [search, setSearch] = useState("");
-    const [orderId, setOrderId] = useState<any>();
-    // const [defaultOption, setDefaultOption] = useState<any>("uid");
-
     // filters
     const [orderMinorMajor, setOrderMinorMajor] = useState(false);
     const [nameAZ, setNameAZ] = useState(false);
@@ -58,10 +44,6 @@ const OrderHistorialHook = () => {
         endDate: null,
     });
 
-    // const backToOrder = () => {
-    //     setShowPdf(false);
-    // };
-
     const formatearFecha = (fechaISO: string): string => {
         return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
     };
@@ -79,103 +61,46 @@ const OrderHistorialHook = () => {
         return [];
     });
 
-    const ordersByRol: OrdersByRol = {
+    const ordersImagesByRol: OrdersImagesByRol = {
         //Profesional
-        ZWb0Zs42lnKOjetXH5lq: {
-            // received: allDataOrders?.filter(
-            //     (order: any) => order.status === "enviada",
-            // ),
-            send: allDataOrders?.filter(
-                (order: any) =>
-                    // order.modifiedBy.userRolId === userRol?.uid &&
-                    order.status === "enviada",
-            ),
-        },
+        ZWb0Zs42lnKOjetXH5lq: allDataOrders?.filter(
+            (order: any) =>
+                // order.modifiedBy.userRolId === userRol?.uid &&
+                order.status === "finalizada",
+        ),
+
         //Recepción
-        Ll6KGdzqdtmLLk0D5jhk: {
-            received: allDataOrders?.filter(
-                (order: any) => order.status === "enviada",
-            ),
-            send: allDataOrders?.filter(
-                (order: any) =>
-                    order.modifiedBy.userRolId === userRol?.uid &&
-                    order.assignedCampus === campus &&
-                    order.status === "asignada",
-            ),
-        },
+        Ll6KGdzqdtmLLk0D5jhk: allDataOrders?.filter(
+            (order: any) => order.status === "finalizada",
+        ),
+
         //Modelos
-        g9xGywTJG7WSJ5o1bTsH: {
-            received: allDataOrders?.filter(
-                (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
-            ),
-            send: allDataOrders?.filter(
-                (order: any) =>
-                    order.modifiedBy.userRolId === userRol?.uid &&
-                    // order.assignedCampus === campus &&
-                    // order.status === "asignada",
-                    order.sendTo !== area,
-            ),
-        },
+        g9xGywTJG7WSJ5o1bTsH: allDataOrders?.filter(
+            (order: any) => order.status === "finalizada",
+        ),
+
         //Laboratorio
-        chbFffCzpRibjYRyoWIx: {
-            received: allDataOrders?.filter(
-                (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
-            ),
-            send: allDataOrders?.filter(
-                (order: any) =>
-                    order.modifiedBy.userRolId === userRol?.uid &&
-                    // order.assignedCampus === campus &&
-                    // order.status === "asignada",
-                    order.sendTo !== area,
-            ),
-        },
+        chbFffCzpRibjYRyoWIx: allDataOrders?.filter(
+            (order: any) => order.status === "finalizada",
+        ),
+
         //Radiología
-        V5iMSnSlSYsiSDFs4UpI: {
-            received: allDataOrders?.filter(
-                (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
-            ),
-            send: allDataOrders?.filter(
-                (order: any) =>
-                    order.modifiedBy.userRolId === userRol?.uid &&
-                    // order.assignedCampus === campus &&
-                    // order.status === "asignada",
-                    order.sendTo !== area,
-            ),
-        },
+        V5iMSnSlSYsiSDFs4UpI: allDataOrders?.filter(
+            (order: any) => order.status === "finalizada",
+        ),
+
         //Escáner Digital
-        VEGkDuMXs2mCGxXUPCWI: {
-            received: allDataOrders?.filter(
-                (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
-            ),
-            send: allDataOrders?.filter(
-                (order: any) =>
-                    order.modifiedBy.userRolId === userRol?.uid &&
-                    // order.assignedCampus === campus &&
-                    // order.status === "asignada",
-                    order.sendTo !== area,
-            ),
-        },
+        VEGkDuMXs2mCGxXUPCWI: allDataOrders?.filter(
+            (order: any) => order.status === "finalizada",
+        ),
+
         //Despacho
-        ["9RZ9uhaiwMC7VcTyIzhl"]: {
-            received: allDataOrders?.filter(
-                (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
-            ),
-            send: allDataOrders?.filter(
-                (order: any) =>
-                    order.modifiedBy.userRolId === userRol?.uid &&
-                    // order.assignedCampus === campus &&
-                    // order.status === "asignada",
-                    order.sendTo !== area,
-            ),
-        },
+        ["9RZ9uhaiwMC7VcTyIzhl"]: allDataOrders?.filter(
+            (order: any) => order.status === "asignada",
+        ),
     };
 
-    const orderList = ordersByRol[userRol?.uid!]?.[selectedOrder];
+    const orderList = ordersImagesByRol[userRol?.uid!];
 
     let filteredOrders: any[] = orderList?.filter((order: any) => {
         const itemDate = moment(order.timestamp);
@@ -248,32 +173,8 @@ const OrderHistorialHook = () => {
         setSearch(value);
     };
 
-    const setStatusOpenOrder = async (uid: string) => {
-        const orderRef = "serviceOrders";
-        const modifiedBy = {
-            userRolId: userRol?.uid,
-            userId: userData?.uid,
-        };
-        console.log("si se modificó al abrir");
-        await updateDocumentsByIdFb(
-            uid,
-            {
-                modifiedBy,
-                assignedCampus: campus ? campus : "",
-                updateLog: arrayUnionFb({
-                    lastUserId: userData?.uid,
-                    lastUpdate: currentDate,
-                    lastComment: "La orden fue abierta",
-                }),
-                // timestamp,
-            },
-            orderRef,
-        );
-    };
-
     const getOrderStatus = (item: any) => {
         const isModifiedByUser = item.modifiedBy.userRolId === userRol?.uid;
-        const isEditingByUser = "";
         const isSentToUserArea = item.sendTo === area;
 
         if (!item.sendTo && userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
@@ -371,33 +272,15 @@ const OrderHistorialHook = () => {
         getProfessionals();
     }, [getOrders, getPatients, getFunctionary, getProfessionals]);
 
-    useEffect(() => {
-        if (
-            userRol?.uid &&
-            userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
-            !searchParams.has("to")
-        ) {
-            setSelectedOrder("received");
-        } else {
-            setSelectedOrder("send");
-        }
-    }, [userRol, searchParams, userData]);
-
-    useEffect(() => {
-        if (searchParams.has("to") && fromEdit === "send") {
-            setSelectedOrder(fromEdit);
-        }
-    }, [fromEdit, searchParams]);
-
     return {
-        userArea: area,
+        handleSearchInputChange,
+        handleValueChange,
+        value,
         router,
         showFilter,
         setShowFilter,
         showHelp,
         setShowHelp,
-        selectedOrder,
-        setSelectedOrder,
         userRol,
         orderMinorMajor,
         setOrderMinorMajor,
@@ -409,19 +292,8 @@ const OrderHistorialHook = () => {
         setDateMajorMinor,
         all,
         setAll,
-        allDataOrders,
-        ordersByRol,
-        formatearFecha,
-        handleSearchInputChange,
-        filteredOrders,
-        showPdf,
-        setShowPdf,
-        orderId,
-        setOrderId,
         downloadCSV,
-        value,
-        handleValueChange,
-        // backToOrder,
+        filteredOrders,
         handlePreviousPage,
         handleNextPage,
         currentPage,
@@ -429,10 +301,10 @@ const OrderHistorialHook = () => {
         setItemsPerPage,
         ordersData,
         setCurrentPage,
-        setStatusOpenOrder,
-        getOrderStatus,
+        formatearFecha,
         getLastUserData,
+        getOrderStatus,
     };
 };
 
-export default OrderHistorialHook;
+export default ImagesQueryHook;

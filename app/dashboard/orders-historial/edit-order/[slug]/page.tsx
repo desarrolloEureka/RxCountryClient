@@ -32,10 +32,6 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         patientData,
         titles,
         currentOrderId,
-        selectedDiagnosisTwo,
-        setSelectedDiagnosisTwo,
-        selectedSuppliers,
-        setSelectedSuppliers,
         changeHandler,
         selectChangeHandlerIdType,
         dateChangeHandler,
@@ -50,8 +46,6 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         allDiagnostician,
         selectChangeHandlerDiagnoses,
         selectChangeHandlerDiagnostician,
-        diagnoses,
-        diagnostician,
     } = EditOrderHook({ slug });
 
     return (
@@ -109,10 +103,6 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         setIsDataSelected={setIsDataSelected}
                         optionsData={optionsData}
                         data={patientData}
-                        selectedDiagnosisTwo={selectedDiagnosisTwo}
-                        setSelectedDiagnosisTwo={setSelectedDiagnosisTwo}
-                        selectedSuppliers={selectedSuppliers}
-                        setSelectedSuppliers={setSelectedSuppliers}
                         changeHandler={changeHandler}
                         selectChangeHandlerIdType={selectChangeHandlerIdType}
                         dateChangeHandler={dateChangeHandler}
