@@ -63,10 +63,6 @@ interface Props {
         selected: string[],
         setSelected: (e: any) => void,
     ) => void;
-    selectedDiagnosisTwo: string[];
-    setSelectedDiagnosisTwo: (e: any) => void;
-    selectedSuppliers: string[];
-    setSelectedSuppliers: (e: any) => void;
     fileName?: string;
     handleFileChange?: (e: any) => void;
     allDiagnoses?: DiagnosesSelector[];
@@ -100,10 +96,6 @@ function StepByStep({
     handleSendForm,
     selectChangeHandlerSentTo,
     handleInputChange,
-    selectedDiagnosisTwo,
-    setSelectedDiagnosisTwo,
-    selectedSuppliers,
-    setSelectedSuppliers,
     fileName,
     handleFileChange,
     allDiagnoses,
@@ -181,59 +173,56 @@ function StepByStep({
         string[]
     >([]);
 
-    const allDataSelected = useMemo(
-        () => [
-            {
-                professionalName,
-                professionalSpecialty,
-                professionalEmail,
-                dentalSelectBoneScan,
-                selectedIntraOrals,
-                selectedExtraOrals,
-                dentalSelectTomography,
-                selected3DVolumetricTomography,
-                selectedAdditionalDeliveryMethod,
-                selectedDiagnosis,
-                selectedModels,
-                selectedIntraOralClinicalPhotography,
-                selectedExtraOralClinicalPhotography,
-                selectedPresentation,
-                selectedBackground,
-                selectedClinicalPhotographyDeliveryMethod,
-                selectedDiagnosticPackage,
-                observationComment:
-                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
-                        ? observationComment
-                        : oldData?.observationComment
-                        ? oldData?.observationComment
-                        : "",
-                diagnosticImpressionComment,
-            },
-        ],
-        [
+    const allDataSelected = useMemo(() => {
+        return {
             professionalName,
             professionalSpecialty,
             professionalEmail,
             dentalSelectBoneScan,
+            selectedIntraOrals,
+            selectedExtraOrals,
             dentalSelectTomography,
-            diagnosticImpressionComment,
-            observationComment,
             selected3DVolumetricTomography,
             selectedAdditionalDeliveryMethod,
+            selectedDiagnosis,
+            selectedModels,
+            selectedIntraOralClinicalPhotography,
+            selectedExtraOralClinicalPhotography,
+            selectedPresentation,
             selectedBackground,
             selectedClinicalPhotographyDeliveryMethod,
-            selectedDiagnosis,
             selectedDiagnosticPackage,
-            selectedExtraOralClinicalPhotography,
-            selectedExtraOrals,
-            selectedIntraOralClinicalPhotography,
-            selectedIntraOrals,
-            selectedModels,
-            selectedPresentation,
-            userRol,
-            oldData,
-        ],
-    );
+            observationComment:
+                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                    ? observationComment
+                    : oldData?.observationComment
+                    ? oldData?.observationComment
+                    : "",
+            diagnosticImpressionComment,
+        };
+    }, [
+        professionalName,
+        professionalSpecialty,
+        professionalEmail,
+        dentalSelectBoneScan,
+        dentalSelectTomography,
+        diagnosticImpressionComment,
+        observationComment,
+        selected3DVolumetricTomography,
+        selectedAdditionalDeliveryMethod,
+        selectedBackground,
+        selectedClinicalPhotographyDeliveryMethod,
+        selectedDiagnosis,
+        selectedDiagnosticPackage,
+        selectedExtraOralClinicalPhotography,
+        selectedExtraOrals,
+        selectedIntraOralClinicalPhotography,
+        selectedIntraOrals,
+        selectedModels,
+        selectedPresentation,
+        userRol,
+        oldData,
+    ]);
 
     // const backToOrder = () => {
     //     lastStep !== 0 && setFormStep(lastStep);
@@ -243,7 +232,7 @@ function StepByStep({
     const valData = useCallback(async () => {
         const dataSelected: {
             [key: string]: string | number[] | string[] | any;
-        } = { ...allDataSelected[0] };
+        } = { ...allDataSelected };
 
         if (userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
             //crea propiedad según rol
