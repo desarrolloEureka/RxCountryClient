@@ -32,10 +32,6 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         patientData,
         titles,
         currentOrderId,
-        selectedDiagnosisTwo,
-        setSelectedDiagnosisTwo,
-        selectedSuppliers,
-        setSelectedSuppliers,
         changeHandler,
         selectChangeHandlerIdType,
         dateChangeHandler,
@@ -46,6 +42,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         handleChecks,
         fileName,
         handleFileChange,
+        allDiagnoses,
+        allDiagnostician,
+        selectChangeHandlerDiagnoses,
+        selectChangeHandlerDiagnostician,
     } = EditOrderHook({ slug });
 
     return (
@@ -103,10 +103,6 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         setIsDataSelected={setIsDataSelected}
                         optionsData={optionsData}
                         data={patientData}
-                        selectedDiagnosisTwo={selectedDiagnosisTwo}
-                        setSelectedDiagnosisTwo={setSelectedDiagnosisTwo}
-                        selectedSuppliers={selectedSuppliers}
-                        setSelectedSuppliers={setSelectedSuppliers}
                         changeHandler={changeHandler}
                         selectChangeHandlerIdType={selectChangeHandlerIdType}
                         dateChangeHandler={dateChangeHandler}
@@ -121,6 +117,14 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         handleChecks={handleChecks}
                         fileName={fileName}
                         handleFileChange={handleFileChange}
+                        allDiagnoses={allDiagnoses}
+                        allDiagnostician={allDiagnostician}
+                        selectChangeHandlerDiagnoses={
+                            selectChangeHandlerDiagnoses
+                        }
+                        selectChangeHandlerDiagnostician={
+                            selectChangeHandlerDiagnostician
+                        }
                     />
 
                     {formStep < 6 && (

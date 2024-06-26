@@ -9,6 +9,10 @@ export interface OrdersByRol {
     };
 }
 
+export interface OrdersImagesByRol {
+    [key: string]: [];
+}
+
 export interface EditedOrderStatusByRol {
     [key: string]: string | undefined;
 }
@@ -18,4 +22,8 @@ export interface PreviewOrderProps {
     // backToDetail?: () => void;
     // isEdit?: boolean;
     // orderId?: number;
+}
+
+export interface updateOrderProps {
+    [key: string]: any;
 }

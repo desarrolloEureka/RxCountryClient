@@ -3,13 +3,13 @@ import Select from "react-select";
 
 interface SelectComponentProps {
     options?: { value: string; label: string }[];
-    selectChangeHandlerSentTo?: (e: any) => void;
+    selectChangeHandler?: (e: any) => void;
     optionSelected: { value: string; label: string };
 }
 
 const SelectComponent = ({
     options,
-    selectChangeHandlerSentTo,
+    selectChangeHandler,
     optionSelected,
 }: SelectComponentProps) => (
     <Select
@@ -19,7 +19,7 @@ const SelectComponent = ({
         options={options}
         defaultValue={optionSelected}
         className="text-black"
-        onChange={selectChangeHandlerSentTo}
+        onChange={selectChangeHandler}
     />
 );
 

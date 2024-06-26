@@ -5,24 +5,29 @@ import useAuth from "@/app/firebase/auth";
 import {
     getAllAreasOptions,
     getAllCampusOptions,
+    getAllDiagnosesOptions,
+    getAllDiagnosticianOptions,
     getAllOptions,
     getAllOrders,
     getAllPatients,
     getDocumentRef,
     saveOneDocumentFb,
-    updateDocumentsByIdFb
+    updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 // import { EditedOrderStatusByRol } from "@/app/types/order";
 import { uploadFileImage } from "@/app/firebase/files";
-import { EditedOrderStatusByRol } from "@/app/types/order";
+import { EditedOrderStatusByRol, updateOrderProps } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
+import { DiagnosesSelector } from "@/app/types/diagnoses";
+import { DiagnosticianSelector } from "@/app/types/diagnostician";
+import useDebounce from "@/app/hook/useDebounce";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -77,9 +82,19 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [sentToArea, setSentToArea] = useState<string>("");
 
+    const [diagnoses, setDiagnoses] = useState<string>("");
+
+    const [diagnostician, setDiagnostician] = useState<string>("");
+
     // const [error, setError] = useState(false);
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
+
+    const [allDiagnoses, setAllDiagnoses] = useState<DiagnosesSelector[]>([]);
+
+    const [allDiagnostician, setAllDiagnostician] = useState<
+        DiagnosticianSelector[]
+    >([]);
 
     const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
 
@@ -103,6 +118,9 @@ const EditOrderHook = ({ slug }: Props) => {
         (patient: DataPatientObject) => patient.uid === oldDataOrder.patientId,
     );
 
+    const reference = "serviceOrders";
+    const patientRef = "patients";
+
     const areasByCampus = () => {
         const filteredIdAreas = allCampus?.find(
             (item) => item.value === campus,
@@ -117,8 +135,17 @@ const EditOrderHook = ({ slug }: Props) => {
     const changeHandler = (e: any) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
     };
+
     const selectChangeHandlerSentTo = (value: any) => {
         setSentToArea(value);
+    };
+
+    const selectChangeHandlerDiagnoses = (value: any) => {
+        setDiagnoses(value);
+    };
+
+    const selectChangeHandlerDiagnostician = (value: any) => {
+        setDiagnostician(value);
     };
 
     const selectChangeHandlerIdType = (e: any) => {
@@ -139,7 +166,7 @@ const EditOrderHook = ({ slug }: Props) => {
     };
 
     const handleClose = () => {
-        setPatientData(dataPatientObject);
+        // setPatientData(dataPatientObject);
         // setError(false);
     };
 
@@ -164,23 +191,6 @@ const EditOrderHook = ({ slug }: Props) => {
             setFileName("SUBIR ARCHIVO");
             setFiles([]);
         }
-    };
-
-    const editedOrderStatusByRol: EditedOrderStatusByRol = {
-        //Profesional
-        ZWb0Zs42lnKOjetXH5lq: "enviada",
-        //Recepción
-        Ll6KGdzqdtmLLk0D5jhk: "asignada",
-        //Modelos
-        g9xGywTJG7WSJ5o1bTsH: "asignada",
-        //Laboratorio
-        chbFffCzpRibjYRyoWIx: "asignada",
-        //Radiología
-        V5iMSnSlSYsiSDFs4UpI: "asignada",
-        //Escáner Digital
-        VEGkDuMXs2mCGxXUPCWI: "asignada",
-        //Despacho
-        "9RZ9uhaiwMC7VcTyIzhl": "asignada",
     };
 
     const confirmAlert = () => {
@@ -208,6 +218,162 @@ const EditOrderHook = ({ slug }: Props) => {
         });
     };
 
+    const newDataOrder = useMemo(() => {
+        const editedOrderStatusByRol: EditedOrderStatusByRol = {
+            //Profesional
+            ZWb0Zs42lnKOjetXH5lq: "enviada",
+            //Recepción
+            Ll6KGdzqdtmLLk0D5jhk: "asignada",
+            //Modelos
+            g9xGywTJG7WSJ5o1bTsH: "asignada",
+            //Laboratorio
+            chbFffCzpRibjYRyoWIx: "asignada",
+            //Radiología
+            V5iMSnSlSYsiSDFs4UpI: "asignada",
+            //Escáner Digitalasignada
+            VEGkDuMXs2mCGxXUPCWI: "asignada",
+            //Despacho
+            "9RZ9uhaiwMC7VcTyIzhl": "finalizada",
+        };
+
+        const orderImagesUrl: string[] = [];
+        if (files) {
+            for (const record of files) {
+                const urlName = record.name.split(".")[0];
+                uploadFileImage({
+                    folder: oldDataOrder.patientId,
+                    fileName: urlName.split(" ").join("_"),
+                    file: record,
+                    reference,
+                })
+                    .then((res: string) => {
+                        orderImagesUrl.push(res);
+                    })
+                    .catch((err: any) => {
+                        console.log(err);
+                    });
+            }
+        }
+
+        return {
+            ...selectedOptions,
+            ...oldDataOrder,
+            uid: oldDataOrder?.uid,
+            patientId: oldDataOrder?.patientId,
+            status: editedOrderStatusByRol[userRol?.uid!],
+            // status: oldDataOrder.status ? oldDataOrder.status : "enviada",
+            // sendTo: sentToArea ? sentToArea : oldDataOrder.sendTo,
+            assignedCampus: campus ? campus : "",
+            timestamp: oldDataOrder?.timestamp,
+            sendTo: sentToArea
+                ? sentToArea
+                : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
+                  userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
+                ? "0OaigBxmSmUa90dvawB1"
+                : oldDataOrder?.sendTo,
+            isActive: true,
+            isDeleted: false,
+            modifiedBy: {
+                userRolId: userRol?.uid,
+                userId: userData?.uid,
+            },
+            orderImagesUrl: orderImagesUrl
+                ? orderImagesUrl
+                : oldDataOrder?.orderImagesUrl
+                ? oldDataOrder?.orderImagesUrl
+                : [],
+            diagnoses: diagnoses
+                ? diagnoses
+                : oldDataOrder?.diagnoses
+                ? oldDataOrder?.diagnoses
+                : "",
+            diagnostician: diagnostician
+                ? diagnostician
+                : oldDataOrder?.diagnostician
+                ? oldDataOrder?.diagnostician
+                : "",
+            updateLog: oldDataOrder?.updateLog
+                ? [
+                      ...oldDataOrder?.updateLog,
+                      {
+                          lastUserId: userData?.uid,
+                          lastUpdate: currentDate,
+                          lastComment:
+                              userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                                  ? selectedOptions?.observationComment?.message
+                                  : selectedOptions?.[
+                                        userRol?.name
+                                            .substring(0, 3)
+                                            .toLocaleLowerCase() +
+                                            "ObservationComment"
+                                    ]?.message,
+                      },
+                  ]
+                : [
+                      {
+                          lastUserId: userData?.uid,
+                          lastUpdate: currentDate,
+                          lastComment:
+                              userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                                  ? selectedOptions?.observationComment?.message
+                                  : selectedOptions?.[
+                                        userRol?.name
+                                            .substring(0, 3)
+                                            .toLocaleLowerCase() +
+                                            "ObservationComment"
+                                    ]?.message,
+                      },
+                  ],
+        };
+    }, [
+        campus,
+        currentDate,
+        diagnoses,
+        diagnostician,
+        files,
+        oldDataOrder,
+        selectedOptions,
+        sentToArea,
+        userData?.uid,
+        userRol?.name,
+        userRol?.uid,
+    ]);
+
+    /**
+     * Returns an array of property names that are unique to each object.
+     * @param obj1 The first object.
+     * @param obj2 The second object.
+     * @returns An object with properties that are unique for each object.
+     */
+    const updateOrder = ({ obj1, obj2 }: updateOrderProps) => {
+        // Get the union of keys from both objects
+        const keys = _.union(Object.keys(obj1), Object.keys(obj2));
+
+        // Find keys where the values are different
+        const changedKeys = keys.filter(
+            (key) => !_.isEqual(obj1[key], obj2[key]),
+        );
+
+        // Create an object with unique keys which will be saved
+        const objectOmittedProp = _.pick(obj2, changedKeys);
+
+        //Verify that the property has data
+        const objectOmittedPropIsEmpty = _.omitBy(objectOmittedProp, _.isEmpty);
+
+        //Ignores the property and returns the object
+        return _.omit(objectOmittedPropIsEmpty, "status");
+    };
+
+    const updateOrderData = useDebounce({
+        callback: async ({ obj1, obj2 }) => {
+            const orderRef = "serviceOrders";
+            const dataUpdated = updateOrder({ obj1, obj2 });
+            // console.log(dataUpdated);
+            // await updateDocumentsByIdF(obj2?.uid, dataUpdated, orderRef);
+        },
+        wait: 600,
+    });
+
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
         e.stopPropagation();
@@ -219,104 +385,23 @@ const EditOrderHook = ({ slug }: Props) => {
     };
 
     const uploadHandle = async () => {
-        const reference = "serviceOrders";
-        const patientRef = "patients";
-
         const documentEditOrderRef: any = getDocumentRef(
             reference,
             oldDataOrder.uid,
         );
-
-        const orderImagesUrl: string[] = [];
-
-        for (const record of files) {
-            const urlName = record.name.split(".")[0];
-            await uploadFileImage({
-                folder: oldDataOrder.patientId,
-                fileName: urlName.split(" ").join("_"),
-                file: record,
-                reference,
-            })
-                .then((res: string) => {
-                    orderImagesUrl.push(res);
-                })
-                .catch((err: any) => {
-                    console.log(err);
-                });
-        }
-
 
         await updateDocumentsByIdFb(
             oldPatientData.uid,
             patientData,
             patientRef,
         ).then(async () => {
-            await saveOneDocumentFb(documentEditOrderRef, {
-                ...selectedOptions,
-                ...oldDataOrder,
-                uid: documentEditOrderRef.id,
-                patientId: oldDataOrder.patientId,
-                status: editedOrderStatusByRol[userRol?.uid!],
-                // status: oldDataOrder.status ? oldDataOrder.status : "enviada",
-                // sendTo: sentToArea ? sentToArea : oldDataOrder.sendTo,
-                sendTo: sentToArea
-                    ? sentToArea
-                    : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
-                      userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
-                    ? "0OaigBxmSmUa90dvawB1"
-                    : oldDataOrder.sendTo,
-                isActive: true,
-                isDeleted: false,
-                modifiedBy: {
-                    userRolId: userRol?.uid,
-                    userId: userData?.uid,
+            await saveOneDocumentFb(documentEditOrderRef, newDataOrder).then(
+                (res) => {
+                    setCurrentOrderId(parseInt(res.id));
+                    setShowSave(false);
+                    confirmAlert();
                 },
-                orderImagesUrl,
-                selectedSuppliers: selectedSuppliers ? selectedSuppliers : "",
-                selectedDiagnosis: selectedDiagnosisTwo
-                    ? selectedDiagnosisTwo
-                    : "",
-                assignedCampus: campus ? campus : "",
-                timestamp: oldDataOrder.timestamp,
-                updateLog: oldDataOrder.updateLog
-                    ? [
-                          ...oldDataOrder.updateLog,
-                          {
-                              lastUserId: userData?.uid,
-                              lastUpdate: currentDate,
-                              lastComment:
-                                  userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
-                                      ? selectedOptions.observationComment
-                                            .message
-                                      : selectedOptions[
-                                            userRol?.name
-                                                .substring(0, 3)
-                                                .toLocaleLowerCase() +
-                                                "ObservationComment"
-                                        ].message,
-                          },
-                      ]
-                    : [
-                          {
-                              lastUserId: userData?.uid,
-                              lastUpdate: currentDate,
-                              lastComment:
-                                  userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
-                                      ? selectedOptions.observationComment
-                                            .message
-                                      : selectedOptions[
-                                            userRol?.name
-                                                .substring(0, 3)
-                                                .toLocaleLowerCase() +
-                                                "ObservationComment"
-                                        ].message,
-                          },
-                      ],
-            }).then((res) => {
-                setCurrentOrderId(parseInt(res.id));
-                setShowSave(false);
-                confirmAlert();
-            });
+            );
         });
     };
 
@@ -333,6 +418,16 @@ const EditOrderHook = ({ slug }: Props) => {
     const getAreas = useCallback(async () => {
         const allAreasData = await getAllAreasOptions();
         allAreasData && setAllAreas(allAreasData);
+    }, []);
+
+    const getDiagnoses = useCallback(async () => {
+        const allDiagnosesData = await getAllDiagnosesOptions();
+        allDiagnosesData && setAllDiagnoses(allDiagnosesData);
+    }, []);
+
+    const getDiagnostician = useCallback(async () => {
+        const allDiagnosticianData = await getAllDiagnosticianOptions();
+        allDiagnosticianData && setAllDiagnostician(allDiagnosticianData);
     }, []);
 
     const getCampus = useCallback(async () => {
@@ -357,7 +452,17 @@ const EditOrderHook = ({ slug }: Props) => {
         getAreas();
         getCampus();
         getPatients();
-    }, [getOptions, getOrders, getAreas, getCampus, getPatients]);
+        getDiagnoses();
+        getDiagnostician();
+    }, [
+        getOptions,
+        getOrders,
+        getAreas,
+        getCampus,
+        getPatients,
+        getDiagnoses,
+        getDiagnostician,
+    ]);
 
     useEffect(() => {
         if (isEdit && oldPatientData) {
@@ -368,6 +473,21 @@ const EditOrderHook = ({ slug }: Props) => {
     useEffect(() => {
         saveNewPatientData();
     }, [saveNewPatientData]);
+
+    useEffect(() => {
+        if (
+            oldDataOrder?.sendTo === area &&
+            newDataOrder &&
+            oldDataOrder &&
+            !_.isEqual(oldDataOrder, newDataOrder)
+        ) {
+            updateOrderData({
+                obj1: oldDataOrder,
+                obj2: newDataOrder,
+            });
+            // console.log("entree", oldDataOrder, newDataOrder);
+        }
+    }, [area, newDataOrder, oldDataOrder, updateOrderData]);
 
     return {
         router,
@@ -404,6 +524,10 @@ const EditOrderHook = ({ slug }: Props) => {
         handleChecks,
         fileName,
         handleFileChange,
+        allDiagnoses,
+        allDiagnostician,
+        selectChangeHandlerDiagnoses,
+        selectChangeHandlerDiagnostician,
     };
 };
 

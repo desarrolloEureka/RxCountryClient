@@ -104,10 +104,8 @@ const NewOrderPage = () => {
                         handleClose={handleClose}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
                         handleChecks={() => {}}
-                        selectedDiagnosisTwo={[]}
-                        setSelectedDiagnosisTwo={() => {}}
-                        selectedSuppliers={[]}
-                        setSelectedSuppliers={() => {}}
+                        selectChangeHandlerDiagnoses={() => {}}
+                        selectChangeHandlerDiagnostician={() => {}}
                     />
 
                     {formStep < 6 && (
