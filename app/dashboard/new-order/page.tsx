@@ -108,6 +108,8 @@ const NewOrderPage = () => {
                         setSelectedDiagnosisTwo={() => {}}
                         selectedSuppliers={[]}
                         setSelectedSuppliers={() => {}}
+                        selectChangeHandlerDiagnoses={() => {}}
+                        selectChangeHandlerDiagnostician={() => {}}
                     />
 
                     {formStep < 6 && (

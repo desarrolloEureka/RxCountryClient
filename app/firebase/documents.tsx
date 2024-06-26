@@ -11,6 +11,8 @@ import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 import moment from "moment";
 import { AreasBd, AreasSelector } from "../types/areas";
 import { CampusBd, CampusSelector } from "../types/campus";
+import { DiagnosesSelector, DiagnosesBd } from "../types/diagnoses";
+import { DiagnosticianBd, DiagnosticianSelector } from "../types/diagnostician";
 
 const currentDate = moment().format();
 
@@ -57,6 +59,38 @@ export const getAllAreasOptions = async () => {
                 value: data.uid,
                 label: data.name,
                 campus: data.availableCampus,
+            };
+            dataResult.push(dataSelector);
+        });
+    }
+    return dataResult;
+};
+
+export const getAllDiagnosesOptions = async () => {
+    const dataResult: DiagnosesSelector[] = [];
+    const querySnapshot = await getDocs(allRef({ ref: "diagnoses" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data() as DiagnosesBd;
+            const dataSelector = {
+                value: data.uid,
+                label: data.name,
+            };
+            dataResult.push(dataSelector);
+        });
+    }
+    return dataResult;
+};
+
+export const getAllDiagnosticianOptions = async () => {
+    const dataResult: DiagnosticianSelector[] = [];
+    const querySnapshot = await getDocs(allRef({ ref: "diagnostician" }));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc: any) => {
+            const data = doc.data() as DiagnosticianBd;
+            const dataSelector = {
+                value: data.uid,
+                label: data.name,
             };
             dataResult.push(dataSelector);
         });

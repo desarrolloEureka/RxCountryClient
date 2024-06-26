@@ -5,12 +5,14 @@ import useAuth from "@/app/firebase/auth";
 import {
     getAllAreasOptions,
     getAllCampusOptions,
+    getAllDiagnosesOptions,
+    getAllDiagnosticianOptions,
     getAllOptions,
     getAllOrders,
     getAllPatients,
     getDocumentRef,
     saveOneDocumentFb,
-    updateDocumentsByIdFb
+    updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
@@ -23,6 +25,8 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { DiagnosesSelector } from "@/app/types/diagnoses";
+import { DiagnosticianSelector } from "@/app/types/diagnostician";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -77,9 +81,19 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [sentToArea, setSentToArea] = useState<string>("");
 
+    const [diagnoses, setDiagnoses] = useState<string>("");
+
+    const [diagnostician, setDiagnostician] = useState<string>("");
+
     // const [error, setError] = useState(false);
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
+
+    const [allDiagnoses, setAllDiagnoses] = useState<DiagnosesSelector[]>([]);
+
+    const [allDiagnostician, setAllDiagnostician] = useState<
+        DiagnosticianSelector[]
+    >([]);
 
     const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
 
@@ -117,8 +131,17 @@ const EditOrderHook = ({ slug }: Props) => {
     const changeHandler = (e: any) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
     };
+
     const selectChangeHandlerSentTo = (value: any) => {
         setSentToArea(value);
+    };
+
+    const selectChangeHandlerDiagnoses = (value: any) => {
+        setDiagnoses(value);
+    };
+
+    const selectChangeHandlerDiagnostician = (value: any) => {
+        setDiagnostician(value);
     };
 
     const selectChangeHandlerIdType = (e: any) => {
@@ -139,7 +162,7 @@ const EditOrderHook = ({ slug }: Props) => {
     };
 
     const handleClose = () => {
-        setPatientData(dataPatientObject);
+        // setPatientData(dataPatientObject);
         // setError(false);
     };
 
@@ -245,7 +268,6 @@ const EditOrderHook = ({ slug }: Props) => {
                 });
         }
 
-
         await updateDocumentsByIdFb(
             oldPatientData.uid,
             patientData,
@@ -272,6 +294,8 @@ const EditOrderHook = ({ slug }: Props) => {
                     userId: userData?.uid,
                 },
                 orderImagesUrl,
+                diagnoses: diagnoses ? diagnoses : "",
+                diagnostician: diagnostician ? diagnostician : "",
                 selectedSuppliers: selectedSuppliers ? selectedSuppliers : "",
                 selectedDiagnosis: selectedDiagnosisTwo
                     ? selectedDiagnosisTwo
@@ -335,6 +359,16 @@ const EditOrderHook = ({ slug }: Props) => {
         allAreasData && setAllAreas(allAreasData);
     }, []);
 
+    const getDiagnoses = useCallback(async () => {
+        const allDiagnosesData = await getAllDiagnosesOptions();
+        allDiagnosesData && setAllDiagnoses(allDiagnosesData);
+    }, []);
+
+    const getDiagnostician = useCallback(async () => {
+        const allDiagnosticianData = await getAllDiagnosticianOptions();
+        allDiagnosticianData && setAllDiagnostician(allDiagnosticianData);
+    }, []);
+
     const getCampus = useCallback(async () => {
         const allCampusData = await getAllCampusOptions();
         allCampusData && setAllCampus(allCampusData);
@@ -357,7 +391,17 @@ const EditOrderHook = ({ slug }: Props) => {
         getAreas();
         getCampus();
         getPatients();
-    }, [getOptions, getOrders, getAreas, getCampus, getPatients]);
+        getDiagnoses();
+        getDiagnostician();
+    }, [
+        getOptions,
+        getOrders,
+        getAreas,
+        getCampus,
+        getPatients,
+        getDiagnoses,
+        getDiagnostician,
+    ]);
 
     useEffect(() => {
         if (isEdit && oldPatientData) {
@@ -404,6 +448,12 @@ const EditOrderHook = ({ slug }: Props) => {
         handleChecks,
         fileName,
         handleFileChange,
+        allDiagnoses,
+        allDiagnostician,
+        selectChangeHandlerDiagnoses,
+        selectChangeHandlerDiagnostician,
+        diagnoses,
+        diagnostician,
     };
 };
 

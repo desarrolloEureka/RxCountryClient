@@ -1,26 +1,13 @@
 "use client";
 import Link from "next/link";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import {
     IoArrowBackCircleOutline,
-    IoCheckmark,
-    IoCloseSharp,
-    IoEye,
+    IoEye
 } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 // import PreviewOrderPage from "../dashboard/preview-order/page";
-import { useRouter } from "next/navigation";
-import { AreasSelector } from "../types/areas";
 import { RolesBd } from "../types/roles";
-import PreviewOrder from "./PreviewOrder";
-import SelectComponent from "./SelectComponent";
-import InputFileUpload from "./UpLoadButton";
-import {
-    diagnosisMachineTwo,
-    suppliers,
-} from "./constants/stepByStepConstants";
 import Spinner from "./spinner/Spinner";
-import DoctorVector from "./vectors/DoctorVector";
 
 interface Props {
     userRol?: RolesBd;
