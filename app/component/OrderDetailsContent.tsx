@@ -1,15 +1,13 @@
 "use client";
 import Link from "next/link";
-import {
-    IoArrowBackCircleOutline,
-    IoEye
-} from "react-icons/io5";
+import { IoArrowBackCircleOutline, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 // import PreviewOrderPage from "../dashboard/preview-order/page";
 import { RolesBd } from "../types/roles";
 import Spinner from "./spinner/Spinner";
 
 interface Props {
+    fromDetails: string | null | undefined;
     userRol?: RolesBd;
     expandReceptionData: boolean;
     setExpandReceptionData: (e: any) => void;
@@ -34,6 +32,7 @@ interface Props {
 }
 
 const OrderDetailsContent = ({
+    fromDetails,
     userRol,
     area,
     expandReceptionData,
@@ -84,7 +83,13 @@ const OrderDetailsContent = ({
                 orderAndPatientData?.sendTo !== area) && */}
             {detailStep === 0 && (
                 <div className="flex items-center space-x-8 px-12">
-                    <Link href={"/dashboard/orders-historial"}>
+                    <Link
+                        href={`${
+                            fromDetails === "received"
+                                ? "/dashboard/orders-historial"
+                                : "/dashboard/orders-historial/?to=send"
+                        }`}
+                    >
                         <IoArrowBackCircleOutline
                             className="text-company-blue"
                             size={32}
@@ -121,6 +126,351 @@ const OrderDetailsContent = ({
                 orderAndPatientData?.sendTo !== area) && */}
             {detailStep === 0 && (
                 <div className="pb-10">
+                    {/* Despacho */}
+                    {(orderAndPatientData?.desObservationComment ||
+                        userRol.uid === "9RZ9uhaiwMC7VcTyIzhl") && (
+                        <div
+                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                expandRx5
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
+                        >
+                            <button
+                                onClick={() => setExpandRx5(!expandRx5)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Despacho
+                                {expandRx5 ? (
+                                    <>
+                                        {orderAndPatientData?.desObservationComment && (
+                                            <>
+                                                <span>
+                                                    {`Usuario: ${getLastUserData(
+                                                        orderAndPatientData
+                                                            ?.desObservationComment
+                                                            ?.userId,
+                                                    )}`}
+                                                </span>
+                                                <span>
+                                                    {`Fecha: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.desObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[0]
+                                                    }`}
+                                                </span>
+                                                <span>
+                                                    {`Hora: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.desObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[1]
+                                                    }`}
+                                                </span>
+                                            </>
+                                        )}
+
+                                        <RiArrowUpSLine size={32} />
+                                    </>
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx5 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+
+                                    <p className="">
+                                        {orderAndPatientData
+                                            ?.desObservationComment?.message ||
+                                            "Sin comentarios"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Radiología */}
+                    {(orderAndPatientData?.radObservationComment ||
+                        userRol.uid === "V5iMSnSlSYsiSDFs4UpI") && (
+                        <div
+                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                expandRx4
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
+                        >
+                            <button
+                                onClick={() => setExpandRx4(!expandRx4)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Radiología
+                                {expandRx4 ? (
+                                    <>
+                                        {orderAndPatientData?.radObservationComment && (
+                                            <>
+                                                <span>
+                                                    {`Usuario: ${getLastUserData(
+                                                        orderAndPatientData
+                                                            ?.radObservationComment
+                                                            ?.userId,
+                                                    )}`}
+                                                </span>
+                                                <span>
+                                                    {`Fecha: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.radObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[0]
+                                                    }`}
+                                                </span>
+                                                <span>
+                                                    {`Hora: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.radObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[1]
+                                                    }`}
+                                                </span>
+                                            </>
+                                        )}
+
+                                        <RiArrowUpSLine size={32} />
+                                    </>
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx4 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+
+                                    <p className="">
+                                        {orderAndPatientData
+                                            ?.radObservationComment?.message ||
+                                            "Sin comentarios"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Laboratorio */}
+                    {(orderAndPatientData?.labObservationComment ||
+                        userRol.uid === "chbFffCzpRibjYRyoWIx") && (
+                        <div
+                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                expandRx3
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
+                        >
+                            <button
+                                onClick={() => setExpandRx3(!expandRx3)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Laboratorio
+                                {expandRx3 ? (
+                                    <>
+                                        {orderAndPatientData?.labObservationComment && (
+                                            <>
+                                                <span>
+                                                    {`Usuario: ${getLastUserData(
+                                                        orderAndPatientData
+                                                            ?.labObservationComment
+                                                            ?.userId,
+                                                    )}`}
+                                                </span>
+                                                <span>
+                                                    {`Fecha: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.labObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[0]
+                                                    }`}
+                                                </span>
+                                                <span>
+                                                    {`Hora: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.labObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[1]
+                                                    }`}
+                                                </span>
+                                            </>
+                                        )}
+
+                                        <RiArrowUpSLine size={32} />
+                                    </>
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx3 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+
+                                    <p className="">
+                                        {orderAndPatientData
+                                            ?.labObservationComment?.message ||
+                                            "Sin comentarios"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Escáner Digital */}
+                    {(orderAndPatientData?.escObservationComment ||
+                        userRol.uid === "VEGkDuMXs2mCGxXUPCWI") && (
+                        <div
+                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                expandRx2
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
+                        >
+                            <button
+                                onClick={() => setExpandRx2(!expandRx2)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Escáner Digital
+                                {expandRx2 ? (
+                                    <>
+                                        {orderAndPatientData?.escObservationComment && (
+                                            <>
+                                                <span>
+                                                    {`Usuario: ${getLastUserData(
+                                                        orderAndPatientData
+                                                            ?.escObservationComment
+                                                            ?.userId,
+                                                    )}`}
+                                                </span>
+                                                <span>
+                                                    {`Fecha: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.escObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[0]
+                                                    }`}
+                                                </span>
+                                                <span>
+                                                    {`Hora: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.escObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[1]
+                                                    }`}
+                                                </span>
+                                            </>
+                                        )}
+
+                                        <RiArrowUpSLine size={32} />
+                                    </>
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx2 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+
+                                    <p className="">
+                                        {orderAndPatientData
+                                            ?.escObservationComment?.message ||
+                                            "Sin comentarios"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Modelos */}
+                    {(orderAndPatientData?.modObservationComment ||
+                        userRol.uid === "g9xGywTJG7WSJ5o1bTsH") && (
+                        <div
+                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                expandRx1
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
+                        >
+                            <button
+                                onClick={() => setExpandRx1(!expandRx1)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Modelos
+                                {expandRx1 ? (
+                                    <>
+                                        {orderAndPatientData?.modObservationComment && (
+                                            <>
+                                                <span>
+                                                    {`Usuario: ${getLastUserData(
+                                                        orderAndPatientData
+                                                            ?.modObservationComment
+                                                            ?.userId,
+                                                    )}`}
+                                                </span>
+                                                <span>
+                                                    {`Fecha: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.modObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[0]
+                                                    }`}
+                                                </span>
+                                                <span>
+                                                    {`Hora: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.modObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[1]
+                                                    }`}
+                                                </span>
+                                            </>
+                                        )}
+
+                                        <RiArrowUpSLine size={32} />
+                                    </>
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx1 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+
+                                    <p className="">
+                                        {orderAndPatientData
+                                            ?.modObservationComment?.message ||
+                                            "Sin comentarios"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Reception data */}
                     {(orderAndPatientData?.recObservationComment ||
                         userRol.uid === "Ll6KGdzqdtmLLk0D5jhk") && (
@@ -263,351 +613,6 @@ const OrderDetailsContent = ({
                                     <p className="">
                                         {orderAndPatientData.observationComment
                                             ?.message || "Sin comentarios"}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Modelos */}
-                    {(orderAndPatientData?.modObservationComment ||
-                        userRol.uid === "g9xGywTJG7WSJ5o1bTsH") && (
-                        <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx1
-                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
-                            }`}
-                        >
-                            <button
-                                onClick={() => setExpandRx1(!expandRx1)}
-                                className="flex justify-between items-center py-2 px-4"
-                            >
-                                Modelos
-                                {expandRx1 ? (
-                                    <>
-                                        {orderAndPatientData?.modObservationComment && (
-                                            <>
-                                                <span>
-                                                    {`Usuario: ${getLastUserData(
-                                                        orderAndPatientData
-                                                            ?.modObservationComment
-                                                            ?.userId,
-                                                    )}`}
-                                                </span>
-                                                <span>
-                                                    {`Fecha: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.modObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[0]
-                                                    }`}
-                                                </span>
-                                                <span>
-                                                    {`Hora: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.modObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[1]
-                                                    }`}
-                                                </span>
-                                            </>
-                                        )}
-
-                                        <RiArrowUpSLine size={32} />
-                                    </>
-                                ) : (
-                                    <RiArrowDownSLine size={32} />
-                                )}
-                            </button>
-                            {expandRx1 && (
-                                <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
-                                        Observaciones
-                                    </h2>
-
-                                    <p className="">
-                                        {orderAndPatientData
-                                            ?.modObservationComment?.message ||
-                                            "Sin comentarios"}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Escáner Digital */}
-                    {(orderAndPatientData?.escObservationComment ||
-                        userRol.uid === "VEGkDuMXs2mCGxXUPCWI") && (
-                        <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx2
-                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
-                            }`}
-                        >
-                            <button
-                                onClick={() => setExpandRx2(!expandRx2)}
-                                className="flex justify-between items-center py-2 px-4"
-                            >
-                                Escáner Digital
-                                {expandRx2 ? (
-                                    <>
-                                        {orderAndPatientData?.escObservationComment && (
-                                            <>
-                                                <span>
-                                                    {`Usuario: ${getLastUserData(
-                                                        orderAndPatientData
-                                                            ?.escObservationComment
-                                                            ?.userId,
-                                                    )}`}
-                                                </span>
-                                                <span>
-                                                    {`Fecha: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.escObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[0]
-                                                    }`}
-                                                </span>
-                                                <span>
-                                                    {`Hora: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.escObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[1]
-                                                    }`}
-                                                </span>
-                                            </>
-                                        )}
-
-                                        <RiArrowUpSLine size={32} />
-                                    </>
-                                ) : (
-                                    <RiArrowDownSLine size={32} />
-                                )}
-                            </button>
-                            {expandRx2 && (
-                                <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
-                                        Observaciones
-                                    </h2>
-
-                                    <p className="">
-                                        {orderAndPatientData
-                                            ?.escObservationComment?.message ||
-                                            "Sin comentarios"}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Laboratorio */}
-                    {(orderAndPatientData?.labObservationComment ||
-                        userRol.uid === "chbFffCzpRibjYRyoWIx") && (
-                        <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx3
-                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
-                            }`}
-                        >
-                            <button
-                                onClick={() => setExpandRx3(!expandRx3)}
-                                className="flex justify-between items-center py-2 px-4"
-                            >
-                                Laboratorio
-                                {expandRx3 ? (
-                                    <>
-                                        {orderAndPatientData?.labObservationComment && (
-                                            <>
-                                                <span>
-                                                    {`Usuario: ${getLastUserData(
-                                                        orderAndPatientData
-                                                            ?.labObservationComment
-                                                            ?.userId,
-                                                    )}`}
-                                                </span>
-                                                <span>
-                                                    {`Fecha: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.labObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[0]
-                                                    }`}
-                                                </span>
-                                                <span>
-                                                    {`Hora: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.labObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[1]
-                                                    }`}
-                                                </span>
-                                            </>
-                                        )}
-
-                                        <RiArrowUpSLine size={32} />
-                                    </>
-                                ) : (
-                                    <RiArrowDownSLine size={32} />
-                                )}
-                            </button>
-                            {expandRx3 && (
-                                <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
-                                        Observaciones
-                                    </h2>
-
-                                    <p className="">
-                                        {orderAndPatientData
-                                            ?.labObservationComment?.message ||
-                                            "Sin comentarios"}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Radiología */}
-                    {(orderAndPatientData?.radObservationComment ||
-                        userRol.uid === "V5iMSnSlSYsiSDFs4UpI") && (
-                        <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx4
-                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
-                            }`}
-                        >
-                            <button
-                                onClick={() => setExpandRx4(!expandRx4)}
-                                className="flex justify-between items-center py-2 px-4"
-                            >
-                                Radiología
-                                {expandRx4 ? (
-                                    <>
-                                        {orderAndPatientData?.radObservationComment && (
-                                            <>
-                                                <span>
-                                                    {`Usuario: ${getLastUserData(
-                                                        orderAndPatientData
-                                                            ?.radObservationComment
-                                                            ?.userId,
-                                                    )}`}
-                                                </span>
-                                                <span>
-                                                    {`Fecha: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.radObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[0]
-                                                    }`}
-                                                </span>
-                                                <span>
-                                                    {`Hora: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.radObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[1]
-                                                    }`}
-                                                </span>
-                                            </>
-                                        )}
-
-                                        <RiArrowUpSLine size={32} />
-                                    </>
-                                ) : (
-                                    <RiArrowDownSLine size={32} />
-                                )}
-                            </button>
-                            {expandRx4 && (
-                                <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
-                                        Observaciones
-                                    </h2>
-
-                                    <p className="">
-                                        {orderAndPatientData
-                                            ?.radObservationComment?.message ||
-                                            "Sin comentarios"}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Despacho */}
-                    {(orderAndPatientData?.desObservationComment ||
-                        userRol.uid === "9RZ9uhaiwMC7VcTyIzhl") && (
-                        <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx5
-                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
-                            }`}
-                        >
-                            <button
-                                onClick={() => setExpandRx5(!expandRx5)}
-                                className="flex justify-between items-center py-2 px-4"
-                            >
-                                Despacho
-                                {expandRx5 ? (
-                                    <>
-                                        {orderAndPatientData?.desObservationComment && (
-                                            <>
-                                                <span>
-                                                    {`Usuario: ${getLastUserData(
-                                                        orderAndPatientData
-                                                            ?.desObservationComment
-                                                            ?.userId,
-                                                    )}`}
-                                                </span>
-                                                <span>
-                                                    {`Fecha: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.desObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[0]
-                                                    }`}
-                                                </span>
-                                                <span>
-                                                    {`Hora: ${
-                                                        formatearFecha(
-                                                            orderAndPatientData
-                                                                ?.desObservationComment
-                                                                ?.timestamp,
-                                                        ).split(" ")[1]
-                                                    }`}
-                                                </span>
-                                            </>
-                                        )}
-
-                                        <RiArrowUpSLine size={32} />
-                                    </>
-                                ) : (
-                                    <RiArrowDownSLine size={32} />
-                                )}
-                            </button>
-                            {expandRx5 && (
-                                <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
-                                        Observaciones
-                                    </h2>
-
-                                    <p className="">
-                                        {orderAndPatientData
-                                            ?.desObservationComment?.message ||
-                                            "Sin comentarios"}
                                     </p>
                                 </div>
                             )}

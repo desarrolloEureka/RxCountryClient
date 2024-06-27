@@ -388,7 +388,10 @@ const OrderHistorialPage = () => {
                                         >
                                             <IoIosNotifications size={24} />
                                         </button>
-                                        {userArea === item.sendTo && (
+                                        {((userArea === item.sendTo &&
+                                            item.status !== "finalizada") ||
+                                            userRol?.uid ===
+                                                "ZWb0Zs42lnKOjetXH5lq") && (
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -415,32 +418,33 @@ const OrderHistorialPage = () => {
                                             rel="noopener noreferrer"
                                             target="_blank"
                                         >
-                                            <button type="button">
-                                                <MdPictureAsPdf size={24} />
-                                            </button>
+                                            <MdPictureAsPdf size={24} />
                                         </Link>
                                         <button
                                             // className="px-2"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                (item.status === "enviada" ||
-                                                    // item.status ===
-                                                    //     "atendida" ||
-                                                    item.status ===
-                                                        "asignada") &&
-                                                userRol?.uid !==
-                                                    item.modifiedBy.userRolId
-                                                    ? setStatusOpenOrder(
-                                                          item.uid,
-                                                          //   item.timestamp,
-                                                      ).then(() => {
-                                                          router.push(
-                                                              `/dashboard/orders-historial/details/${item.uid}`,
-                                                          );
-                                                      })
-                                                    : router.push(
-                                                          `/dashboard/orders-historial/details/${item.uid}`,
-                                                      );
+                                                // (item.status === "enviada" ||
+                                                //     // item.status ===
+                                                //     //     "atendida" ||
+                                                //     item.status ===
+                                                //         "asignada") &&
+                                                // userRol?.uid !==
+                                                //     item.modifiedBy.userRolId
+                                                //     ? setStatusOpenOrder(
+                                                //           item.uid,
+                                                //           //   item.timestamp,
+                                                //       ).then(() => {
+                                                //           router.push(
+                                                //               `/dashboard/orders-historial/details/${item.uid}`,
+                                                //           );
+                                                //       })
+                                                //     :
+                                                router.push(
+                                                    selectedOrder === "send"
+                                                        ? `/dashboard/orders-historial/details/${item.uid}/?from=send`
+                                                        : `/dashboard/orders-historial/details/${item.uid}/?from=received`,
+                                                );
                                             }}
                                         >
                                             <IoIosEye size={24} />

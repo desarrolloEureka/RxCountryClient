@@ -16,6 +16,7 @@ import EditOrderHook from "../hook/EditOrderHook";
 const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
         uid,
+        value,
         router,
         showSave,
         showHelp,
@@ -46,6 +47,9 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         allDiagnostician,
         selectChangeHandlerDiagnoses,
         selectChangeHandlerDiagnostician,
+        handleInputChange,
+        suggestions,
+        idChangeHandler,
     } = EditOrderHook({ slug });
 
     return (
@@ -78,6 +82,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                         </div>
                                         <div className="flex flex-col items-center space-y-2 text-white text-sm">
                                             <button
+                                                type="button"
                                                 onClick={() =>
                                                     setShowHelp(true)
                                                 }
@@ -94,6 +99,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                     </div>
 
                     <StepByStep
+                        value={value}
                         uid={uid}
                         oldData={oldData}
                         formStep={formStep}
@@ -110,7 +116,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         setSelectedOptions={setSelectedOptions}
                         handleSendForm={handleSendForm}
                         currentOrderId={currentOrderId}
-                        idChangeHandler={() => {}}
+                        idChangeHandler={idChangeHandler}
                         handleClose={() => {}}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
                         allAreas={allAreas}
@@ -125,6 +131,8 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         selectChangeHandlerDiagnostician={
                             selectChangeHandlerDiagnostician
                         }
+                        handleInputChange={handleInputChange}
+                        suggestions={suggestions}
                     />
 
                     {formStep < 6 && (
@@ -222,7 +230,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                 <>
                     <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
                         <div className="flex justify-end items-center">
-                            <button onClick={() => setShowHelp(false)}>
+                            <button type="button" onClick={() => setShowHelp(false)}>
                                 <MdClose color="gray" size={24} />
                             </button>
                         </div>

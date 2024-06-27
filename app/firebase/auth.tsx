@@ -75,12 +75,12 @@ const useAuth = () => {
                 patientsDocs.find((doc: any) => doc.uid === userId));
 
         const currentUserRol = allRolesData.find(
-            (doc: any) => doc.uid === currentUserData.rol,
+            (doc: any) => doc.uid === currentUserData?.rol,
         );
 
         if (currentUserData) {
             setUserData(currentUserData);
-            setIsActiveUser(currentUserData.isActive);
+            setIsActiveUser(currentUserData?.isActive);
             setUserRol(currentUserRol);
         }
 
@@ -93,9 +93,9 @@ const useAuth = () => {
         //     setUserRol(currentUserData.rol);
         // }
 
-        if (functionaryDocs && allCampusData && currentUserData.campus) {
+        if (functionaryDocs && allCampusData && currentUserData?.campus) {
             const campus = allCampusData?.find(
-                (item: any) => item.uid === currentUserData.campus,
+                (item: any) => item.uid === currentUserData?.campus,
             )?.name;
             setUserCampus(campus);
         } else {
@@ -111,6 +111,8 @@ const useAuth = () => {
             console.log("user", user);
         } else {
             console.log("User nulo o Indefinido");
+            // setIsLoading(true);
+            // setUser(null);
         }
     }, [getUserData, user]);
 

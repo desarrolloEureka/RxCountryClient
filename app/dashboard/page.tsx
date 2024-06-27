@@ -4,16 +4,23 @@ import { IoArrowForward } from "react-icons/io5";
 import DashboardHeader from "../component/DashboardHeader";
 import Spinner from "../component/spinner/Spinner";
 import DashBoardHook from "./hook/DashBoardHook";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
     const { user, isActiveUser, isLoading, isLoadingValidate } =
         DashBoardHook();
 
+    const router = useRouter();
+
     // if (isLoadingValidate) {
     //     return <Spinner />;
     // }
 
-    // if (!user?.emailVerified) {
+    // if (!user) {
+    //     return <Spinner />;
+    // }
+
+    // if (user !== null || user !== undefined) {
     //     return <Spinner />;
     // }
 
@@ -34,7 +41,12 @@ export default function Dashboard() {
                         suscipit lobortis nisl ut aliquip ex ea commodo
                         consequat.
                     </p>
-                    <button className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-white hover:border-gray-300 border-2 rounded-md p-2">
+                    <button
+                        onClick={() => {
+                            // router.push("/dashboard/new-order");
+                        }}
+                        className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-white hover:border-gray-300 border-2 rounded-md p-2"
+                    >
                         <span>Empezar</span>
                         <IoArrowForward />
                     </button>

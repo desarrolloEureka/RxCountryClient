@@ -71,32 +71,44 @@ const ImagesQueryHook = () => {
 
         //Recepción
         Ll6KGdzqdtmLLk0D5jhk: allDataOrders?.filter(
-            (order: any) => order.status === "finalizada",
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
         ),
 
         //Modelos
         g9xGywTJG7WSJ5o1bTsH: allDataOrders?.filter(
-            (order: any) => order.status === "finalizada",
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
         ),
 
         //Laboratorio
         chbFffCzpRibjYRyoWIx: allDataOrders?.filter(
-            (order: any) => order.status === "finalizada",
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
         ),
 
         //Radiología
         V5iMSnSlSYsiSDFs4UpI: allDataOrders?.filter(
-            (order: any) => order.status === "finalizada",
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
         ),
 
         //Escáner Digital
         VEGkDuMXs2mCGxXUPCWI: allDataOrders?.filter(
-            (order: any) => order.status === "finalizada",
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
         ),
 
         //Despacho
         ["9RZ9uhaiwMC7VcTyIzhl"]: allDataOrders?.filter(
-            (order: any) => order.status === "asignada",
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
         ),
     };
 

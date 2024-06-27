@@ -2,6 +2,7 @@
 import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
+import Link from "next/link";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";
 import {
     IoIosArrowBack,
@@ -11,10 +12,10 @@ import {
 } from "react-icons/io";
 import { IoAlertCircleSharp, IoEye } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import Datepicker from "react-tailwindcss-datepicker";
-import ImagesQueryHook from "./hook/ImagesQueryHook";
 import Swal from "sweetalert2";
+import ImagesQueryHook from "./hook/ImagesQueryHook";
 
 const ImageQueryPage = () => {
     const {
@@ -329,17 +330,31 @@ const ImageQueryPage = () => {
                             return (
                                 <div
                                     key={index}
-                                    onClick={() =>
-                                        router.push(
-                                            "/dashboard/images-query/details/123",
-                                        )
-                                    }
+                                    // onClick={() =>
+                                    //     router.push(
+                                    //         "/dashboard/images-query/details/123",
+                                    //     )
+                                    // }
                                     className="grid grid-cols-11 min-w-max border-t items-center text-white py-4 hover:bg-gray-700 px-12"
                                 >
-                                    <div className="col flex justify-center text-nowrap text-company-blue w-48 px-5">
-                                        <button>
+                                    <div className="col flex justify-between text-nowrap text-company-blue w-48 px-14">
+                                        <button
+                                            onClick={() =>
+                                                router.push(
+                                                    // "/dashboard/images-query/details/123",
+                                                    `/dashboard/images-query/details/${item.uid}`,
+                                                )
+                                            }
+                                        >
                                             <IoEye size={24} />
                                         </button>
+                                        <Link
+                                            href="/dashboard/preview-order"
+                                            rel="noopener noreferrer"
+                                            target="_blank"
+                                        >
+                                            <MdPictureAsPdf size={24} />
+                                        </Link>
                                     </div>
                                     <div className="text-nowrap text-center w-48">
                                         <p className="truncate">{`#${item.uid}`}</p>
@@ -351,7 +366,8 @@ const ImageQueryPage = () => {
                                     </div>
                                     <div className="text-nowrap text-center w-48">
                                         <p className="truncate">
-                                            {getOrderStatus(item)}
+                                            {/* {getOrderStatus(item)} */}
+                                            {item.status}
                                         </p>
                                     </div>
                                     <div className="text-nowrap text-center w-48">
