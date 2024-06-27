@@ -16,7 +16,7 @@ import {
 import { addPatient } from "@/app/firebase/user";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
-import { EditedOrderStatusByRol } from "@/app/types/order";
+import { datePickerProps, EditedOrderStatusByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
@@ -45,7 +45,7 @@ const calculateAge = (birthDate: Date | string): number => {
     return age;
 };
 
-const confirmAlert = () => {
+const saveAlert = () => {
     Swal.fire({
         position: "center",
         icon: "success",
@@ -60,7 +60,7 @@ const confirmAlert = () => {
 const NewOrderHook = (props?: Props) => {
     const { isActiveUser, userData, accessTokenUser, userRol } = useAuth();
 
-    const { campus, uid } = userData;
+    const { campus, uid, area } = userData;
 
     const currentDate = moment().format();
 
@@ -99,6 +99,11 @@ const NewOrderHook = (props?: Props) => {
 
     const [patientExist, setPatientExist] = useState(false);
 
+    const [value, setValue] = useState<datePickerProps>({
+        startDate: null,
+        endDate: null,
+    });
+
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
     };
@@ -121,8 +126,18 @@ const NewOrderHook = (props?: Props) => {
             (item) => item.value === campus,
         )?.areas;
 
+        const areasOmitted: string[] = [
+            "qxdH34kAupnAPSuVIIvn",
+            "Wxdi41YreLGK0UiL2YQU",
+            area,
+        ];
+
+        const availableAreasIds = filteredIdAreas?.filter(
+            (item) => !areasOmitted?.includes(item),
+        );
+
         const result = allAreas?.filter((area) =>
-            filteredIdAreas?.includes(area.value),
+            availableAreasIds?.includes(area.value),
         );
         return result;
     };
@@ -144,12 +159,14 @@ const NewOrderHook = (props?: Props) => {
         setSuggestions([]);
     };
 
-    const dateChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const dateFormat = moment(e.target.value).format("YYYY-MM-DD");
+    const dateChangeHandler = (e: any) => {
+        setValue(e);
+        // const dateFormat = moment(e.target.value).format("YYYY-MM-DD");
+        const dateFormat = value ? e.startDate : "";
         setPatientData({
             ...patientData,
-            [e.target.name]: dateFormat,
-            ["age"]: `${calculateAge(dateFormat)}`,
+            ["birthDate"]: dateFormat,
+            ["age"]: dateFormat ? `${calculateAge(dateFormat)}` : "",
         });
     };
 
@@ -189,15 +206,38 @@ const NewOrderHook = (props?: Props) => {
         patientData.phone !== "" &&
         patientData.phone.length > 11;
 
+    const confirmSaveAlert = () => {
+        Swal.fire({
+            title: "¿Confirma el envío de la orden?",
+            text: "Verifique la información de la orden, después de enviado no podrá hacer cambios.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#1f2937",
+            // cancelButtonColor: "#d33",
+            confirmButtonText: "¡Sí, enviar!",
+            cancelButtonText: "¡No, verificar!",
+            background: "#404040",
+            color: "#e9a225",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                console.log("Entró");
+                await uploadHandle().then(() => {
+                    setFormStep((prevStep: number) => prevStep + 1);
+                });
+                handleClose();
+            }
+        });
+    };
+
     const handleSendForm = async (e?: any) => {
         if (patientVal) {
             e.preventDefault();
             e.stopPropagation();
-            console.log("Entró");
-            await uploadHandle().then(() => {
-                setFormStep((prevStep: number) => prevStep + 1);
-            });
-            handleClose();
+            confirmSaveAlert();
+            // await uploadHandle().then(() => {
+            //     setFormStep((prevStep: number) => prevStep + 1);
+            // });
+            // handleClose();
         } else {
             e.preventDefault();
             e.stopPropagation();
@@ -306,7 +346,7 @@ const NewOrderHook = (props?: Props) => {
                     ],
                 }).then((res) => {
                     setCurrentOrderId(parseInt(res.id));
-                    confirmAlert();
+                    saveAlert();
                 });
             });
         } else {
@@ -362,7 +402,7 @@ const NewOrderHook = (props?: Props) => {
                         ],
                     }).then((res) => {
                         setCurrentOrderId(parseInt(res.id));
-                        confirmAlert();
+                        saveAlert();
                     });
                 });
             });
@@ -409,10 +449,23 @@ const NewOrderHook = (props?: Props) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (patientData?.birthDate) {
+            setValue({
+                startDate: patientData?.birthDate,
+                endDate: patientData?.birthDate,
+            });
+        }
+    }, [patientData?.birthDate]);
+
     return {
+        userData,
+        value,
         showHelp,
         uid,
-        allAreas: _.sortBy(areasByCampus(), "label"),
+        allAreas: _.sortBy(areasByCampus(), (obj) =>
+            obj.label.toLocaleLowerCase(),
+        ),
         setShowHelp,
         formStep,
         setFormStep,

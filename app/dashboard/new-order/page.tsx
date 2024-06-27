@@ -11,6 +11,8 @@ import NewOrderHook from "./hook/NewOrderHook";
 
 const NewOrderPage = () => {
     const {
+        userData,
+        value,
         showHelp,
         uid,
         allAreas,
@@ -69,6 +71,7 @@ const NewOrderPage = () => {
 
                                 <div className="flex flex-col items-center space-y-2 text-white text-sm">
                                     <button
+                                        type="button"
                                         onClick={() => setShowHelp(true)}
                                         className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
                                     >
@@ -81,6 +84,8 @@ const NewOrderPage = () => {
                     </div>
 
                     <StepByStep
+                        userData={userData}
+                        value={value}
                         uid={uid}
                         formStep={formStep}
                         allAreas={allAreas}
@@ -173,7 +178,10 @@ const NewOrderPage = () => {
                 <>
                     <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
                         <div className="flex justify-end items-center">
-                            <button onClick={() => setShowHelp(false)}>
+                            <button
+                                type="button"
+                                onClick={() => setShowHelp(false)}
+                            >
                                 <MdClose color="gray" size={24} />
                             </button>
                         </div>

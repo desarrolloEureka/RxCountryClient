@@ -9,6 +9,7 @@ import { Order } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
 import { DataProfessionalObject } from "@/app/types/professionals";
 import moment from "moment";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 type Props = {
@@ -20,6 +21,10 @@ const DetailsHook = ({ slug }: Props) => {
     const { userRol, userData } = useAuth();
 
     const { area } = userData;
+
+    const searchParams = useSearchParams();
+
+    const fromDetails = searchParams.get("from");
 
     const [expandReceptionData, setExpandReceptionData] = useState(false);
     const [expandSpecialist, setExpandSpecialist] = useState(false);
@@ -100,6 +105,7 @@ const DetailsHook = ({ slug }: Props) => {
     }, [getFunctionary, getOrders, getPatients, getProfessionals]);
 
     return {
+        fromDetails,
         userRol,
         area,
         expandReceptionData,

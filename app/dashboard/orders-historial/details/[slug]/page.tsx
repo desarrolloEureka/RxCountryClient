@@ -2,9 +2,12 @@
 import DashboardHeader from "@/app/component/DashboardHeader";
 import OrderDetailsContent from "@/app/component/OrderDetailsContent";
 import DetailsHook from "../hook/DetailsHook";
+import { Suspense } from "react";
+import Spinner from "@/app/component/spinner/Spinner";
 
 const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
+        fromDetails,
         userRol,
         area,
         expandReceptionData,
@@ -33,6 +36,7 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="orders-historial" />
                 <OrderDetailsContent
+                    fromDetails={fromDetails}
                     expandReceptionData={expandReceptionData}
                     userRol={userRol}
                     setExpandReceptionData={setExpandReceptionData}
@@ -60,4 +64,20 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
     );
 };
 
-export default OrderDetails;
+export default function Page({
+    params: { slug },
+}: {
+    params: { slug: string };
+}) {
+    return (
+        <Suspense fallback={<Spinner background="bg-gray-image" />}>
+            <OrderDetails
+                params={{
+                    slug,
+                }}
+            />
+        </Suspense>
+    );
+}
+
+// export default OrderDetails;

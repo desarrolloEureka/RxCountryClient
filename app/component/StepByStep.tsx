@@ -17,22 +17,24 @@ import {
 } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
+import Datepicker from "react-tailwindcss-datepicker";
 import "../style.css";
 import { AreasSelector } from "../types/areas";
+import { DiagnosesSelector } from "../types/diagnoses";
+import { DiagnosticianSelector } from "../types/diagnostician";
 import { RolesBd } from "../types/roles";
 import { idTypes } from "./constants/formConstants";
-import {
-    diagnosisMachineTwo,
-    suppliers,
-} from "./constants/stepByStepConstants";
 import DentalSelect from "./orders/dental-select";
 import SelectComponent from "./SelectComponent";
 import InputFileUpload from "./UpLoadButton";
 import DoctorVector from "./vectors/DoctorVector";
-import { DiagnosesSelector } from "../types/diagnoses";
-import { DiagnosticianSelector } from "../types/diagnostician";
 
 interface Props {
+    value: {
+        startDate: string | null;
+        endDate: string | null;
+    };
+    userData?: any;
     uid?: string;
     formStep: number;
     setFormStep: (e: any) => void;
@@ -46,7 +48,7 @@ interface Props {
     selectChangeHandlerIdType: (
         e: React.ChangeEvent<HTMLSelectElement>,
     ) => void;
-    dateChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    dateChangeHandler: (e: any) => void;
     phoneChangeHandler: (phone: string) => void;
     idChangeHandler: (id: string) => void;
     setSelectedOptions: (e: any) => void;
@@ -72,6 +74,8 @@ interface Props {
 }
 
 function StepByStep({
+    userData,
+    value,
     formStep,
     uid,
     allAreas,
@@ -175,9 +179,24 @@ function StepByStep({
 
     const allDataSelected = useMemo(() => {
         return {
-            professionalName,
-            professionalSpecialty,
-            professionalEmail,
+            professionalName:
+                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                    ? `${userData?.name} ${userData?.lastName}`
+                    : oldData?.professionalName
+                    ? oldData?.professionalName
+                    : professionalName,
+            professionalSpecialty:
+                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                    ? userData?.specialty
+                    : oldData?.professionalSpecialty
+                    ? oldData?.professionalSpecialty
+                    : professionalSpecialty,
+            professionalEmail:
+                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                    ? userData?.email
+                    : oldData?.professionalEmail
+                    ? oldData?.professionalEmail
+                    : professionalEmail,
             dentalSelectBoneScan,
             selectedIntraOrals,
             selectedExtraOrals,
@@ -201,27 +220,34 @@ function StepByStep({
             diagnosticImpressionComment,
         };
     }, [
+        userRol?.uid,
+        userData?.name,
+        userData?.lastName,
+        userData?.specialty,
+        userData?.email,
+        oldData?.professionalName,
+        oldData?.professionalSpecialty,
+        oldData?.professionalEmail,
+        oldData?.observationComment,
         professionalName,
         professionalSpecialty,
         professionalEmail,
         dentalSelectBoneScan,
+        selectedIntraOrals,
+        selectedExtraOrals,
         dentalSelectTomography,
-        diagnosticImpressionComment,
-        observationComment,
         selected3DVolumetricTomography,
         selectedAdditionalDeliveryMethod,
+        selectedDiagnosis,
+        selectedModels,
+        selectedIntraOralClinicalPhotography,
+        selectedExtraOralClinicalPhotography,
+        selectedPresentation,
         selectedBackground,
         selectedClinicalPhotographyDeliveryMethod,
-        selectedDiagnosis,
         selectedDiagnosticPackage,
-        selectedExtraOralClinicalPhotography,
-        selectedExtraOrals,
-        selectedIntraOralClinicalPhotography,
-        selectedIntraOrals,
-        selectedModels,
-        selectedPresentation,
-        userRol,
-        oldData,
+        observationComment,
+        diagnosticImpressionComment,
     ]);
 
     // const backToOrder = () => {
@@ -250,6 +276,11 @@ function StepByStep({
                 userId: uid,
                 message: observationComment,
             };
+            // if (oldData) {
+            // }
+            // dataSelected.professionalName = "";
+            // dataSelected.professionalSpecialty = "";
+            // dataSelected.professionalEmail = "";
         }
 
         setIsDataSelected(_.some(dataSelected, (value) => !_.isEmpty(value)));
@@ -259,10 +290,12 @@ function StepByStep({
         allDataSelected,
         currentDate,
         observationComment,
+        // oldData,
         setIsDataSelected,
         setSelectedOptions,
         uid,
-        userRol,
+        userRol?.name,
+        userRol?.uid,
     ]);
 
     const getObservationComment = (
@@ -399,7 +432,7 @@ function StepByStep({
                         </div>
                         <div
                             className="col relative flex flex-col space-y-2"
-                            ref={wrapperRef}
+                            // ref={wrapperRef}
                         >
                             <label htmlFor="patientId" className="text-white">
                                 Documento&nbsp;
@@ -417,6 +450,7 @@ function StepByStep({
                                 onChange={
                                     isEdit ? changeHandler : handleInputChange
                                 }
+                                // onChange={handleInputChange}
                             />
                             {suggestions && suggestions?.length > 0 && (
                                 <ul className="absolute top-16 w-full text-white bg-black border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto z-10">
@@ -525,12 +559,31 @@ function StepByStep({
                                 <IoCall />
                             </span>
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
-                            <label htmlFor="birthDate" className="text-white">
+                        <div className="col relative flex flex-col space-y-2 w-full">
+                            <label htmlFor="data-picker" className="text-white">
                                 Fecha de Nacimiento&nbsp;
                                 <span className="text-blue-500">*</span>
                             </label>
-                            <input
+                            <Datepicker
+                                startFrom={
+                                    data && data?.birthDate
+                                        ? new Date(data?.birthDate)
+                                        : new Date()
+                                }
+                                useRange={false}
+                                asSingle={true}
+                                inputId="data-picker"
+                                inputName="data-picker"
+                                inputClassName="rounded-xl h-10 bg-transparent border border-company-blue text-white pl-10 pr-4 w-full"
+                                onChange={dateChangeHandler}
+                                value={data && value}
+                                primaryColor={"amber"}
+                                separator={"al"}
+                                displayFormat={"DD/MM/YYYY"}
+                                readOnly={true}
+                                i18n={"es"}
+                            />
+                            {/* <input
                                 required
                                 value={data && data?.birthDate}
                                 type="date"
@@ -538,7 +591,7 @@ function StepByStep({
                                 id="birthDate"
                                 className="rounded-xl h-10 bg-transparent border border-company-blue text-white pl-10 pr-4 calendar-light"
                                 onChange={dateChangeHandler}
-                            />
+                            /> */}
                             <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                 <MdOutlineDateRange />
                             </span>
@@ -579,7 +632,7 @@ function StepByStep({
                                 <BsFillGeoAltFill />
                             </span>
                         </div>
-                        {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
+                        {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" && (
                             <>
                                 <div className="col relative flex flex-col space-y-2">
                                     <label
@@ -589,6 +642,10 @@ function StepByStep({
                                         Profesional&nbsp;(opcional)
                                     </label>
                                     <input
+                                        disabled={
+                                            oldData?.createdBy.userRol ===
+                                            "ZWb0Zs42lnKOjetXH5lq"
+                                        }
                                         value={professionalName}
                                         type="text"
                                         name="professionalName"
@@ -610,7 +667,12 @@ function StepByStep({
                                         Especialidad
                                     </label>
                                     <input
-                                        disabled={professionalName === ""}
+                                        // disabled={isEdit}
+                                        disabled={
+                                            professionalName === "" ||
+                                            oldData?.createdBy.userRol ===
+                                                "ZWb0Zs42lnKOjetXH5lq"
+                                        }
                                         value={professionalSpecialty}
                                         type="text"
                                         name="professionalSpecialty"
@@ -644,7 +706,11 @@ function StepByStep({
                                         Correo del Profesional
                                     </label>
                                     <input
-                                        disabled={professionalName === ""}
+                                        disabled={
+                                            professionalName === "" ||
+                                            oldData?.createdBy.userRol ===
+                                                "ZWb0Zs42lnKOjetXH5lq"
+                                        }
                                         value={professionalEmail}
                                         type="email"
                                         name="professionalEmail"
@@ -1037,7 +1103,7 @@ function StepByStep({
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2">
                                             <textarea
-                                                disabled
+                                                // disabled
                                                 value={observationComment}
                                                 id="Observations"
                                                 name="observations"
@@ -1959,33 +2025,40 @@ function StepByStep({
                                 lobortis nisl ut aliquip ex ea commodo
                                 consequat.
                             </p>
-                            {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
-                                <div className="pr-10 space-y-4 pb-10">
-                                    <label className="text-company-orange text-xl">
-                                        <span className="text-company-orange">
-                                            *
-                                        </span>
-                                        &nbsp; Enviar a:
-                                    </label>
-                                    <SelectComponent
-                                        options={allAreas}
-                                        selectChangeHandler={(e) => {
-                                            selectChangeHandlerSentTo(e?.value);
-                                            setAreaSelected(e);
-                                        }}
-                                        optionSelected={areaSelected}
-                                    />
-                                </div>
-                            )}
-                            <div className="grid grid-cols-1 xl:grid-cols-2">
+                            {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" && (
+                                    <div className="pr-10 space-y-4 pb-10">
+                                        <label className="text-company-orange text-xl">
+                                            <span className="text-company-orange">
+                                                *
+                                            </span>
+                                            &nbsp; Enviar a:
+                                        </label>
+                                        <SelectComponent
+                                            options={allAreas}
+                                            selectChangeHandler={(e) => {
+                                                selectChangeHandlerSentTo(
+                                                    e?.value,
+                                                );
+                                                setAreaSelected(e);
+                                            }}
+                                            optionSelected={areaSelected}
+                                        />
+                                    </div>
+                                )}
+                            <div className="grid grid-cols-1 xl:grid-cols-2 justify-center">
                                 <button
                                     type={areaSelected ? "button" : "submit"}
                                     onClick={(e) => {
                                         areaSelected && handleSendForm(e);
                                     }}
-                                    className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
+                                    className="w-48 h-10 flex mb-5 items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
                                 >
-                                    <span>Guardar y enviar</span>
+                                    <span>
+                                        {userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl"
+                                            ? "Guardar y enviar"
+                                            : "Finalizar Orden"}
+                                    </span>
                                 </button>
                                 <Link
                                     href="/dashboard/preview-order"
@@ -1994,7 +2067,7 @@ function StepByStep({
                                 >
                                     <button
                                         type="button"
-                                        className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white cursor-pointer"
+                                        className="w-48 h-10 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white cursor-pointer"
                                     >
                                         <IoEye
                                             className="text-company-blue"
@@ -2038,7 +2111,7 @@ function StepByStep({
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col h-auto justify-center items-center absolute left-[50%] -bottom-5">
+                        <div className="flex flex-col h-auto justify-center items-center absolute left-[60%] -bottom-0">
                             <DoctorVector width={500} height={500} />
                         </div>
                     </div>
@@ -2049,14 +2122,21 @@ function StepByStep({
                     <div className="grid grid-cols-1 gap-4">
                         <div className="flex flex-row space-x-4 rounded-xl bg-black bg-opacity-40">
                             <div className="flex flex-col pr-[40%] pb-[15%] pl-[10%] pt-[10%] space-y-8">
-                                <h2 className="text-company-orange font-bold text-4xl">
-                                    {`La orden #${currentOrderId} ha sido enviada con éxito al área
+                                {userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" ? (
+                                    <h2 className="text-company-orange font-bold text-4xl">
+                                        {`La orden #${currentOrderId} ha sido enviada con éxito al área
                                     encargada${
                                         areaSelected
                                             ? ": " + areaSelected.label + "."
                                             : "."
                                     }`}
-                                </h2>
+                                    </h2>
+                                ) : (
+                                    <h2 className="text-company-orange font-bold text-4xl">
+                                        {`La orden #${currentOrderId} ha sido cerrada con éxito.`}
+                                    </h2>
+                                )}
+
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -2072,7 +2152,7 @@ function StepByStep({
                                 </button>
                             </div>
                         </div>
-                        <div className="flex flex-col justify-center items-center absolute left-[50%] -bottom-5">
+                        <div className="flex flex-col justify-center items-center absolute left-[60%] -bottom-0">
                             <DoctorVector width={500} height={500} />
                         </div>
                     </div>
