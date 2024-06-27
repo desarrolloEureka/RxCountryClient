@@ -7,12 +7,14 @@ import useAuth from "@/app/firebase/auth";
 const DashBoardHook = () => {
     const { user, isActiveUser, isLoading, isLoadingValidate } = AuthValidate();
     const router = useRouter();
+    // console.log("Dashboard Hook", !user, !isLoading);
 
     useEffect(() => {
-        !user?.emailVerified &&
-            !isLoading &&
+        // !user?.emailVerified &&
+        !isLoading &&
             !user &&
-            router.replace("/sign-in/inactive-user");
+            router.replace("/sign-in");
+            // console.log("UseEffect de Dashboard Hook");
     }, [isActiveUser, isLoading, router, user]);
 
     // useEffect(() => {

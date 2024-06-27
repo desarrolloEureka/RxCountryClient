@@ -21,7 +21,7 @@ export default function PreviewOrder({
     const router = useRouter();
 
     return (
-        <div className="flex flex-col rounded-[2.5rem] shadow-lg bg-black bg-opacity-50 w-full max-w-screen mx-auto relative">
+        <div className="flex flex-col shadow-lg bg-black w-full max-w-screen mx-auto relative">
             {/* <div className="flex justify-between items-center w-full p-8">
                 <div className="flex items-center space-x-8">
                     <button

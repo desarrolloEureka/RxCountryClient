@@ -27,3 +27,8 @@ export interface PreviewOrderProps {
 export interface updateOrderProps {
     [key: string]: any;
 }
+
+export interface datePickerProps {
+    startDate: string | null;
+    endDate: string | null;
+}

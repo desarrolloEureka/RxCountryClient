@@ -18,16 +18,20 @@ import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 // import { EditedOrderStatusByRol } from "@/app/types/order";
 import { uploadFileImage } from "@/app/firebase/files";
-import { EditedOrderStatusByRol, updateOrderProps } from "@/app/types/order";
+import useDebounce from "@/app/hook/useDebounce";
+import { DiagnosesSelector } from "@/app/types/diagnoses";
+import { DiagnosticianSelector } from "@/app/types/diagnostician";
+import {
+    datePickerProps,
+    EditedOrderStatusByRol,
+    updateOrderProps,
+} from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { DiagnosesSelector } from "@/app/types/diagnoses";
-import { DiagnosticianSelector } from "@/app/types/diagnostician";
-import useDebounce from "@/app/hook/useDebounce";
 
 type Props = {
     // setDataSelected: (e: any) => void;
@@ -69,6 +73,8 @@ const EditOrderHook = ({ slug }: Props) => {
     const [isEdit, setIsEdit] = useState(true);
 
     const [isDataSelected, setIsDataSelected] = useState(false);
+
+    // const [isLoaded, setIisLoaded] = useState(false);
 
     const [selectedOptions, setSelectedOptions] = useState<any>();
 
@@ -112,6 +118,15 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
 
+    const [value, setValue] = useState<datePickerProps>({
+        startDate: null,
+        endDate: null,
+    });
+
+    const [suggestions, setSuggestions] = useState<DataPatientObject[]>([]);
+
+    // const [patientExist, setPatientExist] = useState(false);
+
     const oldDataOrder = ordersData?.find((order: any) => order.uid === slug);
 
     const oldPatientData = allPatients?.find(
@@ -126,14 +141,37 @@ const EditOrderHook = ({ slug }: Props) => {
             (item) => item.value === campus,
         )?.areas;
 
+        const areasOmitted: string[] = [
+            "qxdH34kAupnAPSuVIIvn",
+            "Wxdi41YreLGK0UiL2YQU",
+            area,
+        ];
+
+        const availableAreasIds = filteredIdAreas?.filter(
+            (item) => !areasOmitted?.includes(item),
+        );
+
         const result = allAreas?.filter((area) =>
-            filteredIdAreas?.includes(area.value),
+            availableAreasIds?.includes(area.value),
         );
         return result;
     };
 
     const changeHandler = (e: any) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
+    };
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPatientData({ ...patientData, [e.target.name]: value });
+        if (value.length > 0) {
+            const filteredPatients = allPatients?.filter(
+                (patient: DataPatientObject) => patient.id.includes(value),
+            );
+            setSuggestions(filteredPatients);
+        } else {
+            setSuggestions([]);
+        }
     };
 
     const selectChangeHandlerSentTo = (value: any) => {
@@ -152,12 +190,24 @@ const EditOrderHook = ({ slug }: Props) => {
         setPatientData({ ...patientData, ["idType"]: e?.target.value });
     };
 
+    const idChangeHandler = (id: string) => {
+        const patient = suggestions?.find(
+            (patient: DataPatientObject) => patient.id === id,
+        );
+
+        // patient && (setPatientData({ ...patient }), setPatientExist(true));
+        patient && setPatientData({ ...patient });
+        setSuggestions([]);
+    };
+
     const dateChangeHandler = (e: any) => {
-        const dateFormat = moment(e.target.value).format("YYYY-MM-DD");
+        setValue(e);
+        // const dateFormat = moment(e.target.value).format("YYYY-MM-DD");
+        const dateFormat = value ? e.startDate : "";
         setPatientData({
             ...patientData,
-            [e.target.name]: dateFormat,
-            ["age"]: `${calculateAge(dateFormat)}`,
+            ["birthDate"]: dateFormat,
+            ["age"]: dateFormat ? `${calculateAge(dateFormat)}` : "",
         });
     };
 
@@ -237,25 +287,9 @@ const EditOrderHook = ({ slug }: Props) => {
         };
 
         const orderImagesUrl: string[] = [];
-        if (files) {
-            for (const record of files) {
-                const urlName = record.name.split(".")[0];
-                uploadFileImage({
-                    folder: oldDataOrder.patientId,
-                    fileName: urlName.split(" ").join("_"),
-                    file: record,
-                    reference,
-                })
-                    .then((res: string) => {
-                        orderImagesUrl.push(res);
-                    })
-                    .catch((err: any) => {
-                        console.log(err);
-                    });
-            }
-        }
+        let newData = {};
 
-        return {
+        const data = {
             ...selectedOptions,
             ...oldDataOrder,
             uid: oldDataOrder?.uid,
@@ -271,17 +305,17 @@ const EditOrderHook = ({ slug }: Props) => {
                   userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
                 ? "0OaigBxmSmUa90dvawB1"
                 : oldDataOrder?.sendTo,
+            // : userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
+            // ? ""
             isActive: true,
             isDeleted: false,
             modifiedBy: {
                 userRolId: userRol?.uid,
                 userId: userData?.uid,
             },
-            orderImagesUrl: orderImagesUrl
-                ? orderImagesUrl
-                : oldDataOrder?.orderImagesUrl
-                ? oldDataOrder?.orderImagesUrl
-                : [],
+            // orderImagesUrl: oldDataOrder?.orderImagesUrl
+            //     ? [...oldDataOrder?.orderImagesUrl, ...orderImagesUrl]
+            //     : orderImagesUrl,
             diagnoses: diagnoses
                 ? diagnoses
                 : oldDataOrder?.diagnoses
@@ -325,6 +359,34 @@ const EditOrderHook = ({ slug }: Props) => {
                       },
                   ],
         };
+
+        if (files && sentToArea) {
+            for (const record of files) {
+                const urlName = record.name.split(".")[0];
+                uploadFileImage({
+                    folder: oldDataOrder.patientId,
+                    fileName: urlName.split(" ").join("_"),
+                    file: record,
+                    reference,
+                })
+                    .then((res: string) => {
+                        // orderImagesUrl.push(res);
+                        data.orderImagesUrl = data?.orderImagesUrl
+                            ? [...data?.orderImagesUrl, res]
+                            : [res];
+                        console.log("Dentro del File", data);
+                    })
+                    .catch((err: any) => {
+                        console.log(err);
+                    });
+            }
+        }
+
+        // newData = { ...data };
+
+        console.log("Antes de return", data);
+
+        return data;
     }, [
         campus,
         currentDate,
@@ -378,6 +440,7 @@ const EditOrderHook = ({ slug }: Props) => {
         e.preventDefault();
         e.stopPropagation();
         console.log("Editó");
+        // setIisLoaded(true);
         await uploadHandle().then(() => {
             setFormStep((prevStep: number) => prevStep + 1);
         });
@@ -395,6 +458,8 @@ const EditOrderHook = ({ slug }: Props) => {
             patientData,
             patientRef,
         ).then(async () => {
+            console.log("Antes de guardar", newDataOrder);
+
             await saveOneDocumentFb(documentEditOrderRef, newDataOrder).then(
                 (res) => {
                     setCurrentOrderId(parseInt(res.id));
@@ -475,6 +540,15 @@ const EditOrderHook = ({ slug }: Props) => {
     }, [saveNewPatientData]);
 
     useEffect(() => {
+        if (patientData?.birthDate) {
+            setValue({
+                startDate: patientData?.birthDate,
+                endDate: patientData?.birthDate,
+            });
+        }
+    }, [patientData?.birthDate]);
+
+    useEffect(() => {
         if (
             oldDataOrder?.sendTo === area &&
             newDataOrder &&
@@ -485,17 +559,19 @@ const EditOrderHook = ({ slug }: Props) => {
                 obj1: oldDataOrder,
                 obj2: newDataOrder,
             });
-            // console.log("entree", oldDataOrder, newDataOrder);
         }
     }, [area, newDataOrder, oldDataOrder, updateOrderData]);
 
     return {
         router,
+        value,
         area,
         uid,
         showSave,
         showHelp,
-        allAreas: _.sortBy(areasByCampus(), "label"),
+        allAreas: _.sortBy(areasByCampus(), (obj) =>
+            obj.label.toLocaleLowerCase(),
+        ),
         setShowHelp,
         formStep,
         setFormStep,
@@ -524,10 +600,15 @@ const EditOrderHook = ({ slug }: Props) => {
         handleChecks,
         fileName,
         handleFileChange,
-        allDiagnoses,
-        allDiagnostician,
+        allDiagnoses: _.sortBy(allDiagnoses, (obj) =>
+            obj.label.toLocaleLowerCase(),
+        ),
+        allDiagnostician: _.sortBy(allDiagnostician, (obj) => obj.label),
         selectChangeHandlerDiagnoses,
         selectChangeHandlerDiagnostician,
+        handleInputChange,
+        suggestions,
+        idChangeHandler,
     };
 };
 

@@ -87,18 +87,21 @@ const OrderHistorialHook = () => {
             // ),
             send: allDataOrders?.filter(
                 (order: any) =>
-                    // order.modifiedBy.userRolId === userRol?.uid &&
-                    order.status === "enviada",
+                    order.createdBy.userRol === userRol?.uid &&
+                    (order.status === "enviada" || order.status === "asignada"),
             ),
         },
         //Recepción
         Ll6KGdzqdtmLLk0D5jhk: {
             received: allDataOrders?.filter(
-                (order: any) => order.status === "enviada",
+                (order: any) =>
+                    // order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    order.status === "enviada",
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
-                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.createdBy.userRol === userRol?.uid &&
                     order.assignedCampus === campus &&
                     order.status === "asignada",
             ),
@@ -107,7 +110,9 @@ const OrderHistorialHook = () => {
         g9xGywTJG7WSJ5o1bTsH: {
             received: allDataOrders?.filter(
                 (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
+                    order.assignedCampus === campus &&
+                    order.status === "asignada" &&
+                    order.sendTo === area,
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
@@ -121,7 +126,9 @@ const OrderHistorialHook = () => {
         chbFffCzpRibjYRyoWIx: {
             received: allDataOrders?.filter(
                 (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
+                    order.assignedCampus === campus &&
+                    order.status === "asignada" &&
+                    order.sendTo === area,
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
@@ -135,7 +142,9 @@ const OrderHistorialHook = () => {
         V5iMSnSlSYsiSDFs4UpI: {
             received: allDataOrders?.filter(
                 (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
+                    order.assignedCampus === campus &&
+                    order.status === "asignada" &&
+                    order.sendTo === area,
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
@@ -149,7 +158,9 @@ const OrderHistorialHook = () => {
         VEGkDuMXs2mCGxXUPCWI: {
             received: allDataOrders?.filter(
                 (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
+                    order.assignedCampus === campus &&
+                    order.status === "asignada" &&
+                    order.sendTo === area,
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
@@ -163,14 +174,16 @@ const OrderHistorialHook = () => {
         ["9RZ9uhaiwMC7VcTyIzhl"]: {
             received: allDataOrders?.filter(
                 (order: any) =>
-                    order.status === "asignada" && order.sendTo === area,
+                    order.assignedCampus === campus &&
+                    order.status === "asignada" &&
+                    order.sendTo === area,
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     // order.assignedCampus === campus &&
                     // order.status === "asignada",
-                    order.sendTo !== area,
+                    order.sendTo === area,
             ),
         },
     };
@@ -280,7 +293,7 @@ const OrderHistorialHook = () => {
             return isModifiedByUser ? "leída" : "recibida";
         }
 
-        if (isSentToUserArea) {
+        if (isSentToUserArea && userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl") {
             return isModifiedByUser ? "leída" : "recibida";
         }
 
