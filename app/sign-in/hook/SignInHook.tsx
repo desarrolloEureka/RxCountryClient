@@ -4,6 +4,7 @@ import {
     getAllAreasOptions,
     getAllCampusOptions,
     getAllFunctionaries,
+    getAllPatients,
     getAllProfessionals,
     getAllRoles,
     updateDocumentsByIdFb,
@@ -35,12 +36,14 @@ const SignUpHook = () => {
 
     const [allFunctionaries, setAllFunctionaries] = useState<any>();
 
+    const [allPatients, setAllPatients] = useState<any>();
+
     const [allRoles, setAllRoles] = useState<any>();
 
     const [emailsProfessionalsData, setEmailsProfessionalsData] =
         useState<any>();
 
-    const [currentFunctionary, setCurrentFunctionary] = useState<any>();
+    const [currentUser, setCurrentUser] = useState<any>();
 
     const handleSignIn = async () => {
         if (!email || !password) {
@@ -67,10 +70,9 @@ const SignUpHook = () => {
         };
 
         const isUserFound =
-            (userLogin !== "Profesional" &&
-                currentFunctionary?.email === email) ||
-            (userLogin === "Profesional" &&
-                emailsProfessionalsData?.includes(email));
+            userLogin === "Profesional"
+                ? emailsProfessionalsData?.includes(email)
+                : currentUser?.email === email;
 
         if (isUserFound) {
             await authenticateUser(email, password);
@@ -82,16 +84,17 @@ const SignUpHook = () => {
     const changeHandler = (e: any) => {
         setData({ ...data, [e.target.name]: e.target.value });
 
-        const functionaryData = allFunctionaries?.find(
-            (user: any) => user.email === e.target.value,
-        );
-
-        e.target.name === "email" && setCurrentFunctionary(functionaryData);
+        const userLoginData =
+            allFunctionaries?.find(
+                (user: any) => user.email === e.target.value,
+            ) ||
+            allPatients?.find((user: any) => user.email === e.target.value);
 
         e.target.name === "email" &&
-            functionaryData &&
-            (setSelectedArea(functionaryData?.area),
-            setSelectedCampus(functionaryData?.campus));
+            userLoginData &&
+            (setCurrentUser(userLoginData),
+            setSelectedArea(userLoginData?.area),
+            setSelectedCampus(userLoginData?.campus));
     };
 
     const selectChangeHandlerCampus = (e: any) => {
@@ -106,6 +109,7 @@ const SignUpHook = () => {
         setData(loginData);
         setSelectedArea("");
         setSelectedCampus("");
+        setError("");
     };
 
     const getCampus = useCallback(async () => {
@@ -138,6 +142,12 @@ const SignUpHook = () => {
         allFunctionariesData && setAllFunctionaries(allFunctionariesData);
     }, []);
 
+    const getPatients = useCallback(async () => {
+        const allPatientsData = await getAllPatients();
+
+        allPatientsData && setAllPatients(allPatientsData);
+    }, []);
+
     const getRoles = useCallback(async () => {
         const allRolesData = await getAllRoles();
         allRolesData && setAllRoles(allRolesData);
@@ -148,9 +158,13 @@ const SignUpHook = () => {
         getRoles();
         getProfessionals();
         getFunctionaries();
-    }, [getCampus, getProfessionals, getFunctionaries, getRoles]);
+        getPatients();
+        // console.log("Primer use effect");
+    }, [getCampus, getProfessionals, getFunctionaries, getRoles, getPatients]);
 
     useEffect(() => {
+        // console.log("Segundo use effect");
+
         if (user && userData) {
             // setSignIn(true);
             // userData?.rol !== "Paciente"

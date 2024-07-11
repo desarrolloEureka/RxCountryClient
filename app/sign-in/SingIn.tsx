@@ -113,157 +113,132 @@ const SingIn = () => {
                                 <label htmlFor="radio-3">Paciente</label>
                             </div>
                         </div>
-                        {userLogin !== "Paciente" && (
+                        {/* {userLogin !== "Paciente" && (
+                            <> */}
+                        <div className="relative flex flex-col w-full px-16 space-y-2">
+                            <label htmlFor="email" className="text-white">
+                                Correo
+                            </label>
+                            <input
+                                value={email}
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                onChange={changeHandler}
+                            />
+                            <IoMail className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                        </div>
+
+                        <div className="relative flex flex-col w-full px-16 space-y-2">
+                            <label htmlFor="password" className="text-white">
+                                Contraseña
+                            </label>
+                            <input
+                                value={password}
+                                id="password"
+                                name="password"
+                                type={showPassword ? "text" : "password"}
+                                required
+                                className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres"
+                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                onChange={changeHandler}
+                            />
+                            <ImKey className="ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
+                            <Link
+                                href={""}
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                <span className="absolute right-2 bottom-4 text-company-blue mr-16 text-[1.5rem]">
+                                    {showPassword ? <IoEyeOff /> : <IoEye />}
+                                </span>
+                            </Link>
+                        </div>
+
+                        {userLogin === "Funcionario" && (
                             <>
                                 <div className="relative flex flex-col w-full px-16 space-y-2">
                                     <label
-                                        htmlFor="email"
+                                        htmlFor="campus"
                                         className="text-white"
                                     >
-                                        Correo
+                                        Seleccione Sede:
                                     </label>
-                                    <input
-                                        value={email}
-                                        id="email"
-                                        name="email"
-                                        type="email"
+                                    <select
+                                        value={selectedCampus}
+                                        id="campus"
                                         required
                                         className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
-                                        onChange={changeHandler}
-                                    />
-                                    <IoMail className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
-                                </div>
+                                        onChange={selectChangeHandlerCampus}
+                                    >
+                                        <option
+                                            value=""
+                                            hidden
+                                            className=" text-company-orange"
+                                        >
+                                            Seleccione...
+                                        </option>
+                                        {allCampus.map(
+                                            (option, index) =>
+                                                !_.isEmpty(option.areas) && (
+                                                    <option
+                                                        key={index}
+                                                        value={option.value}
+                                                        className="bg-black text-white"
+                                                    >
+                                                        {option.label}
+                                                    </option>
+                                                ),
+                                        )}
+                                    </select>
 
-                                <div className="relative flex flex-col w-full px-16 space-y-2">
-                                    <label
-                                        htmlFor="password"
-                                        className="text-white"
-                                    >
-                                        Contraseña
-                                    </label>
-                                    <input
-                                        value={password}
-                                        id="password"
-                                        name="password"
-                                        type={
-                                            showPassword ? "text" : "password"
-                                        }
-                                        required
-                                        className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
-                                        title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres"
-                                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                        onChange={changeHandler}
-                                    />
-                                    <ImKey className="ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
-                                    <Link
-                                        href={""}
-                                        onClick={() =>
-                                            setShowPassword(!showPassword)
-                                        }
-                                    >
-                                        <span className="absolute right-2 bottom-4 text-company-blue mr-16 text-[1.5rem]">
-                                            {showPassword ? (
-                                                <IoEyeOff />
-                                            ) : (
-                                                <IoEye />
-                                            )}
-                                        </span>
-                                    </Link>
+                                    <IoIosBusiness className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
                                 </div>
-                                {userLogin === "Funcionario" && (
-                                    <>
-                                        <div className="relative flex flex-col w-full px-16 space-y-2">
-                                            <label
-                                                htmlFor="campus"
-                                                className="text-white"
-                                            >
-                                                Seleccione Sede:
-                                            </label>
-                                            <select
-                                                value={selectedCampus}
-                                                id="campus"
-                                                required
-                                                className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
-                                                onChange={
-                                                    selectChangeHandlerCampus
+                                {selectedCampus && (
+                                    <div className="relative flex flex-col w-full px-16 space-y-2">
+                                        <label
+                                            htmlFor="area"
+                                            className="text-white"
+                                        >
+                                            Seleccione Área:
+                                        </label>
+                                        <select
+                                            value={selectedArea}
+                                            id="area"
+                                            required
+                                            className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                            onChange={selectChangeHandlerArea}
+                                        >
+                                            <option
+                                                value=""
+                                                hidden={
+                                                    !_.isEmpty(allAreasByCampus)
                                                 }
                                             >
-                                                <option
-                                                    value=""
-                                                    hidden
-                                                    className=" text-company-orange"
-                                                >
-                                                    Seleccione...
-                                                </option>
-                                                {allCampus.map(
-                                                    (option, index) =>
-                                                        !_.isEmpty(
-                                                            option.areas,
-                                                        ) && (
-                                                            <option
-                                                                key={index}
-                                                                value={
-                                                                    option.value
-                                                                }
-                                                                className="bg-black text-white"
-                                                            >
-                                                                {option.label}
-                                                            </option>
-                                                        ),
-                                                )}
-                                            </select>
-
-                                            <IoIosBusiness className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
-                                        </div>
-                                        {selectedCampus && (
-                                            <div className="relative flex flex-col w-full px-16 space-y-2">
-                                                <label
-                                                    htmlFor="area"
-                                                    className="text-white"
-                                                >
-                                                    Seleccione Área:
-                                                </label>
-                                                <select
-                                                    value={selectedArea}
-                                                    id="area"
-                                                    required
-                                                    className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
-                                                    onChange={
-                                                        selectChangeHandlerArea
-                                                    }
-                                                >
+                                                Seleccione...
+                                            </option>
+                                            {allAreasByCampus.map(
+                                                (option, index) => (
                                                     <option
-                                                        value=""
-                                                        hidden={
-                                                            !_.isEmpty(
-                                                                allAreasByCampus,
-                                                            )
-                                                        }
+                                                        key={index}
+                                                        value={option.value}
+                                                        className="bg-black text-white"
                                                     >
-                                                        Seleccione...
+                                                        {option.label}
                                                     </option>
-                                                    {allAreasByCampus.map(
-                                                        (option, index) => (
-                                                            <option
-                                                                key={index}
-                                                                value={
-                                                                    option.value
-                                                                }
-                                                                className="bg-black text-white"
-                                                            >
-                                                                {option.label}
-                                                            </option>
-                                                        ),
-                                                    )}
-                                                </select>
+                                                ),
+                                            )}
+                                        </select>
 
-                                                <MdWork className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
-                                            </div>
-                                        )}
-                                    </>
+                                        <MdWork className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                                    </div>
                                 )}
                             </>
                         )}
+                        {/* </>
+                        )} */}
                         {/* {!isPatient && (
                             <div className="flex justify-end items-center w-full px-16">
                                 <Link
@@ -274,7 +249,7 @@ const SingIn = () => {
                                 </Link>
                             </div>
                         )} */}
-                        {userLogin === "Paciente" && (
+                        {/* {userLogin === "Paciente" && (
                             <div className="flex flex-col w-full px-16 space-y-2">
                                 <label htmlFor="user" className="text-white">
                                     Usuario (Cédula)
@@ -287,7 +262,7 @@ const SingIn = () => {
                                     className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-2"
                                 />
                             </div>
-                        )}
+                        )} */}
                         {error && (
                             <div
                                 id="alert-additional-content-1"

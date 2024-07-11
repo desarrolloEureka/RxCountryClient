@@ -354,7 +354,7 @@ const NewOrderHook = (props?: Props) => {
             // Si el paciente es nuevo se crea en Auth de firebase
             await addPatient({
                 email: patientData.email,
-                password: patientData.id,
+                password: "Dmsdemo123",
                 accessTokenUser,
                 uid: documentPatientRef.id,
             }).then(async (res: any) => {

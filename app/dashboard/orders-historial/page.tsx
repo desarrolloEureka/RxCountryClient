@@ -104,7 +104,7 @@ const OrderHistorialPage = () => {
             <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
                 <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                     <DashboardHeader selectedMenuItem="orders-historial" />
-                    <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
+                    <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-screen mx-auto">
                         <Spinner
                             background="bg-transparent"
                             screenH="min-h-96"
@@ -119,7 +119,7 @@ const OrderHistorialPage = () => {
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="orders-historial" />
-                <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
+                <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-screen mx-auto">
                     <div className="flex justify-end items-center p-8">
                         <div
                             className={`grid ${
@@ -172,7 +172,9 @@ const OrderHistorialPage = () => {
                                             : " text-gray-400"
                                     }`}
                                 >
-                                    Ordenes Enviadas
+                                    {userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl"
+                                        ? "Ordenes Enviadas"
+                                        : "Ordenes Finalizadas"}
                                 </h3>
                             </div>
                         </div>
@@ -396,7 +398,10 @@ const OrderHistorialPage = () => {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     userRol?.uid !==
-                                                    item.modifiedBy.userRolId
+                                                        item.modifiedBy
+                                                            .userRolId &&
+                                                    userRol?.uid !==
+                                                        "ZWb0Zs42lnKOjetXH5lq"
                                                         ? setStatusOpenOrder(
                                                               item.uid,
                                                               //   item.timestamp,
@@ -414,7 +419,7 @@ const OrderHistorialPage = () => {
                                             </button>
                                         )}
                                         <Link
-                                            href="/dashboard/preview-order"
+                                            href={`/dashboard/preview-order/${item.uid}`}
                                             rel="noopener noreferrer"
                                             target="_blank"
                                         >

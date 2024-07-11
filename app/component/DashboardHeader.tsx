@@ -17,7 +17,7 @@ interface Props {
 
 export default function DashboardHeader({ selectedMenuItem }: Props) {
     const logOut = () => signOut(auth);
-    const { isActiveUser, userData, userRol, userCampus } = useAuth();
+    const { isActiveUser, userData, userRol, userCampus, user } = useAuth();
     const { name, lastName, urlPhoto } = userData;
 
     const [orderIconColor, setOrderIconColor] = useState("white");
@@ -43,8 +43,8 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
             </Link>
 
             <>
-                {(userRol.uid === "Ll6KGdzqdtmLLk0D5jhk" ||
-                    userRol.uid === "ZWb0Zs42lnKOjetXH5lq") && (
+                {(userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" ||
+                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq") && (
                     <Link
                         href={isActiveUser ? "/dashboard/new-order" : ""}
                         onMouseEnter={() => setOrderIconColor("#E9A225")}
@@ -65,25 +65,29 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                         <span>Crear Nueva Orden</span>
                     </Link>
                 )}
-                <Link
-                    href={isActiveUser ? "/dashboard/orders-historial" : ""}
-                    onMouseEnter={() => setOrderHistorialColor("#E9A225")}
-                    onMouseLeave={() => setOrderHistorialColor("white")}
-                    className={`flex flex-col justify-center h-36 items-center space-y-2 ${
-                        selectedMenuItem === "orders-historial"
-                            ? "text-company-orange border-b-2 border-company-orange"
-                            : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
-                    }`}
-                >
-                    <OrderHistorialIcon
-                        color={
+
+                {(userRol?.uid !== "" && userRol?.uid !== "ShHQKRuKJfxHcV70XSvC") && (
+                    <Link
+                        href={isActiveUser ? "/dashboard/orders-historial" : ""}
+                        onMouseEnter={() => setOrderHistorialColor("#E9A225")}
+                        onMouseLeave={() => setOrderHistorialColor("white")}
+                        className={`flex flex-col justify-center h-36 items-center space-y-2 ${
                             selectedMenuItem === "orders-historial"
-                                ? "#E9A225"
-                                : orderHistorialIconColor
-                        }
-                    />
-                    <span>Historial de Ordenes</span>
-                </Link>
+                                ? "text-company-orange border-b-2 border-company-orange"
+                                : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
+                        }`}
+                    >
+                        <OrderHistorialIcon
+                            color={
+                                selectedMenuItem === "orders-historial"
+                                    ? "#E9A225"
+                                    : orderHistorialIconColor
+                            }
+                        />
+                        <span>Historial de Ordenes</span>
+                    </Link>
+                )}
+
                 <Link
                     href={isActiveUser ? "/dashboard/images-query" : ""}
                     onMouseEnter={() => setImagesRequestIconColor("#E9A225")}

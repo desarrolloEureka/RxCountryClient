@@ -25,8 +25,8 @@ export default function Dashboard() {
     // }
 
     return (
-        <main className="min-h-screen w-full bg-home-image bg-cover">
-            <div className="bg-black bg-opacity-10 flex flex-col min-h-screen w-full p-16 space-y-16">
+        <main className="min-h-screen bg-black dark:bg-black w-full bg-home-image bg-cover">
+            <div className="flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader />
                 {/* {isActiveUser ? ( */}
                 <div className="mx-32 flex flex-col space-y-8">

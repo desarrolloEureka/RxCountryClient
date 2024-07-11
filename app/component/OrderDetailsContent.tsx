@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { IoArrowBackCircleOutline, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
-// import PreviewOrderPage from "../dashboard/preview-order/page";
 import { RolesBd } from "../types/roles";
 import Spinner from "./spinner/Spinner";
 
@@ -106,7 +105,7 @@ const OrderDetailsContent = ({
             {detailStep === 0 && (
                 <div className="mx-28 my-10">
                     <Link
-                        href="/dashboard/preview-order"
+                        href={`/dashboard/preview-order/${orderAndPatientData?.uid}`}
                         rel="noopener noreferrer"
                         target="_blank"
                     >

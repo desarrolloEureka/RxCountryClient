@@ -181,8 +181,8 @@ const OrderHistorialHook = () => {
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
-                    // order.assignedCampus === campus &&
-                    // order.status === "asignada",
+                    order.assignedCampus === campus &&
+                    order.status === "finalizada" &&
                     order.sendTo === area,
             ),
         },
@@ -289,12 +289,14 @@ const OrderHistorialHook = () => {
         const isEditingByUser = "";
         const isSentToUserArea = item.sendTo === area;
 
-        if (!item.sendTo && userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
-            return isModifiedByUser ? "leída" : "recibida";
-        }
+        if (item.status !== "finalizada") {
+            if (!item.sendTo && userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
+                return isModifiedByUser ? "leída" : "recibida";
+            }
 
-        if (isSentToUserArea && userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl") {
-            return isModifiedByUser ? "leída" : "recibida";
+            if (isSentToUserArea) {
+                return isModifiedByUser ? "leída" : "recibida";
+            }
         }
 
         return item.status;

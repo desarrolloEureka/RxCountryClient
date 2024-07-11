@@ -10,13 +10,19 @@ const ImageQueryDetails = ({
 }: {
     params: { slug: string };
 }) => {
-    const { orderAndPatientData } = ImagesDetailsHook({ slug });
+    const { orderAndPatientData, downloadImage, linkRef } = ImagesDetailsHook({
+        slug,
+    });
     return (
         <main className="relative min-h-[93vh] w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col min-h-[93vh] w-full p-16 space-y-16">
-                <DashboardHeader selectedMenuItem="images-query" />
+                {/* <DashboardHeader selectedMenuItem="images-query" /> */}
                 {/* <ImageQueryDetailsContent /> */}
-                <ImagesGroup orderAndPatientData={orderAndPatientData} />
+                <ImagesGroup
+                    orderAndPatientData={orderAndPatientData}
+                    downloadImage={downloadImage}
+                    linkRef={linkRef}
+                />
             </div>
         </main>
     );
