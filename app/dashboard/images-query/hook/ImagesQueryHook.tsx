@@ -18,7 +18,7 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 const ImagesQueryHook = () => {
     const router = useRouter();
     const { userData, userRol } = useAuth();
-    const { campus, area } = userData;
+    const { campus, area, uid } = userData;
 
     const [showFilter, setShowFilter] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
@@ -109,6 +109,14 @@ const ImagesQueryHook = () => {
             (order: any) =>
                 order.status === "finalizada" ||
                 !_.isEmpty(order.orderImagesUrl),
+        ),
+
+        //Paciente
+        ShHQKRuKJfxHcV70XSvC: allDataOrders?.filter(
+            (order: any) =>
+                order.status === "finalizada" &&
+                !_.isEmpty(order.orderImagesUrl) &&
+                order.patientId === uid,
         ),
     };
 

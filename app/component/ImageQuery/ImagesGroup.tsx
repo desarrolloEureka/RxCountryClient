@@ -6,9 +6,15 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 type Props = {
     orderAndPatientData: any;
+    downloadImage: (e: any) => Promise<void>;
+    linkRef: any;
 };
 
-const ImagesGroup = ({ orderAndPatientData }: Props) => {
+const ImagesGroup = ({
+    orderAndPatientData,
+    downloadImage,
+    linkRef,
+}: Props) => {
     const [imageSelected, setImageSelected] = useState(
         "https://via.placeholder.com/1920",
     );
@@ -23,12 +29,12 @@ const ImagesGroup = ({ orderAndPatientData }: Props) => {
         <div className="mx-auto flex rounded-[2.5rem] bg-company-gray w-full max-w-[1440px]">
             <div className="flex flex-col items-center w-72 p-12 space-y-8 bg-[#5E5E5E] rounded-[2.5rem]">
                 <div className="flex items-center space-x-8">
-                    <Link href={"/dashboard/images-query"}>
+                    {/* <Link href={"/dashboard/images-query"}>
                         <IoArrowBackCircleOutline
                             className="text-company-blue"
                             size={32}
                         />
-                    </Link>
+                    </Link> */}
                     <h2 className="text text-company-blue text-xl">Imágenes</h2>
                 </div>
                 <div className="flex flex-col space-y-4 overflow-auto h-full">
@@ -190,8 +196,11 @@ const ImagesGroup = ({ orderAndPatientData }: Props) => {
                 <Link
                     className="mx-auto rounded-xl bg-gray-500 hover:bg-gray-400 text-white flex justify-center items-center py-2 w-64"
                     target="_blank"
-                    href="https://via.placeholder.com/1920.png"
-                    download="tomografia-1.png"
+                    href={imageSelected}
+                    download="download.png"
+                    // href="https://via.placeholder.com/1920.png"
+                    // ref={linkRef}
+                    // onClick={downloadImage}
                 >
                     Descargar imagen
                 </Link>

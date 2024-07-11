@@ -84,6 +84,8 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [patientData, setPatientData] = useState(dataPatientObject);
 
+    const [oldPatientData, setOldPatientData] = useState(dataPatientObject);
+
     const [currentOrderId, setCurrentOrderId] = useState<number>(1);
 
     const [sentToArea, setSentToArea] = useState<string>("");
@@ -125,13 +127,9 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [suggestions, setSuggestions] = useState<DataPatientObject[]>([]);
 
-    // const [patientExist, setPatientExist] = useState(false);
-
     const oldDataOrder = ordersData?.find((order: any) => order.uid === slug);
 
-    const oldPatientData = allPatients?.find(
-        (patient: DataPatientObject) => patient.uid === oldDataOrder.patientId,
-    );
+    // const [patientExist, setPatientExist] = useState(false);
 
     const reference = "serviceOrders";
     const patientRef = "patients";
@@ -248,11 +246,16 @@ const EditOrderHook = ({ slug }: Props) => {
             position: "center",
             icon: "success",
             title: `Se guardó correctamente en la información del paciente ${patientData.name} ${patientData.lastName}`,
-            showConfirmButton: false,
-            timer: 1500,
             width: "900",
+            confirmButtonColor: "#1f2937",
             background: "#404040",
             color: "#e9a225",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setFormStep((prevStep: number) => prevStep + 1);
+                setOldPatientData(patientData);
+                setPatientData(patientData);
+            }
         });
     };
 
@@ -268,28 +271,119 @@ const EditOrderHook = ({ slug }: Props) => {
         });
     };
 
-    const newDataOrder = useMemo(() => {
-        const editedOrderStatusByRol: EditedOrderStatusByRol = {
-            //Profesional
-            ZWb0Zs42lnKOjetXH5lq: "enviada",
-            //Recepción
-            Ll6KGdzqdtmLLk0D5jhk: "asignada",
-            //Modelos
-            g9xGywTJG7WSJ5o1bTsH: "asignada",
-            //Laboratorio
-            chbFffCzpRibjYRyoWIx: "asignada",
-            //Radiología
-            V5iMSnSlSYsiSDFs4UpI: "asignada",
-            //Escáner Digitalasignada
-            VEGkDuMXs2mCGxXUPCWI: "asignada",
-            //Despacho
-            "9RZ9uhaiwMC7VcTyIzhl": "finalizada",
-        };
+    const editedOrderStatusByRol: EditedOrderStatusByRol = {
+        //Profesional
+        ZWb0Zs42lnKOjetXH5lq: "enviada",
+        //Recepción
+        Ll6KGdzqdtmLLk0D5jhk: "asignada",
+        //Modelos
+        g9xGywTJG7WSJ5o1bTsH: "asignada",
+        //Laboratorio
+        chbFffCzpRibjYRyoWIx: "asignada",
+        //Radiología
+        V5iMSnSlSYsiSDFs4UpI: "asignada",
+        //Escáner Digitalasignada
+        VEGkDuMXs2mCGxXUPCWI: "asignada",
+        //Despacho
+        "9RZ9uhaiwMC7VcTyIzhl": "finalizada",
+    };
 
+    // let newData = {};
+
+    // if (files && sentToArea) {
+
+    // }
+
+    // const newDataOrder = useMemo(() => {
+
+    //     return data;
+    // }, [
+    //     campus,
+    //     currentDate,
+    //     diagnoses,
+    //     diagnostician,
+    //     files,
+    //     oldDataOrder,
+    //     selectedOptions,
+    //     sentToArea,
+    //     userData?.uid,
+    //     userRol?.name,
+    //     userRol?.uid,
+    // ]);
+
+    /**
+     * Returns an array of property names that are unique to each object.
+     * @param obj1 The first object.
+     * @param obj2 The second object.
+     * @returns An object with properties that are unique for each object.
+     */
+    const updateOrder = ({ obj1, obj2 }: updateOrderProps) => {
+        // Get the union of keys from both objects
+        const keys = _.union(Object.keys(obj1), Object.keys(obj2));
+
+        // Find keys where the values are different
+        const changedKeys = keys.filter(
+            (key) => !_.isEqual(obj1[key], obj2[key]),
+        );
+
+        // Create an object with unique keys which will be saved
+        const objectOmittedProp = _.pick(obj2, changedKeys);
+
+        //Verify that the property has data
+        const objectOmittedPropIsEmpty = _.omitBy(objectOmittedProp, _.isEmpty);
+
+        //Ignores the property and returns the object
+        return _.omit(objectOmittedPropIsEmpty, "status");
+    };
+
+    const updateOrderData = useDebounce({
+        callback: async ({ obj1, obj2 }) => {
+            const orderRef = "serviceOrders";
+            const dataUpdated = updateOrder({ obj1, obj2 });
+            // console.log(dataUpdated);
+            // await updateDocumentsByIdF(obj2?.uid, dataUpdated, orderRef);
+        },
+        wait: 600,
+    });
+
+    const getOrdersUrls = async () => {
         const orderImagesUrl: string[] = [];
-        let newData = {};
+        for (const record of files) {
+            const urlName = record.name.split(".")[0];
+            await uploadFileImage({
+                folder: oldDataOrder.patientId,
+                fileName: urlName.split(" ").join("_"),
+                file: record,
+                reference,
+            })
+                .then((res: string) => {
+                    orderImagesUrl.push(res);
+                })
+                .catch((err: any) => {
+                    console.log(err);
+                });
+        }
+        return orderImagesUrl;
+    };
 
-        const data = {
+    const handleSendForm = async (e?: any) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Editó");
+        // setIisLoaded(true);
+        await uploadHandle();
+        // handleClose();
+    };
+
+    const uploadHandle = async () => {
+        const documentEditOrderRef: any = getDocumentRef(
+            reference,
+            oldDataOrder.uid,
+        );
+
+        const imagesUrls = await getOrdersUrls();
+
+        const newDataOrder = {
             ...selectedOptions,
             ...oldDataOrder,
             uid: oldDataOrder?.uid,
@@ -313,9 +407,9 @@ const EditOrderHook = ({ slug }: Props) => {
                 userRolId: userRol?.uid,
                 userId: userData?.uid,
             },
-            // orderImagesUrl: oldDataOrder?.orderImagesUrl
-            //     ? [...oldDataOrder?.orderImagesUrl, ...orderImagesUrl]
-            //     : orderImagesUrl,
+            orderImagesUrl: oldDataOrder?.orderImagesUrl
+                ? [...oldDataOrder?.orderImagesUrl, ...imagesUrls]
+                : imagesUrls,
             diagnoses: diagnoses
                 ? diagnoses
                 : oldDataOrder?.diagnoses
@@ -360,106 +454,11 @@ const EditOrderHook = ({ slug }: Props) => {
                   ],
         };
 
-        if (files && sentToArea) {
-            for (const record of files) {
-                const urlName = record.name.split(".")[0];
-                uploadFileImage({
-                    folder: oldDataOrder.patientId,
-                    fileName: urlName.split(" ").join("_"),
-                    file: record,
-                    reference,
-                })
-                    .then((res: string) => {
-                        // orderImagesUrl.push(res);
-                        data.orderImagesUrl = data?.orderImagesUrl
-                            ? [...data?.orderImagesUrl, res]
-                            : [res];
-                        console.log("Dentro del File", data);
-                    })
-                    .catch((err: any) => {
-                        console.log(err);
-                    });
-            }
-        }
-
-        // newData = { ...data };
-
-        console.log("Antes de return", data);
-
-        return data;
-    }, [
-        campus,
-        currentDate,
-        diagnoses,
-        diagnostician,
-        files,
-        oldDataOrder,
-        selectedOptions,
-        sentToArea,
-        userData?.uid,
-        userRol?.name,
-        userRol?.uid,
-    ]);
-
-    /**
-     * Returns an array of property names that are unique to each object.
-     * @param obj1 The first object.
-     * @param obj2 The second object.
-     * @returns An object with properties that are unique for each object.
-     */
-    const updateOrder = ({ obj1, obj2 }: updateOrderProps) => {
-        // Get the union of keys from both objects
-        const keys = _.union(Object.keys(obj1), Object.keys(obj2));
-
-        // Find keys where the values are different
-        const changedKeys = keys.filter(
-            (key) => !_.isEqual(obj1[key], obj2[key]),
-        );
-
-        // Create an object with unique keys which will be saved
-        const objectOmittedProp = _.pick(obj2, changedKeys);
-
-        //Verify that the property has data
-        const objectOmittedPropIsEmpty = _.omitBy(objectOmittedProp, _.isEmpty);
-
-        //Ignores the property and returns the object
-        return _.omit(objectOmittedPropIsEmpty, "status");
-    };
-
-    const updateOrderData = useDebounce({
-        callback: async ({ obj1, obj2 }) => {
-            const orderRef = "serviceOrders";
-            const dataUpdated = updateOrder({ obj1, obj2 });
-            // console.log(dataUpdated);
-            // await updateDocumentsByIdF(obj2?.uid, dataUpdated, orderRef);
-        },
-        wait: 600,
-    });
-
-    const handleSendForm = async (e?: any) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("Editó");
-        // setIisLoaded(true);
-        await uploadHandle().then(() => {
-            setFormStep((prevStep: number) => prevStep + 1);
-        });
-        // handleClose();
-    };
-
-    const uploadHandle = async () => {
-        const documentEditOrderRef: any = getDocumentRef(
-            reference,
-            oldDataOrder.uid,
-        );
-
         await updateDocumentsByIdFb(
             oldPatientData.uid,
             patientData,
             patientRef,
         ).then(async () => {
-            console.log("Antes de guardar", newDataOrder);
-
             await saveOneDocumentFb(documentEditOrderRef, newDataOrder).then(
                 (res) => {
                     setCurrentOrderId(parseInt(res.id));
@@ -511,6 +510,16 @@ const EditOrderHook = ({ slug }: Props) => {
             setShowSave(!_.isEqual(patientData, oldPatientData));
     }, [patientData, oldPatientData]);
 
+    const getData = useCallback(() => {
+        if (isEdit) {
+            const oldData = allPatients?.find(
+                (patient: DataPatientObject) =>
+                    patient.uid === oldDataOrder?.patientId,
+            );
+            oldData && (setOldPatientData(oldData), setPatientData(oldData));
+        }
+    }, [allPatients, isEdit, oldDataOrder?.patientId]);
+
     useEffect(() => {
         getOptions();
         getOrders();
@@ -530,10 +539,8 @@ const EditOrderHook = ({ slug }: Props) => {
     ]);
 
     useEffect(() => {
-        if (isEdit && oldPatientData) {
-            setPatientData(oldPatientData);
-        }
-    }, [isEdit, oldPatientData]);
+        getData();
+    }, [getData]);
 
     useEffect(() => {
         saveNewPatientData();
@@ -548,19 +555,19 @@ const EditOrderHook = ({ slug }: Props) => {
         }
     }, [patientData?.birthDate]);
 
-    useEffect(() => {
-        if (
-            oldDataOrder?.sendTo === area &&
-            newDataOrder &&
-            oldDataOrder &&
-            !_.isEqual(oldDataOrder, newDataOrder)
-        ) {
-            updateOrderData({
-                obj1: oldDataOrder,
-                obj2: newDataOrder,
-            });
-        }
-    }, [area, newDataOrder, oldDataOrder, updateOrderData]);
+    // useEffect(() => {
+    //     if (
+    //         oldDataOrder?.sendTo === area &&
+    //         newDataOrder &&
+    //         oldDataOrder &&
+    //         !_.isEqual(oldDataOrder, newDataOrder)
+    //     ) {
+    //         updateOrderData({
+    //             obj1: oldDataOrder,
+    //             obj2: newDataOrder,
+    //         });
+    //     }
+    // }, [area, newDataOrder, oldDataOrder, updateOrderData]);
 
     return {
         router,

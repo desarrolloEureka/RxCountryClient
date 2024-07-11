@@ -1,6 +1,10 @@
 export interface Order {
     orderId: string;
     patientId: string;
+    createdBy?: {
+        userId: string;
+        userRol: string;
+    };
 }
 
 export interface OrdersByRol {

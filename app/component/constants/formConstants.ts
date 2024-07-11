@@ -88,7 +88,7 @@ export const widthSlider = [
 export const titles: string[] = [
     "Información",
     "Radiografías",
-    "Tomografía Volumétrica 3D en las Sedes Country-Santa",
+    "Tomografía Volumétrica 3D en las Sedes Country-Santa Bárbara-Marly",
     "Diagnósticos/Modelos",
     "Fotografía Clínica",
     "Entregas",

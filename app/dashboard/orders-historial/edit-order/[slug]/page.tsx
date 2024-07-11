@@ -73,7 +73,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                 </div>
 
                                 {(formStep === 0 ||
-                                    userRol.uid === "ZWb0Zs42lnKOjetXH5lq") && (
+                                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq") && (
                                     <>
                                         <div className="flex flex-1 mx-20">
                                             <h3 className="text-company-blue text-3xl font-bold">
@@ -138,12 +138,12 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                     {formStep < 6 && (
                         <div
                             className={`flex flex-row items-center mt-8 overflow-visible  ${
-                                userRol.uid === "ZWb0Zs42lnKOjetXH5lq"
+                                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
                                     ? "bg-company-blue/25"
                                     : "bg-company-blue/70"
                             }  w-full h-[0.2rem]`}
                         >
-                            {userRol.uid === "ZWb0Zs42lnKOjetXH5lq" && (
+                            {userRol?.uid === "ZWb0Zs42lnKOjetXH5lq" && (
                                 <div
                                     className={`h-[0.3rem] ${
                                         widthSlider[formStep]
@@ -160,13 +160,13 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                     {formStep < 6 && (
                         <div
                             className={`flex ${
-                                userRol.uid === "ZWb0Zs42lnKOjetXH5lq" &&
+                                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq" &&
                                 formStep < 6
                                     ? "justify-between"
                                     : "justify-end"
                             } items-center p-8`}
                         >
-                            {userRol.uid === "ZWb0Zs42lnKOjetXH5lq" && (
+                            {userRol?.uid === "ZWb0Zs42lnKOjetXH5lq" && (
                                 <div className="text-white">
                                     Paso {formStep}/5
                                 </div>
@@ -197,7 +197,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                 ) : (
                                     <div
                                         onClick={() => {
-                                            userRol.uid !==
+                                            userRol?.uid !==
                                                 "ZWb0Zs42lnKOjetXH5lq" &&
                                             formStep === 1
                                                 ? setFormStep(6)

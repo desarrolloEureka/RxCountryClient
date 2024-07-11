@@ -20,7 +20,7 @@ const Spinner = ({
         >
             <div className="flex flex-col justify-center items-center center">
                 <div className={`${type} text-white`} role="status" />
-                <span className={`${visual && "visually-hidden"}`}>
+                <span className={`${visual && "visually-hidden"} text-white`}>
                     Cargando...
                 </span>
             </div>

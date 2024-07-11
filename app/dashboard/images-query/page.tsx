@@ -87,7 +87,7 @@ const ImageQueryPage = () => {
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="images-query" />
-                <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto">
+                <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-screen mx-auto">
                     <div className="flex justify-end items-center border-b-2 border-company-orange p-8">
                         <div className="flex flex-1 justify-center">
                             <h3 className="text-2xl text-company-orange">
@@ -338,7 +338,7 @@ const ImageQueryPage = () => {
                                     className="grid grid-cols-11 min-w-max border-t items-center text-white py-4 hover:bg-gray-700 px-12"
                                 >
                                     <div className="col flex justify-between text-nowrap text-company-blue w-48 px-14">
-                                        <button
+                                        {/* <button
                                             onClick={() =>
                                                 router.push(
                                                     // "/dashboard/images-query/details/123",
@@ -347,9 +347,16 @@ const ImageQueryPage = () => {
                                             }
                                         >
                                             <IoEye size={24} />
-                                        </button>
+                                        </button> */}
                                         <Link
-                                            href="/dashboard/preview-order"
+                                            href={`/dashboard/images-query/details/${item.uid}`}
+                                            rel="noopener noreferrer"
+                                            target="_blank"
+                                        >
+                                            <IoEye size={24} />
+                                        </Link>
+                                        <Link
+                                            href={`/dashboard/preview-order/${item.uid}`}
                                             rel="noopener noreferrer"
                                             target="_blank"
                                         >

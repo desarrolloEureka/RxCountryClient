@@ -402,6 +402,10 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <select
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 value={data && data?.idType}
                                 id="idType"
                                 name="idType"
@@ -439,6 +443,10 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 value={data && data?.id}
                                 type="text"
                                 name="id"
@@ -482,6 +490,10 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 value={data && data?.name}
                                 type="text"
                                 name="name"
@@ -500,6 +512,10 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 value={data && data?.lastName}
                                 type="text"
                                 name="lastName"
@@ -518,6 +534,10 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 value={data && data?.email}
                                 type="email"
                                 name="email"
@@ -536,6 +556,10 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <PhoneInput
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 autoFormat={false}
                                 inputProps={{
                                     id: "phone",
@@ -565,6 +589,10 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <Datepicker
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 startFrom={
                                     data && data?.birthDate
                                         ? new Date(data?.birthDate)
@@ -620,6 +648,10 @@ function StepByStep({
                                 Dirección&nbsp;(opcional)
                             </label>
                             <input
+                                disabled={
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                }
                                 value={data && data?.address}
                                 id="address"
                                 name="address"
@@ -644,7 +676,11 @@ function StepByStep({
                                     <input
                                         disabled={
                                             oldData?.createdBy.userRol ===
-                                            "ZWb0Zs42lnKOjetXH5lq"
+                                                "ZWb0Zs42lnKOjetXH5lq" ||
+                                            (userRol?.uid !==
+                                                "ZWb0Zs42lnKOjetXH5lq" &&
+                                                userRol?.uid !==
+                                                    "Ll6KGdzqdtmLLk0D5jhk")
                                         }
                                         value={professionalName}
                                         type="text"
@@ -756,7 +792,7 @@ function StepByStep({
                                         size={24}
                                     />
                                     <Link
-                                        href="/dashboard/preview-order"
+                                        href={`/dashboard/preview-order/${oldData?.uid}`}
                                         rel="noopener noreferrer"
                                         target="_blank"
                                     >
@@ -800,7 +836,7 @@ function StepByStep({
                                         <h3 className="text-company-orange text-xl font-bold">
                                             Diagnósticos
                                         </h3>
-                                        <div className="grid grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 gap-4">
                                             <SelectComponent
                                                 options={allDiagnoses}
                                                 selectChangeHandler={(e) => {
@@ -855,7 +891,7 @@ function StepByStep({
                                         <h3 className="text-company-orange text-xl font-bold">
                                             Diagnosticadores
                                         </h3>
-                                        <div className="grid grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 gap-4">
                                             <SelectComponent
                                                 options={allDiagnostician}
                                                 selectChangeHandler={(e) => {
@@ -977,13 +1013,13 @@ function StepByStep({
                             {(userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" ||
                                 userRol?.uid === "VEGkDuMXs2mCGxXUPCWI") && (
                                 <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
-                                    <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
+                                    <div className="col-span-1 flex flex-col space-y-8 py-4 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             Diagnósticos
                                         </h1>
-                                        <h2 className="text-company-orange">
+                                        {/* <h2 className="text-company-orange">
                                             Proceso Completado
-                                        </h2>
+                                        </h2> */}
                                         <div className="grid grid-cols-1 gap-4">
                                             <SelectComponent
                                                 options={allDiagnoses}
@@ -997,51 +1033,15 @@ function StepByStep({
                                                     diagnosesSelected
                                                 }
                                             />
-                                            {/* {diagnosisMachineTwo.map(
-                                                (option, index) => {
-                                                    return (
-                                                        <div
-                                                            key={index}
-                                                            className="col flex space-x-2 items-center"
-                                                        >
-                                                            <div
-                                                                onClick={() =>
-                                                                    handleChecks(
-                                                                        option,
-                                                                        selectedDiagnosisTwo,
-                                                                        setSelectedDiagnosisTwo,
-                                                                    )
-                                                                }
-                                                                className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                                    selectedDiagnosisTwo?.includes(
-                                                                        option,
-                                                                    )
-                                                                        ? "bg-company-orange"
-                                                                        : "bg-transparent"
-                                                                }`}
-                                                            >
-                                                                {selectedDiagnosisTwo?.includes(
-                                                                    option,
-                                                                ) && (
-                                                                    <IoCheckmark color="black" />
-                                                                )}
-                                                            </div>
-                                                            <span className="text-white">
-                                                                {option}
-                                                            </span>
-                                                        </div>
-                                                    );
-                                                },
-                                            )} */}
                                         </div>
                                     </div>
-                                    <div className="col-span-1 flex flex-col space-y-3 py-4 rounded-xl">
+                                    <div className="col-span-1 flex flex-col space-y-8 py-4 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             Diagnosticadores
                                         </h1>
-                                        <h2 className="text-company-orange">
+                                        {/* <h2 className="text-company-orange">
                                             Proceso Completado
-                                        </h2>
+                                        </h2> */}
                                         <div className="grid grid-cols-1 gap-4">
                                             <SelectComponent
                                                 options={allDiagnostician}
@@ -1055,40 +1055,6 @@ function StepByStep({
                                                     diagnosticianSelected
                                                 }
                                             />
-                                            {/* {suppliers.map((option, index) => {
-                                                return (
-                                                    <div
-                                                        key={index}
-                                                        className="col flex space-x-2 items-center"
-                                                    >
-                                                        <div
-                                                            onClick={() =>
-                                                                handleChecks(
-                                                                    option,
-                                                                    selectedSuppliers,
-                                                                    setSelectedSuppliers,
-                                                                )
-                                                            }
-                                                            className={`border border-white rounded-[4px] h-4 w-4 cursor-pointer ${
-                                                                selectedSuppliers?.includes(
-                                                                    option,
-                                                                )
-                                                                    ? "bg-company-orange"
-                                                                    : "bg-transparent"
-                                                            }`}
-                                                        >
-                                                            {selectedSuppliers?.includes(
-                                                                option,
-                                                            ) && (
-                                                                <IoCheckmark color="black" />
-                                                            )}
-                                                        </div>
-                                                        <span className="text-white">
-                                                            {option}
-                                                        </span>
-                                                    </div>
-                                                );
-                                            })} */}
                                         </div>
                                     </div>
                                     <div className="col-span-2 flex flex-col pb-5 space-y-4 w-60">
@@ -1124,35 +1090,6 @@ function StepByStep({
                                     </div>
                                 </div>
                             )}
-
-                            {/* <div className="flex flex-row items-center overflow-visible bg-company-blue/70 w-full h-[0.2rem]" />
-                                <div
-                                    className={`flex justify-end px-16 py-4 items-center space-x-8`}
-                                >
-                                    <button
-                                        onClick={() => {
-                                            router.replace(
-                                                "/dashboard/orders-historial",
-                                            );
-                                        }}
-                                        className="flex items-center cursor-pointer text-lg text-company-blue"
-                                    >
-                                        <BiChevronLeft size={32} />
-                                        <span>Atrás</span>
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setDetailStep(
-                                                (prevStep: number) =>
-                                                    prevStep + 1,
-                                            );
-                                        }}
-                                        className="flex items-center cursor-pointer text-lg text-company-blue"
-                                    >
-                                        <span>Siguiente</span>
-                                        <BiChevronRight size={32} />
-                                    </button>
-                                </div> */}
                         </>
                     )}
                 </>
@@ -2016,7 +1953,7 @@ function StepByStep({
                                     Examen Finalizado con Éxito
                                 </h2>
                             )}
-                            <p className="text-white w-[80%] xl:w-[80%] text-justify pb-10">
+                            <p className="text-white w-full text-justify pb-10">
                                 Lorem ipsum dolor sit amet, consectetuer
                                 adipiscing elit, sed diam nonummy nibh euismod
                                 tincidunt ut laoreet dolore magna aliquam erat
@@ -2046,7 +1983,7 @@ function StepByStep({
                                         />
                                     </div>
                                 )}
-                            <div className="grid grid-cols-1 xl:grid-cols-2 justify-center">
+                            <div className="flex justify-center items-center">
                                 <button
                                     type={areaSelected ? "button" : "submit"}
                                     onClick={(e) => {
@@ -2056,26 +1993,10 @@ function StepByStep({
                                 >
                                     <span>
                                         {userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl"
-                                            ? "Guardar y enviar"
+                                            ? "Guardar y Enviar"
                                             : "Finalizar Orden"}
                                     </span>
                                 </button>
-                                <Link
-                                    href="/dashboard/preview-order"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    <button
-                                        type="button"
-                                        className="w-48 h-10 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white cursor-pointer"
-                                    >
-                                        <IoEye
-                                            className="text-company-blue"
-                                            size={24}
-                                        />
-                                        <span>Previsualizar</span>
-                                    </button>
-                                </Link>
                             </div>
                             <div className="flex flex-row pt-10 space-x-10">
                                 <div
