@@ -6,6 +6,8 @@
 .pnp.js
 .yarn/install-state.gz
 
+node_modules
+build
 # testing
 /coverage
 
@@ -17,6 +19,7 @@
 /build
 
 # misc
+serviceAccountKey.json
 .DS_Store
 *.pem
 
@@ -29,12 +32,26 @@ yarn-error.log*
 .env*.local
 .env.local
 .env.development.local
+.env.development
 .env.test.local
 .env.production.local
+.env.production
 
 # vercel
 .vercel
 
+/.idea
+/.vscode/
+/.vercel/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+node_modules
+
+### VisualStudioCode ###
+.vscode/*      # Maybe .vscode/**/* instead - see comments
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
