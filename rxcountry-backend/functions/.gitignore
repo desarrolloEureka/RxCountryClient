@@ -1,2 +1,7 @@
+# Dependency directories
 node_modules/
+
 *.local
+
+# serviceAccountKey file
+serviceAccountKey.json
