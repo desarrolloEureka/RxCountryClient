@@ -111,7 +111,8 @@ const OrderHistorialHook = () => {
             received: allDataOrders?.filter(
                 (order: any) =>
                     order.assignedCampus === campus &&
-                    order.status === "asignada" &&
+                    (order.status === "asignada" ||
+                        order.status === "reasignada") &&
                     order.sendTo === area,
             ),
             send: allDataOrders?.filter(
@@ -127,7 +128,8 @@ const OrderHistorialHook = () => {
             received: allDataOrders?.filter(
                 (order: any) =>
                     order.assignedCampus === campus &&
-                    order.status === "asignada" &&
+                    (order.status === "asignada" ||
+                        order.status === "reasignada") &&
                     order.sendTo === area,
             ),
             send: allDataOrders?.filter(
@@ -143,7 +145,8 @@ const OrderHistorialHook = () => {
             received: allDataOrders?.filter(
                 (order: any) =>
                     order.assignedCampus === campus &&
-                    order.status === "asignada" &&
+                    (order.status === "asignada" ||
+                        order.status === "reasignada") &&
                     order.sendTo === area,
             ),
             send: allDataOrders?.filter(
@@ -159,7 +162,8 @@ const OrderHistorialHook = () => {
             received: allDataOrders?.filter(
                 (order: any) =>
                     order.assignedCampus === campus &&
-                    order.status === "asignada" &&
+                    (order.status === "asignada" ||
+                        order.status === "reasignada") &&
                     order.sendTo === area,
             ),
             send: allDataOrders?.filter(
@@ -184,6 +188,13 @@ const OrderHistorialHook = () => {
                     order.assignedCampus === campus &&
                     order.status === "finalizada" &&
                     order.sendTo === area,
+            ),
+            reassigned: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    order.assignedCampus === campus &&
+                    order.status === "reasignada" &&
+                    order.sendTo !== area,
             ),
         },
     };

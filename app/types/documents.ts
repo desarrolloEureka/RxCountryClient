@@ -28,3 +28,17 @@ export type Options = {
     volumetricTomography: string[];
 };
 
+export type EmailContentProps = {
+    to: string;
+    message: {
+        subject: string;
+        text: string;
+        html: string;
+    };
+};
+
+export type SendCustomEmailProps = {
+    email: string;
+    subject: string;
+    body: string;
+};

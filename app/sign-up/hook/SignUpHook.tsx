@@ -13,13 +13,10 @@ import {
     saveOneDocumentFb,
 } from "@/app/firebase/documents";
 import { uploadFile } from "@/app/firebase/files";
-import {
-    registerFirebase,
-    sendEmailToUser,
-    updateProfileFirebase,
-} from "@/app/firebase/user";
+import { registerFirebase, updateProfileFirebase } from "@/app/firebase/user";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { handleSendWelcomeEmail } from "../../../lib/brevo/handlers/actions";
 
 type Props = {};
 
@@ -131,7 +128,7 @@ const SignUpHook = (props?: Props) => {
                     setIsSendData(true);
 
                     const user = newUser.auth.currentUser;
-                    updateProfileFirebase(
+                    await updateProfileFirebase(
                         user,
                         `${data.name} ${data.lastName}`,
                     );
@@ -158,37 +155,14 @@ const SignUpHook = (props?: Props) => {
                             });
                     }
 
-                    var actionCodeSettings = {
-                        url: "https://rx-country-client.vercel.app/sign-in",
-                        // url:
-                        //     "https://localhost:3001/sign-in/?email=" +
-                        //     newUser.email,
-                        // iOS: {
-                        //     bundleId: "com.example.ios",
-                        // },
-                        // android: {
-                        //     packageName: "com.example.android",
-                        //     installApp: true,
-                        //     minimumVersion: "12",
-                        // },
-                        handleCodeInApp: false,
-                        // When multiple custom dynamic link domains are defined, specify which
-                        // one to use.
-                        // dynamicLinkDomain: "example.page.link",
-                    };
-
-                    saveOneDocumentFb(documentRef, {
+                    await saveOneDocumentFb(documentRef, {
                         ...rest,
                         urlPhoto: newUrlPhoto,
                         uid: newUser.uid,
-                    }).then(() => {
+                    }).then(async () => {
                         setIsSendData(false);
-                        console.log("entre en el then de saveOneDocument");
-                        const user = newUser.auth.currentUser;
-                        sendEmailToUser(user, actionCodeSettings);
-                        //     .then(() => {
-                        //     router.push("/sign-up/verification-email-send");
-                        // });
+
+                        await handleSendWelcomeEmail(data);
                     });
                 }
                 setSignUp(true);
