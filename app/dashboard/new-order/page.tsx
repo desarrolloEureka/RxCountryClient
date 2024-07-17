@@ -14,7 +14,7 @@ const NewOrderPage = () => {
         userData,
         value,
         showHelp,
-        uid,
+        uidUser,
         allAreas,
         setShowHelp,
         formStep,
@@ -41,6 +41,8 @@ const NewOrderPage = () => {
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
+        handleAreaList,
+        areaList,
     } = NewOrderHook();
 
     return (
@@ -86,7 +88,7 @@ const NewOrderPage = () => {
                     <StepByStep
                         userData={userData}
                         value={value}
-                        uid={uid}
+                        uidUser={uidUser}
                         formStep={formStep}
                         allAreas={allAreas}
                         wrapperRef={wrapperRef}
@@ -108,7 +110,10 @@ const NewOrderPage = () => {
                         idChangeHandler={idChangeHandler}
                         handleClose={handleClose}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
+                        handleAreaList={handleAreaList}
+                        areaList={areaList}
                         handleChecks={() => {}}
+                        handleCheckOrderIncomplete={() => {}}
                         selectChangeHandlerDiagnoses={() => {}}
                         selectChangeHandlerDiagnostician={() => {}}
                     />

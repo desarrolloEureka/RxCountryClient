@@ -27,10 +27,11 @@ import {
     updateOrderProps,
 } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
+import { handleSendFinishedOrder } from "@/lib/brevo/handlers/actions";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 type Props = {
@@ -76,6 +77,8 @@ const EditOrderHook = ({ slug }: Props) => {
 
     // const [isLoaded, setIisLoaded] = useState(false);
 
+    const [isOrderIncomplete, setIsOrderIncomplete] = useState<boolean>(false);
+
     const [selectedOptions, setSelectedOptions] = useState<any>();
 
     const [optionsData, setOptionsData] = useState<any>(dataAllOptions);
@@ -89,6 +92,8 @@ const EditOrderHook = ({ slug }: Props) => {
     const [currentOrderId, setCurrentOrderId] = useState<number>(1);
 
     const [sentToArea, setSentToArea] = useState<string>("");
+
+    const [areaList, setAreaList] = useState<string[]>([]);
 
     const [diagnoses, setDiagnoses] = useState<string>("");
 
@@ -176,6 +181,13 @@ const EditOrderHook = ({ slug }: Props) => {
         setSentToArea(value);
     };
 
+    const handleAreaList = (value: { label: string; value: string }[]) => {
+        const list: string[] = value.map(
+            (item: { value: string; label: string }) => item.value,
+        );
+        setAreaList(list);
+    };
+
     const selectChangeHandlerDiagnoses = (value: any) => {
         setDiagnoses(value);
     };
@@ -241,6 +253,11 @@ const EditOrderHook = ({ slug }: Props) => {
         }
     };
 
+    const handleCheckOrderIncomplete = (e: any) => {
+        const value = e.target.checked;
+        setIsOrderIncomplete(value);
+    };
+
     const confirmAlert = () => {
         Swal.fire({
             position: "center",
@@ -285,31 +302,8 @@ const EditOrderHook = ({ slug }: Props) => {
         //Escáner Digitalasignada
         VEGkDuMXs2mCGxXUPCWI: "asignada",
         //Despacho
-        "9RZ9uhaiwMC7VcTyIzhl": "finalizada",
+        "9RZ9uhaiwMC7VcTyIzhl": isOrderIncomplete ? "reasignada" : "finalizada",
     };
-
-    // let newData = {};
-
-    // if (files && sentToArea) {
-
-    // }
-
-    // const newDataOrder = useMemo(() => {
-
-    //     return data;
-    // }, [
-    //     campus,
-    //     currentDate,
-    //     diagnoses,
-    //     diagnostician,
-    //     files,
-    //     oldDataOrder,
-    //     selectedOptions,
-    //     sentToArea,
-    //     userData?.uid,
-    //     userRol?.name,
-    //     userRol?.uid,
-    // ]);
 
     /**
      * Returns an array of property names that are unique to each object.
@@ -383,16 +377,16 @@ const EditOrderHook = ({ slug }: Props) => {
 
         const imagesUrls = await getOrdersUrls();
 
-        const newDataOrder = {
+        const newOrderData = {
             ...selectedOptions,
             ...oldDataOrder,
             uid: oldDataOrder?.uid,
             patientId: oldDataOrder?.patientId,
             status: editedOrderStatusByRol[userRol?.uid!],
-            // status: oldDataOrder.status ? oldDataOrder.status : "enviada",
-            // sendTo: sentToArea ? sentToArea : oldDataOrder.sendTo,
             assignedCampus: campus ? campus : "",
-            timestamp: oldDataOrder?.timestamp,
+            areaList: oldDataOrder?.areaList
+                ? oldDataOrder?.areaList
+                : areaList,
             sendTo: sentToArea
                 ? sentToArea
                 : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
@@ -454,13 +448,26 @@ const EditOrderHook = ({ slug }: Props) => {
                   ],
         };
 
+        const patientAndOrderData = {
+            ...newOrderData,
+            name: patientData.name,
+            lastName: patientData.lastName,
+            email: patientData.email,
+            orderDate: moment(newOrderData.timestamp).format(
+                "DD/MM/YYYY HH:mm:ss",
+            ),
+        };
+
         await updateDocumentsByIdFb(
             oldPatientData.uid,
             patientData,
             patientRef,
         ).then(async () => {
-            await saveOneDocumentFb(documentEditOrderRef, newDataOrder).then(
-                (res) => {
+            await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
+                async (res) => {
+                    !isOrderIncomplete &&
+                        userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
+                        (await handleSendFinishedOrder(patientAndOrderData));
                     setCurrentOrderId(parseInt(res.id));
                     setShowSave(false);
                     confirmAlert();
@@ -573,7 +580,7 @@ const EditOrderHook = ({ slug }: Props) => {
         router,
         value,
         area,
-        uid,
+        uidUser: uid,
         showSave,
         showHelp,
         allAreas: _.sortBy(areasByCampus(), (obj) =>
@@ -616,6 +623,10 @@ const EditOrderHook = ({ slug }: Props) => {
         handleInputChange,
         suggestions,
         idChangeHandler,
+        isOrderIncomplete,
+        handleCheckOrderIncomplete,
+        handleAreaList,
+        areaList,
     };
 };
 

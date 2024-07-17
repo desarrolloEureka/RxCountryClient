@@ -15,7 +15,7 @@ import EditOrderHook from "../hook/EditOrderHook";
 
 const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
-        uid,
+        uidUser,
         value,
         router,
         showSave,
@@ -50,6 +50,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         handleInputChange,
         suggestions,
         idChangeHandler,
+        isOrderIncomplete,
+        handleCheckOrderIncomplete,
+        handleAreaList,
+        areaList,
     } = EditOrderHook({ slug });
 
     return (
@@ -73,7 +77,8 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                 </div>
 
                                 {(formStep === 0 ||
-                                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq") && (
+                                    userRol?.uid ===
+                                        "ZWb0Zs42lnKOjetXH5lq") && (
                                     <>
                                         <div className="flex flex-1 mx-20">
                                             <h3 className="text-company-blue text-3xl font-bold">
@@ -100,7 +105,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
 
                     <StepByStep
                         value={value}
-                        uid={uid}
+                        uidUser={uidUser}
                         oldData={oldData}
                         formStep={formStep}
                         setFormStep={setFormStep}
@@ -133,6 +138,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         }
                         handleInputChange={handleInputChange}
                         suggestions={suggestions}
+                        isOrderIncomplete={isOrderIncomplete}
+                        handleCheckOrderIncomplete={handleCheckOrderIncomplete}
+                        handleAreaList={handleAreaList}
+                        areaList={areaList}
                     />
 
                     {formStep < 6 && (
@@ -230,7 +239,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                 <>
                     <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
                         <div className="flex justify-end items-center">
-                            <button type="button" onClick={() => setShowHelp(false)}>
+                            <button
+                                type="button"
+                                onClick={() => setShowHelp(false)}
+                            >
                                 <MdClose color="gray" size={24} />
                             </button>
                         </div>

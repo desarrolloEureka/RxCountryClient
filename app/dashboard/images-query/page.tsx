@@ -8,7 +8,7 @@ import {
     IoIosArrowBack,
     IoIosArrowForward,
     IoIosMore,
-    IoMdSearch
+    IoMdSearch,
 } from "react-icons/io";
 import { IoAlertCircleSharp, IoEye } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
@@ -55,11 +55,8 @@ const ImageQueryPage = () => {
     const modalLastUpdate = (item: any) => {
         const swalWithCustomClass = Swal.mixin({
             customClass: {
-                // confirmButton:
-                //     "bg-company-blue text-white px-3 py-2 rounded-xl",
                 title: "text-company-orange",
             },
-            // buttonsStyling: false,
         });
         swalWithCustomClass.fire({
             position: "center",
@@ -149,30 +146,7 @@ const ImageQueryPage = () => {
                                     i18n={"es"}
                                 />
                             </div>
-                            {/* <div className="relative col flex flex-col space-y-2 w-full">
-                                <label
-                                    htmlFor="search"
-                                    className="text-white text-sm"
-                                >
-                                    Desde:
-                                </label>
-                                <input
-                                    type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
-                                />
-                            </div>
-                            <div className="relative col flex flex-col space-y-2 w-full">
-                                <label
-                                    htmlFor="search"
-                                    className="text-white text-sm"
-                                >
-                                    Hasta:
-                                </label>
-                                <input
-                                    type="date"
-                                    className="bg-white rounded-xl shadow-lg h-10 px-4 text-black"
-                                />
-                            </div> */}
+
                             {showFilter && (
                                 <div className="absolute top-7 left-4 bg-white shadow-xl rounded-2xl p-4 w-72">
                                     <div className="flex justify-between items-ce">
@@ -297,57 +271,13 @@ const ImageQueryPage = () => {
                             </div>
                         </div>
 
-                        {/* <div className="grid grid-cols-12 items-center text-company-orange py-4">
-                            <div className="col-span-2 flex flex-col text-center">
-                                <span>Detalle</span>
-                            </div>
-                            <div className="col">
-                                <span># Orden</span>
-                            </div>
-                            <div className="col">
-                                <span>Fecha</span>
-                            </div>
-                            <div className="col">
-                                <span>Estado</span>
-                            </div>
-                            <div className="col">
-                                <span>Cédula</span>
-                            </div>
-                            <div className="col">
-                                <span>Nombre</span>
-                            </div>
-                            <div className="col">
-                                <span>Apellido</span>
-                            </div>
-                            <div className="col-span-2">
-                                <span>Correo</span>
-                            </div>
-                            <div className="col">
-                                <span>Teléfono</span>
-                            </div>
-                        </div> */}
                         {filteredOrders?.map((item: any, index: number) => {
                             return (
                                 <div
                                     key={index}
-                                    // onClick={() =>
-                                    //     router.push(
-                                    //         "/dashboard/images-query/details/123",
-                                    //     )
-                                    // }
                                     className="grid grid-cols-11 min-w-max border-t items-center text-white py-4 hover:bg-gray-700 px-12"
                                 >
                                     <div className="col flex justify-between text-nowrap text-company-blue w-48 px-14">
-                                        {/* <button
-                                            onClick={() =>
-                                                router.push(
-                                                    // "/dashboard/images-query/details/123",
-                                                    `/dashboard/images-query/details/${item.uid}`,
-                                                )
-                                            }
-                                        >
-                                            <IoEye size={24} />
-                                        </button> */}
                                         <Link
                                             href={`/dashboard/images-query/details/${item.uid}`}
                                             rel="noopener noreferrer"

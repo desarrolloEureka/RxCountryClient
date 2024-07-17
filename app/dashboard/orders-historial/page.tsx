@@ -10,17 +10,17 @@ import {
     IoIosArrowBack,
     IoIosArrowForward,
     IoIosEye,
+    IoIosMore,
     IoIosNotifications,
     IoMdSearch,
 } from "react-icons/io";
 import { IoAlertCircleSharp } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
 import { MdClose, MdPictureAsPdf } from "react-icons/md";
-import { IoIosMore } from "react-icons/io";
 import { RiEditBoxFill } from "react-icons/ri";
 import Datepicker from "react-tailwindcss-datepicker";
-import OrderHistorialHook from "./hook/OrderHistorialHook";
 import Swal from "sweetalert2";
+import OrderHistorialHook from "./hook/OrderHistorialHook";
 
 const OrderHistorialPage = () => {
     const {
@@ -71,11 +71,8 @@ const OrderHistorialPage = () => {
     const modalLastUpdate = (item: any) => {
         const swalWithCustomClass = Swal.mixin({
             customClass: {
-                // confirmButton:
-                //     "bg-company-blue text-white px-3 py-2 rounded-xl",
                 title: "text-company-orange",
             },
-            // buttonsStyling: false,
         });
         swalWithCustomClass.fire({
             position: "center",
@@ -125,9 +122,11 @@ const OrderHistorialPage = () => {
                             className={`grid ${
                                 userRol?.uid &&
                                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
-                                    ? "grid-cols-2"
-                                    : "grid-cols-1"
-                            } flex-1 gap-52 xl:gap-80 `}
+                                    ? userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
+                                        ? "grid-cols-3"
+                                        : "grid-cols-2 gap-52 xl:gap-80"
+                                    : "grid-cols-1 gap-52 xl:gap-80"
+                            } flex-1`}
                         >
                             {userRol?.uid &&
                                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" && (
@@ -158,11 +157,12 @@ const OrderHistorialPage = () => {
                                         setSelectedOrder("send");
                                     setCurrentPage(1);
                                 }}
-                                className={`col flex flex-col ${
+                                className={`col flex flex-col cursor-pointer ${
                                     userRol?.uid &&
-                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
-                                        ? "cursor-pointer items-start"
-                                        : "items-center"
+                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                    userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl"
+                                        ? "items-start"
+                                        : " items-center"
                                 }`}
                             >
                                 <h3
@@ -177,6 +177,30 @@ const OrderHistorialPage = () => {
                                         : "Ordenes Finalizadas"}
                                 </h3>
                             </div>
+
+                            {userRol?.uid &&
+                                userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
+                                    <div
+                                        onClick={() => {
+                                            userRol?.uid &&
+                                                userRol?.uid !==
+                                                    "ZWb0Zs42lnKOjetXH5lq" &&
+                                                setSelectedOrder("reassigned");
+                                            setCurrentPage(1);
+                                        }}
+                                        className={`col flex flex-col cursor-pointer items-start`}
+                                    >
+                                        <h3
+                                            className={`text-2xl ${
+                                                selectedOrder === "reassigned"
+                                                    ? "text-company-orange"
+                                                    : " text-gray-400"
+                                            }`}
+                                        >
+                                            Ordenes Reenviadas
+                                        </h3>
+                                    </div>
+                                )}
                         </div>
                         <div className="flex flex-col items-center space-y-2 text-white text-sm">
                             <button
@@ -507,77 +531,6 @@ const OrderHistorialPage = () => {
                                 </div>
                             );
                         })}
-                        {/* {Array.from({
-                                    length: 3,
-                                }).map((item, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            onClick={() => {
-                                                router.push(
-                                                    "/dashboard/orders-historial/details/hola",
-                                                );
-                                            }}
-                                            className="grid grid-cols-12 cursor-pointer items-center text-white py-4 hover:bg-gray-700"
-                                        >
-                                            <div className="col-span-2 flex justify-between text-center text-company-blue px-16">
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                    }}
-                                                >
-                                                    <IoIosNotifications
-                                                        size={24}
-                                                    />
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        router.push(
-                                                            "/dashboard/new-order",
-                                                        );
-                                                        e.stopPropagation();
-                                                    }}
-                                                >
-                                                    <RiEditBoxFill size={24} />
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        router.replace(
-                                                            "/dashboard/new-order/preview-order",
-                                                        );
-                                                        e.stopPropagation();
-                                                    }}
-                                                >
-                                                    <MdPictureAsPdf size={24} />
-                                                </button>
-                                            </div>
-                                            <div className="col">
-                                                <span>#123456</span>
-                                            </div>
-                                            <div className="col">
-                                                <span>06/03/2024</span>
-                                            </div>
-                                            <div className="col">
-                                                <span>Diagnóstico</span>
-                                            </div>
-                                            <div className="col">
-                                                <span>12345644</span>
-                                            </div>
-                                            <div className="col">
-                                                <span>Jhon</span>
-                                            </div>
-                                            <div className="col">
-                                                <span>Doe</span>
-                                            </div>
-                                            <div className="col-span-2">
-                                                <span>demo@example.com</span>
-                                            </div>
-                                            <div className="col">
-                                                <span>3216549870</span>
-                                            </div>
-                                        </div>
-                                    );
-                                })} */}
                     </div>
 
                     <div className="flex items-center px-16 py-4 border-t-2 border-company-blue">
