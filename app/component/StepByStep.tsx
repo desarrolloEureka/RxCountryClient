@@ -83,9 +83,9 @@ interface Props {
     allDiagnostician?: DiagnosticianSelector[];
     selectChangeHandlerDiagnoses: (value: any) => void;
     selectChangeHandlerDiagnostician: (value: any) => void;
-    uploadUrl: string;
-    urlWeTransfer: string;
-    urlDropbox: string;
+    uploadUrl?: string;
+    urlWeTransfer?: string;
+    urlDropbox?: string;
 }
 
 function StepByStep({
