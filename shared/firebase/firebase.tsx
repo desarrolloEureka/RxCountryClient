@@ -21,12 +21,12 @@ const firebaseConfig = {
         "https://us-central1-rxcountry-backoffice.cloudfunctions.net/api",
 };
 
-const firebaseConfigDev = JSON.parse(
-    process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
-);
-const firebaseConfigPro = JSON.parse(
-    process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
-);
+// const firebaseConfigDev = JSON.parse(
+//     process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
+// );
+// const firebaseConfigPro = JSON.parse(
+//     process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
+// );
 
 // const firebaseConfig =
 //     process.env.NODE_ENV === "production"
