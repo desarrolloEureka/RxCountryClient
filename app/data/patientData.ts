@@ -15,7 +15,7 @@ export const dataPatientObject = {
     state: "",
     city: "",
     email: "",
-    rol: "Paciente",
+    rol: "ShHQKRuKJfxHcV70XSvC",
     urlPhoto: "",
     serviceOrders: [],
     timestamp: new Date(),
