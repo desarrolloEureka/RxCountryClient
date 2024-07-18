@@ -17,7 +17,7 @@ import {
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 // import { EditedOrderStatusByRol } from "@/app/types/order";
-import { uploadFileImage } from "@/app/firebase/files";
+import { uploadFileImage, uploadFilePDF } from "@/app/firebase/files";
 import useDebounce from "@/app/hook/useDebounce";
 import { DiagnosesSelector } from "@/app/types/diagnoses";
 import { DiagnosticianSelector } from "@/app/types/diagnostician";
@@ -99,6 +99,12 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [diagnostician, setDiagnostician] = useState<string>("");
 
+    const [uploadUrl, setUploadUrl] = useState<string>("");
+
+    const [urlWeTransfer, setUrlWeTransfer] = useState<string>("");
+
+    const [urlDropbox, setUrlDropbox] = useState<string>("");
+
     // const [error, setError] = useState(false);
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
@@ -117,7 +123,9 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [fileName, setFileName] = useState("SUBIR ARCHIVO");
 
-    const [files, setFiles] = useState<any[]>([]);
+    const [errorImg, setErrorImg] = useState<string | null>(null);
+
+    const [files, setFiles] = useState<File[]>([]);
 
     const [selectedDiagnosisTwo, setSelectedDiagnosisTwo] = useState<string[]>(
         [],
@@ -144,11 +152,29 @@ const EditOrderHook = ({ slug }: Props) => {
             (item) => item.value === campus,
         )?.areas;
 
-        const areasOmitted: string[] = [
-            "qxdH34kAupnAPSuVIIvn",
-            "Wxdi41YreLGK0UiL2YQU",
-            area,
-        ];
+        const completedAreas = (): string[] => {
+            let result: string[] = [];
+            if (
+                oldDataOrder?.completedAreas &&
+                !_.isEmpty(oldDataOrder?.completedAreas) &&
+                area &&
+                area !== "" &&
+                userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl"
+            ) {
+                const areasCompleted = oldDataOrder?.completedAreas as string[];
+                result = [
+                    "qxdH34kAupnAPSuVIIvn",
+                    "Wxdi41YreLGK0UiL2YQU",
+                    area,
+                    ...areasCompleted,
+                ];
+                return result;
+            }
+            result = ["qxdH34kAupnAPSuVIIvn", "Wxdi41YreLGK0UiL2YQU", area];
+            return result;
+        };
+
+        const areasOmitted: string[] = completedAreas();
 
         const availableAreasIds = filteredIdAreas?.filter(
             (item) => !areasOmitted?.includes(item),
@@ -175,6 +201,18 @@ const EditOrderHook = ({ slug }: Props) => {
         } else {
             setSuggestions([]);
         }
+    };
+
+    const handleInputUrl = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        userRol?.uid !== "VEGkDuMXs2mCGxXUPCWI" // Rol de Escáner Modelos Digital
+            ? setUrlWeTransfer(value)
+            : setUploadUrl(value);
+    };
+
+    const handleInputUrlDropbox = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setUrlDropbox(value);
     };
 
     const selectChangeHandlerSentTo = (value: any) => {
@@ -243,14 +281,115 @@ const EditOrderHook = ({ slug }: Props) => {
         }
     };
 
-    const handleFileChange = (e: any) => {
-        if (e.target.files.length > 0) {
-            setFileName(e.target.files[0].name);
-            setFiles([...e.target.files]);
-        } else {
-            setFileName("SUBIR ARCHIVO");
-            setFiles([]);
+    const MAX_FILE_SIZES = {
+        image: 3000000,
+        pdf: 10000000,
+    };
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const uploadFiles = e.target.files;
+
+        if (!uploadFiles || uploadFiles.length === 0) {
+            resetFileInput();
+            return;
         }
+
+        const validatedFiles: File[] = [];
+        const errors: string[] = [];
+
+        Array.from(uploadFiles).forEach((file) => {
+            const fileType = file.type.split("/");
+            if (
+                userRol?.uid === "V5iMSnSlSYsiSDFs4UpI" ||
+                userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
+            ) {
+                handleUserRoleFile(file, fileType, validatedFiles, errors);
+            } else if (userRol?.uid === "wGU4GU8oDosW4ayQtxqT") {
+                handleDefaultUserPDF(file, fileType, validatedFiles, errors);
+            } else {
+                handleDefaultUserFile(file, fileType, validatedFiles, errors);
+            }
+        });
+
+        if (errors.length > 0) {
+            setErrorImg(errors.join("; "));
+            resetFileInput();
+        } else {
+            setErrorImg(null);
+            setFileName(validatedFiles.map((file) => file.name).join(", "));
+            setFiles(validatedFiles);
+        }
+    };
+
+    const handleUserRoleFile = (
+        file: File,
+        fileType: string[],
+        validatedFiles: File[],
+        errors: string[],
+    ) => {
+        if (fileType[0] === "image") {
+            validateFileSize(
+                file,
+                MAX_FILE_SIZES.image,
+                validatedFiles,
+                errors,
+            );
+        } else if (fileType[1] === "pdf") {
+            validateFileSize(file, MAX_FILE_SIZES.pdf, validatedFiles, errors);
+        } else {
+            errors.push(`${file.name}: Solo se permite imágenes o PDF`);
+        }
+    };
+
+    const handleDefaultUserFile = (
+        file: File,
+        fileType: string[],
+        validatedFiles: File[],
+        errors: string[],
+    ) => {
+        if (fileType[0] === "image") {
+            validateFileSize(
+                file,
+                MAX_FILE_SIZES.image,
+                validatedFiles,
+                errors,
+            );
+        } else {
+            errors.push(`${file.name}: Solo se permite imágenes`);
+        }
+    };
+
+    const handleDefaultUserPDF = (
+        file: File,
+        fileType: string[],
+        validatedFiles: File[],
+        errors: string[],
+    ) => {
+        if (fileType[1] === "pdf") {
+            validateFileSize(file, MAX_FILE_SIZES.pdf, validatedFiles, errors);
+        } else {
+            setErrorImg("Solo se permite PDF");
+            resetFileInput();
+        }
+    };
+
+    const validateFileSize = (
+        file: File,
+        maxSize: number,
+        validatedFiles: File[],
+        errors: string[],
+    ) => {
+        if (file.size > maxSize) {
+            const sizeInMb = maxSize / 1000000;
+            errors.push(`${file.name}: El tamaño máximo es ${sizeInMb} MB`);
+        } else {
+            validatedFiles.push(file);
+        }
+    };
+
+    const resetFileInput = () => {
+        setFileName("SUBIR ARCHIVO");
+        setFiles([]);
     };
 
     const handleCheckOrderIncomplete = (e: any) => {
@@ -295,11 +434,15 @@ const EditOrderHook = ({ slug }: Props) => {
         Ll6KGdzqdtmLLk0D5jhk: "asignada",
         //Modelos
         g9xGywTJG7WSJ5o1bTsH: "asignada",
+        //Fotografía
+        c24R4P0VcQmQT0VT6nfo: "asignada",
         //Laboratorio
         chbFffCzpRibjYRyoWIx: "asignada",
         //Radiología
         V5iMSnSlSYsiSDFs4UpI: "asignada",
-        //Escáner Digitalasignada
+        //Diagnostico
+        wGU4GU8oDosW4ayQtxqT: "asignada",
+        //Escáner Digital
         VEGkDuMXs2mCGxXUPCWI: "asignada",
         //Despacho
         "9RZ9uhaiwMC7VcTyIzhl": isOrderIncomplete ? "reasignada" : "finalizada",
@@ -340,24 +483,49 @@ const EditOrderHook = ({ slug }: Props) => {
         wait: 600,
     });
 
-    const getOrdersUrls = async () => {
-        const orderImagesUrl: string[] = [];
+    const getOrdersUrls = async (): Promise<{
+        images: string[];
+        pdf: string[];
+    }> => {
+        const urlFiles: {
+            images: string[];
+            pdf: string[];
+        } = {
+            images: [],
+            pdf: [],
+        };
         for (const record of files) {
             const urlName = record.name.split(".")[0];
-            await uploadFileImage({
-                folder: oldDataOrder.patientId,
-                fileName: urlName.split(" ").join("_"),
-                file: record,
-                reference,
-            })
-                .then((res: string) => {
-                    orderImagesUrl.push(res);
+            const fileType = record.type.split("/");
+            if (fileType[0] === "image") {
+                await uploadFileImage({
+                    folder: oldDataOrder.patientId,
+                    fileName: urlName.split(" ").join("_"),
+                    file: record,
+                    reference,
                 })
-                .catch((err: any) => {
-                    console.log(err);
-                });
+                    .then((res: string) => {
+                        urlFiles.images.push(res);
+                    })
+                    .catch((err: any) => {
+                        console.log(err);
+                    });
+            } else if (fileType[1] === "pdf") {
+                await uploadFilePDF({
+                    folder: oldDataOrder.patientId,
+                    fileName: urlName.split(" ").join("_"),
+                    file: record,
+                    reference,
+                })
+                    .then((res: string) => {
+                        urlFiles.pdf.push(res);
+                    })
+                    .catch((err: any) => {
+                        console.log(err);
+                    });
+            }
         }
-        return orderImagesUrl;
+        return urlFiles;
     };
 
     const handleSendForm = async (e?: any) => {
@@ -384,9 +552,19 @@ const EditOrderHook = ({ slug }: Props) => {
             patientId: oldDataOrder?.patientId,
             status: editedOrderStatusByRol[userRol?.uid!],
             assignedCampus: campus ? campus : "",
-            areaList: oldDataOrder?.areaList
-                ? oldDataOrder?.areaList
-                : areaList,
+            completedAreas:
+                userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                    ? oldDataOrder?.completedAreas &&
+                      !_.isEmpty(oldDataOrder?.completedAreas)
+                        ? oldDataOrder?.completedAreas.includes(area)
+                            ? oldDataOrder?.completedAreas
+                            : [...oldDataOrder?.completedAreas, area]
+                        : [area]
+                    : [],
+            areaList:
+                oldDataOrder?.areaList && !_.isEmpty(oldDataOrder?.areaList)
+                    ? oldDataOrder?.areaList
+                    : areaList,
             sendTo: sentToArea
                 ? sentToArea
                 : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
@@ -402,8 +580,26 @@ const EditOrderHook = ({ slug }: Props) => {
                 userId: userData?.uid,
             },
             orderImagesUrl: oldDataOrder?.orderImagesUrl
-                ? [...oldDataOrder?.orderImagesUrl, ...imagesUrls]
-                : imagesUrls,
+                ? [...oldDataOrder?.orderImagesUrl, ...imagesUrls.images]
+                : imagesUrls.images,
+            orderPDFUrl: oldDataOrder?.orderPDFUrl
+                ? [...oldDataOrder?.orderPDFUrl, ...imagesUrls.pdf]
+                : imagesUrls.pdf,
+            urlDropbox: urlDropbox
+                ? urlDropbox
+                : oldDataOrder?.urlDropbox
+                ? oldDataOrder?.urlDropbox
+                : "",
+            urlWeTransfer: urlWeTransfer
+                ? urlWeTransfer
+                : oldDataOrder?.urlWeTransfer
+                ? oldDataOrder?.urlWeTransfer
+                : "",
+            fileLocation: uploadUrl
+                ? uploadUrl
+                : oldDataOrder?.fileLocation
+                ? oldDataOrder?.fileLocation
+                : "",
             diagnoses: diagnoses
                 ? diagnoses
                 : oldDataOrder?.diagnoses
@@ -627,6 +823,12 @@ const EditOrderHook = ({ slug }: Props) => {
         handleCheckOrderIncomplete,
         handleAreaList,
         areaList,
+        errorImg,
+        handleInputUrl,
+        urlWeTransfer,
+        uploadUrl,
+        urlDropbox,
+        handleInputUrlDropbox,
     };
 };
 

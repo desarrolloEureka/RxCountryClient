@@ -54,6 +54,12 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         handleCheckOrderIncomplete,
         handleAreaList,
         areaList,
+        errorImg,
+        handleInputUrl,
+        urlWeTransfer,
+        uploadUrl,
+        urlDropbox,
+        handleInputUrlDropbox,
     } = EditOrderHook({ slug });
 
     return (
@@ -142,6 +148,12 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         handleCheckOrderIncomplete={handleCheckOrderIncomplete}
                         handleAreaList={handleAreaList}
                         areaList={areaList}
+                        urlWeTransfer={urlWeTransfer}
+                        uploadUrl={uploadUrl}
+                        errorImg={errorImg}
+                        handleInputUrl={handleInputUrl}
+                        urlDropbox={urlDropbox}
+                        handleInputUrlDropbox={handleInputUrlDropbox}
                     />
 
                     {formStep < 6 && (
@@ -223,11 +235,20 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                         className="flex items-center cursor-pointer text-company-blue"
                                     >
                                         {formStep < 5 ? (
-                                            <span>Siguiente</span>
+                                            (areaList.length > 0 ||
+                                                oldData?.areaList?.length > 0 ||
+                                                formStep === 0) && (
+                                                <>
+                                                    <span>Siguiente</span>
+                                                    <BiChevronRight size={32} />
+                                                </>
+                                            )
                                         ) : (
-                                            <span>Cerrar</span>
+                                            <>
+                                                <span>Cerrar</span>
+                                                <BiChevronRight size={32} />
+                                            </>
                                         )}
-                                        <BiChevronRight size={32} />
                                     </div>
                                 )}
                             </div>

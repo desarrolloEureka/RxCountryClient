@@ -123,6 +123,23 @@ const OrderHistorialHook = () => {
                     order.sendTo !== area,
             ),
         },
+        //Fotografía
+        c24R4P0VcQmQT0VT6nfo: {
+            received: allDataOrders?.filter(
+                (order: any) =>
+                    order.assignedCampus === campus &&
+                    (order.status === "asignada" ||
+                        order.status === "reasignada") &&
+                    order.sendTo === area,
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    // order.status === "asignada",
+                    order.sendTo !== area,
+            ),
+        },
         //Laboratorio
         chbFffCzpRibjYRyoWIx: {
             received: allDataOrders?.filter(
@@ -142,6 +159,23 @@ const OrderHistorialHook = () => {
         },
         //Radiología
         V5iMSnSlSYsiSDFs4UpI: {
+            received: allDataOrders?.filter(
+                (order: any) =>
+                    order.assignedCampus === campus &&
+                    (order.status === "asignada" ||
+                        order.status === "reasignada") &&
+                    order.sendTo === area,
+            ),
+            send: allDataOrders?.filter(
+                (order: any) =>
+                    order.modifiedBy.userRolId === userRol?.uid &&
+                    // order.assignedCampus === campus &&
+                    // order.status === "asignada",
+                    order.sendTo !== area,
+            ),
+        },
+        //Diagnostico
+        wGU4GU8oDosW4ayQtxqT: {
             received: allDataOrders?.filter(
                 (order: any) =>
                     order.assignedCampus === campus &&

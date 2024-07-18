@@ -614,7 +614,6 @@ export default function SignUp() {
                                     ) : (
                                         <p
                                             className="mt-1 text-sm text-center text-company-orange"
-                                            id="file_input_help"
                                         >
                                             PNG, JPG (MAX. 400x400px).
                                         </p>

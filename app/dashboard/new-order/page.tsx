@@ -168,11 +168,19 @@ const NewOrderPage = () => {
                                     className="flex items-center cursor-pointer text-company-blue"
                                 >
                                     {isDataSelected || formStep === 0 ? (
-                                        <span>Siguiente</span>
+                                        (areaList.length > 0 ||
+                                            formStep < 5) && (
+                                            <>
+                                                <span>Siguiente</span>
+                                                <BiChevronRight size={32} />
+                                            </>
+                                        )
                                     ) : (
-                                        <span>Omitir</span>
+                                        <>
+                                            <span>Cerrar</span>
+                                            <BiChevronRight size={32} />
+                                        </>
                                     )}
-                                    <BiChevronRight size={32} />
                                 </button>
                             </div>
                         </div>

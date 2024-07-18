@@ -101,7 +101,7 @@ const ImageQueryPage = () => {
                             <span>Ayuda</span>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-[1280px] py-4">
+                    <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-[1280px] p-4">
                         <div className="relative col flex flex-col space-y-2">
                             <label
                                 htmlFor="search"
