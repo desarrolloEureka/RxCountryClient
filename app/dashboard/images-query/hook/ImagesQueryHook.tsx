@@ -83,6 +83,13 @@ const ImagesQueryHook = () => {
                 !_.isEmpty(order.orderImagesUrl),
         ),
 
+        //Fotografía
+        c24R4P0VcQmQT0VT6nfo: allDataOrders?.filter(
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
+        ),
+
         //Laboratorio
         chbFffCzpRibjYRyoWIx: allDataOrders?.filter(
             (order: any) =>
@@ -92,6 +99,13 @@ const ImagesQueryHook = () => {
 
         //Radiología
         V5iMSnSlSYsiSDFs4UpI: allDataOrders?.filter(
+            (order: any) =>
+                order.status === "finalizada" ||
+                !_.isEmpty(order.orderImagesUrl),
+        ),
+
+        //Diagnostico
+        wGU4GU8oDosW4ayQtxqT: allDataOrders?.filter(
             (order: any) =>
                 order.status === "finalizada" ||
                 !_.isEmpty(order.orderImagesUrl),

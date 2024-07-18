@@ -24,11 +24,16 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
         setExpandRx4,
         expandRx5,
         setExpandRx5,
+        expandRx6,
+        setExpandRx6,
+        expandRx7,
+        setExpandRx7,
         orderAndPatientData,
         detailStep,
         // setDetailStep,
         formatearFecha,
         getLastUserData,
+        areasSelected,
     } = DetailsHook({ slug });
 
     return (
@@ -52,10 +57,15 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
                     setExpandRx4={setExpandRx4}
                     expandRx5={expandRx5}
                     setExpandRx5={setExpandRx5}
+                    expandRx6={expandRx6}
+                    setExpandRx6={setExpandRx6}
+                    expandRx7={expandRx7}
+                    setExpandRx7={setExpandRx7}
                     orderAndPatientData={orderAndPatientData}
                     detailStep={detailStep}
                     // setDetailStep={setDetailStep}
                     area={area}
+                    areasSelected={areasSelected}
                     formatearFecha={formatearFecha}
                     getLastUserData={getLastUserData}
                 />

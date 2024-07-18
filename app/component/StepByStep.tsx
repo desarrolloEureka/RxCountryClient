@@ -4,7 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
-import { BsFillGeoAltFill, BsFillPersonVcardFill } from "react-icons/bs";
+import {
+    BsFillGeoAltFill,
+    BsFillPersonVcardFill,
+    BsTerminalFill,
+} from "react-icons/bs";
 import { FaCircle } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import {
@@ -37,6 +41,7 @@ interface Props {
     };
     userData?: any;
     uidUser?: string;
+    errorImg?: string | null;
     formStep: number;
     setFormStep: (e: any) => void;
     userRol?: RolesBd;
@@ -45,6 +50,8 @@ interface Props {
     isEdit?: boolean;
     setIsDataSelected: (e: any) => void;
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleInputUrl?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleInputUrlDropbox?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     selectChangeHandlerIdType: (
         e: React.ChangeEvent<HTMLSelectElement>,
@@ -76,6 +83,9 @@ interface Props {
     allDiagnostician?: DiagnosticianSelector[];
     selectChangeHandlerDiagnoses: (value: any) => void;
     selectChangeHandlerDiagnostician: (value: any) => void;
+    uploadUrl?: string;
+    urlWeTransfer?: string;
+    urlDropbox?: string;
 }
 
 function StepByStep({
@@ -93,6 +103,7 @@ function StepByStep({
     oldData,
     currentOrderId,
     suggestions,
+    errorImg,
     wrapperRef,
     handleClose,
     handleChecks,
@@ -115,12 +126,15 @@ function StepByStep({
     selectChangeHandlerDiagnostician,
     isOrderIncomplete,
     handleCheckOrderIncomplete,
+    handleInputUrl,
+    urlWeTransfer,
+    uploadUrl,
+    urlDropbox,
+    handleInputUrlDropbox,
 }: Props) {
     const router = useRouter();
 
     const currentDate = moment().format();
-
-    // console.log(oldData);
 
     const [professionalName, setProfessionalName] = useState("");
     const [professionalSpecialty, setProfessionalSpecialty] = useState("");
@@ -758,7 +772,7 @@ function StepByStep({
                     {formStep === 1 && (
                         <>
                             {/* Visualizar PDF */}
-                            <div className="flex flex-col mx-28 mb-16 mt-5 space-y-4">
+                            <div className="flex flex-col mx-28 my-5 space-y-4">
                                 <div className="flex flex-row">
                                     <div className="w-1/2">
                                         <button
@@ -780,8 +794,9 @@ function StepByStep({
                                     </div>
 
                                     {/* Visualizar imágenes */}
-                                    {userRol?.uid ===
-                                        "9RZ9uhaiwMC7VcTyIzhl" && (
+                                    {(userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
+                                        userRol?.uid ===
+                                            "wGU4GU8oDosW4ayQtxqT") && (
                                         <div className="flex flex-col w-1/2 items-center justify-center">
                                             <div
                                                 className={`flex flex-row w-1/2 h-full space-x-3 border ${
@@ -878,14 +893,34 @@ function StepByStep({
                                 )}
                             </div>
 
-                            {/* Despacho y Recepción */}
-                            {(userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
-                                userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk") && (
-                                <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 my-10 mx-28">
-                                    <h3 className="text-company-orange text-xl font-bold">
+                            {/* Recepción */}
+                            {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
+                                <div className="flex flex-col rounded-xl bg-black bg-opacity-50 my-10 mx-28 divide-y divide-slate-500">
+                                    <div className="flex flex-col p-4 space-y-4">
+                                        <label className="text-company-orange text-xl font-bold">
+                                            <span className="text-company-orange">
+                                                *
+                                            </span>
+                                            &nbsp; Según la orden seleccione
+                                            áreas a intervenir:
+                                        </label>
+                                        <SelectWithCheckbox
+                                            // isDisabled={areaSelected}
+                                            isMulti
+                                            options={allAreas}
+                                            selectChangeHandler={(e) => {
+                                                handleAreaList(e);
+                                                setAreasListSelected(e);
+                                                setAreaSelected(null);
+                                            }}
+                                            optionSelected={areasListSelected}
+                                        />
+                                    </div>
+
+                                    <h3 className="text-company-orange text-xl font-bold py-2 px-4">
                                         Observaciones
                                     </h3>
-                                    <div className="grid grid-cols-1 gap-2">
+                                    <div className="flex flex-col p-4">
                                         <textarea
                                             value={observationComment}
                                             id="Observations"
@@ -905,33 +940,58 @@ function StepByStep({
                                 </div>
                             )}
 
-                            {/* Laboratorio y Radiología */}
-                            {(userRol?.uid === "chbFffCzpRibjYRyoWIx" ||
-                                userRol?.uid === "V5iMSnSlSYsiSDFs4UpI") && (
-                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
-                                    <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
-                                        <h3 className="text-company-orange text-xl font-bold">
-                                            Diagnósticos
-                                        </h3>
-                                        <div className="grid grid-cols-1 gap-4">
-                                            <SelectComponent
-                                                options={allDiagnoses}
-                                                selectChangeHandler={(e) => {
-                                                    selectChangeHandlerDiagnoses(
-                                                        e?.value,
-                                                    );
-                                                    setDiagnosesSelected(e);
-                                                }}
-                                                optionSelected={
-                                                    diagnosesSelected
-                                                }
-                                            />
-                                        </div>
+                            {/* Despacho */}
+                            {userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
+                                <div className="grid grid-cols-4 gap-4 mb-10 mx-28">
+                                    {/* <div className="col-span-1 flex flex-col justify-end items-center">
+                                        <InputFileUpload
+                                            fileName={fileName}
+                                            handleFileChange={handleFileChange}
+                                            fileTypes="application/pdf"
+                                        />
+                                        {errorImg ? (
+                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                                {errorImg}
+                                            </span>
+                                        ) : (
+                                            <span
+                                                className={`text-base text-center ${
+                                                    fileName === "SUBIR ARCHIVO"
+                                                        ? "text-company-orange"
+                                                        : "text-green-500"
+                                                } pt-3`}
+                                            >
+                                                SOLO ARCHOVOS PDF
+                                            </span>
+                                        )}
+                                    </div> */}
+                                    <div className="col-span-2 flex flex-col justify-center items-center">
+                                        <InputFileUpload
+                                            fileName={fileName}
+                                            handleFileChange={handleFileChange}
+                                            fileTypes="image/*, application/pdf"
+                                        />
+                                        {errorImg ? (
+                                            <span className="text-base uppercase text-center text-red-400">
+                                                {errorImg}
+                                            </span>
+                                        ) : (
+                                            <span
+                                                className={`text-base text-center ${
+                                                    fileName === "SUBIR ARCHIVO"
+                                                        ? "text-company-orange"
+                                                        : "text-green-500"
+                                                }`}
+                                            >
+                                                IMÁGENES TIPO: PNG, JPG, JPEG, PDF
+                                            </span>
+                                        )}
                                     </div>
-                                    <div className="col-span-1 flex flex-col space-y-4 py-4 rounded-xl">
-                                        <h3 className="text-company-orange text-xl font-bold">
-                                            Diagnosticadores
-                                        </h3>
+                                    <div className="col-span-2 flex flex-col rounded-xl justify-start">
+                                        <h1 className="text-company-orange text-xl font-bold">
+                                            Diagnosticadores:
+                                        </h1>
+
                                         <div className="grid grid-cols-1 gap-4">
                                             <SelectComponent
                                                 options={allDiagnostician}
@@ -947,24 +1007,100 @@ function StepByStep({
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-2 flex flex-auto pb-5">
-                                        <div className="space-y-4 w-2/6">
-                                            <label className="text-company-orange">
-                                                Área de destino
-                                            </label>
-                                            <SelectComponent
-                                                options={allAreas}
-                                                selectChangeHandler={(e) => {
-                                                    selectChangeHandlerSentTo(
-                                                        e?.value,
-                                                    );
-                                                    setAreaSelected(e);
-                                                }}
-                                                optionSelected={areaSelected}
+
+                                    <div className="col-span-4 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold p-4">
+                                            Observaciones
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-2 p-4">
+                                            <textarea
+                                                // disabled
+                                                value={observationComment}
+                                                id="Observations"
+                                                name="observations"
+                                                rows={4}
+                                                cols={50}
+                                                className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                                placeholder="Escribe aquí tus observaciones..."
+                                                // onChange={
+                                                //     commentChangeHandler
+                                                // }
+                                                onChange={(e) =>
+                                                    setObservationComment(
+                                                        e.target.value,
+                                                    )
+                                                }
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                </div>
+                            )}
+
+                            {/* Radiología */}
+                            {userRol?.uid === "V5iMSnSlSYsiSDFs4UpI" && (
+                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
+                                    <div className="col-span-2 flex flex-col justify-end items-center">
+                                        <InputFileUpload
+                                            fileName={fileName}
+                                            handleFileChange={handleFileChange}
+                                            fileTypes="image/*, application/pdf"
+                                        />
+                                        {errorImg ? (
+                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                                {errorImg}
+                                            </span>
+                                        ) : (
+                                            <span
+                                                className={`text-base text-center ${
+                                                    fileName === "SUBIR ARCHIVO"
+                                                        ? "text-company-orange"
+                                                        : "text-green-500"
+                                                } pt-3`}
+                                            >
+                                                IMÁGENES TIPO: PNG, JPG, JPEG,
+                                                PDF.
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
+                                        <h1 className="text-company-orange text-2xl font-bold">
+                                            URL WeTransfer:
+                                        </h1>
+
+                                        <div className="grid grid-cols-1 gap-4 relative">
+                                            <input
+                                                value={urlWeTransfer}
+                                                type="url"
+                                                name="uploadFilesURL"
+                                                id=""
+                                                className="rounded-xl h-10 bg-black/50 border border-transparent text-white px-10"
+                                                onChange={handleInputUrl}
+                                            />
+                                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                                <BsTerminalFill />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
+                                        <h1 className="text-company-orange text-2xl font-bold">
+                                            URL Dropbox:
+                                        </h1>
+
+                                        <div className="grid grid-cols-1 gap-4 relative">
+                                            <input
+                                                value={urlDropbox}
+                                                type="url"
+                                                name="uploadFilesURL"
+                                                id=""
+                                                className="rounded-xl h-10 bg-black/50 border border-transparent text-white px-10"
+                                                onChange={handleInputUrlDropbox}
+                                            />
+                                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                                <BsTerminalFill />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-xl font-bold">
                                             Observaciones
                                         </h3>
@@ -989,24 +1125,53 @@ function StepByStep({
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                </div>
+                            )}
+
+                            {/* Diagnostico  */}
+                            {userRol?.uid === "wGU4GU8oDosW4ayQtxqT" && (
+                                <div className="grid grid-cols-2 gap-4 my-10 mx-28">
+                                    <div className="col-span-2 flex flex-col justify-end items-center">
+                                        <InputFileUpload
+                                            fileName={fileName}
+                                            handleFileChange={handleFileChange}
+                                            fileTypes="application/pdf"
+                                        />
+                                        {errorImg ? (
+                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                                {errorImg}
+                                            </span>
+                                        ) : (
+                                            <span
+                                                className={`text-base text-center ${
+                                                    fileName === "SUBIR ARCHIVO"
+                                                        ? "text-company-orange"
+                                                        : "text-green-500"
+                                                } pt-3`}
+                                            >
+                                                ARCHIVOS PDF.
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-xl font-bold">
-                                            Impresión diagnostica
+                                            Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2">
                                             <textarea
                                                 // disabled
-                                                value={
-                                                    diagnosticImpressionComment
-                                                }
+                                                value={observationComment}
                                                 id="Observations"
                                                 name="observations"
                                                 rows={4}
                                                 cols={50}
                                                 className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
                                                 placeholder="Escribe aquí tus observaciones..."
+                                                // onChange={
+                                                //     commentChangeHandler
+                                                // }
                                                 onChange={(e) =>
-                                                    setDiagnosticImpressionComment(
+                                                    setObservationComment(
                                                         e.target.value,
                                                     )
                                                 }
@@ -1016,17 +1181,68 @@ function StepByStep({
                                 </div>
                             )}
 
-                            {/* Modelos/Fotografía y Escáner Digital */}
-                            {(userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" ||
-                                userRol?.uid === "VEGkDuMXs2mCGxXUPCWI") && (
+                            {/* Laboratorio y Fotografía  */}
+                            {(userRol?.uid === "chbFffCzpRibjYRyoWIx" ||
+                                userRol?.uid === "c24R4P0VcQmQT0VT6nfo") && (
+                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
+                                    <div className="col-span-2 flex flex-col justify-end items-center">
+                                        <InputFileUpload
+                                            fileName={fileName}
+                                            handleFileChange={handleFileChange}
+                                            // fileTypes="image/*"
+                                        />
+                                        {errorImg ? (
+                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                                {errorImg}
+                                            </span>
+                                        ) : (
+                                            <span
+                                                className={`text-base text-center ${
+                                                    fileName === "SUBIR ARCHIVO"
+                                                        ? "text-company-orange"
+                                                        : "text-green-500"
+                                                } pt-3`}
+                                            >
+                                                IMÁGENES TIPO: PNG, JPG, JPEG.
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Observaciones
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <textarea
+                                                // disabled
+                                                value={observationComment}
+                                                id="Observations"
+                                                name="observations"
+                                                rows={4}
+                                                cols={50}
+                                                className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                                placeholder="Escribe aquí tus observaciones..."
+                                                // onChange={
+                                                //     commentChangeHandler
+                                                // }
+                                                onChange={(e) =>
+                                                    setObservationComment(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Modelos  */}
+                            {userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" && (
                                 <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
                                     <div className="col-span-1 flex flex-col space-y-8 py-4 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             Diagnósticos
                                         </h1>
-                                        {/* <h2 className="text-company-orange">
-                                            Proceso Completado
-                                        </h2> */}
+
                                         <div className="grid grid-cols-1 gap-4">
                                             <SelectComponent
                                                 options={allDiagnoses}
@@ -1042,35 +1258,102 @@ function StepByStep({
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-1 flex flex-col space-y-8 py-4 rounded-xl">
-                                        <h1 className="text-company-orange text-2xl font-bold">
-                                            Diagnosticadores
-                                        </h1>
-                                        {/* <h2 className="text-company-orange">
-                                            Proceso Completado
-                                        </h2> */}
-                                        <div className="grid grid-cols-1 gap-4">
-                                            <SelectComponent
-                                                options={allDiagnostician}
-                                                selectChangeHandler={(e) => {
-                                                    selectChangeHandlerDiagnostician(
-                                                        e?.value,
-                                                    );
-                                                    setDiagnosticianSelected(e);
-                                                }}
-                                                optionSelected={
-                                                    diagnosticianSelected
+
+                                    <div className="col-span-1 flex flex-col justify-end items-center">
+                                        <InputFileUpload
+                                            fileName={fileName}
+                                            handleFileChange={handleFileChange}
+                                            // fileTypes="image/*"
+                                        />
+                                        {errorImg ? (
+                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                                {errorImg}
+                                            </span>
+                                        ) : (
+                                            <span
+                                                className={`text-base text-center ${
+                                                    fileName === "SUBIR ARCHIVO"
+                                                        ? "text-company-orange"
+                                                        : "text-green-500"
+                                                } pt-3`}
+                                            >
+                                                IMÁGENES TIPO: PNG, JPG, JPEG.
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold">
+                                            Observaciones
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <textarea
+                                                // disabled
+                                                value={observationComment}
+                                                id="Observations"
+                                                name="observations"
+                                                rows={4}
+                                                cols={50}
+                                                className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea"
+                                                placeholder="Escribe aquí tus observaciones..."
+                                                // onChange={
+                                                //     commentChangeHandler
+                                                // }
+                                                onChange={(e) =>
+                                                    setObservationComment(
+                                                        e.target.value,
+                                                    )
                                                 }
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-2 flex flex-col pb-5 space-y-4 w-60">
+                                </div>
+                            )}
+
+                            {/* Escáner Modelos  */}
+                            {userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" && (
+                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
+                                    <div className="col-span-2 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
+                                            // fileTypes="image/*"
                                         />
+                                        {errorImg ? (
+                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                                {errorImg}
+                                            </span>
+                                        ) : (
+                                            <span
+                                                className={`text-base text-center ${
+                                                    fileName === "SUBIR ARCHIVO"
+                                                        ? "text-company-orange"
+                                                        : "text-green-500"
+                                                } pt-3`}
+                                            >
+                                                IMÁGENES TIPO: PNG, JPG, JPEG.
+                                            </span>
+                                        )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
+                                    <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
+                                        <h1 className="text-company-orange text-2xl font-bold">
+                                            Ubicación del Archivo:
+                                        </h1>
+
+                                        <div className="grid grid-cols-1 gap-4 relative">
+                                            <input
+                                                value={uploadUrl}
+                                                type="url"
+                                                name="uploadFilesURL"
+                                                id=""
+                                                className="rounded-xl h-10 bg-black/50 border border-transparent text-white px-10"
+                                                onChange={handleInputUrl}
+                                            />
+                                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                                <BsTerminalFill />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-xl font-bold">
                                             Observaciones
                                         </h3>
@@ -1892,12 +2175,37 @@ function StepByStep({
                                         userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
                                             ? "col-span-1"
                                             : "col-span-2"
-                                    } flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50`}
+                                    } flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500`}
                                 >
-                                    <h3 className="text-company-orange text-xl font-bold">
+                                    {userRol?.uid ===
+                                        "Ll6KGdzqdtmLLk0D5jhk" && (
+                                        <div className="flex flex-col py-2 px-4 space-y-4">
+                                            <label className="text-company-orange text-xl font-bold">
+                                                <span className="text-company-orange">
+                                                    *
+                                                </span>
+                                                &nbsp; Seleccione áreas a
+                                                intervenir:
+                                            </label>
+                                            <SelectWithCheckbox
+                                                // isDisabled={areaSelected}
+                                                isMulti
+                                                options={allAreas}
+                                                selectChangeHandler={(e) => {
+                                                    handleAreaList(e);
+                                                    setAreasListSelected(e);
+                                                    setAreaSelected(null);
+                                                }}
+                                                optionSelected={
+                                                    areasListSelected
+                                                }
+                                            />
+                                        </div>
+                                    )}
+                                    <h3 className="text-company-orange text-xl font-bold py-2 px-4">
                                         Observaciones
                                     </h3>
-                                    <div className="grid grid-cols-1 gap-2">
+                                    <div className="flex flex-col p-4">
                                         <textarea
                                             disabled={isEdit}
                                             value={observationComment}
@@ -1972,32 +2280,6 @@ function StepByStep({
                             {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                                 userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" && (
                                     <div className="flex flex-col">
-                                        {userRol?.uid ===
-                                            "Ll6KGdzqdtmLLk0D5jhk" && (
-                                            <div className="flex flex-col space-y-4 pb-10">
-                                                <label className="text-company-orange text-xl">
-                                                    <span className="text-company-orange">
-                                                        *
-                                                    </span>
-                                                    &nbsp; Seleccione áreas:
-                                                </label>
-                                                <SelectWithCheckbox
-                                                    isDisabled={areaSelected}
-                                                    isMulti
-                                                    options={allAreas}
-                                                    selectChangeHandler={(
-                                                        e,
-                                                    ) => {
-                                                        handleAreaList(e);
-                                                        setAreasListSelected(e);
-                                                        setAreaSelected(null);
-                                                    }}
-                                                    optionSelected={
-                                                        areasListSelected
-                                                    }
-                                                />
-                                            </div>
-                                        )}
                                         {(!_.isEmpty(areaList) ||
                                             oldData?.areaList) && (
                                             <div className="flex flex-col space-y-4 pb-10">
@@ -2010,7 +2292,9 @@ function StepByStep({
                                                 <SelectComponent
                                                     options={allAreas.filter(
                                                         (area) =>
-                                                            oldData?.areaList
+                                                            !_.isEmpty(
+                                                                oldData.areaList,
+                                                            )
                                                                 ? oldData?.areaList?.includes(
                                                                       area.value,
                                                                   )
