@@ -17,7 +17,7 @@ export const dataProfessionalObject = {
     confirmPassword: "",
     specialty: "",
     contract: "",
-    rol: "Profesional",
+    rol: "ZWb0Zs42lnKOjetXH5lq",
     urlPhoto: "",
     timestamp: new Date(),
     isActive: true,
