@@ -15,7 +15,7 @@ import EditOrderHook from "../hook/EditOrderHook";
 
 const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
-        uid,
+        uidUser,
         value,
         router,
         showSave,
@@ -50,6 +50,16 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         handleInputChange,
         suggestions,
         idChangeHandler,
+        isOrderIncomplete,
+        handleCheckOrderIncomplete,
+        handleAreaList,
+        areaList,
+        errorImg,
+        handleInputUrl,
+        urlWeTransfer,
+        uploadUrl,
+        urlDropbox,
+        handleInputUrlDropbox,
     } = EditOrderHook({ slug });
 
     return (
@@ -73,7 +83,8 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                 </div>
 
                                 {(formStep === 0 ||
-                                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq") && (
+                                    userRol?.uid ===
+                                        "ZWb0Zs42lnKOjetXH5lq") && (
                                     <>
                                         <div className="flex flex-1 mx-20">
                                             <h3 className="text-company-blue text-3xl font-bold">
@@ -100,7 +111,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
 
                     <StepByStep
                         value={value}
-                        uid={uid}
+                        uidUser={uidUser}
                         oldData={oldData}
                         formStep={formStep}
                         setFormStep={setFormStep}
@@ -133,6 +144,16 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         }
                         handleInputChange={handleInputChange}
                         suggestions={suggestions}
+                        isOrderIncomplete={isOrderIncomplete}
+                        handleCheckOrderIncomplete={handleCheckOrderIncomplete}
+                        handleAreaList={handleAreaList}
+                        areaList={areaList}
+                        urlWeTransfer={urlWeTransfer}
+                        uploadUrl={uploadUrl}
+                        errorImg={errorImg}
+                        handleInputUrl={handleInputUrl}
+                        urlDropbox={urlDropbox}
+                        handleInputUrlDropbox={handleInputUrlDropbox}
                     />
 
                     {formStep < 6 && (
@@ -214,11 +235,20 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                         className="flex items-center cursor-pointer text-company-blue"
                                     >
                                         {formStep < 5 ? (
-                                            <span>Siguiente</span>
+                                            (areaList.length > 0 ||
+                                                oldData?.areaList?.length > 0 ||
+                                                formStep === 0) && (
+                                                <>
+                                                    <span>Siguiente</span>
+                                                    <BiChevronRight size={32} />
+                                                </>
+                                            )
                                         ) : (
-                                            <span>Cerrar</span>
+                                            <>
+                                                <span>Cerrar</span>
+                                                <BiChevronRight size={32} />
+                                            </>
                                         )}
-                                        <BiChevronRight size={32} />
                                     </div>
                                 )}
                             </div>
@@ -230,7 +260,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                 <>
                     <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
                         <div className="flex justify-end items-center">
-                            <button type="button" onClick={() => setShowHelp(false)}>
+                            <button
+                                type="button"
+                                onClick={() => setShowHelp(false)}
+                            >
                                 <MdClose color="gray" size={24} />
                             </button>
                         </div>

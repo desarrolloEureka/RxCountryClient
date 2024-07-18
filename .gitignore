@@ -37,6 +37,9 @@ yarn-error.log*
 .env.production.local
 .env.production
 
+# dotenv environment variables files
+.env
+
 # vercel
 .vercel
 

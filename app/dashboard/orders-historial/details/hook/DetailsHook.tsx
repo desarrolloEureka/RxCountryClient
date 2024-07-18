@@ -1,10 +1,12 @@
 import useAuth from "@/app/firebase/auth";
 import {
+    getAllAreasOptions,
     getAllFunctionaries,
     getAllOrders,
     getAllPatients,
     getAllProfessionals,
 } from "@/app/firebase/documents";
+import { AreasSelector } from "@/app/types/areas";
 import { Order } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
 import { DataProfessionalObject } from "@/app/types/professionals";
@@ -33,10 +35,13 @@ const DetailsHook = ({ slug }: Props) => {
     const [expandRx3, setExpandRx3] = useState(false);
     const [expandRx4, setExpandRx4] = useState(false);
     const [expandRx5, setExpandRx5] = useState(false);
+    const [expandRx6, setExpandRx6] = useState(false);
+    const [expandRx7, setExpandRx7] = useState(false);
     const [detailStep, setDetailStep] = useState(0);
 
     const [ordersData, setOrdersData] = useState<any>();
     const [patientsData, setPatientsData] = useState<any>();
+    const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
 
     const [areaSelected, setAreaSelected] = useState<any>();
 
@@ -77,6 +82,10 @@ const DetailsHook = ({ slug }: Props) => {
         (item: any) => item.uid === slug,
     );
 
+    const areasSelected: string[] = allAreas
+        .filter((area) => orderAndPatientData?.areaList?.includes(area.value))
+        .map((area) => area.label);
+
     const getOrders = useCallback(async () => {
         const allOrdersData = await getAllOrders();
         allOrdersData && setOrdersData(allOrdersData);
@@ -97,17 +106,24 @@ const DetailsHook = ({ slug }: Props) => {
         allProfessionalsData && setProfessionalsData(allProfessionalsData);
     }, []);
 
+    const getAreas = useCallback(async () => {
+        const allAreasData = await getAllAreasOptions();
+        allAreasData && setAllAreas(allAreasData);
+    }, []);
+
     useEffect(() => {
         getOrders();
+        getAreas();
         getPatients();
         getFunctionary();
         getProfessionals();
-    }, [getFunctionary, getOrders, getPatients, getProfessionals]);
+    }, [getAreas, getFunctionary, getOrders, getPatients, getProfessionals]);
 
     return {
         fromDetails,
         userRol,
         area,
+        areasSelected,
         expandReceptionData,
         setExpandReceptionData,
         expandSpecialist,
@@ -122,6 +138,10 @@ const DetailsHook = ({ slug }: Props) => {
         setExpandRx4,
         expandRx5,
         setExpandRx5,
+        expandRx6,
+        setExpandRx6,
+        expandRx7,
+        setExpandRx7,
         orderAndPatientData,
         detailStep,
         setDetailStep,

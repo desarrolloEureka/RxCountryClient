@@ -14,7 +14,7 @@ const NewOrderPage = () => {
         userData,
         value,
         showHelp,
-        uid,
+        uidUser,
         allAreas,
         setShowHelp,
         formStep,
@@ -41,6 +41,8 @@ const NewOrderPage = () => {
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
+        handleAreaList,
+        areaList,
     } = NewOrderHook();
 
     return (
@@ -86,7 +88,7 @@ const NewOrderPage = () => {
                     <StepByStep
                         userData={userData}
                         value={value}
-                        uid={uid}
+                        uidUser={uidUser}
                         formStep={formStep}
                         allAreas={allAreas}
                         wrapperRef={wrapperRef}
@@ -108,7 +110,10 @@ const NewOrderPage = () => {
                         idChangeHandler={idChangeHandler}
                         handleClose={handleClose}
                         selectChangeHandlerSentTo={selectChangeHandlerSentTo}
+                        handleAreaList={handleAreaList}
+                        areaList={areaList}
                         handleChecks={() => {}}
+                        handleCheckOrderIncomplete={() => {}}
                         selectChangeHandlerDiagnoses={() => {}}
                         selectChangeHandlerDiagnostician={() => {}}
                     />
@@ -163,11 +168,19 @@ const NewOrderPage = () => {
                                     className="flex items-center cursor-pointer text-company-blue"
                                 >
                                     {isDataSelected || formStep === 0 ? (
-                                        <span>Siguiente</span>
+                                        (areaList.length > 0 ||
+                                            formStep < 5) && (
+                                            <>
+                                                <span>Siguiente</span>
+                                                <BiChevronRight size={32} />
+                                            </>
+                                        )
                                     ) : (
-                                        <span>Omitir</span>
+                                        <>
+                                            <span>Cerrar</span>
+                                            <BiChevronRight size={32} />
+                                        </>
                                     )}
-                                    <BiChevronRight size={32} />
                                 </button>
                             </div>
                         </div>

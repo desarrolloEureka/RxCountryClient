@@ -18,14 +18,11 @@ import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 import { datePickerProps, EditedOrderStatusByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
+import { handleSendNewOrderEmail } from "@/lib/brevo/handlers/actions";
 import _ from "lodash";
 import moment from "moment";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-
-type Props = {
-    // setDataSelected: (e: any) => void;
-};
 
 const calculateAge = (birthDate: Date | string): number => {
     const today = new Date();
@@ -57,6 +54,8 @@ const saveAlert = () => {
     });
 };
 
+type Props = {};
+
 const NewOrderHook = (props?: Props) => {
     const { isActiveUser, userData, accessTokenUser, userRol } = useAuth();
 
@@ -86,6 +85,8 @@ const NewOrderHook = (props?: Props) => {
     const [currentOrderId, setCurrentOrderId] = useState<number>(1);
 
     const [sentToArea, setSentToArea] = useState<string>("");
+
+    const [areaList, setAreaList] = useState<string[]>([]);
 
     const [error, setError] = useState(false);
 
@@ -146,6 +147,13 @@ const NewOrderHook = (props?: Props) => {
         setSentToArea(value);
     };
 
+    const handleAreaList = (value: { label: string; value: string }[]) => {
+        const list: string[] = value.map(
+            (item: { value: string; label: string }) => item.value,
+        );
+        setAreaList(list);
+    };
+
     const selectChangeHandlerIdType = (e: ChangeEvent<HTMLSelectElement>) => {
         setPatientData({ ...patientData, ["idType"]: e.target.value });
     };
@@ -161,7 +169,6 @@ const NewOrderHook = (props?: Props) => {
 
     const dateChangeHandler = (e: any) => {
         setValue(e);
-        // const dateFormat = moment(e.target.value).format("YYYY-MM-DD");
         const dateFormat = value ? e.startDate : "";
         setPatientData({
             ...patientData,
@@ -234,10 +241,6 @@ const NewOrderHook = (props?: Props) => {
             e.preventDefault();
             e.stopPropagation();
             confirmSaveAlert();
-            // await uploadHandle().then(() => {
-            //     setFormStep((prevStep: number) => prevStep + 1);
-            // });
-            // handleClose();
         } else {
             e.preventDefault();
             e.stopPropagation();
@@ -258,100 +261,95 @@ const NewOrderHook = (props?: Props) => {
 
         const documentNewOrderRef: any = getDocumentRef(newOrderRef, orderId);
 
-        // console.log({
-        //     ...selectedOptions,
-        //     uid: documentNewOrderRef.id,
-        //     patientId: patientData.uid,
-        //     status: editedOrderStatusByRol[userRol?.uid!],
-        //     sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
-        //     isActive: true,
-        //     isDeleted: false,
-        //     modifiedBy: {
-        //         userRolId: userRol?.uid,
-        //         userId: userData?.uid,
-        //     },
-        //     createdBy: {
-        //         userRol: userRol?.uid,
-        //         userId: userData?.uid,
-        //     },
-        //     assignedCampus: campus ? campus : "",
-        //     timestamp: currentDate,
-        //     updateLog: [
-        //         {
-        //             lastUserId: userData?.uid,
-        //             lastUpdate: currentDate,
-        //             lastComment:
-        //                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
-        //                     ? selectedOptions[
-        //                           userRol?.name
-        //                               .substring(0, 3)
-        //                               .toLocaleLowerCase() +
-        //                               "ObservationComment"
-        //                       ].message
-        //                     : selectedOptions.observationComment.message,
-        //         },
-        //     ],
-        // });
+        const newOrderData = {
+            ...selectedOptions,
+            uid: documentNewOrderRef.id,
+            status: editedOrderStatusByRol[userRol?.uid!],
+            sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
+            areaList,
+            isActive: true,
+            isDeleted: false,
+            modifiedBy: {
+                userRolId: userRol?.uid,
+                userId: userData?.uid,
+            },
+            createdBy: {
+                userRol: userRol?.uid,
+                userId: userData?.uid,
+            },
+            assignedCampus: campus ? campus : "",
+            timestamp: currentDate,
+            updateLog: [
+                {
+                    lastUserId: userData?.uid,
+                    lastUpdate: currentDate,
+                    lastComment:
+                        userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
+                            ? selectedOptions[
+                                  userRol?.name
+                                      .substring(0, 3)
+                                      .toLocaleLowerCase() +
+                                      "ObservationComment"
+                              ].message
+                            : selectedOptions.observationComment.message,
+                },
+            ],
+        };
+
+        const patientAndOrderData = {
+            ...newOrderData,
+            name: patientData.name,
+            lastName: patientData.lastName,
+            email: patientData.email,
+            orderDate: moment(newOrderData.timestamp).format(
+                "DD/MM/YYYY HH:mm:ss",
+            ),
+        };
 
         if (patientExist) {
             const documentPatientRef: any = getDocumentRef(
                 patientRef,
                 patientData.uid,
             );
+
             // Si el paciente existe actualiza la información del paciente
+
             await updateDocumentsByIdFb(
                 documentPatientRef.id,
                 {
                     ...patientData,
                     serviceOrders: patientData.serviceOrders
-                        ? [...patientData.serviceOrders, documentNewOrderRef.id]
+                        ? patientData.serviceOrders.includes(
+                              documentNewOrderRef.id,
+                          )
+                            ? patientData.serviceOrders
+                            : [
+                                  ...patientData.serviceOrders,
+                                  documentNewOrderRef.id,
+                              ]
                         : [documentNewOrderRef.id],
                 },
                 patientRef,
             ).then(async () => {
-                // Se crea una nueva orden de servicio
+                // Se crea una nueva orden de servicio y la guarda
+
                 await saveOneDocumentFb(documentNewOrderRef, {
-                    ...selectedOptions,
-                    uid: documentNewOrderRef.id,
+                    ...newOrderData,
                     patientId: documentPatientRef.id,
-                    status: editedOrderStatusByRol[userRol?.uid!],
-                    sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
-                    isActive: true,
-                    isDeleted: false,
-                    modifiedBy: {
-                        userRolId: userRol?.uid,
-                        userId: userData?.uid,
-                    },
-                    createdBy: {
-                        userRol: userRol?.uid,
-                        userId: userData?.uid,
-                    },
-                    assignedCampus: campus ? campus : "",
-                    timestamp: currentDate,
-                    updateLog: [
-                        {
-                            lastUserId: userData?.uid,
-                            lastUpdate: currentDate,
-                            lastComment:
-                                userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
-                                    ? selectedOptions[
-                                          userRol?.name
-                                              .substring(0, 3)
-                                              .toLocaleLowerCase() +
-                                              "ObservationComment"
-                                      ].message
-                                    : selectedOptions.observationComment
-                                          .message,
-                        },
-                    ],
-                }).then((res) => {
+                }).then(async (res) => {
+                    // Envía la notificación al correo del paciente
+
+                    await handleSendNewOrderEmail(patientAndOrderData);
+
                     setCurrentOrderId(parseInt(res.id));
                     saveAlert();
                 });
             });
         } else {
             const documentPatientRef: any = getReference(patientRef);
+
             // Si el paciente es nuevo se crea en Auth de firebase
+
             await addPatient({
                 email: patientData.email,
                 password: "Dmsdemo123",
@@ -359,48 +357,24 @@ const NewOrderHook = (props?: Props) => {
                 uid: documentPatientRef.id,
             }).then(async (res: any) => {
                 const patientId = res.data.userId;
+
                 // Guarda la información del nuevo paciente
+
                 await saveOneDocumentFb(documentPatientRef, {
                     ...patientData,
                     uid: patientId,
                     serviceOrders: [documentNewOrderRef.id],
                 }).then(async () => {
-                    // Se crea la nueva orden de servicio
+                    // Se crea la nueva orden de servicio y la guarda
+
                     await saveOneDocumentFb(documentNewOrderRef, {
-                        ...selectedOptions,
-                        uid: documentNewOrderRef.id,
+                        ...newOrderData,
                         patientId: documentPatientRef.id,
-                        status: editedOrderStatusByRol[userRol?.uid!],
-                        sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
-                        isActive: true,
-                        isDeleted: false,
-                        modifiedBy: {
-                            userRolId: userRol?.uid,
-                            userId: userData?.uid,
-                        },
-                        createdBy: {
-                            userRol: userRol?.uid,
-                            userId: userData?.uid,
-                        },
-                        assignedCampus: campus ? campus : "",
-                        timestamp: currentDate,
-                        updateLog: [
-                            {
-                                lastUserId: userData?.uid,
-                                lastUpdate: currentDate,
-                                lastComment:
-                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
-                                        ? selectedOptions[
-                                              userRol?.name
-                                                  .substring(0, 3)
-                                                  .toLocaleLowerCase() +
-                                                  "ObservationComment"
-                                          ].message
-                                        : selectedOptions.observationComment
-                                              .message,
-                            },
-                        ],
-                    }).then((res) => {
+                    }).then(async (res) => {
+                        // Envía la notificación al correo del paciente
+
+                        await handleSendNewOrderEmail(patientAndOrderData);
+
                         setCurrentOrderId(parseInt(res.id));
                         saveAlert();
                     });
@@ -462,7 +436,7 @@ const NewOrderHook = (props?: Props) => {
         userData,
         value,
         showHelp,
-        uid,
+        uidUser: uid,
         allAreas: _.sortBy(areasByCampus(), (obj) =>
             obj.label.toLocaleLowerCase(),
         ),
@@ -492,6 +466,8 @@ const NewOrderHook = (props?: Props) => {
         setSelectedOptions,
         handleSendForm,
         selectChangeHandlerSentTo,
+        handleAreaList,
+        areaList,
     };
 };
 

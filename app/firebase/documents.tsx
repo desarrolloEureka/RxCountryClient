@@ -1,18 +1,18 @@
 import { db } from "@/shared/firebase/firebase";
 import {
+    arrayUnion,
     collection,
     doc,
     getDocs,
     setDoc,
     updateDoc,
-    arrayUnion,
 } from "firebase/firestore";
-import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 import moment from "moment";
 import { AreasBd, AreasSelector } from "../types/areas";
 import { CampusBd, CampusSelector } from "../types/campus";
-import { DiagnosesSelector, DiagnosesBd } from "../types/diagnoses";
+import { DiagnosesBd, DiagnosesSelector } from "../types/diagnoses";
 import { DiagnosticianBd, DiagnosticianSelector } from "../types/diagnostician";
+import { AllRefPropsFirebase, RefPropsFirebase } from "../types/userFirebase";
 
 const currentDate = moment().format();
 
@@ -227,6 +227,5 @@ export const updateDocumentsByIdFb = async (
     const document = docRef({ ref: reference, collection: id });
     return await updateDoc(document, {
         ...newData,
-        // timestamp: newData.timestamp ? newData.timestamp : currentDate,
     });
 };

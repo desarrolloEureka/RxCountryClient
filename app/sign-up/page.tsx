@@ -61,6 +61,7 @@ export default function SignUp() {
         <main className="relative flex flex-col justify-center items-center bg-login-image bg-cover bg-bottom min-h-screen w-full pb-10">
             <form
                 onSubmit={handleSendForm}
+                method="POST"
                 className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-[70%] lg:w-[60%] xl:w-[50%]"
             >
                 <div className="w-full">
@@ -613,7 +614,6 @@ export default function SignUp() {
                                     ) : (
                                         <p
                                             className="mt-1 text-sm text-center text-company-orange"
-                                            id="file_input_help"
                                         >
                                             PNG, JPG (MAX. 400x400px).
                                         </p>

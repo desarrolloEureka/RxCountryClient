@@ -13,6 +13,7 @@ const SelectComponent = ({
     optionSelected,
 }: SelectComponentProps) => (
     <Select
+        placeholder="Seleccione..."
         required
         value={optionSelected ? optionSelected : []}
         isClearable

@@ -46,6 +46,24 @@ export const uploadFileImage = async ({
     return await getDownloadURL(storageRefImage(reference, folder, fileName));
 };
 
+const storageRefFile = (
+    reference: string,
+    folder: string,
+    fileName: string,
+) => ref(storage, `${reference}PDF/${folder}/${fileName}`);
+
+export const uploadFilePDF = async ({
+    folder,
+    fileName,
+    file,
+    reference,
+}: UploadFileProps) => {
+    // 'file' comes from the Blob or File API
+    await uploadBytes(storageRefFile(reference, folder, fileName), file);
+    
+    return await getDownloadURL(storageRefFile(reference, folder, fileName));
+};
+
 export const urlFile = async ({
     folder,
     fileName,

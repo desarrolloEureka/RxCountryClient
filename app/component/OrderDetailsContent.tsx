@@ -4,6 +4,7 @@ import { IoArrowBackCircleOutline, IoEye } from "react-icons/io5";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { RolesBd } from "../types/roles";
 import Spinner from "./spinner/Spinner";
+import _ from "lodash";
 
 interface Props {
     fromDetails: string | null | undefined;
@@ -22,12 +23,17 @@ interface Props {
     setExpandRx4: (e: any) => void;
     expandRx5: boolean;
     setExpandRx5: (e: any) => void;
+    expandRx6: boolean;
+    setExpandRx6: (e: any) => void;
+    expandRx7: boolean;
+    setExpandRx7: (e: any) => void;
     orderAndPatientData: any;
     detailStep: number;
     // setDetailStep: (e: any) => void;
     area: string;
     formatearFecha: (fecha: string) => string;
     getLastUserData: (id: string) => string;
+    areasSelected: string[];
 }
 
 const OrderDetailsContent = ({
@@ -48,11 +54,16 @@ const OrderDetailsContent = ({
     setExpandRx4,
     expandRx5,
     setExpandRx5,
+    expandRx6,
+    setExpandRx6,
+    expandRx7,
+    setExpandRx7,
     orderAndPatientData,
     detailStep,
     // setDetailStep,
     formatearFecha,
     getLastUserData,
+    areasSelected,
 }: Props) => {
     // const router = useRouter();
 
@@ -78,51 +89,65 @@ const OrderDetailsContent = ({
                 detailStep !== 3 && "pt-12"
             } w-full max-w-[1440px]`}
         >
-            {/* {(userRol.uid === "ZWb0Zs42lnKOjetXH5lq" ||
-                orderAndPatientData?.sendTo !== area) && */}
             {detailStep === 0 && (
-                <div className="flex items-center space-x-8 px-12">
-                    <Link
-                        href={`${
-                            fromDetails === "received"
-                                ? "/dashboard/orders-historial"
-                                : "/dashboard/orders-historial/?to=send"
+                <div className="flex flex-row justify-between px-12">
+                    <div
+                        className={`flex items-center space-x-8 ${
+                            orderAndPatientData?.areaList ? "w-1/2" : "w-full"
                         }`}
                     >
-                        <IoArrowBackCircleOutline
-                            className="text-company-blue"
-                            size={32}
-                        />
-                    </Link>
-                    <h2 className="text text-company-orange text-xl">
-                        {orderAndPatientData &&
-                            `Orden #${orderAndPatientData?.uid} - ${orderAndPatientData?.name} ${orderAndPatientData?.lastName}`}
-                    </h2>
+                        <Link
+                            href={`${
+                                fromDetails === "received"
+                                    ? "/dashboard/orders-historial"
+                                    : "/dashboard/orders-historial/?to=send"
+                            }`}
+                        >
+                            <IoArrowBackCircleOutline
+                                className="text-company-blue"
+                                size={32}
+                            />
+                        </Link>
+                        <h2 className="text-company-orange text-xl">
+                            {orderAndPatientData &&
+                                `Orden #${orderAndPatientData?.uid} - ${orderAndPatientData?.name} ${orderAndPatientData?.lastName}`}
+                        </h2>
+                    </div>
+                    {orderAndPatientData?.areaList &&
+                        !_.isEmpty(orderAndPatientData?.areaList) && (
+                            <div className="flex flex-col justify-center items-center text-company-orange text-xl w-1/2">
+                                <span className="font-bold">
+                                    Areas seleccionadas:&nbsp;
+                                </span>
+                                <span>{areasSelected.join(", ")}</span>
+                            </div>
+                        )}
                 </div>
             )}
 
             {/* Visualizar PDF */}
             {detailStep === 0 && (
-                <div className="mx-28 my-10">
-                    <Link
-                        href={`/dashboard/preview-order/${orderAndPatientData?.uid}`}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                    >
+                <div className="flex flex-row mx-28 my-10">
+                    <div className="w-1/4">
                         <button
                             type="button"
                             className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                         >
                             <IoEye className="text-company-blue" size={24} />
-                            <span>Previsualizar PDF</span>
+                            <Link
+                                href={`/dashboard/preview-order/${orderAndPatientData?.uid}`}
+                                rel="noopener noreferrer"
+                                target="_blank"
+                            >
+                                <span>Previsualizar PDF</span>
+                            </Link>
                         </button>
-                    </Link>
+                    </div>
                 </div>
             )}
 
             {/* Trazabilidad */}
-            {/* {(userRol.uid === "ZWb0Zs42lnKOjetXH5lq" ||
-                orderAndPatientData?.sendTo !== area) && */}
+
             {detailStep === 0 && (
                 <div className="pb-10">
                     {/* Despacho */}
@@ -130,17 +155,17 @@ const OrderDetailsContent = ({
                         userRol.uid === "9RZ9uhaiwMC7VcTyIzhl") && (
                         <div
                             className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx5
+                                expandRx7
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
                                     : "bg-company-blue text-white"
                             }`}
                         >
                             <button
-                                onClick={() => setExpandRx5(!expandRx5)}
+                                onClick={() => setExpandRx7(!expandRx7)}
                                 className="flex justify-between items-center py-2 px-4"
                             >
                                 Despacho
-                                {expandRx5 ? (
+                                {expandRx7 ? (
                                     <>
                                         {orderAndPatientData?.desObservationComment && (
                                             <>
@@ -178,7 +203,7 @@ const OrderDetailsContent = ({
                                     <RiArrowDownSLine size={32} />
                                 )}
                             </button>
-                            {expandRx5 && (
+                            {expandRx7 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
                                     <h2 className="font-bold text-xl">
                                         Observaciones
@@ -194,22 +219,91 @@ const OrderDetailsContent = ({
                         </div>
                     )}
 
-                    {/* Radiología */}
-                    {(orderAndPatientData?.radObservationComment ||
-                        userRol.uid === "V5iMSnSlSYsiSDFs4UpI") && (
+                    {/* Diagnostico */}
+                    {(orderAndPatientData?.diaObservationComment ||
+                        userRol.uid === "wGU4GU8oDosW4ayQtxqT") && (
                         <div
                             className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx4
+                                expandRx6
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
                                     : "bg-company-blue text-white"
                             }`}
                         >
                             <button
-                                onClick={() => setExpandRx4(!expandRx4)}
+                                onClick={() => setExpandRx6(!expandRx6)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Diagnostico
+                                {expandRx6 ? (
+                                    <>
+                                        {orderAndPatientData?.diaObservationComment && (
+                                            <>
+                                                <span>
+                                                    {`Usuario: ${getLastUserData(
+                                                        orderAndPatientData
+                                                            ?.diaObservationComment
+                                                            ?.userId,
+                                                    )}`}
+                                                </span>
+                                                <span>
+                                                    {`Fecha: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.diaObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[0]
+                                                    }`}
+                                                </span>
+                                                <span>
+                                                    {`Hora: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.diaObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[1]
+                                                    }`}
+                                                </span>
+                                            </>
+                                        )}
+
+                                        <RiArrowUpSLine size={32} />
+                                    </>
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx6 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+
+                                    <p className="">
+                                        {orderAndPatientData
+                                            ?.diaObservationComment?.message ||
+                                            "Sin comentarios"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Radiología */}
+                    {(orderAndPatientData?.radObservationComment ||
+                        userRol.uid === "V5iMSnSlSYsiSDFs4UpI") && (
+                        <div
+                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                expandRx5
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
+                        >
+                            <button
+                                onClick={() => setExpandRx5(!expandRx5)}
                                 className="flex justify-between items-center py-2 px-4"
                             >
                                 Radiología
-                                {expandRx4 ? (
+                                {expandRx5 ? (
                                     <>
                                         {orderAndPatientData?.radObservationComment && (
                                             <>
@@ -247,7 +341,7 @@ const OrderDetailsContent = ({
                                     <RiArrowDownSLine size={32} />
                                 )}
                             </button>
-                            {expandRx4 && (
+                            {expandRx5 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
                                     <h2 className="font-bold text-xl">
                                         Observaciones
@@ -268,17 +362,17 @@ const OrderDetailsContent = ({
                         userRol.uid === "chbFffCzpRibjYRyoWIx") && (
                         <div
                             className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx3
+                                expandRx4
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
                                     : "bg-company-blue text-white"
                             }`}
                         >
                             <button
-                                onClick={() => setExpandRx3(!expandRx3)}
+                                onClick={() => setExpandRx4(!expandRx4)}
                                 className="flex justify-between items-center py-2 px-4"
                             >
                                 Laboratorio
-                                {expandRx3 ? (
+                                {expandRx4 ? (
                                     <>
                                         {orderAndPatientData?.labObservationComment && (
                                             <>
@@ -316,7 +410,7 @@ const OrderDetailsContent = ({
                                     <RiArrowDownSLine size={32} />
                                 )}
                             </button>
-                            {expandRx3 && (
+                            {expandRx4 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
                                     <h2 className="font-bold text-xl">
                                         Observaciones
@@ -337,17 +431,17 @@ const OrderDetailsContent = ({
                         userRol.uid === "VEGkDuMXs2mCGxXUPCWI") && (
                         <div
                             className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
-                                expandRx2
+                                expandRx3
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
                                     : "bg-company-blue text-white"
                             }`}
                         >
                             <button
-                                onClick={() => setExpandRx2(!expandRx2)}
+                                onClick={() => setExpandRx3(!expandRx3)}
                                 className="flex justify-between items-center py-2 px-4"
                             >
                                 Escáner Digital
-                                {expandRx2 ? (
+                                {expandRx3 ? (
                                     <>
                                         {orderAndPatientData?.escObservationComment && (
                                             <>
@@ -385,7 +479,7 @@ const OrderDetailsContent = ({
                                     <RiArrowDownSLine size={32} />
                                 )}
                             </button>
-                            {expandRx2 && (
+                            {expandRx3 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
                                     <h2 className="font-bold text-xl">
                                         Observaciones
@@ -394,6 +488,75 @@ const OrderDetailsContent = ({
                                     <p className="">
                                         {orderAndPatientData
                                             ?.escObservationComment?.message ||
+                                            "Sin comentarios"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Fotografía */}
+                    {(orderAndPatientData?.fotObservationComment ||
+                        userRol.uid === "c24R4P0VcQmQT0VT6nfo") && (
+                        <div
+                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                                expandRx2
+                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
+                                    : "bg-company-blue text-white"
+                            }`}
+                        >
+                            <button
+                                onClick={() => setExpandRx2(!expandRx2)}
+                                className="flex justify-between items-center py-2 px-4"
+                            >
+                                Fotografía
+                                {expandRx2 ? (
+                                    <>
+                                        {orderAndPatientData?.fotObservationComment && (
+                                            <>
+                                                <span>
+                                                    {`Usuario: ${getLastUserData(
+                                                        orderAndPatientData
+                                                            ?.fotObservationComment
+                                                            ?.userId,
+                                                    )}`}
+                                                </span>
+                                                <span>
+                                                    {`Fecha: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.fotObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[0]
+                                                    }`}
+                                                </span>
+                                                <span>
+                                                    {`Hora: ${
+                                                        formatearFecha(
+                                                            orderAndPatientData
+                                                                ?.fotObservationComment
+                                                                ?.timestamp,
+                                                        ).split(" ")[1]
+                                                    }`}
+                                                </span>
+                                            </>
+                                        )}
+
+                                        <RiArrowUpSLine size={32} />
+                                    </>
+                                ) : (
+                                    <RiArrowDownSLine size={32} />
+                                )}
+                            </button>
+                            {expandRx2 && (
+                                <div className="flex flex-col p-4 space-y-2 text-white">
+                                    <h2 className="font-bold text-xl">
+                                        Observaciones
+                                    </h2>
+
+                                    <p className="">
+                                        {orderAndPatientData
+                                            ?.fotObservationComment?.message ||
                                             "Sin comentarios"}
                                     </p>
                                 </div>
@@ -655,135 +818,6 @@ const OrderDetailsContent = ({
                         </div> */}
                 </div>
             )}
-
-            {/* {detailStep === 1 && (
-                <div className="flex flex-col px-20 py-10 relative">
-                    <div className="grid grid-cols-2 gap-4 ">
-                        <div className="flex flex-col space-y-4 p-4">
-                            <h2 className="text-company-orange font-bold text-4xl">
-                                Examen Finalizado con Éxito
-                            </h2>
-                            <p className="text-white w-[80%] xl:w-[80%] text-justify pb-10">
-                                Lorem ipsum dolor sit amet, consectetuer
-                                adipiscing elit, sed diam nonummy nibh euismod
-                                tincidunt ut laoreet dolore magna aliquam erat
-                                volutpat. Ut wisi enim ad minim veniam, quis
-                                nostrud exerci tation ullamcorper suscipit
-                                lobortis nisl ut aliquip ex ea commodo
-                                consequat.
-                            </p>
-                            {userRol.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
-                                <div className="pr-10 space-y-4 pb-10">
-                                    <label className="text-company-orange">
-                                        Enviar a:
-                                    </label>
-                                    <SelectComponent
-                                        options={allAreas}
-                                        selectChangeHandlerSentTo={(e) => {
-                                            selectChangeHandlerSentTo(e.value);
-                                            setAreaSelected(e);
-                                        }}
-                                        optionSelected={areaSelected}
-                                    />
-                                </div>
-                            )}
-                            <div className="grid grid-cols-1 xl:grid-cols-2">
-                                <button
-                                    onClick={(e) => {
-                                        handleSendForm(e).then(() => {
-                                            setDetailStep(
-                                                (prevStep: number) =>
-                                                    prevStep + 1,
-                                            );
-                                        });
-                                    }}
-                                    className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
-                                >
-                                    <span>Guardar y enviar</span>
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setDetailStep(3);
-                                    }}
-                                    className="w-48 flex items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md space-x-2 px-1 py-2 border border-company-blue rounded-xl text-white"
-                                >
-                                    <IoEye
-                                        className="text-company-blue"
-                                        size={24}
-                                    />
-                                    <span>Previsualizar</span>
-                                </button>
-                            </div>
-                            <div className="flex flex-row pt-10 space-x-10">
-                                <div
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setDetailStep(
-                                            (prevStep: number) => prevStep - 1,
-                                        );
-                                    }}
-                                    className="flex items-center cursor-pointer text-company-blue"
-                                >
-                                    <BiChevronLeft size={32} />
-                                    <span>Atrás</span>
-                                </div>
-                                <div
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        router.replace(
-                                            "/dashboard/orders-historial",
-                                        );
-                                    }}
-                                    className="flex items-center cursor-pointer text-company-blue"
-                                >
-                                    <IoCloseSharp size={28} />
-                                    <span>Cancelar</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex flex-col h-auto justify-end items-center left-[50%] absolute -bottom-5">
-                            <DoctorVector width={500} height={500} />
-                        </div>
-                    </div>
-                </div>
-            )}
-            {detailStep === 2 && (
-                <div className="flex flex-col p-16 pt-4 relative">
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className="flex flex-row space-x-4 rounded-xl bg-black bg-opacity-40">
-                            <div className="flex flex-col pr-[40%] pb-[15%] pl-[10%] pt-[15%] space-y-8">
-                                <h2 className="text-company-orange font-bold text-4xl">
-                                    {`La orden #${orderAndPatientData?.uid} ha sido enviada con éxito al área
-                                    encargada`}
-                                </h2>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setDetailStep(0);
-                                        router.replace(
-                                            "/dashboard/orders-historial",
-                                        );
-                                    }}
-                                    className="w-48 flex flex-col justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-company-gray shadow-lg"
-                                >
-                                    <span>Ir al historial</span>
-                                </button>
-                            </div>
-                            <div className="flex flex-col justify-center items-center mt-10 left-[50%] absolute -bottom-5">
-                                <DoctorVector width={500} height={500} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-            {detailStep === 3 && (
-                <PreviewOrder
-                    backToOrder={backToOrder}
-                    backToDetail={backToDetail}
-                />
-            )} */}
         </div>
     );
 };
