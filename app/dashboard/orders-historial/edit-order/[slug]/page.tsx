@@ -237,7 +237,9 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                         {formStep < 5 ? (
                                             (areaList.length > 0 ||
                                                 oldData?.areaList?.length > 0 ||
-                                                formStep === 0) && (
+                                                formStep === 0 ||
+                                                userRol?.uid ===
+                                                    "ZWb0Zs42lnKOjetXH5lq") && (
                                                 <>
                                                     <span>Siguiente</span>
                                                     <BiChevronRight size={32} />

@@ -169,7 +169,9 @@ const NewOrderPage = () => {
                                 >
                                     {isDataSelected || formStep === 0 ? (
                                         (areaList.length > 0 ||
-                                            formStep < 5) && (
+                                            formStep < 5 ||
+                                            userRol?.uid ===
+                                                "ZWb0Zs42lnKOjetXH5lq") && (
                                             <>
                                                 <span>Siguiente</span>
                                                 <BiChevronRight size={32} />

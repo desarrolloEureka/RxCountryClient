@@ -983,7 +983,8 @@ function StepByStep({
                                                         : "text-green-500"
                                                 }`}
                                             >
-                                                IMÁGENES TIPO: PNG, JPG, JPEG, PDF
+                                                IMÁGENES TIPO: PNG, JPG, JPEG,
+                                                PDF
                                             </span>
                                         )}
                                     </div>
@@ -2224,11 +2225,11 @@ function StepByStep({
                                     </div>
                                 </div>
                                 {userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk" && (
-                                    <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
-                                        <h3 className="text-company-orange text-xl font-bold">
+                                    <div className="col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Impresión diagnostica
                                         </h3>
-                                        <div className="grid grid-cols-1 gap-2">
+                                        <div className="grid grid-cols-1 gap-2 p-4">
                                             <textarea
                                                 disabled={isEdit}
                                                 value={
@@ -2293,7 +2294,7 @@ function StepByStep({
                                                     options={allAreas.filter(
                                                         (area) =>
                                                             !_.isEmpty(
-                                                                oldData.areaList,
+                                                                oldData?.areaList,
                                                             )
                                                                 ? oldData?.areaList?.includes(
                                                                       area.value,
