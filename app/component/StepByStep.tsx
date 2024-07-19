@@ -1010,7 +1010,7 @@ function StepByStep({
                                     </div>
 
                                     <div className="col-span-4 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold p-4">
+                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2 p-4">
@@ -1101,11 +1101,11 @@ function StepByStep({
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold">
+                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
-                                        <div className="grid grid-cols-1 gap-2">
+                                        <div className="grid grid-cols-1 gap-2 p-4">
                                             <textarea
                                                 // disabled
                                                 value={observationComment}
@@ -1154,11 +1154,11 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold">
+                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
-                                        <div className="grid grid-cols-1 gap-2">
+                                        <div className="grid grid-cols-1 gap-2 p-4">
                                             <textarea
                                                 // disabled
                                                 value={observationComment}
@@ -1208,11 +1208,11 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold">
+                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
-                                        <div className="grid grid-cols-1 gap-2">
+                                        <div className="grid grid-cols-1 gap-2 p-4">
                                             <textarea
                                                 // disabled
                                                 value={observationComment}
@@ -1282,11 +1282,11 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold">
+                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
-                                        <div className="grid grid-cols-1 gap-2">
+                                        <div className="grid grid-cols-1 gap-2 p-4">
                                             <textarea
                                                 // disabled
                                                 value={observationComment}
@@ -1354,11 +1354,11 @@ function StepByStep({
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold">
+                                    <div className="col-span-2 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
-                                        <div className="grid grid-cols-1 gap-2">
+                                        <div className="grid grid-cols-1 gap-2 p-4">
                                             <textarea
                                                 // disabled
                                                 value={observationComment}
