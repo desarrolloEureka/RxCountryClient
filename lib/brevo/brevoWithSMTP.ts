@@ -7,7 +7,7 @@ let transporter = nodemailer.createTransport({
     secure: false, // true for 465, false for other ports
     auth: {
         user: "7873e8001@smtp-brevo.com", // generated brevo user
-        pass: "pnKMFBm4dVSgCL7b", // generated brevo password
+        pass: "*********", // generated brevo password
     },
 });
 
