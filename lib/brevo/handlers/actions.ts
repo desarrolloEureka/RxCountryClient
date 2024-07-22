@@ -1,14 +1,15 @@
 "use server";
 
 import { DataProfessionalObject } from "@/app/types/professionals";
-import { sendEmail } from "@/lib/brevo/brevo";
+// import { sendEmail } from "@/lib/brevo/brevoWithApiKey";
+import { sendEmailSMTP } from "../brevoWithSMTP";
 import { plantillaBienvenida } from "../plantillas/bienvenida";
 import { plantillaCierreOrden } from "../plantillas/cierreOrden";
 import { plantillaNuevaOrden } from "../plantillas/nuevaOrden";
 
 export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
     try {
-        await sendEmail({
+        await sendEmailSMTP({
             subject: "¡Bienvenido a Rx Country!",
             to: [
                 {
@@ -31,7 +32,7 @@ export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
 };
 export const handleSendFinishedOrder = async (data: any) => {
     try {
-        await sendEmail({
+        await sendEmailSMTP({
             subject: "¡Finalización de orden!",
             to: [
                 {
@@ -56,7 +57,7 @@ export const handleSendFinishedOrder = async (data: any) => {
 
 export const handleSendNewOrderEmail = async (data: any) => {
     try {
-        await sendEmail({
+        await sendEmailSMTP({
             subject: "¡Nueva orden registrada!",
             to: [
                 {
