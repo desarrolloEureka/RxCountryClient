@@ -21,6 +21,7 @@ import { handleSendWelcomeEmail } from "../../../lib/brevo/handlers/actions";
 type Props = {};
 
 const SignUpHook = (props?: Props) => {
+    // variables y constantes a usar
     const router = useRouter();
     const { user, isActiveUser, userData } = useAuth();
 
@@ -38,6 +39,7 @@ const SignUpHook = (props?: Props) => {
 
     const [errorImg, setErrorImg] = useState("");
 
+    // Handlers de formulario
     const changeHandler = (e: any) => {
         setData({ ...data, [e.target.name]: e.target.value });
     };
@@ -104,6 +106,7 @@ const SignUpHook = (props?: Props) => {
 
     // console.log(data);
 
+    // Validación del formulario
     const professionalsVal =
         data.idType &&
         data.id &&
@@ -118,6 +121,7 @@ const SignUpHook = (props?: Props) => {
 
     const passValidation = data.confirmPassword === data.password;
 
+    // Handle del registro
     const uploadHandle = async () => {
         const { password, confirmPassword, ...rest } = data;
         let newUrlPhoto: string = "";
@@ -127,6 +131,7 @@ const SignUpHook = (props?: Props) => {
                 if (newUser !== null) {
                     setIsSendData(true);
 
+                    // Actualiza la info
                     const user = newUser.auth.currentUser;
                     await updateProfileFirebase(
                         user,
@@ -139,6 +144,7 @@ const SignUpHook = (props?: Props) => {
                         newUser.uid,
                     );
 
+                    // Guarda los archivos(foto perfil)
                     for (const record of files) {
                         const urlName = record.name.split(".")[0];
                         await uploadFile({
@@ -155,6 +161,7 @@ const SignUpHook = (props?: Props) => {
                             });
                     }
 
+                    // Guarda la información del usuario
                     await saveOneDocumentFb(documentRef, {
                         ...rest,
                         urlPhoto: newUrlPhoto,
@@ -162,10 +169,11 @@ const SignUpHook = (props?: Props) => {
                     }).then(async () => {
                         setIsSendData(false);
 
+                        // Envía el correo de nuevo usuario
                         await handleSendWelcomeEmail(data);
                     });
                 }
-                setSignUp(true);
+                // setSignUp(true);
             })
             .catch((error: any) => {
                 console.log(error);
@@ -174,6 +182,7 @@ const SignUpHook = (props?: Props) => {
         return res;
     };
 
+    // Handle de formulario, valida las contraseñas
     const handleSendForm = async (e?: any) => {
         // console.log("data", data);
         if (professionalsVal && passValidation) {
@@ -190,11 +199,13 @@ const SignUpHook = (props?: Props) => {
         }
     };
 
+    // Obtiene los datos de la colección de Especialidades
     const getSpecialties = useCallback(async () => {
         const allSpecialties: any[] = await getAllSpecialties();
         allSpecialties && setSpecialties(allSpecialties);
     }, []);
 
+    // Obtiene los datos de la colección de Convenios
     const getContracts = useCallback(async () => {
         const allContracts: any = await getAllContracts();
         allContracts && setContracts(allContracts);
@@ -209,11 +220,11 @@ const SignUpHook = (props?: Props) => {
         if (user) {
             // setSignUp(true);
 
-            // router.replace("/dashboard");
+            router.replace("/dashboard");
 
-            user?.emailVerified
-                ? router.replace("/dashboard")
-                : router.replace("/sign-up/verification-email-send");
+            // user?.emailVerified
+            //     ? router.replace("/dashboard")
+            //     : router.replace("/sign-up/verification-email-send");
         }
     }, [router, user, userData?.isActive]);
 

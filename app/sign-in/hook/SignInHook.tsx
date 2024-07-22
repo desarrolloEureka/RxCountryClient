@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 const SignUpHook = () => {
+    // Todas la varias a usar.
+
     const { user, isActiveUser, userData } = useAuth();
     const [error, setError] = useState("");
     const [data, setData] = useState(loginData);
@@ -45,17 +47,22 @@ const SignUpHook = () => {
 
     const [currentUser, setCurrentUser] = useState<any>();
 
+    // Envía la información del formulario
+
     const handleSignIn = async () => {
+        // Verifica que las variables estén llenas
         if (!email || !password) {
             // setError("¡Las credenciales son incorrectas!");
             return;
         }
 
+        // si es funcionario verifica estas variables
         if (userLogin === "Funcionario" && (!selectedCampus || !selectedArea)) {
             // setError("¡Seleccione una Sede!");
             return;
         }
 
+        // verifica las credenciales
         const authenticateUser = async (email: string, password: string) => {
             try {
                 await loginFirebase(email, password);
@@ -69,6 +76,7 @@ const SignUpHook = () => {
             }
         };
 
+        // Verifica si existe el correo en base de datos.
         const isUserFound =
             userLogin === "Profesional"
                 ? emailsProfessionalsData?.includes(email)
@@ -81,6 +89,7 @@ const SignUpHook = () => {
         }
     };
 
+    // Handlers de formulario: Guarda los datos ingresados
     const changeHandler = (e: any) => {
         setData({ ...data, [e.target.name]: e.target.value });
 
@@ -112,6 +121,7 @@ const SignUpHook = () => {
         setError("");
     };
 
+    // Obtiene los datos de colección de áreas
     const getCampus = useCallback(async () => {
         const allCampusData = await getAllCampusOptions();
         allCampusData && setAllCampus(allCampusData);
@@ -128,6 +138,7 @@ const SignUpHook = () => {
         areasByCampus && setAllAreasByCampus(areasFiltered);
     }, [selectedCampus]);
 
+    // Obtiene los datos de colección de Profesionales
     const getProfessionals = useCallback(async () => {
         const allProfessionalsData = await getAllProfessionals();
         const emailProfessionals = allProfessionalsData.map(
@@ -136,18 +147,21 @@ const SignUpHook = () => {
         allProfessionalsData && setEmailsProfessionalsData(emailProfessionals);
     }, []);
 
+    // Obtiene los datos de colección de Funcionarios
     const getFunctionaries = useCallback(async () => {
         const allFunctionariesData = await getAllFunctionaries();
 
         allFunctionariesData && setAllFunctionaries(allFunctionariesData);
     }, []);
 
+    // Obtiene los datos de colección de Pacientes
     const getPatients = useCallback(async () => {
         const allPatientsData = await getAllPatients();
 
         allPatientsData && setAllPatients(allPatientsData);
     }, []);
 
+    // Obtiene los datos de colección de Roles
     const getRoles = useCallback(async () => {
         const allRolesData = await getAllRoles();
         allRolesData && setAllRoles(allRolesData);
@@ -159,16 +173,11 @@ const SignUpHook = () => {
         getProfessionals();
         getFunctionaries();
         getPatients();
-        // console.log("Primer use effect");
     }, [getCampus, getProfessionals, getFunctionaries, getRoles, getPatients]);
 
     useEffect(() => {
-        // console.log("Segundo use effect");
-
         if (user && userData) {
-            // setSignIn(true);
-            // userData?.rol !== "Paciente"
-
+            // Si es profesional o paciente ingresa directamente
             if (
                 userData.rol === "ZWb0Zs42lnKOjetXH5lq" ||
                 userData.rol === "ShHQKRuKJfxHcV70XSvC"
@@ -176,7 +185,9 @@ const SignUpHook = () => {
                 router.replace("/dashboard");
             }
 
+            // Si es funcionario añade sus respectiva area y rol seleccionados.
             if (selectedCampus && userData.campus) {
+                console.log("En el if");
                 const reference = "functionary";
                 updateDocumentsByIdFb(
                     userData.uid,
@@ -192,10 +203,6 @@ const SignUpHook = () => {
                     router.replace("/dashboard");
                 });
             }
-
-            // user.emailVerified
-            //     ? router.replace("/dashboard")
-            //     : router.replace("/sign-in/inactive-user");
         }
     }, [router, user, userData, selectedCampus, selectedArea, allRoles]);
 
@@ -204,7 +211,6 @@ const SignUpHook = () => {
         email,
         password,
         error,
-        // sigIn,
         showPassword,
         router,
         userLogin,
