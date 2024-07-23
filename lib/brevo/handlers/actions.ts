@@ -9,6 +9,7 @@ import { plantillaNuevaOrden } from "../plantillas/nuevaOrden";
 
 export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
     try {
+        // Usar sendEmailSMTP para envío son SMTP
         await sendEmail({
             subject: "¡Bienvenido a Rx Country!",
             to: [
@@ -32,6 +33,7 @@ export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
 };
 export const handleSendFinishedOrder = async (data: any) => {
     try {
+        // Usar sendEmailSMTP para envío son SMTP
         await sendEmail({
             subject: "¡Finalización de orden!",
             to: [
@@ -57,6 +59,7 @@ export const handleSendFinishedOrder = async (data: any) => {
 
 export const handleSendNewOrderEmail = async (data: any) => {
     try {
+        // Usar sendEmailSMTP para envío son SMTP
         await sendEmail({
             subject: "¡Nueva orden registrada!",
             to: [
