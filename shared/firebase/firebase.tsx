@@ -20,9 +20,6 @@ const firebaseConfig = {
     backendBaseUrl: process.env.NEXT_PUBLIC_BACKEND_BASE_URL,
 };
 
-// const firebaseConfigDev = JSON.parse(
-//     process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
-// );
 // const firebaseConfigPro = JSON.parse(
 //     process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
 // );
