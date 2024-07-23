@@ -9,7 +9,7 @@ import { plantillaNuevaOrden } from "../plantillas/nuevaOrden";
 
 export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
     try {
-        // Usar sendEmailSMTP para envío son SMTP
+        // Usar sendEmailSMTP para envío son SMTP prueba
         await sendEmail({
             subject: "¡Bienvenido a Rx Country!",
             to: [
