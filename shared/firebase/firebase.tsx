@@ -12,7 +12,6 @@ import { config as configDotenv } from "dotenv";
 const firebaseConfig = JSON.parse(
     process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
 );
-
 // const firebaseConfigPro = JSON.parse(
 //     process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
 // );
