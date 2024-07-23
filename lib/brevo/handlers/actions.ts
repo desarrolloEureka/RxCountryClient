@@ -33,7 +33,7 @@ export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
 };
 export const handleSendFinishedOrder = async (data: any) => {
     try {
-        
+        // Usar sendEmailSMTP para envío son SMTP
         await sendEmail({
             subject: "¡Finalización de orden!",
             to: [
