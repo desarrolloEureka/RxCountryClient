@@ -51,7 +51,9 @@ const OrderHistorialHook = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [itemsPerPage, setItemsPerPage] = useState(30);
+    const totalItems: number = 30;
+
+    const [itemsPerPage, setItemsPerPage] = useState<number>(totalItems);
 
     const [value, setValue] = useState({
         startDate: null,
@@ -492,6 +494,8 @@ const OrderHistorialHook = () => {
         setStatusOpenOrder,
         getOrderStatus,
         getLastUserData,
+        itemsPerPage,
+        totalItems,
     };
 };
 
