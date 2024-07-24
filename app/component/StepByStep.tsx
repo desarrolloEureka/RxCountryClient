@@ -793,7 +793,7 @@ function StepByStep({
                                         </button>
                                     </div>
 
-                                    {/* Visualizar imágenes */}
+                                    {/* Visualizar imágenes en despacho y diagnostico  */}
                                     {(userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
                                         userRol?.uid ===
                                             "wGU4GU8oDosW4ayQtxqT") && (

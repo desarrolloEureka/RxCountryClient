@@ -187,7 +187,7 @@ const SignUpHook = () => {
 
             // Si es funcionario añade sus respectiva area y rol seleccionados.
             if (selectedCampus && userData.campus) {
-                console.log("En el if");
+                // console.log("En el if");
                 const reference = "functionary";
                 updateDocumentsByIdFb(
                     userData.uid,
