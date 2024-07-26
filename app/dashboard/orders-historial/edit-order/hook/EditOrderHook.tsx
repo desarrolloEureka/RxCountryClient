@@ -27,7 +27,7 @@ import {
     updateOrderProps,
 } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
-import { handleSendFinishedOrder } from "@/lib/brevo/handlers/actions";
+import { handleSendFinishedOrderEmail } from "@/lib/brevo/handlers/actions";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/navigation";
@@ -417,13 +417,15 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const confirmAlertTwo = () => {
         Swal.fire({
-            position: "top-end",
+            position: "center",
             icon: "success",
             title: `Guardando...`,
             showConfirmButton: false,
             timer: 1500,
             background: "#404040",
             color: "#e9a225",
+        }).then(() => {
+            setFormStep((prevStep: number) => prevStep + 1);
         });
     };
 
@@ -494,35 +496,38 @@ const EditOrderHook = ({ slug }: Props) => {
             images: [],
             pdf: [],
         };
-        for (const record of files) {
-            const urlName = record.name.split(".")[0];
-            const fileType = record.type.split("/");
-            if (fileType[0] === "image") {
-                await uploadFileImage({
-                    folder: oldDataOrder.patientId,
-                    fileName: urlName.split(" ").join("_"),
-                    file: record,
-                    reference,
-                })
-                    .then((res: string) => {
-                        urlFiles.images.push(res);
+
+        if (files.length > 0) {
+            for (const record of files) {
+                const urlName = record.name.split(".")[0];
+                const fileType = record.type.split("/");
+                if (fileType[0] === "image") {
+                    await uploadFileImage({
+                        folder: oldDataOrder.patientId,
+                        fileName: urlName.split(" ").join("_"),
+                        file: record,
+                        reference,
                     })
-                    .catch((err: any) => {
-                        console.log(err);
-                    });
-            } else if (fileType[1] === "pdf") {
-                await uploadFilePDF({
-                    folder: oldDataOrder.patientId,
-                    fileName: urlName.split(" ").join("_"),
-                    file: record,
-                    reference,
-                })
-                    .then((res: string) => {
-                        urlFiles.pdf.push(res);
+                        .then((res: string) => {
+                            urlFiles.images.push(res);
+                        })
+                        .catch((err: any) => {
+                            console.log(err);
+                        });
+                } else if (fileType[1] === "pdf") {
+                    await uploadFilePDF({
+                        folder: oldDataOrder.patientId,
+                        fileName: urlName.split(" ").join("_"),
+                        file: record,
+                        reference,
                     })
-                    .catch((err: any) => {
-                        console.log(err);
-                    });
+                        .then((res: string) => {
+                            urlFiles.pdf.push(res);
+                        })
+                        .catch((err: any) => {
+                            console.log(err);
+                        });
+                }
             }
         }
         return urlFiles;
@@ -533,8 +538,19 @@ const EditOrderHook = ({ slug }: Props) => {
         e.stopPropagation();
         console.log("Editó");
         // setIisLoaded(true);
-        await uploadHandle();
+        showSave ? await updatePatientData() : await uploadHandle();
         // handleClose();
+    };
+
+    const updatePatientData = async () => {
+        await updateDocumentsByIdFb(
+            oldPatientData.uid,
+            patientData,
+            patientRef,
+        ).then(() => {
+            setShowSave(false);
+            confirmAlert();
+        });
     };
 
     const uploadHandle = async () => {
@@ -655,22 +671,15 @@ const EditOrderHook = ({ slug }: Props) => {
             ),
         };
 
-        await updateDocumentsByIdFb(
-            oldPatientData.uid,
-            patientData,
-            patientRef,
-        ).then(async () => {
-            await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
-                async (res) => {
-                    !isOrderIncomplete &&
-                        userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
-                        (await handleSendFinishedOrder(patientAndOrderData));
-                    setCurrentOrderId(parseInt(res.id));
-                    setShowSave(false);
-                    confirmAlert();
-                },
-            );
-        });
+        await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
+            async (res: any) => {
+                !isOrderIncomplete &&
+                    userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
+                    (await handleSendFinishedOrderEmail(patientAndOrderData));
+                setCurrentOrderId(parseInt(res.id));
+                confirmAlertTwo();
+            },
+        );
     };
 
     const getOptions = useCallback(async () => {
