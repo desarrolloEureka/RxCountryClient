@@ -553,7 +553,8 @@ const EditOrderHook = ({ slug }: Props) => {
             status: editedOrderStatusByRol[userRol?.uid!],
             assignedCampus: campus ? campus : "",
             completedAreas:
-                userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk" &&
+                userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
                     ? oldDataOrder?.completedAreas &&
                       !_.isEmpty(oldDataOrder?.completedAreas)
                         ? oldDataOrder?.completedAreas.includes(area)
@@ -644,32 +645,34 @@ const EditOrderHook = ({ slug }: Props) => {
                   ],
         };
 
-        const patientAndOrderData = {
-            ...newOrderData,
-            name: patientData.name,
-            lastName: patientData.lastName,
-            email: patientData.email,
-            orderDate: moment(newOrderData.timestamp).format(
-                "DD/MM/YYYY HH:mm:ss",
-            ),
-        };
+        console.log(newOrderData, area);
 
-        await updateDocumentsByIdFb(
-            oldPatientData.uid,
-            patientData,
-            patientRef,
-        ).then(async () => {
-            await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
-                async (res) => {
-                    !isOrderIncomplete &&
-                        userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
-                        (await handleSendFinishedOrder(patientAndOrderData));
-                    setCurrentOrderId(parseInt(res.id));
-                    setShowSave(false);
-                    confirmAlert();
-                },
-            );
-        });
+        // const patientAndOrderData = {
+        //     ...newOrderData,
+        //     name: patientData.name,
+        //     lastName: patientData.lastName,
+        //     email: patientData.email,
+        //     orderDate: moment(newOrderData.timestamp).format(
+        //         "DD/MM/YYYY HH:mm:ss",
+        //     ),
+        // };
+
+        // await updateDocumentsByIdFb(
+        //     oldPatientData.uid,
+        //     patientData,
+        //     patientRef,
+        // ).then(async () => {
+        //     await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
+        //         async (res) => {
+        //             !isOrderIncomplete &&
+        //                 userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
+        //                 (await handleSendFinishedOrder(patientAndOrderData));
+        //             setCurrentOrderId(parseInt(res.id));
+        //             setShowSave(false);
+        //             confirmAlert();
+        //         },
+        //     );
+        // });
     };
 
     const getOptions = useCallback(async () => {

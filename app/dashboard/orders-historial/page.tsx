@@ -278,7 +278,7 @@ const OrderHistorialPage = () => {
                                     i18n={"es"}
                                 />
                             </div>
-                            <div className="flex flex-col text-center">
+                            <div className="flex flex-col text-center text-company-orange">
                                 <span>Cantidad de Registros:</span>
                                 <span>
                                     {Number(filteredOrders?.length)} de{" "}
