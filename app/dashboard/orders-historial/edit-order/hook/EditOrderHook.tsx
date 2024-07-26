@@ -647,32 +647,32 @@ const EditOrderHook = ({ slug }: Props) => {
 
         console.log(newOrderData, area);
 
-        // const patientAndOrderData = {
-        //     ...newOrderData,
-        //     name: patientData.name,
-        //     lastName: patientData.lastName,
-        //     email: patientData.email,
-        //     orderDate: moment(newOrderData.timestamp).format(
-        //         "DD/MM/YYYY HH:mm:ss",
-        //     ),
-        // };
+        const patientAndOrderData = {
+            ...newOrderData,
+            name: patientData.name,
+            lastName: patientData.lastName,
+            email: patientData.email,
+            orderDate: moment(newOrderData.timestamp).format(
+                "DD/MM/YYYY HH:mm:ss",
+            ),
+        };
 
-        // await updateDocumentsByIdFb(
-        //     oldPatientData.uid,
-        //     patientData,
-        //     patientRef,
-        // ).then(async () => {
-        //     await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
-        //         async (res) => {
-        //             !isOrderIncomplete &&
-        //                 userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
-        //                 (await handleSendFinishedOrder(patientAndOrderData));
-        //             setCurrentOrderId(parseInt(res.id));
-        //             setShowSave(false);
-        //             confirmAlert();
-        //         },
-        //     );
-        // });
+        await updateDocumentsByIdFb(
+            oldPatientData.uid,
+            patientData,
+            patientRef,
+        ).then(async () => {
+            await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
+                async (res) => {
+                    !isOrderIncomplete &&
+                        userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
+                        (await handleSendFinishedOrder(patientAndOrderData));
+                    setCurrentOrderId(parseInt(res.id));
+                    setShowSave(false);
+                    confirmAlert();
+                },
+            );
+        });
     };
 
     const getOptions = useCallback(async () => {
