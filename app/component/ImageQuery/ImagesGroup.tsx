@@ -29,15 +29,9 @@ const ImagesGroup = ({
 
     return (
         <div className="mx-auto flex rounded-[2.5rem] bg-company-gray w-full">
-            <div className="flex flex-col items-center w-80 p-5 bg-[#5E5E5E] rounded-[2.5rem] space-x-2">
+            <div className="flex flex-col items-center w-80 p-5 bg-[#5E5E5E] rounded-[2.5rem] space-y-4">
                 <div className="flex items-center space-x-8">
-                    {/* <Link href={"/dashboard/images-query"}>
-                        <IoArrowBackCircleOutline
-                            className="text-company-blue"
-                            size={32}
-                        />
-                    </Link> */}
-                    <h2 className="text text-company-blue text-xl">Imágenes</h2>
+                    <h2 className="text text-company-blue text-xl">Archivos</h2>
                 </div>
                 <div className="flex flex-col overflow-y-auto custom-scrollbar h-screen px-10 w-full">
                     {orderAndPatientData?.orderPDFUrl?.map(
@@ -45,7 +39,7 @@ const ImagesGroup = ({
                             return (
                                 <div
                                     key={index}
-                                    className="flex flex-col items-center space-y-2 cursor-pointer"
+                                    className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
                                     onClick={() => {
                                         setFileSrcSelected(item);
                                         setIdFileSelected(index);
@@ -77,7 +71,7 @@ const ImagesGroup = ({
                             return (
                                 <div
                                     key={index}
-                                    className="flex flex-col items-center space-y-2 cursor-pointer"
+                                    className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
                                     onClick={() => {
                                         setFileSrcSelected(item);
                                         setIdFileSelected(index);

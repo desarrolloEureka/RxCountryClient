@@ -31,7 +31,7 @@ export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
         console.log("Este fue el error: ", error);
     }
 };
-export const handleSendFinishedOrder = async (data: any) => {
+export const handleSendFinishedOrderEmail = async (data: any) => {
     try {
         // Usar sendEmailSMTP para envío son SMTP
         await sendEmail({

@@ -1,67 +1,79 @@
 import {
+    deleteObject,
+    getDownloadURL,
     getStorage,
     ref,
     uploadBytes,
-    getDownloadURL,
-    deleteObject,
 } from "firebase/storage";
-import { DownloadFileProps, UploadFileProps } from "../types/files";
+import moment from "moment";
+import {
+    DownloadFileProps,
+    uploadFileImageProps,
+    uploadFilePDFProps,
+    uploadProfilePhotoProps,
+} from "../types/files";
+
+const currentDate = moment().format("YYYY-MM-DD");
+const currentYear = moment().year();
 
 // Create a root reference
 const storage = getStorage();
 
-const storageRefProfile = (
+const storageRefProfilePhoto = (
     reference: string,
     folder: string,
     fileName: string,
-) => ref(storage, `${reference}Photos/${folder}/${fileName}`);
+) =>
+    //Crea la referencia o ruta a guardar
+    ref(
+        storage,
+        `Media/profilePhotos/${reference}/${folder}-${currentDate}/${fileName}`,
+    );
 
-export const uploadFile = async ({
+export const uploadProfilePhoto = async ({
     folder,
     fileName,
     file,
     reference,
-}: UploadFileProps) => {
-    // 'file' comes from the Blob or File API
-    await uploadBytes(storageRefProfile(reference, folder, fileName), file);
-    
-    return await getDownloadURL(storageRefProfile(reference, folder, fileName));
-};
-
-const storageRefImage = (
-    reference: string,
-    folder: string,
-    fileName: string,
-) => ref(storage, `${reference}Images/${folder}/${fileName}`);
-
-export const uploadFileImage = async ({
-    folder,
-    fileName,
-    file,
-    reference,
-}: UploadFileProps) => {
-    // 'file' comes from the Blob or File API
-    await uploadBytes(storageRefImage(reference, folder, fileName), file);
-    
-    return await getDownloadURL(storageRefImage(reference, folder, fileName));
+}: uploadProfilePhotoProps) => {
+    const storageRef = storageRefProfilePhoto(reference, folder, fileName);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
 };
 
 const storageRefFile = (
-    reference: string,
-    folder: string,
+    patientId: string,
     fileName: string,
-) => ref(storage, `${reference}PDF/${folder}/${fileName}`);
+    idOrder: string,
+    area: string,
+) =>
+    ref(
+        storage,
+        `Media/ODS_${currentYear}/${currentDate}/${idOrder}-${patientId}/${area}/${fileName}`,
+    );
+
+export const uploadFileImage = async ({
+    folder: patientId,
+    fileName,
+    idOrder,
+    file,
+    area,
+}: uploadFileImageProps) => {
+    const storageRef = storageRefFile(patientId, fileName, idOrder, area);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+};
 
 export const uploadFilePDF = async ({
-    folder,
+    folder: patientId,
     fileName,
+    idOrder,
     file,
-    reference,
-}: UploadFileProps) => {
-    // 'file' comes from the Blob or File API
-    await uploadBytes(storageRefFile(reference, folder, fileName), file);
-    
-    return await getDownloadURL(storageRefFile(reference, folder, fileName));
+    area,
+}: uploadFilePDFProps) => {
+    const storageRef = storageRefFile(patientId, fileName, idOrder, area);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
 };
 
 export const urlFile = async ({
@@ -69,7 +81,7 @@ export const urlFile = async ({
     fileName,
     reference,
 }: DownloadFileProps) => {
-    return getDownloadURL(storageRefProfile(reference, folder, fileName));
+    return getDownloadURL(storageRefProfilePhoto(reference, folder, fileName));
 };
 
 export const deleteUrlFile = async ({
@@ -77,5 +89,5 @@ export const deleteUrlFile = async ({
     fileName,
     reference,
 }: DownloadFileProps) => {
-    return deleteObject(storageRefProfile(reference, folder, fileName));
+    return deleteObject(storageRefProfilePhoto(reference, folder, fileName));
 };

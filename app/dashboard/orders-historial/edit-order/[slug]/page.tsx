@@ -60,6 +60,8 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         uploadUrl,
         urlDropbox,
         handleInputUrlDropbox,
+        handleModelType,
+        modelType,
     } = EditOrderHook({ slug });
 
     return (
@@ -154,6 +156,8 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         handleInputUrl={handleInputUrl}
                         urlDropbox={urlDropbox}
                         handleInputUrlDropbox={handleInputUrlDropbox}
+                        handleModelType={handleModelType}
+                        modelType={modelType}
                     />
 
                     {formStep < 6 && (

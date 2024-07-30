@@ -20,15 +20,6 @@ const firebaseConfig = {
     backendBaseUrl: process.env.NEXT_PUBLIC_BACKEND_BASE_URL,
 };
 
-// const firebaseConfigPro = JSON.parse(
-//     process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string,
-// );
-
-// const firebaseConfig =
-//     process.env.NODE_ENV === "production"
-//         ? firebaseConfigPro
-//         : firebaseConfigDev;
-
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 // const analytics = getAnalytics(firebaseApp);

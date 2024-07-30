@@ -60,6 +60,8 @@ const OrderHistorialPage = () => {
         handleNextPage,
         currentPage,
         totalPages,
+        itemsPerPage,
+        totalItems,
         setItemsPerPage,
         ordersData,
         setCurrentPage,
@@ -230,7 +232,7 @@ const OrderHistorialPage = () => {
                             }`}
                         />
                     </div>
-                    <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-[1280px] p-4">
+                    <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-screen px-16 py-4">
                         <div className="relative col flex flex-col space-y-2">
                             <label
                                 htmlFor="search"
@@ -247,7 +249,7 @@ const OrderHistorialPage = () => {
                             />
                             <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                         </div>
-                        <div className="relative flex items-end h-full space-x-8 w-full">
+                        <div className="relative flex items-center h-full space-x-8 w-full">
                             <button
                                 onClick={() => setShowFilter(!showFilter)}
                                 className="rounded-full w-10 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
@@ -255,7 +257,7 @@ const OrderHistorialPage = () => {
                                 <LuSettings2 size={24} />
                             </button>
 
-                            <div className="relative col flex flex-col space-y-2 w-full">
+                            <div className="relative col flex flex-col space-y-2 w-2/3">
                                 <label
                                     htmlFor="data-picker"
                                     className="text-white text-sm"
@@ -275,6 +277,13 @@ const OrderHistorialPage = () => {
                                     readOnly={true}
                                     i18n={"es"}
                                 />
+                            </div>
+                            <div className="flex flex-col text-center text-company-orange">
+                                <span>Cantidad de Registros:</span>
+                                <span>
+                                    {Number(filteredOrders?.length)} de{" "}
+                                    {Number(ordersData?.length | 0)}
+                                </span>
                             </div>
                             {showFilter && (
                                 <div className="absolute top-7 left-4 bg-white shadow-xl rounded-2xl p-4 w-72">
@@ -375,28 +384,28 @@ const OrderHistorialPage = () => {
                             <div className="col text-center text-nowrap w-48">
                                 <span>Fecha</span>
                             </div>
-                            <div className="col text-center text-nowrap w-48">
+                            <div className="col text-start text-nowrap w-48 pl-10">
                                 <span>Estado</span>
                             </div>
-                            <div className="col text-center text-nowrap w-48">
+                            <div className="col text-start text-nowrap w-48">
                                 <span>Tipo Doc.</span>
                             </div>
-                            <div className="col text-center text-nowrap w-48">
+                            <div className="col text-start text-nowrap w-48">
                                 <span>Cédula</span>
                             </div>
-                            <div className="col text-center text-nowrap w-48">
+                            <div className="col text-start text-nowrap w-48">
                                 <span>Nombres</span>
                             </div>
-                            <div className="col text-center text-nowrap w-48">
+                            <div className="col text-start text-nowrap w-48">
                                 <span>Apellidos</span>
                             </div>
-                            <div className="col text-center text-nowrap w-52">
+                            <div className="col text-start text-nowrap w-52">
                                 <span>Correo</span>
                             </div>
-                            <div className="col text-center text-nowrap w-48">
+                            <div className="col text-start text-nowrap w-48 pl-10">
                                 <span>Teléfono</span>
                             </div>
-                            <div className="col text-center text-nowrap w-48">
+                            <div className="col text-start text-nowrap w-48">
                                 <span>Ultima Actualización</span>
                             </div>
                         </div>
@@ -453,22 +462,6 @@ const OrderHistorialPage = () => {
                                             // className="px-2"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                // (item.status === "enviada" ||
-                                                //     // item.status ===
-                                                //     //     "atendida" ||
-                                                //     item.status ===
-                                                //         "asignada") &&
-                                                // userRol?.uid !==
-                                                //     item.modifiedBy.userRolId
-                                                //     ? setStatusOpenOrder(
-                                                //           item.uid,
-                                                //           //   item.timestamp,
-                                                //       ).then(() => {
-                                                //           router.push(
-                                                //               `/dashboard/orders-historial/details/${item.uid}`,
-                                                //           );
-                                                //       })
-                                                //     :
                                                 router.push(
                                                     selectedOrder === "send"
                                                         ? `/dashboard/orders-historial/details/${item.uid}/?from=send`
@@ -487,31 +480,31 @@ const OrderHistorialPage = () => {
                                             {formatearFecha(item.timestamp)}
                                         </p>
                                     </div>
-                                    <div className="text-nowrap text-center w-48">
+                                    <div className="text-nowrap text-start w-48 pl-10">
                                         <p className="truncate">
                                             {getOrderStatus(item)}
                                         </p>
                                     </div>
-                                    <div className="text-nowrap text-center w-48">
+                                    <div className="text-nowrap text-start w-48 pl-10">
                                         <p className="truncate">
                                             {item.idType}
                                         </p>
                                     </div>
-                                    <div className="text-nowrap text-center w-48">
+                                    <div className="text-nowrap text-start w-48">
                                         <p className="truncate">{item.id}</p>
                                     </div>
-                                    <div className="text-nowrap text-center w-48">
+                                    <div className="text-nowrap text-start w-48">
                                         <p className="truncate">{item.name}</p>
                                     </div>
-                                    <div className="text-nowrap text-center w-48">
+                                    <div className="text-nowrap text-start w-48">
                                         <p className="truncate">
                                             {item.lastName}
                                         </p>
                                     </div>
-                                    <div className="text-nowrap text-center w-52">
+                                    <div className="text-nowrap text-start w-52">
                                         <p className="truncate">{item.email}</p>
                                     </div>
-                                    <div className="text-nowrap text-center w-48">
+                                    <div className="text-nowrap text-start w-48 pl-10">
                                         <p className="truncate">
                                             {"+" +
                                                 item.phone.substring(0, 2) +
