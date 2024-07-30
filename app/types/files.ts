@@ -1,8 +1,24 @@
-export interface UploadFileProps {
+export interface uploadProfilePhotoProps {
     folder: string;
     fileName: string;
     file: any;
-    reference?: any;
+    reference: any;
+}
+
+export interface uploadFilePDFProps {
+    folder: string;
+    fileName: string;
+    file: any;
+    idOrder: string;
+    area: string;
+}
+
+export interface uploadFileImageProps {
+    folder: string;
+    fileName: string;
+    file: any;
+    idOrder: string;
+    area: string;
 }
 
 export interface DownloadFileProps {

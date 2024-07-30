@@ -86,6 +86,8 @@ interface Props {
     uploadUrl?: string;
     urlWeTransfer?: string;
     urlDropbox?: string;
+    modelType?: string;
+    handleModelType?: (e: any) => void;
 }
 
 function StepByStep({
@@ -131,6 +133,8 @@ function StepByStep({
     uploadUrl,
     urlDropbox,
     handleInputUrlDropbox,
+    handleModelType,
+    modelType,
 }: Props) {
     const router = useRouter();
 
@@ -1238,8 +1242,8 @@ function StepByStep({
 
                             {/* Modelos  */}
                             {userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" && (
-                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
-                                    <div className="col-span-1 flex flex-col space-y-8 py-4 rounded-xl">
+                                <div className="grid grid-cols-3 gap-4 mb-10 mx-28">
+                                    <div className="col-span-1 flex flex-col space-y-8 py-4">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             Diagnósticos
                                         </h1>
@@ -1257,6 +1261,57 @@ function StepByStep({
                                                     diagnosesSelected
                                                 }
                                             />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-span-1 flex flex-col space-y-8 py-4 justify-center items-center">
+                                        <h1 className="text-company-orange text-xl">
+                                            Tipo de Modelo:
+                                        </h1>
+                                        <div className="flex flex-row justify-around w-full">
+                                            <div className="flex space-x-2 justify-center items-center text-white">
+                                                <input
+                                                    id="radio-1"
+                                                    type="radio"
+                                                    value="E"
+                                                    checked={modelType=== "E"}
+                                                    onChange={handleModelType}
+                                                    className="w-6 h-6 border-2"
+                                                />
+                                                <label htmlFor="radio-1">
+                                                    Estudio
+                                                </label>
+                                            </div>
+                                            <div className="flex space-x-2 justify-center items-center text-white">
+                                                <input
+                                                    id="radio-2"
+                                                    type="radio"
+                                                    value="T"
+                                                    checked={
+                                                        modelType=== "T"
+                                                    }
+                                                    onChange={handleModelType}
+                                                    className="w-6 h-6 border-2"
+                                                />
+                                                <label htmlFor="radio-2">
+                                                    Trabajo
+                                                </label>
+                                            </div>
+                                            <div className="flex space-x-2 justify-center items-center text-white">
+                                                <input
+                                                    id="radio-3"
+                                                    type="radio"
+                                                    value="C"
+                                                    checked={
+                                                        modelType=== "C"
+                                                    }
+                                                    onChange={handleModelType}
+                                                    className="w-6 h-6 border-0"
+                                                />
+                                                <label htmlFor="radio-3">
+                                                    Copia
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -1282,7 +1337,7 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                    <div className="col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
@@ -1335,7 +1390,7 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
+                                    {/* <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             Ubicación del Archivo:
                                         </h1>
@@ -1353,7 +1408,7 @@ function StepByStep({
                                                 <BsTerminalFill />
                                             </span>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="col-span-2 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones

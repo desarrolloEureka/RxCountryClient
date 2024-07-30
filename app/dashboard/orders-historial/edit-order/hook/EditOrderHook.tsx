@@ -105,6 +105,8 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [urlDropbox, setUrlDropbox] = useState<string>("");
 
+    const [modelType, setModelType] = useState<string>("T");
+
     // const [error, setError] = useState(false);
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
@@ -213,6 +215,11 @@ const EditOrderHook = ({ slug }: Props) => {
     const handleInputUrlDropbox = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setUrlDropbox(value);
+    };
+
+    const handleModelType = (e: any) => {
+        const value = e.target.value;
+        setModelType(value);
     };
 
     const selectChangeHandlerSentTo = (value: any) => {
@@ -485,7 +492,9 @@ const EditOrderHook = ({ slug }: Props) => {
         wait: 600,
     });
 
-    const getOrdersUrls = async (): Promise<{
+    const getOrdersUrls = async (
+        idOrder: string,
+    ): Promise<{
         images: string[];
         pdf: string[];
     }> => {
@@ -497,16 +506,31 @@ const EditOrderHook = ({ slug }: Props) => {
             pdf: [],
         };
 
+        const currentCampusName = allCampus?.find(
+            (item) => item.value === campus,
+        )?.label;
+
+        const firstLetterCampus =
+            campus && currentCampusName && currentCampusName.substring(0, 1);
+
         if (files.length > 0) {
+            let count = 1;
             for (const record of files) {
                 const urlName = record.name.split(".")[0];
                 const fileType = record.type.split("/");
                 if (fileType[0] === "image") {
                     await uploadFileImage({
                         folder: oldDataOrder.patientId,
-                        fileName: urlName.split(" ").join("_"),
+                        fileName:
+                            userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
+                                ? `${firstLetterCampus}${modelType}-${moment().format(
+                                      "YYYYMMDD",
+                                  )}-${patientData?.id}-${count++}`
+                                : urlName.split(" ").join("_"),
                         file: record,
-                        reference,
+                        area: allAreas?.find((item) => item.value === area)
+                            ?.label as string,
+                        idOrder,
                     })
                         .then((res: string) => {
                             urlFiles.images.push(res);
@@ -519,7 +543,8 @@ const EditOrderHook = ({ slug }: Props) => {
                         folder: oldDataOrder.patientId,
                         fileName: urlName.split(" ").join("_"),
                         file: record,
-                        reference,
+                        area,
+                        idOrder,
                     })
                         .then((res: string) => {
                             urlFiles.pdf.push(res);
@@ -559,7 +584,7 @@ const EditOrderHook = ({ slug }: Props) => {
             oldDataOrder.uid,
         );
 
-        const imagesUrls = await getOrdersUrls();
+        const imagesUrls = await getOrdersUrls(oldDataOrder.uid);
 
         const newOrderData = {
             ...selectedOptions,
@@ -839,6 +864,8 @@ const EditOrderHook = ({ slug }: Props) => {
         uploadUrl,
         urlDropbox,
         handleInputUrlDropbox,
+        handleModelType,
+        modelType,
     };
 };
 
