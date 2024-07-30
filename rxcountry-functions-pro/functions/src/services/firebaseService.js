@@ -26,7 +26,10 @@ const firebaseService = admin.initializeApp({
 const dbService = firebaseService.database();
 const authService = firebaseService.auth();
 
-console.log(firebaseService);
+// console.log(
+//     "***-------------firebaseService-------------*** :",
+//     firebaseService,
+// );
 
 module.exports = {
   dbService,

@@ -12,7 +12,7 @@ import {
     getDocumentRef,
     saveOneDocumentFb,
 } from "@/app/firebase/documents";
-import { uploadFile } from "@/app/firebase/files";
+import { uploadProfilePhoto } from "@/app/firebase/files";
 import { registerFirebase, updateProfileFirebase } from "@/app/firebase/user";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -147,9 +147,9 @@ const SignUpHook = (props?: Props) => {
                     // Guarda los archivos(foto perfil)
                     for (const record of files) {
                         const urlName = record.name.split(".")[0];
-                        await uploadFile({
+                        await uploadProfilePhoto({
                             folder: newUser.uid,
-                            fileName: urlName,
+                            fileName: urlName.split(" ").join("_"),
                             file: record,
                             reference,
                         })
