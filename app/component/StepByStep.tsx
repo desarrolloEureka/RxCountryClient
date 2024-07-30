@@ -701,7 +701,9 @@ function StepByStep({
                                         disabled={
                                             professionalName === "" ||
                                             oldData?.createdBy.userRol ===
-                                                "ZWb0Zs42lnKOjetXH5lq"
+                                                "ZWb0Zs42lnKOjetXH5lq" ||
+                                            oldData?.createdBy.userRol ===
+                                                "Ll6KGdzqdtmLLk0D5jhk"
                                         }
                                         value={professionalSpecialty}
                                         type="text"
@@ -739,7 +741,9 @@ function StepByStep({
                                         disabled={
                                             professionalName === "" ||
                                             oldData?.createdBy.userRol ===
-                                                "ZWb0Zs42lnKOjetXH5lq"
+                                                "ZWb0Zs42lnKOjetXH5lq" ||
+                                            oldData?.createdBy.userRol ===
+                                                "Ll6KGdzqdtmLLk0D5jhk"
                                         }
                                         value={professionalEmail}
                                         type="email"
@@ -1274,7 +1278,7 @@ function StepByStep({
                                                     id="radio-1"
                                                     type="radio"
                                                     value="E"
-                                                    checked={modelType=== "E"}
+                                                    checked={modelType === "E"}
                                                     onChange={handleModelType}
                                                     className="w-6 h-6 border-2"
                                                 />
@@ -1287,9 +1291,7 @@ function StepByStep({
                                                     id="radio-2"
                                                     type="radio"
                                                     value="T"
-                                                    checked={
-                                                        modelType=== "T"
-                                                    }
+                                                    checked={modelType === "T"}
                                                     onChange={handleModelType}
                                                     className="w-6 h-6 border-2"
                                                 />
@@ -1302,9 +1304,7 @@ function StepByStep({
                                                     id="radio-3"
                                                     type="radio"
                                                     value="C"
-                                                    checked={
-                                                        modelType=== "C"
-                                                    }
+                                                    checked={modelType === "C"}
                                                     onChange={handleModelType}
                                                     className="w-6 h-6 border-0"
                                                 />
