@@ -543,7 +543,8 @@ const EditOrderHook = ({ slug }: Props) => {
                         folder: oldDataOrder.patientId,
                         fileName: urlName.split(" ").join("_"),
                         file: record,
-                        area,
+                        area: allAreas?.find((item) => item.value === area)
+                            ?.label as string,
                         idOrder,
                     })
                         .then((res: string) => {
