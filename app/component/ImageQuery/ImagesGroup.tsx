@@ -22,6 +22,9 @@ const ImagesGroup = ({
 
     const [typoFile, setTypoFile] = useState<string>("image");
 
+    const dropBoxUrl: string = orderAndPatientData?.urlDropbox as string;
+    const weTransferUrl: string = orderAndPatientData?.urlWeTransfer as string;
+
     useEffect(() => {
         orderAndPatientData &&
             setFileSrcSelected(orderAndPatientData?.orderImagesUrl[0]);
@@ -105,7 +108,13 @@ const ImagesGroup = ({
                                 className="text-white flex flex-col justify-center items-center py-2 w-64"
                                 target="_blank"
                                 // href={"https://via.placeholder.com/1920"}
-                                href={orderAndPatientData?.urlWeTransfer}
+                                // href={orderAndPatientData?.urlWeTransfer}
+                                href={
+                                    weTransferUrl.includes("https://") ||
+                                    weTransferUrl.includes("http://")
+                                        ? weTransferUrl
+                                        : `https://${weTransferUrl}`
+                                }
                             >
                                 <Image
                                     src="/assets/icons/wetranfer.svg"
@@ -132,7 +141,12 @@ const ImagesGroup = ({
                                 className="text-white flex flex-col justify-center items-center py-2 w-64"
                                 target="_blank"
                                 // href={"https://via.placeholder.com/1920"}
-                                href={orderAndPatientData?.urlDropbox}
+                                href={
+                                    dropBoxUrl.includes("https://") ||
+                                    dropBoxUrl.includes("http://")
+                                        ? dropBoxUrl
+                                        : `https://${dropBoxUrl}`
+                                }
                             >
                                 <Image
                                     src="/assets/icons/enlace.svg"
