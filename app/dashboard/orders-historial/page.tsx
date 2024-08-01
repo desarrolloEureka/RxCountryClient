@@ -426,7 +426,9 @@ const OrderHistorialPage = () => {
                                         {((userArea === item.sendTo &&
                                             item.status !== "finalizada") ||
                                             userRol?.uid ===
-                                                "ZWb0Zs42lnKOjetXH5lq") && (
+                                                "ZWb0Zs42lnKOjetXH5lq" ||
+                                            userRol?.uid ===
+                                                "Ll6KGdzqdtmLLk0D5jhk") && (
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();

@@ -167,12 +167,18 @@ const EditOrderHook = ({ slug }: Props) => {
                 result = [
                     "qxdH34kAupnAPSuVIIvn",
                     "Wxdi41YreLGK0UiL2YQU",
+                    // "0OaigBxmSmUa90dvawB1",
                     area,
                     ...areasCompleted,
                 ];
                 return result;
             }
-            result = ["qxdH34kAupnAPSuVIIvn", "Wxdi41YreLGK0UiL2YQU", area];
+            result = [
+                "qxdH34kAupnAPSuVIIvn",
+                "Wxdi41YreLGK0UiL2YQU",
+                // "0OaigBxmSmUa90dvawB1",
+                area,
+            ];
             return result;
         };
 
@@ -230,7 +236,10 @@ const EditOrderHook = ({ slug }: Props) => {
         const list: string[] = value.map(
             (item: { value: string; label: string }) => item.value,
         );
-        setAreaList(list);
+        setAreaList([
+            ...list,
+            // "0OaigBxmSmUa90dvawB1"
+        ]);
     };
 
     const selectChangeHandlerDiagnoses = (value: any) => {
@@ -428,7 +437,7 @@ const EditOrderHook = ({ slug }: Props) => {
             icon: "success",
             title: `Guardando...`,
             showConfirmButton: false,
-            timer: 1500,
+            timer: 2000,
             background: "#404040",
             color: "#e9a225",
         }).then(() => {
@@ -571,7 +580,7 @@ const EditOrderHook = ({ slug }: Props) => {
     const updatePatientData = async () => {
         await updateDocumentsByIdFb(
             oldPatientData.uid,
-            patientData,
+            { ...patientData, timestamp: currentDate },
             patientRef,
         ).then(() => {
             setShowSave(false);
@@ -599,7 +608,8 @@ const EditOrderHook = ({ slug }: Props) => {
                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
                     ? oldDataOrder?.completedAreas &&
                       !_.isEmpty(oldDataOrder?.completedAreas)
-                        ? oldDataOrder?.completedAreas.includes(area)
+                        ? oldDataOrder?.completedAreas.includes(area) ||
+                          area === "0OaigBxmSmUa90dvawB1"
                             ? oldDataOrder?.completedAreas
                             : [...oldDataOrder?.completedAreas, area]
                         : [area]
@@ -697,13 +707,14 @@ const EditOrderHook = ({ slug }: Props) => {
             ),
         };
 
+        confirmAlertTwo();
+
         await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
             async (res: any) => {
                 !isOrderIncomplete &&
                     userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" &&
                     (await handleSendFinishedOrderEmail(patientAndOrderData));
                 setCurrentOrderId(parseInt(res.id));
-                confirmAlertTwo();
             },
         );
     };
