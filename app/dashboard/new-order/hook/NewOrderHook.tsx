@@ -48,7 +48,7 @@ const saveAlert = () => {
         icon: "success",
         title: `Guardando...`,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
         background: "#404040",
         color: "#e9a225",
     });
@@ -228,6 +228,7 @@ const NewOrderHook = (props?: Props) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 console.log("Entró");
+                saveAlert();
                 await uploadHandle().then(() => {
                     setFormStep((prevStep: number) => prevStep + 1);
                 });
@@ -342,7 +343,6 @@ const NewOrderHook = (props?: Props) => {
                     await handleSendNewOrderEmail(patientAndOrderData);
 
                     setCurrentOrderId(parseInt(res.id));
-                    saveAlert();
                 });
             });
         } else {
@@ -376,7 +376,6 @@ const NewOrderHook = (props?: Props) => {
                         await handleSendNewOrderEmail(patientAndOrderData);
 
                         setCurrentOrderId(parseInt(res.id));
-                        saveAlert();
                     });
                 });
             });

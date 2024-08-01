@@ -225,7 +225,5 @@ export const updateDocumentsByIdFb = async (
     reference: string,
 ) => {
     const document = docRef({ ref: reference, collection: id });
-    return await updateDoc(document, {
-        ...newData,
-    });
+    return await updateDoc(document, newData);
 };

@@ -2,9 +2,9 @@ import React from "react";
 import Select, { components } from "react-select";
 
 interface SelectWithCheckboxProps {
-    options?: { value: string; label: string }[];
+    options?: { value: string; label: string; campus?: string[] }[];
     selectChangeHandler?: (e: any) => void;
-    optionSelected: { value: string; label: string };
+    optionSelected: { value: string; label: string; campus?: string[] }[];
     isMulti?: boolean;
     isDisabled?: boolean;
 }

@@ -700,10 +700,8 @@ function StepByStep({
                                         // disabled={isEdit}
                                         disabled={
                                             professionalName === "" ||
-                                            oldData?.createdBy.userRol ===
-                                                "ZWb0Zs42lnKOjetXH5lq" ||
-                                            oldData?.createdBy.userRol ===
-                                                "Ll6KGdzqdtmLLk0D5jhk"
+                                            oldData?.createdBy.userRol !==
+                                                userRol?.uid
                                         }
                                         value={professionalSpecialty}
                                         type="text"
@@ -740,10 +738,8 @@ function StepByStep({
                                     <input
                                         disabled={
                                             professionalName === "" ||
-                                            oldData?.createdBy.userRol ===
-                                                "ZWb0Zs42lnKOjetXH5lq" ||
-                                            oldData?.createdBy.userRol ===
-                                                "Ll6KGdzqdtmLLk0D5jhk"
+                                            oldData?.createdBy.userRol !==
+                                                userRol?.uid
                                         }
                                         value={professionalEmail}
                                         type="email"
@@ -833,7 +829,7 @@ function StepByStep({
                                                         rel="noopener noreferrer"
                                                         target="_blank"
                                                     >
-                                                        <span>
+                                                        <span className="text-white">
                                                             Verificar Imágenes
                                                         </span>
                                                     </Link>

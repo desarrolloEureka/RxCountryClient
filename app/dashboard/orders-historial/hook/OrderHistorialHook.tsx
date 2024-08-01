@@ -19,7 +19,7 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 const OrderHistorialHook = () => {
     const { isActiveUser, userData, userRol } = useAuth();
 
-    const { campus, area } = userData;
+    const { campus, area, uid } = userData;
 
     const searchParams = useSearchParams();
 
@@ -90,6 +90,7 @@ const OrderHistorialHook = () => {
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.createdBy.userRol === userRol?.uid &&
+                    order.createdBy.userId === uid &&
                     (order.status === "enviada" || order.status === "asignada"),
             ),
         },

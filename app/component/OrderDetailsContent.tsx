@@ -117,7 +117,7 @@ const OrderDetailsContent = ({
                         !_.isEmpty(orderAndPatientData?.areaList) && (
                             <div className="flex flex-col justify-center items-center text-company-orange text-xl w-1/2">
                                 <span className="font-bold">
-                                    Areas seleccionadas:&nbsp;
+                                    Áreas Seleccionadas:&nbsp;
                                 </span>
                                 <span>{areasSelected.join(", ")}</span>
                             </div>

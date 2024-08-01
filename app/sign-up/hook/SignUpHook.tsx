@@ -128,6 +128,10 @@ const SignUpHook = (props?: Props) => {
         const res = await registerFirebase(data.email, password)
             .then(async (result: any) => {
                 const newUser = result.user;
+
+                // Envía el correo de nuevo usuario
+                await handleSendWelcomeEmail(data);
+
                 if (newUser !== null) {
                     setIsSendData(true);
 
@@ -166,11 +170,8 @@ const SignUpHook = (props?: Props) => {
                         ...rest,
                         urlPhoto: newUrlPhoto,
                         uid: newUser.uid,
-                    }).then(async () => {
+                    }).then(() => {
                         setIsSendData(false);
-
-                        // Envía el correo de nuevo usuario
-                        await handleSendWelcomeEmail(data);
                     });
                 }
                 // setSignUp(true);
