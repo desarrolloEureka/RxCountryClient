@@ -36,7 +36,7 @@ const ImagesGroup = ({
                 <div className="flex items-center space-x-8">
                     <h2 className="text text-company-blue text-xl">Archivos</h2>
                 </div>
-                <div className="flex flex-col overflow-y-auto custom-scrollbar h-screen px-10 w-full">
+                <div className="flex flex-auto flex-col overflow-y-auto custom-scrollbar h-screen max-h-min px-10 w-full">
                     {orderAndPatientData?.orderPDFUrl?.map(
                         (item: any, index: number) => {
                             return (
@@ -168,29 +168,36 @@ const ImagesGroup = ({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col space-y-2 w-full p-12">
-                <div className="overflow-auto custom-scrollbar">
-                    <h3 className="text-white">Imagen {idFileSelected + 1}</h3>
+            <div className="flex flex-col space-y-2 w-full p-12 max-h-min">
+                <div className="overflow-auto custom-scrollbar max-h-min">
                     {typoFile === "image" ? (
-                        <Image
-                            src={fileSrcSelected}
-                            width={0}
-                            height={0}
-                            sizes="1920px"
-                            style={{
-                                width: "100%",
-                                height: "auto",
-                            }}
-                            alt={"logo"}
-                            placeholder="blur"
-                            blurDataURL={fileSrcSelected}
-                        />
+                        <div className="flex flex-col justify-center items-center space-y-4">
+                            <h3 className="text-white text-center">
+                                Imagen {idFileSelected + 1}
+                            </h3>
+                            <Image
+                                src={fileSrcSelected}
+                                width={0}
+                                height={0}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                style={{
+                                    width: "50%",
+                                    height: "auto",
+                                }}
+                                alt={"logo"}
+                                placeholder="blur"
+                                blurDataURL={fileSrcSelected}
+                            />
+                        </div>
                     ) : (
-                        <div>
+                        <div className="flex flex-col justify-center items-center space-y-4 h-screen max-h-min">
+                            <h3 className="text-white text-center">
+                                Documento {idFileSelected + 1}
+                            </h3>
                             <iframe
                                 src={fileSrcSelected}
                                 width="100%"
-                                height="1200px"
+                                height="100%"
                                 className=""
                             />
                         </div>
