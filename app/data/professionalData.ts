@@ -19,7 +19,7 @@ export const dataProfessionalObject = {
     contract: "",
     rol: "ZWb0Zs42lnKOjetXH5lq",
     urlPhoto: "",
-    timestamp: new Date(),
+    timestamp: "",
     isActive: true,
     isDeleted: false,
 } as DataProfessionalObject;

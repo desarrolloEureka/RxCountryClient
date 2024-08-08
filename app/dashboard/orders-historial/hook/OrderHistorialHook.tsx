@@ -2,12 +2,14 @@
 import useAuth from "@/app/firebase/auth";
 import {
     arrayUnionFb,
+    getAllAreasOptions,
     getAllFunctionaries,
     getAllOrders,
     getAllPatients,
     getAllProfessionals,
     updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
+import { AreasSelector } from "@/app/types/areas";
 import { Order, OrdersByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import { DataProfessionalObject } from "@/app/types/professionals";
@@ -48,6 +50,7 @@ const OrderHistorialHook = () => {
     const [patientsData, setPatientsData] = useState<any>();
     const [functionaryData, setFunctionaryData] = useState<any>();
     const [professionalsData, setProfessionalsData] = useState<any>();
+    const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -350,6 +353,13 @@ const OrderHistorialHook = () => {
         return item.status;
     };
 
+    const getAreaName = (areaId: string): string | undefined => {
+        const result: string | undefined = allAreas?.find(
+            (item) => item.value === areaId,
+        )?.label;
+        return result;
+    };
+
     const getLastUserData = (id: string) => {
         const functionary: DataProfessionalObject = functionaryData?.find(
             (functionary: DataProfessionalObject) => functionary.uid === id,
@@ -427,12 +437,18 @@ const OrderHistorialHook = () => {
         allProfessionalsData && setProfessionalsData(allProfessionalsData);
     }, []);
 
+    const getAreas = useCallback(async () => {
+        const allAreasData = await getAllAreasOptions();
+        allAreasData && setAllAreas(allAreasData);
+    }, []);
+
     useEffect(() => {
+        getAreas();
         getOrders();
         getPatients();
         getFunctionary();
         getProfessionals();
-    }, [getOrders, getPatients, getFunctionary, getProfessionals]);
+    }, [getOrders, getPatients, getFunctionary, getProfessionals, getAreas]);
 
     useEffect(() => {
         if (
@@ -454,6 +470,7 @@ const OrderHistorialHook = () => {
 
     return {
         userArea: area,
+        getAreaName,
         router,
         showFilter,
         setShowFilter,

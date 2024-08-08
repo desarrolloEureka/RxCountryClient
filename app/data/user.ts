@@ -35,7 +35,7 @@ export const dataUserObject = {
     area: "",
     availableAreas: [],
     urlPhoto: "",
-    timestamp: new Date(),
+    timestamp: "",
     isActive: true,
     isDeleted: false,
 } as UserData;

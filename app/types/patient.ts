@@ -16,7 +16,7 @@ export type DataPatientObject = {
     rol: string;
     urlPhoto: string;
     serviceOrders: string[];
-    timestamp: Date;
+    timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
 };

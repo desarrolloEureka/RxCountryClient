@@ -31,7 +31,7 @@ export type UserData = {
     area: string;
     availableAreas: string[];
     urlPhoto: string;
-    timestamp: Date;
+    timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
 };

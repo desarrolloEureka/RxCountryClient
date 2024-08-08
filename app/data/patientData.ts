@@ -18,7 +18,7 @@ export const dataPatientObject = {
     rol: "ShHQKRuKJfxHcV70XSvC",
     urlPhoto: "",
     serviceOrders: [],
-    timestamp: new Date(),
+    timestamp: "",
     isActive: true,
     isDeleted: false,
 } as DataPatientObject;
