@@ -88,7 +88,7 @@ const OrderHistorialPage = () => {
                 item.updateLog.at(-1).lastUserId
                     ? getLastUserData(item.updateLog.at(-1).lastUserId)
                     : "No Registrado"
-            }<br/><br/> Enviado al Área de: ${
+            }<br/><br/> Enviado al área de: ${
                 item.sendTo ? getAreaName(item.sendTo) : "No Registrado"
             }<br/><br/> Comentario: ${
                 item.updateLog.at(-1).lastComment
