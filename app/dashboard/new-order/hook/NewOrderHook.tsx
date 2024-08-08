@@ -21,6 +21,7 @@ import { DataPatientObject } from "@/app/types/patient";
 import { handleSendNewOrderEmail } from "@/lib/brevo/handlers/actions";
 import _ from "lodash";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 
@@ -42,16 +43,46 @@ const calculateAge = (birthDate: Date | string): number => {
     return age;
 };
 
-const saveAlert = () => {
+const saveAlert = async (callbackFc: () => Promise<void>, router: any) => {
     Swal.fire({
         position: "center",
-        icon: "success",
         title: `Guardando...`,
-        showConfirmButton: false,
-        timer: 2000,
+        text: "Por favor espera",
+        allowOutsideClick: false,
         background: "#404040",
         color: "#e9a225",
+        didOpen: () => {
+            Swal.showLoading();
+        },
     });
+
+    try {
+        await callbackFc();
+
+        Swal.fire({
+            icon: "success",
+            title: "Éxito",
+            text: "La orden se guardo con éxito",
+            background: "#404040",
+            color: "#e9a225",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error",
+            background: "#404040",
+            color: "#e9a225",
+            confirmButtonColor: "#1f2937",
+            confirmButtonText: "Regresar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.push("/dashboard/new-order/");
+            }
+        });
+    }
 };
 
 type Props = {};
@@ -60,6 +91,8 @@ const NewOrderHook = (props?: Props) => {
     const { isActiveUser, userData, accessTokenUser, userRol } = useAuth();
 
     const { campus, uid, area } = userData;
+
+    const router = useRouter();
 
     const currentDate = moment().format();
 
@@ -228,10 +261,11 @@ const NewOrderHook = (props?: Props) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 console.log("Entró");
-                saveAlert();
-                await uploadHandle().then(() => {
+
+                saveAlert(uploadHandle, router).then(() => {
                     setFormStep((prevStep: number) => prevStep + 1);
                 });
+
                 handleClose();
             }
         });
