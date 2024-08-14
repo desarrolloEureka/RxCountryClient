@@ -383,6 +383,7 @@ function StepByStep({
                     oldData?.areaList?.includes(area.value),
                 ),
             );
+            setAreaSelected(allAreas.find((area) => area.value === oldData?.sendTo));
         }
     }, [oldData, userComment, userRol]);
 
