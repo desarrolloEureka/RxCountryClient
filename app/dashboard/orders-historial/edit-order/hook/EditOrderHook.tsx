@@ -529,7 +529,7 @@ const EditOrderHook = ({ slug }: Props) => {
                 const fileType = record.type.split("/");
                 if (fileType[0] === "image") {
                     await uploadFileImage({
-                        folder: oldDataOrder.patientId,
+                        folder: patientData?.id,
                         fileName:
                             userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
                                 ? `${firstLetterCampus}${modelType}-${moment().format(
@@ -549,7 +549,7 @@ const EditOrderHook = ({ slug }: Props) => {
                         });
                 } else if (fileType[1] === "pdf") {
                     await uploadFilePDF({
-                        folder: oldDataOrder.patientId,
+                        folder: patientData?.id,
                         fileName: urlName.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find((item) => item.value === area)

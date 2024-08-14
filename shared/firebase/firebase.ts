@@ -2,7 +2,11 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { config as configDotenv } from "dotenv";
+import "firebase/compat/storage";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -26,5 +30,6 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const db = firebaseApp.firestore();
 const auth = firebase.auth();
+const storage = firebaseApp.storage();
 
-export { auth, db, firebaseConfig };
+export { auth, db, firebaseConfig, storage };
