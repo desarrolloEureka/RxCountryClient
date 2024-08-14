@@ -17,7 +17,9 @@ import {
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 // import { EditedOrderStatusByRol } from "@/app/types/order";
-import { uploadFileImage, uploadFilePDF } from "@/app/firebase/files";
+import {
+    uploadFile
+} from "@/app/firebase/files";
 import useDebounce from "@/app/hook/useDebounce";
 import { DiagnosesSelector } from "@/app/types/diagnoses";
 import { DiagnosticianSelector } from "@/app/types/diagnostician";
@@ -124,10 +126,12 @@ const EditOrderHook = ({ slug }: Props) => {
     const [showSave, setShowSave] = useState<boolean>(false);
 
     const [fileName, setFileName] = useState("SUBIR ARCHIVO");
+    const [fileNameSTL, setFileNameSTL] = useState("SUBIR ARCHIVO");
 
     const [errorImg, setErrorImg] = useState<string | null>(null);
 
     const [files, setFiles] = useState<File[]>([]);
+    const [filesSTL, setFilesSTL] = useState<File[]>([]);
 
     const [selectedDiagnosisTwo, setSelectedDiagnosisTwo] = useState<string[]>(
         [],
@@ -300,6 +304,21 @@ const EditOrderHook = ({ slug }: Props) => {
     const MAX_FILE_SIZES = {
         image: 3000000,
         pdf: 10000000,
+    };
+
+    const handleFileChangeSTL = (e: ChangeEvent<HTMLInputElement>) => {
+        const uploadFiles = e.target.files;
+
+        if (!uploadFiles || uploadFiles.length === 0) {
+            setFileNameSTL("SUBIR ARCHIVO");
+            setFilesSTL([]);
+            return;
+        }
+
+        const validatedFiles: File[] = [...uploadFiles];
+
+        setFileNameSTL(validatedFiles.map((file) => file.name).join(", "));
+        setFilesSTL(validatedFiles);
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -506,13 +525,16 @@ const EditOrderHook = ({ slug }: Props) => {
     ): Promise<{
         images: string[];
         pdf: string[];
+        STL: string[];
     }> => {
         const urlFiles: {
             images: string[];
             pdf: string[];
+            STL: string[];
         } = {
             images: [],
             pdf: [],
+            STL: [],
         };
 
         const currentCampusName = allCampus?.find(
@@ -528,8 +550,8 @@ const EditOrderHook = ({ slug }: Props) => {
                 const urlName = record.name.split(".")[0];
                 const fileType = record.type.split("/");
                 if (fileType[0] === "image") {
-                    await uploadFileImage({
-                        folder: oldDataOrder.patientId,
+                    await uploadFile({
+                        folder: patientData?.id,
                         fileName:
                             userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
                                 ? `${firstLetterCampus}${modelType}-${moment().format(
@@ -548,8 +570,8 @@ const EditOrderHook = ({ slug }: Props) => {
                             console.log(err);
                         });
                 } else if (fileType[1] === "pdf") {
-                    await uploadFilePDF({
-                        folder: oldDataOrder.patientId,
+                    await uploadFile({
+                        folder: patientData?.id,
                         fileName: urlName.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find((item) => item.value === area)
@@ -563,6 +585,25 @@ const EditOrderHook = ({ slug }: Props) => {
                             console.log(err);
                         });
                 }
+            }
+        }
+        if (filesSTL.length > 0) {
+            for (const record of filesSTL) {
+                // const urlName = record.name.split(".")[0];
+                await uploadFile({
+                    folder: patientData?.id,
+                    fileName: record.name.split(" ").join("_"),
+                    file: record,
+                    area: allAreas?.find((item) => item.value === area)
+                        ?.label as string,
+                    idOrder,
+                })
+                    .then((res: string) => {
+                        urlFiles.STL.push(res);
+                    })
+                    .catch((err: any) => {
+                        console.log(err);
+                    });
             }
         }
         return urlFiles;
@@ -594,7 +635,7 @@ const EditOrderHook = ({ slug }: Props) => {
             oldDataOrder.uid,
         );
 
-        const imagesUrls = await getOrdersUrls(oldDataOrder.uid);
+        const filesUrls = await getOrdersUrls(oldDataOrder.uid);
 
         const newOrderData = {
             ...selectedOptions,
@@ -633,11 +674,14 @@ const EditOrderHook = ({ slug }: Props) => {
                 userId: userData?.uid,
             },
             orderImagesUrl: oldDataOrder?.orderImagesUrl
-                ? [...oldDataOrder?.orderImagesUrl, ...imagesUrls.images]
-                : imagesUrls.images,
+                ? [...oldDataOrder?.orderImagesUrl, ...filesUrls.images]
+                : filesUrls.images,
             orderPDFUrl: oldDataOrder?.orderPDFUrl
-                ? [...oldDataOrder?.orderPDFUrl, ...imagesUrls.pdf]
-                : imagesUrls.pdf,
+                ? [...oldDataOrder?.orderPDFUrl, ...filesUrls.pdf]
+                : filesUrls.pdf,
+            orderSTLFiles: oldDataOrder?.orderSTLFiles
+                ? [...oldDataOrder?.orderSTLFiles, ...filesUrls.STL]
+                : filesUrls.STL,
             urlDropbox: urlDropbox
                 ? urlDropbox
                 : oldDataOrder?.urlDropbox
@@ -856,7 +900,9 @@ const EditOrderHook = ({ slug }: Props) => {
         selectChangeHandlerSentTo,
         handleChecks,
         fileName,
+        fileNameSTL,
         handleFileChange,
+        handleFileChangeSTL,
         allDiagnoses: _.sortBy(allDiagnoses, (obj) =>
             obj.label.toLocaleLowerCase(),
         ),
