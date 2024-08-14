@@ -42,6 +42,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         selectChangeHandlerSentTo,
         handleChecks,
         fileName,
+        fileNameSTL,
         handleFileChange,
         allDiagnoses,
         allDiagnostician,
@@ -62,6 +63,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         handleInputUrlDropbox,
         handleModelType,
         modelType,
+        handleFileChangeSTL,
     } = EditOrderHook({ slug });
 
     return (
@@ -135,6 +137,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         allAreas={allAreas}
                         handleChecks={handleChecks}
                         fileName={fileName}
+                        fileNameSTL={fileNameSTL}
                         handleFileChange={handleFileChange}
                         allDiagnoses={allDiagnoses}
                         allDiagnostician={allDiagnostician}
@@ -158,6 +161,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                         handleInputUrlDropbox={handleInputUrlDropbox}
                         handleModelType={handleModelType}
                         modelType={modelType}
+                        handleFileChangeSTL={handleFileChangeSTL}
                     />
 
                     {formStep < 6 && (

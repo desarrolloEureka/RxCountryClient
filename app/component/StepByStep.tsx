@@ -76,6 +76,7 @@ interface Props {
         setSelected: (e: any) => void,
     ) => void;
     fileName?: string;
+    fileNameSTL?: string;
     handleFileChange?: (e: any) => void;
     isOrderIncomplete?: boolean;
     handleCheckOrderIncomplete: (e: any) => void;
@@ -88,6 +89,7 @@ interface Props {
     urlDropbox?: string;
     modelType?: string;
     handleModelType?: (e: any) => void;
+    handleFileChangeSTL?: (e: any) => void;
 }
 
 function StepByStep({
@@ -121,6 +123,7 @@ function StepByStep({
     areaList,
     handleInputChange,
     fileName,
+    fileNameSTL,
     handleFileChange,
     allDiagnoses,
     allDiagnostician,
@@ -135,6 +138,7 @@ function StepByStep({
     handleInputUrlDropbox,
     handleModelType,
     modelType,
+    handleFileChangeSTL,
 }: Props) {
     const router = useRouter();
 
@@ -1044,11 +1048,11 @@ function StepByStep({
                             {/* Radiología */}
                             {userRol?.uid === "V5iMSnSlSYsiSDFs4UpI" && (
                                 <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
-                                    <div className="col-span-2 flex flex-col justify-end items-center">
+                                    <div className="col flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
-                                            fileTypes="image/*, application/pdf"
+                                            fileTypes="image/*, application/pdf, "
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400 pt-3">
@@ -1067,8 +1071,24 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
+                                    <div className="col flex flex-col justify-start items-center">
+                                        <InputFileUpload
+                                            fileName={fileNameSTL}
+                                            handleFileChange={handleFileChangeSTL}
+                                            fileTypes=""
+                                        />
+                                        <span
+                                            className={`text-base text-center ${
+                                                fileName === "SUBIR ARCHIVO"
+                                                    ? "text-company-orange"
+                                                    : "text-green-500"
+                                            } pt-3`}
+                                        >
+                                            ARCHIVOS TIPO STL
+                                        </span>
+                                    </div>
                                     <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
-                                        <h1 className="text-company-orange text-2xl font-bold">
+                                        <h1 className="text-company-orange text-xl font-bold">
                                             URL WeTransfer:
                                         </h1>
 
@@ -1086,7 +1106,7 @@ function StepByStep({
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
+                                    {/* <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             URL Dropbox:
                                         </h1>
@@ -1104,7 +1124,7 @@ function StepByStep({
                                                 <BsTerminalFill />
                                             </span>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Observaciones
