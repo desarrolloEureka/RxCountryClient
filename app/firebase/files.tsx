@@ -52,25 +52,13 @@ const storageRefFile = (
         `Media/ODS_${currentYear}/${currentDate}/${idOrder}-${patientId}/${area}/${fileName}`,
     );
 
-export const uploadFileImage = async ({
+export const uploadFile = async ({
     folder: patientId,
     fileName,
     idOrder,
     file,
     area,
 }: uploadFileImageProps) => {
-    const storageRef = storageRefFile(patientId, fileName, idOrder, area);
-    await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
-};
-
-export const uploadFilePDF = async ({
-    folder: patientId,
-    fileName,
-    idOrder,
-    file,
-    area,
-}: uploadFilePDFProps) => {
     const storageRef = storageRefFile(patientId, fileName, idOrder, area);
     await uploadBytes(storageRef, file);
     return await getDownloadURL(storageRef);

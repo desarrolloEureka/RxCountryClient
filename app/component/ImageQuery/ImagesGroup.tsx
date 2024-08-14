@@ -101,14 +101,44 @@ const ImagesGroup = ({
                             );
                         },
                     )}
+                    {orderAndPatientData?.orderSTLFiles?.map(
+                        (item: any, index: number) => {
+                            return (
+                                <div
+                                    key={index}
+                                    className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
+                                    onClick={() => {
+                                        setFileSrcSelected(item);
+                                        setIdFileSelected(index);
+                                        setTypoFile("STL");
+                                    }}
+                                >
+                                    <Image
+                                        src="/assets/stl.png"
+                                        width={0}
+                                        height={0}
+                                        sizes="200px"
+                                        style={{
+                                            width: "100%",
+                                            height: "auto",
+                                        }}
+                                        alt={"logo stl file"}
+                                        placeholder="blur"
+                                        blurDataURL={item}
+                                    />
+                                    <h3 className="text-white text-center">
+                                        {`Archivo ${index + 1}`}
+                                    </h3>
+                                </div>
+                            );
+                        },
+                    )}
 
                     <div className="flex flex-col items-center space-y-2 cursor-pointer">
                         {orderAndPatientData?.urlWeTransfer && (
                             <Link
                                 className="text-white flex flex-col justify-center items-center py-2 w-64"
                                 target="_blank"
-                                // href={"https://via.placeholder.com/1920"}
-                                // href={orderAndPatientData?.urlWeTransfer}
                                 href={
                                     weTransferUrl.includes("https://") ||
                                     weTransferUrl.includes("http://")
@@ -140,7 +170,6 @@ const ImagesGroup = ({
                             <Link
                                 className="text-white flex flex-col justify-center items-center py-2 w-64"
                                 target="_blank"
-                                // href={"https://via.placeholder.com/1920"}
                                 href={
                                     dropBoxUrl.includes("https://") ||
                                     dropBoxUrl.includes("http://")
@@ -180,18 +209,22 @@ const ImagesGroup = ({
                             2,
                         )} ${orderAndPatientData?.phone.substring(
                             2,
-                        )} - Email: ${
-                            orderAndPatientData?.email
-                        } - Edad: ${orderAndPatientData?.age}`}
+                        )} - Email: ${orderAndPatientData?.email} - Edad: ${
+                            orderAndPatientData?.age
+                        }`}
                 </h2>
                 <div className="overflow-auto custom-scrollbar max-h-min">
-                    {typoFile === "image" ? (
+                    {typoFile === "image" || typoFile === "STL" ? (
                         <div className="flex flex-col justify-center items-center space-y-4">
                             <h3 className="text-white text-center">
-                                Imagen {idFileSelected + 1}
+                                {typoFile === "STL" ? "Archivo": "Imagen"}  {idFileSelected + 1}
                             </h3>
                             <Image
-                                src={fileSrcSelected}
+                                src={
+                                    typoFile === "STL"
+                                        ? "/assets/stl.png"
+                                        : fileSrcSelected
+                                }
                                 width={0}
                                 height={0}
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
