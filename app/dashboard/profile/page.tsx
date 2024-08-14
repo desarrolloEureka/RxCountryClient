@@ -4,7 +4,7 @@ import Link from "next/link";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { RiEditBoxFill } from "react-icons/ri";
 import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/high-res.css";
+import "../../style.css";
 import ProfileHook from "./hook/ProfileHook";
 
 export default function ProfilePage() {
@@ -245,6 +245,7 @@ export default function ProfilePage() {
                                     dropdownStyle={{
                                         color: "black",
                                         borderRadius: 12,
+                                        backgroundColor: "gray",
                                     }}
                                     containerStyle={{
                                         borderBottom: "2px solid white",

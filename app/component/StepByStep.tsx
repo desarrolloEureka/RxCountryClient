@@ -584,9 +584,9 @@ function StepByStep({
                                 value={data?.phone}
                                 onChange={phoneChangeHandler}
                             />
-                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                            {/* <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                 <IoCall />
-                            </span>
+                            </span> */}
                         </div>
                         <div className="col relative flex flex-col space-y-2 w-full">
                             <label htmlFor="data-picker" className="text-white">
