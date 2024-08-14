@@ -17,6 +17,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
         uidUser,
         value,
+        area,
         router,
         showSave,
         showHelp,
@@ -115,6 +116,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
 
                     <StepByStep
                         value={value}
+                        area={area}
                         uidUser={uidUser}
                         oldData={oldData}
                         formStep={formStep}
@@ -243,8 +245,8 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                                         className="flex items-center cursor-pointer text-company-blue"
                                     >
                                         {formStep < 5 ? (
-                                            (areaList.length > 0 ||
-                                                oldData?.areaList?.length > 0 ||
+                                            (areaList?.length > 0 ||
+                                                // oldData?.areaList?.length > 0 ||
                                                 formStep === 0 ||
                                                 userRol?.uid ===
                                                     "ZWb0Zs42lnKOjetXH5lq") && (
@@ -285,7 +287,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                             <p className="w-64">
                                 Si una orden tiene una alerta en la campana de
                                 notificación quiere decir que en ella
-                                encontraras las observaciones por cada area de
+                                encontraras las observaciones por cada área de
                                 esta orden.
                             </p>
                         </div>
