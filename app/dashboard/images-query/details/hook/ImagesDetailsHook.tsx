@@ -20,8 +20,8 @@ const ImagesDetailsHook = ({ slug }: Props) => {
         );
 
         if (patient) {
-            const { id, name, lastName, phone, email } = patient;
-            return { ...order, id, name, lastName, phone, email };
+            const { id, name, lastName, phone, email, age } = patient;
+            return { ...order, id, name, lastName, phone, email, age };
         }
 
         return [];

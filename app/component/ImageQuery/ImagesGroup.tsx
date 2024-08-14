@@ -169,6 +169,21 @@ const ImagesGroup = ({
                 </div>
             </div>
             <div className="flex flex-col space-y-2 w-full p-12 max-h-min">
+                <h2 className="text-company-orange text-xl">
+                    {orderAndPatientData &&
+                        `Orden #${orderAndPatientData?.uid} / Nombre: ${
+                            orderAndPatientData?.name
+                        } ${
+                            orderAndPatientData?.lastName
+                        } - Tel: +${orderAndPatientData?.phone.substring(
+                            0,
+                            2,
+                        )} ${orderAndPatientData?.phone.substring(
+                            2,
+                        )} - Email: ${
+                            orderAndPatientData?.email
+                        } - Edad: ${orderAndPatientData?.age}`}
+                </h2>
                 <div className="overflow-auto custom-scrollbar max-h-min">
                     {typoFile === "image" ? (
                         <div className="flex flex-col justify-center items-center space-y-4">
@@ -204,7 +219,7 @@ const ImagesGroup = ({
                     )}
                 </div>
                 <Link
-                    className="mx-auto rounded-xl bg-gray-500 hover:bg-gray-400 text-white flex justify-center items-center py-2 w-64"
+                    className="mx-auto rounded-xl bg-gray-500 hover:bg-gray-400 text-white flex justify-center items-center py-2 w-40 lg:w-64"
                     target="_blank"
                     href={fileSrcSelected}
                     download="download"
