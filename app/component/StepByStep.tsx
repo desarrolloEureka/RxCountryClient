@@ -41,6 +41,7 @@ interface Props {
     };
     userData?: any;
     uidUser?: string;
+    area?: string;
     errorImg?: string | null;
     formStep: number;
     setFormStep: (e: any) => void;
@@ -95,6 +96,7 @@ interface Props {
 function StepByStep({
     userData,
     value,
+    area,
     formStep,
     uidUser,
     allAreas,
@@ -346,10 +348,6 @@ function StepByStep({
     const userComment = getObservationComment(oldData, userRol);
 
     useEffect(() => {
-        valData();
-    }, [valData]);
-
-    useEffect(() => {
         if (oldData) {
             setProfessionalName(oldData.professionalName);
             setProfessionalSpecialty(oldData.professionalSpecialty);
@@ -380,8 +378,17 @@ function StepByStep({
                 oldData.selectedClinicalPhotographyDeliveryMethod,
             );
             setSelectedDiagnosticPackage(oldData.selectedDiagnosticPackage);
+            setAreasListSelected(
+                allAreas.filter((area) =>
+                    oldData?.areaList?.includes(area.value),
+                ),
+            );
         }
     }, [oldData, userComment, userRol]);
+
+    useEffect(() => {
+        valData();
+    }, [valData]);
 
     // console.log(data);
 
@@ -704,8 +711,9 @@ function StepByStep({
                                         // disabled={isEdit}
                                         disabled={
                                             professionalName === "" ||
-                                            oldData?.createdBy.userRol !==
-                                                userRol?.uid
+                                            (oldData &&
+                                                oldData?.createdBy.userRol !==
+                                                    userRol?.uid)
                                         }
                                         value={professionalSpecialty}
                                         type="text"
@@ -742,8 +750,9 @@ function StepByStep({
                                     <input
                                         disabled={
                                             professionalName === "" ||
-                                            oldData?.createdBy.userRol !==
-                                                userRol?.uid
+                                            (oldData &&
+                                                oldData?.createdBy.userRol !==
+                                                    userRol?.uid)
                                         }
                                         value={professionalEmail}
                                         type="email"
@@ -1074,7 +1083,9 @@ function StepByStep({
                                     <div className="col flex flex-col justify-start items-center">
                                         <InputFileUpload
                                             fileName={fileNameSTL}
-                                            handleFileChange={handleFileChangeSTL}
+                                            handleFileChange={
+                                                handleFileChangeSTL
+                                            }
                                             fileTypes=""
                                         />
                                         <span
@@ -2352,8 +2363,9 @@ function StepByStep({
                             {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                                 userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" && (
                                     <div className="flex flex-col">
-                                        {(!_.isEmpty(areaList) ||
-                                            oldData?.areaList) && (
+                                        {!_.isEmpty(areaList) && (
+                                            // &&
+                                            // oldData?.sendTo === area
                                             <div className="flex flex-col space-y-4 pb-10">
                                                 <label className="text-company-orange text-xl">
                                                     <span className="text-company-orange">
@@ -2364,15 +2376,16 @@ function StepByStep({
                                                 <SelectComponent
                                                     options={allAreas.filter(
                                                         (area) =>
-                                                            !_.isEmpty(
-                                                                oldData?.areaList,
-                                                            )
-                                                                ? oldData?.areaList?.includes(
-                                                                      area.value,
-                                                                  )
-                                                                : areaList?.includes(
-                                                                      area.value,
-                                                                  ),
+                                                            // !_.isEmpty(
+                                                            //     oldData?.areaList,
+                                                            // )
+                                                            //     ? [...areaList as string[],...oldData?.areaList].includes(
+                                                            //           area.value,
+                                                            //       )
+                                                            //     :
+                                                            areaList?.includes(
+                                                                area.value,
+                                                            ),
                                                     )}
                                                     selectChangeHandler={(
                                                         e,
@@ -2394,6 +2407,7 @@ function StepByStep({
                                 )}
 
                             {(areaSelected ||
+                                // userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" ||
                                 userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
                                 userRol?.uid === "ZWb0Zs42lnKOjetXH5lq") && (
                                 <div className="flex justify-center items-center">
