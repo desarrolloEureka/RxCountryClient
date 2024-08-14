@@ -308,9 +308,9 @@ export default function SignUp() {
                                         onChange={phoneChangeHandler}
                                     />
 
-                                    <span className="absolute left-2 bottom-4 text-company-blue text-[1.5rem]">
+                                    {/* <span className="absolute left-2 bottom-4 text-company-blue text-[1.5rem]">
                                         <IoCall />
-                                    </span>
+                                    </span> */}
                                 </div>
                                 <div className="col flex flex-col md:col-span-2 lg:col-span-3 items-center">
                                     <p
@@ -343,9 +343,9 @@ export default function SignUp() {
                                         value={data.phone2}
                                         onChange={phoneTwoChangeHandler}
                                     />
-                                    <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                    {/* <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                         <IoCall />
-                                    </span>
+                                    </span> */}
                                 </div>
                                 <div className="flex flex-col relative md:col-span-2 w-full space-y-2">
                                     <label
@@ -612,9 +612,7 @@ export default function SignUp() {
                                             {errorImg}
                                         </p>
                                     ) : (
-                                        <p
-                                            className="mt-1 text-sm text-center text-company-orange"
-                                        >
+                                        <p className="mt-1 text-sm text-center text-company-orange">
                                             PNG, JPG (MAX. 400x400px).
                                         </p>
                                     )}

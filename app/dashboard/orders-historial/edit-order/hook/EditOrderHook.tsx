@@ -17,9 +17,7 @@ import {
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 // import { EditedOrderStatusByRol } from "@/app/types/order";
-import {
-    uploadFile
-} from "@/app/firebase/files";
+import { uploadFile } from "@/app/firebase/files";
 import useDebounce from "@/app/hook/useDebounce";
 import { DiagnosesSelector } from "@/app/types/diagnoses";
 import { DiagnosticianSelector } from "@/app/types/diagnostician";
@@ -165,7 +163,8 @@ const EditOrderHook = ({ slug }: Props) => {
                 !_.isEmpty(oldDataOrder?.completedAreas) &&
                 area &&
                 area !== "" &&
-                userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl"
+                userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" &&
+                userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
             ) {
                 const areasCompleted = oldDataOrder?.completedAreas as string[];
                 result = [
@@ -638,27 +637,29 @@ const EditOrderHook = ({ slug }: Props) => {
         const filesUrls = await getOrdersUrls(oldDataOrder.uid);
 
         const newOrderData = {
-            ...selectedOptions,
             ...oldDataOrder,
+            ...selectedOptions,
             uid: oldDataOrder?.uid,
             patientId: oldDataOrder?.patientId,
             status: editedOrderStatusByRol[userRol?.uid!],
             assignedCampus: campus ? campus : "",
             completedAreas:
-                userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk" &&
                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
                     ? oldDataOrder?.completedAreas &&
                       !_.isEmpty(oldDataOrder?.completedAreas)
                         ? oldDataOrder?.completedAreas.includes(area) ||
-                          area === "0OaigBxmSmUa90dvawB1"
+                          area === "0OaigBxmSmUa90dvawB1" ||
+                          area === "qxdH34kAupnAPSuVIIvn"
                             ? oldDataOrder?.completedAreas
                             : [...oldDataOrder?.completedAreas, area]
+                        : area === "qxdH34kAupnAPSuVIIvn"
+                        ? []
                         : [area]
                     : [],
-            areaList:
-                oldDataOrder?.areaList && !_.isEmpty(oldDataOrder?.areaList)
-                    ? oldDataOrder?.areaList
-                    : areaList,
+            areaList,
+            // oldDataOrder?.areaList && !_.isEmpty(oldDataOrder?.areaList)
+            //     ? oldDataOrder?.areaList
+            //     : areaList,
             sendTo: sentToArea
                 ? sentToArea
                 : userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" ||
@@ -831,6 +832,12 @@ const EditOrderHook = ({ slug }: Props) => {
         getDiagnoses,
         getDiagnostician,
     ]);
+
+    useEffect(() => {
+        if (oldDataOrder) {
+            setAreaList(oldDataOrder?.areaList);
+        }
+    }, [oldDataOrder]);
 
     useEffect(() => {
         getData();
