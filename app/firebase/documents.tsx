@@ -1,9 +1,11 @@
 import { db } from "@/shared/firebase/firebase";
 import {
+    arrayRemove,
     arrayUnion,
     collection,
     doc,
     getDocs,
+    onSnapshot,
     setDoc,
     updateDoc,
 } from "firebase/firestore";
@@ -19,6 +21,8 @@ const currentDate = moment().format();
 const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
 
 export const arrayUnionFb = (data: any) => arrayUnion(data);
+
+export const arrayRemoveFb = (data: any) => arrayRemove(data);
 
 const docRef = ({ ref, collection }: RefPropsFirebase) =>
     doc(db, ref, collection);
@@ -172,6 +176,21 @@ export const getAllOrders = async () => {
             dataResult.push(data);
         });
     }
+    return dataResult;
+};
+
+export const getAllOrdersOnSub = () => {
+    const dataResult: any[] = [];
+
+    onSnapshot(allRef({ ref: "serviceOrders" }), (querySnapshot) => {
+        if (!querySnapshot.empty) {
+            querySnapshot.forEach((doc: any) => {
+                const data = doc.data();
+                dataResult.push(data);
+            });
+        }
+    });
+
     return dataResult;
 };
 

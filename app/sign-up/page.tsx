@@ -62,7 +62,7 @@ export default function SignUp() {
             <form
                 onSubmit={handleSendForm}
                 method="POST"
-                className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-[70%] lg:w-[60%] xl:w-[50%]"
+                className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-[70%] lg:w-[60%] xl:w-[50%] sm:h-auto"
             >
                 <div className="w-full">
                     <Link

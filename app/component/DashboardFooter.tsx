@@ -3,14 +3,18 @@ import Link from "next/link";
 
 const DashboardFooter = () => {
     return (
-        <footer className="flex justify-between items-center w-full p-4 md:p-2 bg-company-blue">
-            <Link href="" className="underline text-white text-sm">
+        <footer className="flex justify-between items-center w-full px-2 py-1 sm:p-2 bg-company-blue">
+            <Link href="" className="underline text-white text-xs sm:text-sm">
                 Acerca de RxCountry
             </Link>
-            <Link href="" className="underline text-white text-sm">
-                www.Rxcontry/eurekadreams.com
+            <Link
+                href="https://www.rxcountry.com.co/"
+                target="_blank"
+                className="underline text-white text-xs sm:text-sm"
+            >
+                www.rxcountry.com.co
             </Link>
-            <Link href="" className="underline text-white text-sm">
+            <Link href="" className="underline text-white text-xs sm:text-sm">
                 <Image
                     src={"/assets/logo.png"}
                     width={0}

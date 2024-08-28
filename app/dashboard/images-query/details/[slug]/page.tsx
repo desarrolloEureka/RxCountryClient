@@ -1,8 +1,5 @@
 "use client";
-import DashboardFooter from "@/app/component/DashboardFooter";
-import DashboardHeader from "@/app/component/DashboardHeader";
 import ImagesGroup from "@/app/component/ImageQuery/ImagesGroup";
-import ImageQueryDetailsContent from "@/app/component/ImageQueryDetailsContent";
 import ImagesDetailsHook from "../hook/ImagesDetailsHook";
 
 const ImageQueryDetails = ({
@@ -10,18 +7,56 @@ const ImageQueryDetails = ({
 }: {
     params: { slug: string };
 }) => {
-    const { orderAndPatientData, downloadImage, linkRef } = ImagesDetailsHook({
+    const {
+        orderAndPatientData,
+        handleDeleteFile,
+        handleSaveFile,
+        isModalOpen,
+        previewImages,
+        handleFileChange,
+        handleRemoveImage,
+        openModal,
+        closeModal,
+        fileName,
+        files,
+        userRol,
+        handleModelType,
+        modelType,
+        setCurrentIndex,
+        fileSrcSelected,
+        idFileSelected,
+        typeFile,
+        dropBoxUrl,
+        weTransferUrl,
+        handleSelectFile,
+    } = ImagesDetailsHook({
         slug,
     });
     return (
         <main className="w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 min-h-[93vh] w-full p-16">
-                {/* <DashboardHeader selectedMenuItem="images-query" /> */}
-                {/* <ImageQueryDetailsContent /> */}
                 <ImagesGroup
                     orderAndPatientData={orderAndPatientData}
-                    downloadImage={downloadImage}
-                    linkRef={linkRef}
+                    isModalOpen={isModalOpen}
+                    previewImages={previewImages}
+                    handleFileChange={handleFileChange}
+                    handleRemoveImage={handleRemoveImage}
+                    openModal={openModal}
+                    closeModal={closeModal}
+                    fileName={fileName}
+                    files={files}
+                    userRol={userRol}
+                    handleModelType={handleModelType}
+                    modelType={modelType}
+                    handleDeleteFile={handleDeleteFile}
+                    handleSaveFile={handleSaveFile}
+                    setCurrentIndex={setCurrentIndex}
+                    handleSelectFile={handleSelectFile}
+                    fileSrcSelected={fileSrcSelected}
+                    idFileSelected={idFileSelected}
+                    typeFile={typeFile}
+                    dropBoxUrl={dropBoxUrl}
+                    weTransferUrl={weTransferUrl}
                 />
             </div>
         </main>

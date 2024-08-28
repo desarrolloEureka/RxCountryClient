@@ -28,15 +28,18 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
     const [openLogOutMenu, setOpenLogOutMenu] = useState(false);
 
     return (
-        <div className="relative rounded-2xl shadow-md h-36 bg-gray-700 px-8 bg-opacity-80 flex justify-between items-center">
-            <Link href="/dashboard">
+        <div className="relative rounded-2xl shadow-md h-24 sm:h-36 bg-gray-700 px-2 sm:px-8 bg-opacity-80 flex justify-between items-center space-x-2">
+            <Link
+                href="/dashboard"
+                className="flex items-center justify-center w-20 h-20 sm:w-auto sm:h-auto"
+            >
                 <Image
                     src={"/assets/logo.png"}
                     width={0}
                     height={0}
                     sizes="200px"
-                    style={{ width: "100%", height: "auto" }}
                     alt={"logo"}
+                    style={{ width: "100%", height: "auto" }}
                     placeholder="blur"
                     blurDataURL={"/assets/logo.png"}
                 />
@@ -49,63 +52,77 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                         href={isActiveUser ? "/dashboard/new-order" : ""}
                         onMouseEnter={() => setOrderIconColor("#E9A225")}
                         onMouseLeave={() => setOrderIconColor("white")}
-                        className={`flex flex-col justify-center h-36 items-center space-y-2 ${
+                        className={`flex flex-col justify-center h-24 sm:h-36 items-center space-y-2 ${
                             selectedMenuItem === "create-order"
                                 ? "text-company-orange border-b-2 border-company-orange"
                                 : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
                         }`}
                     >
                         <OrderIcon
+                            className="h-8 sm:h-auto"
                             color={
                                 selectedMenuItem === "create-order"
                                     ? "#E9A225"
                                     : orderIconColor
                             }
                         />
-                        <span>Crear Nueva Orden</span>
+                        <span className="hidden sm:flex">
+                            Crear Nueva Orden
+                        </span>
                     </Link>
                 )}
 
-                {(userRol?.uid !== "" && userRol?.uid !== "ShHQKRuKJfxHcV70XSvC") && (
-                    <Link
-                        href={isActiveUser ? "/dashboard/orders-historial" : ""}
-                        onMouseEnter={() => setOrderHistorialColor("#E9A225")}
-                        onMouseLeave={() => setOrderHistorialColor("white")}
-                        className={`flex flex-col justify-center h-36 items-center space-y-2 ${
-                            selectedMenuItem === "orders-historial"
-                                ? "text-company-orange border-b-2 border-company-orange"
-                                : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
-                        }`}
-                    >
-                        <OrderHistorialIcon
-                            color={
-                                selectedMenuItem === "orders-historial"
-                                    ? "#E9A225"
-                                    : orderHistorialIconColor
+                {userRol?.uid !== "" &&
+                    userRol?.uid !== "ShHQKRuKJfxHcV70XSvC" && (
+                        <Link
+                            href={
+                                isActiveUser
+                                    ? "/dashboard/orders-historial"
+                                    : ""
                             }
-                        />
-                        <span>Historial de Ordenes</span>
-                    </Link>
-                )}
+                            onMouseEnter={() =>
+                                setOrderHistorialColor("#E9A225")
+                            }
+                            onMouseLeave={() => setOrderHistorialColor("white")}
+                            className={`flex flex-col justify-center h-24 sm:h-36 items-center space-y-2 ${
+                                selectedMenuItem === "orders-historial"
+                                    ? "text-company-orange border-b-2 border-company-orange"
+                                    : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
+                            }`}
+                        >
+                            <OrderHistorialIcon
+                                className="h-8 sm:h-auto"
+                                color={
+                                    selectedMenuItem === "orders-historial"
+                                        ? "#E9A225"
+                                        : orderHistorialIconColor
+                                }
+                            />
+                            <span className="hidden sm:flex">
+                                Historial de Ordenes
+                            </span>
+                        </Link>
+                    )}
 
                 <Link
                     href={isActiveUser ? "/dashboard/images-query" : ""}
                     onMouseEnter={() => setImagesRequestIconColor("#E9A225")}
                     onMouseLeave={() => setImagesRequestIconColor("white")}
-                    className={`flex flex-col justify-center h-36 items-center space-y-2 ${
+                    className={`flex flex-col justify-center h-24 sm:h-36 items-center space-y-2 ${
                         selectedMenuItem === "images-query"
                             ? "text-company-orange border-b-2 border-company-orange"
                             : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
                     }`}
                 >
                     <ImagesRequestIcon
+                        className="h-8 sm:h-auto"
                         color={
                             selectedMenuItem === "images-query"
                                 ? "#E9A225"
                                 : imagesRequestIconColor
                         }
                     />
-                    <span>Consultar Imágenes</span>
+                    <span className="hidden sm:flex">Consultar Imágenes</span>
                 </Link>
             </>
 
@@ -114,7 +131,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                 onClick={() => setOpenProfileMenu(!openProfileMenu)}
                 className="flex flex-col items-center space-y-2 text-white"
             >
-                <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-gray-300">
+                <div className="relative hidden sm:flex w-10 h-10 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-gray-300">
                     <Image
                         src={
                             urlPhoto
@@ -128,8 +145,10 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                     />
                 </div>
                 <div className="flex flex-col text-center">
-                    <span className="text-xl text-capitalize">{name}</span>
-                    <span className="text-sm text-capitalize">{`${userRol?.name} ${userCampus}`}</span>
+                    <span className="text-sm sm:text-xl text-capitalize">
+                        {name}
+                    </span>
+                    <span className="text-[10px] sm:text-sm text-capitalize">{`${userRol?.name} ${userCampus}`}</span>
                 </div>
             </Link>
             {openProfileMenu && (
