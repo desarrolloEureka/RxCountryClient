@@ -141,11 +141,11 @@ const ProfileHook = () => {
             urlPhoto: (await getUrlPhoto()) ?? "",
         };
 
-        // await updateDocumentsByIdFb(
-        //     data.uid,
-        //     newData,
-        //     referenceByRol[data.rol],
-        // ).then(confirmAlert);
+        await updateDocumentsByIdFb(
+            data.uid,
+            newData,
+            referenceByRol[data.rol],
+        ).then(confirmAlert);
     };
 
     const handleClose = () => {
