@@ -47,26 +47,30 @@ const NewOrderPage = () => {
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
-            <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
+            <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen py-16 px-5 sm:p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="create-order" />
                 <form
                     onSubmit={handleSendForm}
-                    className="flex flex-col rounded-[2.5rem] shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
+                    className="flex flex-col rounded-[1.5rem]  sm:rounded-[2.5rem] shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
                 >
                     <div className="flex justify-center items-center">
                         {formStep < 6 && (
-                            <div className="flex justify-between items-center w-full p-8">
+                            <div className="flex justify-between items-center w-full h-10 py-2 px-4 sm:p-8">
                                 <div className="flex items-center space-x-8">
                                     <Link href={"/dashboard"}>
                                         <IoArrowBackCircleOutline
-                                            className="text-company-blue"
+                                            className="text-company-blue hidden sm:flex"
                                             size={32}
+                                        />
+                                        <IoArrowBackCircleOutline
+                                            className="text-company-blue flex sm:hidden"
+                                            size={25}
                                         />
                                     </Link>
                                 </div>
 
-                                <div className="flex flex-1 mx-20">
-                                    <h3 className="text-company-blue text-3xl font-bold">
+                                <div className="flex mx-10 sm:mx-20">
+                                    <h3 className="text-company-blue text-base sm:text-3xl font-bold">
                                         {titles[formStep]}
                                     </h3>
                                 </div>
@@ -77,7 +81,7 @@ const NewOrderPage = () => {
                                         onClick={() => setShowHelp(true)}
                                         className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
                                     >
-                                        <LightIcon color="#5696D3" />
+                                        <LightIcon className="" color="#5696D3" />
                                     </button>
                                     <span>Ayuda</span>
                                 </div>

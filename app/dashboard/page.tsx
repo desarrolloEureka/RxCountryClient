@@ -25,15 +25,15 @@ export default function Dashboard() {
     // }
 
     return (
-        <main className="min-h-screen bg-black dark:bg-black w-full bg-home-image bg-cover">
-            <div className="flex flex-col min-h-screen w-full p-16 space-y-16">
+        <main className="min-h-screen bg-black dark:bg-black w-full h-screen bg-home-image bg-cover bg-bottom">
+            <div className="flex flex-col min-h-screen w-full p-5 sm:p-16 space-y-16">
                 <DashboardHeader />
                 {/* {isActiveUser ? ( */}
-                <div className="mx-32 flex flex-col space-y-8">
-                    <h2 className="text-white font-bold text-5xl">
+                <div className="sm:mx-32 flex flex-col space-y-8">
+                    <h2 className="text-white font-bold text-2xl sm:text-5xl">
                         Bienvenido Doc
                     </h2>
-                    <p className="text-white w-[80%] xl:w-[30%] text-justify">
+                    <p className="text-white w-[80%] xl:w-[30%] text-justify text-sm sm:text-base">
                         Lorem ipsum dolor sit amet, consectetuer adipiscing
                         elit, sed diam nonummy nibh euismod tincidunt ut laoreet
                         dolore magna aliquam erat volutpat. Ut wisi enim ad

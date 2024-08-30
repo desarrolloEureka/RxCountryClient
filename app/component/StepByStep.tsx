@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import {
+    BsCardList,
     BsFillGeoAltFill,
     BsFillPersonVcardFill,
     BsTerminalFill,
@@ -383,8 +384,11 @@ function StepByStep({
                     oldData?.areaList?.includes(area.value),
                 ),
             );
-            setAreaSelected(allAreas.find((area) => area.value === oldData?.sendTo));
+            setAreaSelected(
+                allAreas.find((area) => area.value === oldData?.sendTo),
+            );
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [oldData, userComment, userRol]);
 
     useEffect(() => {
@@ -988,6 +992,7 @@ function StepByStep({
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             fileTypes="image/*, application/pdf"
+                                            multiple
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400">
@@ -1062,7 +1067,8 @@ function StepByStep({
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
-                                            fileTypes="image/*, application/pdf, "
+                                            fileTypes="image/*, application/pdf"
+                                            multiple
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400 pt-3">
@@ -1088,6 +1094,7 @@ function StepByStep({
                                                 handleFileChangeSTL
                                             }
                                             fileTypes=""
+                                            multiple
                                         />
                                         <span
                                             className={`text-base text-center ${
@@ -1173,6 +1180,7 @@ function StepByStep({
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             fileTypes="application/pdf"
+                                            multiple
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400 pt-3">
@@ -1227,6 +1235,7 @@ function StepByStep({
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             // fileTypes="image/*"
+                                            multiple
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400 pt-3">
@@ -1348,6 +1357,7 @@ function StepByStep({
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             // fileTypes="image/*"
+                                            multiple
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400 pt-3">
@@ -1401,6 +1411,7 @@ function StepByStep({
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             // fileTypes="image/*"
+                                            multiple
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400 pt-3">
@@ -2493,19 +2504,39 @@ function StepByStep({
                                     </h2>
                                 )}
 
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        router.replace(
-                                            oldData
-                                                ? "/dashboard/orders-historial/?to=send"
-                                                : "/dashboard/orders-historial",
-                                        );
-                                    }}
-                                    className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-company-gray shadow-lg"
-                                >
-                                    <span>Ir al historial</span>
-                                </button>
+                                <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:justify-around">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            router.replace(
+                                                oldData
+                                                    ? "/dashboard/orders-historial/?to=send"
+                                                    : "/dashboard/orders-historial",
+                                            );
+                                        }}
+                                        className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border rounded-md p-2 bg-company-gray shadow-lg"
+                                    >
+                                        <BsCardList size={24} />
+                                        <span>Ir al historial</span>
+                                    </button>
+                                    {fileName !== "SUBIR ARCHIVO" && (
+                                        <button
+                                            type="button"
+                                            className="w-52 flex justify-center items-center space-x-2 text-white hover:text-sky-300 border-sky-800 hover:border-sky-300 border rounded-md p-2 bg-gray-800 shadow-lg"
+                                        >
+                                            <MdOutlineImageSearch size={24} />
+                                            <Link
+                                                href={`/dashboard/images-query/details/${oldData?.uid}`}
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <span className="text-white">
+                                                    Verificar Imágenes
+                                                </span>
+                                            </Link>
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <div className="flex flex-col justify-center items-center absolute left-[60%] -bottom-0">

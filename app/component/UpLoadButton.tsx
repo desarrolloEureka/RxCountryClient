@@ -1,15 +1,15 @@
 import { FaFileCirclePlus } from "react-icons/fa6";
-import { LuImagePlus } from "react-icons/lu";
-import { FaRegFilePdf } from "react-icons/fa6";
 
 export default function InputFileUpload({
     fileName,
     fileTypes = ".jpg, .jpeg, .png",
     handleFileChange,
+    multiple,
 }: {
     fileName?: string;
     handleFileChange?: (e: any) => void;
     fileTypes?: string;
+    multiple?: boolean;
 }) {
     return (
         <div className="flex items-center justify-center text-center">
@@ -26,7 +26,7 @@ export default function InputFileUpload({
                 {fileName === "SUBIR ARCHIVO" && <FaFileCirclePlus size={45} />}
                 <span>{fileName}</span>
                 <input
-                    multiple
+                    multiple={multiple}
                     id="urlImage"
                     name="urlImage"
                     type="file"

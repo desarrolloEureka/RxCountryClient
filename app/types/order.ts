@@ -32,6 +32,15 @@ export interface updateOrderProps {
     [key: string]: any;
 }
 
+export type ImagesDetailsHookProps = {
+    slug: string;
+};
+
+export interface PreviewFile {
+    url: string;
+    name: string;
+}
+
 export interface datePickerProps {
     startDate: string | null;
     endDate: string | null;
