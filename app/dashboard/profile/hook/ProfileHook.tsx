@@ -47,8 +47,11 @@ const ProfileHook = () => {
     const [files, setFiles] = useState<any[]>([]);
     const [fileName, setFileName] = useState("Foto de Perfil");
 
+    console.log(data);
+
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.name;
+        console.log(value);
         setData({ ...data, [value]: e.target.value });
     };
 
@@ -120,9 +123,9 @@ const ProfileHook = () => {
     };
 
     const handleSendForm = async () => {
-        const urlName = files[0].name.split(".")[0];
         const getUrlPhoto = async (): Promise<string> => {
             if (files.length > 0) {
+                const urlName = files[0].name.split(".")[0];
                 const result = await uploadProfilePhoto({
                     folder: data.uid,
                     fileName: urlName.split(" ").join("_"),
@@ -141,11 +144,13 @@ const ProfileHook = () => {
             urlPhoto: (await getUrlPhoto()) ?? "",
         };
 
-        await updateDocumentsByIdFb(
-            data.uid,
-            newData,
-            referenceByRol[data.rol],
-        ).then(confirmAlert);
+        console.log("newData", newData);
+
+        // await updateDocumentsByIdFb(
+        //     data.uid,
+        //     newData,
+        //     referenceByRol[data.rol],
+        // ).then(confirmAlert);
     };
 
     const handleClose = () => {
