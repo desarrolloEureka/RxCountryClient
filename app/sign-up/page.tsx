@@ -6,7 +6,6 @@ import { FaUserDoctor } from "react-icons/fa6";
 import { ImKey } from "react-icons/im";
 import {
     IoArrowBackCircleOutline,
-    IoCall,
     IoEye,
     IoEyeOff,
     IoMail,
@@ -34,6 +33,7 @@ export default function SignUp() {
         nextStep,
         professionalsVal,
         errorImg,
+        fileName,
         setNextStep,
         setErrorPass,
         handleClose,
@@ -62,7 +62,7 @@ export default function SignUp() {
             <form
                 onSubmit={handleSendForm}
                 method="POST"
-                className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-[70%] lg:w-[60%] xl:w-[50%] sm:h-auto"
+                className="flex flex-col items-center space-y-8 px-4 py-8 lg:p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-[90%] lg:w-[60%] xl:w-[50%] sm:h-auto"
             >
                 <div className="w-full">
                     <Link
@@ -74,12 +74,12 @@ export default function SignUp() {
                         <span>Atrás</span>
                     </Link>
                 </div>
-                <h2 className="w-full text-center text-company-orange text-2xl">
+                <h2 className="w-full text-center text-company-orange text-xl lg:text-2xl">
                     Registro de Profesionales
                 </h2>
 
-                <div className="flex flex-col space-y-8 items-center w-full mx-16">
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 justify-center gap-5">
+                <div className="flex flex-col space-y-8 items-center w-full lg:w-auto">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 w-full lg:w-auto justify-center gap-5">
                         {nextStep ? (
                             <>
                                 <div className="col relative flex flex-col w-full space-y-2">
@@ -612,7 +612,13 @@ export default function SignUp() {
                                             {errorImg}
                                         </p>
                                     ) : (
-                                        <p className="mt-1 text-sm text-center text-company-orange">
+                                        <p
+                                            className={`mt-1 text-sm text-center ${
+                                                fileName
+                                                    ? "text-green-500"
+                                                    : "text-company-orange"
+                                            } `}
+                                        >
                                             PNG, JPG (MAX. 400x400px).
                                         </p>
                                     )}

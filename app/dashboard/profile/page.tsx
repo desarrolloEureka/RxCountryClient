@@ -37,14 +37,17 @@ export default function ProfilePage() {
     } = ProfileHook();
     return (
         <main className="flex flex-col justify-center items-center min-h-screen w-full bg-gray-image bg-cover">
-            <div className="px-16 py-8 bg-company-gray rounded-2xl shadow-xl flex flex-col items-center space-y-4">
+            <div className="px-4 lg:px-16 py-8 mx-4 mb-16 mt-8 lg:my-0 bg-company-gray rounded-2xl shadow-xl flex flex-col items-center space-y-4">
                 <div className="w-full flex items-center space-x-2 text-company-blue font-bold text-xl">
                     {!isEdit && (
-                        <Link href={"/dashboard"}>
+                        <Link
+                            className="flex flex-row items-center justify-center space-x-4"
+                            href={"/dashboard"}
+                        >
                             <IoArrowBackCircleOutline />
+                            <h2>Mi Perfil</h2>
                         </Link>
                     )}
-                    <h2>Mi Perfil</h2>
                 </div>
                 {isEdit ? (
                     <div className="flex flex-col items-center justify-center w-full">
@@ -117,7 +120,7 @@ export default function ProfilePage() {
 
                 <div className="flex flex-col space-y-5">
                     {!nextStep ? (
-                        <div className="grid grid-cols-2 gap-8 mx-16">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mx-4 sm:mx-16">
                             <div className="col relative flex flex-col w-full">
                                 <select
                                     value={data.idType}
@@ -282,7 +285,7 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mx-4 sm:mx-16">
                             <div className="col flex flex-col md:col-span-2 relative w-full">
                                 <input
                                     value={data.address}

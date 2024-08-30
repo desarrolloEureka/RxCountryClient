@@ -24,7 +24,7 @@ export default function InputFileUpload({
                 )} */}
 
                 {fileName === "SUBIR ARCHIVO" && <FaFileCirclePlus size={45} />}
-                <span>{fileName}</span>
+                <span className="text-xs lg:text-base">{fileName}</span>
                 <input
                     multiple={multiple}
                     id="urlImage"

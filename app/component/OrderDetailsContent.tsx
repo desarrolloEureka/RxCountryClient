@@ -85,17 +85,13 @@ const OrderDetailsContent = ({
 
     return (
         <div
-            className={`mx-auto flex flex-col rounded-[2.5rem] bg-company-gray ${
+            className={`mx-auto flex flex-col rounded-[1.5rem]  sm:rounded-[2.5rem] bg-company-gray ${
                 detailStep !== 3 && "pt-12"
             } w-full max-w-[1440px]`}
         >
             {detailStep === 0 && (
-                <div className="flex flex-row justify-between px-12">
-                    <div
-                        className={`flex items-center space-x-8 ${
-                            orderAndPatientData?.areaList ? "w-1/2" : "w-full"
-                        }`}
-                    >
+                <div className="flex flex-col lg:flex-row justify-between px-4 lg:px-12 space-y-4 lg:space-y-0">
+                    <div className="flex items-center space-x-8 w-full">
                         <Link
                             href={`${
                                 fromDetails === "received"
@@ -115,7 +111,7 @@ const OrderDetailsContent = ({
                     </div>
                     {orderAndPatientData?.areaList &&
                         !_.isEmpty(orderAndPatientData?.areaList) && (
-                            <div className="flex flex-col justify-center items-center text-company-orange text-xl w-1/2">
+                            <div className="flex flex-col justify-center items-center text-company-orange text-xl w-full">
                                 <span className="font-bold">
                                     Áreas Seleccionadas:&nbsp;
                                 </span>
@@ -127,22 +123,22 @@ const OrderDetailsContent = ({
 
             {/* Visualizar PDF */}
             {detailStep === 0 && (
-                <div className="flex flex-row mx-28 my-10">
-                    <div className="w-1/4">
-                        <button
-                            type="button"
-                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                <div className="flex mx-4 my-5 lg:mx-28 lg:my-10 lg:items-center justify-center lg:justify-start">
+                    <button
+                        type="button"
+                        className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                    >
+                        <IoEye className="text-company-blue" size={24} />
+                        <Link
+                            href={`/dashboard/preview-order/${orderAndPatientData?.uid}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
                         >
-                            <IoEye className="text-company-blue" size={24} />
-                            <Link
-                                href={`/dashboard/preview-order/${orderAndPatientData?.uid}`}
-                                rel="noopener noreferrer"
-                                target="_blank"
-                            >
-                                <span>Previsualizar PDF</span>
-                            </Link>
-                        </button>
-                    </div>
+                            <span className="text-nowrap">
+                                Previsualizar PDF
+                            </span>
+                        </Link>
+                    </button>
                 </div>
             )}
 
@@ -154,29 +150,29 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.desObservationComment ||
                         userRol.uid === "9RZ9uhaiwMC7VcTyIzhl") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandRx7
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() => setExpandRx7(!expandRx7)}
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Despacho
                                 {expandRx7 ? (
                                     <>
                                         {orderAndPatientData?.desObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.desObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -185,7 +181,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -205,11 +201,11 @@ const OrderDetailsContent = ({
                             </button>
                             {expandRx7 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
 
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.desObservationComment?.message ||
                                             "Sin comentarios"}
@@ -223,29 +219,29 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.diaObservationComment ||
                         userRol.uid === "wGU4GU8oDosW4ayQtxqT") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandRx6
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() => setExpandRx6(!expandRx6)}
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Diagnostico
                                 {expandRx6 ? (
                                     <>
                                         {orderAndPatientData?.diaObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.diaObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -254,7 +250,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -274,11 +270,11 @@ const OrderDetailsContent = ({
                             </button>
                             {expandRx6 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
 
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.diaObservationComment?.message ||
                                             "Sin comentarios"}
@@ -292,29 +288,29 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.radObservationComment ||
                         userRol.uid === "V5iMSnSlSYsiSDFs4UpI") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandRx5
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() => setExpandRx5(!expandRx5)}
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Radiología
                                 {expandRx5 ? (
                                     <>
                                         {orderAndPatientData?.radObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.radObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -323,7 +319,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -343,11 +339,11 @@ const OrderDetailsContent = ({
                             </button>
                             {expandRx5 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
 
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.radObservationComment?.message ||
                                             "Sin comentarios"}
@@ -361,29 +357,29 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.labObservationComment ||
                         userRol.uid === "chbFffCzpRibjYRyoWIx") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandRx4
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() => setExpandRx4(!expandRx4)}
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Laboratorio
                                 {expandRx4 ? (
                                     <>
                                         {orderAndPatientData?.labObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.labObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -392,7 +388,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -412,11 +408,11 @@ const OrderDetailsContent = ({
                             </button>
                             {expandRx4 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
 
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.labObservationComment?.message ||
                                             "Sin comentarios"}
@@ -430,29 +426,29 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.escObservationComment ||
                         userRol.uid === "VEGkDuMXs2mCGxXUPCWI") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandRx3
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() => setExpandRx3(!expandRx3)}
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Escáner Digital
                                 {expandRx3 ? (
                                     <>
                                         {orderAndPatientData?.escObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.escObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -461,7 +457,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -481,11 +477,11 @@ const OrderDetailsContent = ({
                             </button>
                             {expandRx3 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
 
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.escObservationComment?.message ||
                                             "Sin comentarios"}
@@ -499,29 +495,29 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.fotObservationComment ||
                         userRol.uid === "c24R4P0VcQmQT0VT6nfo") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandRx2
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() => setExpandRx2(!expandRx2)}
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Fotografía
                                 {expandRx2 ? (
                                     <>
                                         {orderAndPatientData?.fotObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.fotObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -530,7 +526,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -550,11 +546,11 @@ const OrderDetailsContent = ({
                             </button>
                             {expandRx2 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
 
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.fotObservationComment?.message ||
                                             "Sin comentarios"}
@@ -568,29 +564,29 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.modObservationComment ||
                         userRol.uid === "g9xGywTJG7WSJ5o1bTsH") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandRx1
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() => setExpandRx1(!expandRx1)}
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Modelos
                                 {expandRx1 ? (
                                     <>
                                         {orderAndPatientData?.modObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.modObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -599,7 +595,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -619,11 +615,11 @@ const OrderDetailsContent = ({
                             </button>
                             {expandRx1 && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
 
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.modObservationComment?.message ||
                                             "Sin comentarios"}
@@ -637,17 +633,17 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.recObservationComment ||
                         userRol.uid === "Ll6KGdzqdtmLLk0D5jhk") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandReceptionData
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() =>
                                     setExpandReceptionData(!expandReceptionData)
                                 }
-                                className="flex justify-between items-center py-2 px-4"
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 <span>Datos recepción</span>
 
@@ -655,7 +651,7 @@ const OrderDetailsContent = ({
                                     <>
                                         {orderAndPatientData?.recObservationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario:  ${
                                                         orderAndPatientData?.recObservationComment
                                                             ? getLastUserData(
@@ -666,7 +662,7 @@ const OrderDetailsContent = ({
                                                             : ""
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         orderAndPatientData?.recObservationComment
                                                             ? formatearFecha(
@@ -677,7 +673,7 @@ const OrderDetailsContent = ({
                                                             : ""
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         orderAndPatientData?.recObservationComment
                                                             ? formatearFecha(
@@ -699,10 +695,10 @@ const OrderDetailsContent = ({
                             </button>
                             {expandReceptionData && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData
                                             ?.recObservationComment?.message ||
                                             "Sin comentarios"}
@@ -716,31 +712,31 @@ const OrderDetailsContent = ({
                     {(orderAndPatientData?.observationComment ||
                         userRol.uid === "ZWb0Zs42lnKOjetXH5lq") && (
                         <div
-                            className={`flex flex-col mx-28 mb-10 transition-transform rounded-xl ${
+                            className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandSpecialist
                                     ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
+                                    : "bg-company-blue text-white text-sm lg:text-base"
                             }`}
                         >
                             <button
                                 onClick={() =>
                                     setExpandSpecialist(!expandSpecialist)
                                 }
-                                className="flex justify-between items-center py-2 px-4 "
+                                className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
                                 Especialista
                                 {expandSpecialist ? (
                                     <>
                                         {orderAndPatientData?.observationComment && (
                                             <>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
                                                             ?.observationComment
                                                             .userId,
                                                     )}`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -749,7 +745,7 @@ const OrderDetailsContent = ({
                                                         ).split(" ")[0]
                                                     }`}
                                                 </span>
-                                                <span>
+                                                <span className="text-xs lg:text-base">
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
@@ -769,10 +765,10 @@ const OrderDetailsContent = ({
                             </button>
                             {expandSpecialist && (
                                 <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
+                                    <h2 className="font-bold text-base lg:text-xl">
                                         Observaciones
                                     </h2>
-                                    <p className="">
+                                    <p className="text-sm lg:text-base">
                                         {orderAndPatientData.observationComment
                                             ?.message || "Sin comentarios"}
                                     </p>
@@ -780,42 +776,6 @@ const OrderDetailsContent = ({
                             )}
                         </div>
                     )}
-
-                    {/* Rx2 */}
-                    {/* <div
-                            className={`flex flex-col mx-16 transition-transform rounded-xl ${
-                                expandRx3
-                                    ? "divide-y-2 divide-company-blue bg-gray-800 text-company-orange"
-                                    : "bg-company-blue text-white"
-                            }`}
-                        >
-                            <button
-                                onClick={() => setExpandRx2(!expandRx3)}
-                                className="flex justify-between items-center py-2 px-4"
-                            >
-                                Rx 2
-                                {expandRx3 ? (
-                                    <RiArrowUpSLine size={32} />
-                                ) : (
-                                    <RiArrowDownSLine size={32} />
-                                )}
-                            </button>
-                            {expandRx3 && (
-                                <div className="flex flex-col p-4 space-y-2 text-white">
-                                    <h2 className="font-bold text-xl">
-                                        Observaciones
-                                    </h2>
-                                    <p className="">
-                                        {orderAndPatientData?.[
-                                            userRol
-                                                ?.substring(0, 3)
-                                                .toLocaleLowerCase() +
-                                                "ObservationComment"
-                                        ] || "Sin comentarios"}
-                                    </p>
-                                </div>
-                            )}
-                        </div> */}
                 </div>
             )}
         </div>

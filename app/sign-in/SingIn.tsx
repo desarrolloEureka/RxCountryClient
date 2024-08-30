@@ -43,7 +43,7 @@ const SingIn = () => {
                     onSubmit={(e) => {
                         e.preventDefault();
                     }}
-                    className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-3/4 sm:w-auto"
+                    className="flex flex-col items-center space-y-8 px-4 py-8 lg:p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-[90%] sm:w-auto"
                 >
                     {userLogin === "Profesional" && (
                         <div className="w-full">

@@ -42,11 +42,15 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     );
     const [idFileSelected, setIdFileSelected] = useState<number>(0);
     const [typeFile, setTypeFile] = useState<string>("images");
+    const [typeFileToUpLoad, setTypeFileToUpLoad] = useState<string>("");
 
     const [allOrderData, setAllOrderData] = useState<any>();
 
     const dropBoxUrl: string = allOrderData?.urlDropbox as string;
     const weTransferUrl: string = allOrderData?.urlWeTransfer as string;
+
+    const [areaSelected, setAreaSelected] = useState<any>(null);
+    const [sentToArea, setSentToArea] = useState<string>("");
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -60,10 +64,19 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             const fileArray = Array.from(files);
             const cloneFiles: File[] = [...files];
 
-            const newPreviews = fileArray.map((file) => ({
-                url: URL.createObjectURL(file),
-                name: file.name,
-            }));
+            const newPreviews = fileArray.map((file) => {
+                const uploadTypeFile = file.type.includes("pdf")
+                    ? "pdf"
+                    : file.name.includes("stl")
+                    ? "STL"
+                    : "images";
+                setTypeFileToUpLoad(uploadTypeFile);
+                return {
+                    url: URL.createObjectURL(file),
+                    name: file.name,
+                    type: file.type,
+                };
+            });
 
             setPreviewImages((prevPreviews) => [
                 // ...prevPreviews,
@@ -112,12 +125,21 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         setModelType(value);
     };
 
+    const selectChangeHandlerSentTo = (value: any) => {
+        setSentToArea(value);
+    };
+
     const handleDeleteFile = (urlFile: string, typeFile: string) => {
         confirmSaveAlert(() => deleteFile(urlFile, typeFile));
     };
 
     const handleSaveFile = (typeFile: string) => {
-        confirmSaveAlert(() => saveFile(typeFile));
+        confirmSaveAlert(() =>
+            saveFile(typeFile).then(() => {
+                setTypeFileToUpLoad("");
+                setSentToArea("");
+            }),
+        );
     };
 
     const deleteFile = async (urlFile: string, typeFile: string) => {
@@ -283,7 +305,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                     await uploadFile({
                         folder: allOrderData?.id,
                         fileName:
-                            userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
+                            userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" ||
+                            userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
                                 ? `${firstLetterCampus}${modelType}-${moment().format(
                                       "YYYYMMDD",
                                   )}-${allOrderData?.id}-${moment().format(
@@ -291,8 +314,9 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                                   )}`
                                 : urlName.split(" ").join("_"),
                         file: record,
-                        area: allAreas?.find((item) => item.value === area)
-                            ?.label as string,
+                        area: allAreas?.find(
+                            (item) => item.value === (sentToArea ?? area),
+                        )?.label as string,
                         idOrder,
                     })
                         .then((res: string) => {
@@ -306,8 +330,9 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         folder: allOrderData?.id,
                         fileName: urlName.split(" ").join("_"),
                         file: record,
-                        area: allAreas?.find((item) => item.value === area)
-                            ?.label as string,
+                        area: allAreas?.find(
+                            (item) => item.value === (sentToArea ?? area),
+                        )?.label as string,
                         idOrder,
                     })
                         .then((res: string) => {
@@ -321,8 +346,9 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         folder: allOrderData?.id,
                         fileName: record.name.split(" ").join("_"),
                         file: record,
-                        area: allAreas?.find((item) => item.value === area)
-                            ?.label as string,
+                        area: allAreas?.find(
+                            (item) => item.value === (sentToArea ?? area),
+                        )?.label as string,
                         idOrder,
                     })
                         .then((res: string) => {
@@ -419,6 +445,11 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         dropBoxUrl,
         weTransferUrl,
         handleSelectFile,
+        typeFileToUpLoad,
+        allAreas,
+        areaSelected,
+        setAreaSelected,
+        selectChangeHandlerSentTo,
     };
 };
 
