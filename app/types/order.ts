@@ -39,6 +39,7 @@ export type ImagesDetailsHookProps = {
 export interface PreviewFile {
     url: string;
     name: string;
+    type: string;
 }
 
 export interface datePickerProps {

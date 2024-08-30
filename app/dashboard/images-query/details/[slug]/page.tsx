@@ -29,12 +29,17 @@ const ImageQueryDetails = ({
         dropBoxUrl,
         weTransferUrl,
         handleSelectFile,
+        typeFileToUpLoad,
+        allAreas,
+        areaSelected,
+        setAreaSelected,
+        selectChangeHandlerSentTo,
     } = ImagesDetailsHook({
         slug,
     });
     return (
         <main className="w-full bg-gray-image bg-fixed bg-cover">
-            <div className="bg-black bg-opacity-60 min-h-[93vh] w-full p-16">
+            <div className="bg-black bg-opacity-60 min-h-screen w-full pb-10 pt-5 px-5 lg:p-16">
                 <ImagesGroup
                     orderAndPatientData={orderAndPatientData}
                     isModalOpen={isModalOpen}
@@ -57,6 +62,11 @@ const ImageQueryDetails = ({
                     typeFile={typeFile}
                     dropBoxUrl={dropBoxUrl}
                     weTransferUrl={weTransferUrl}
+                    typeFileToUpLoad={typeFileToUpLoad}
+                    allAreas={allAreas}
+                    areaSelected={areaSelected}
+                    setAreaSelected={setAreaSelected}
+                    selectChangeHandlerSentTo={selectChangeHandlerSentTo}
                 />
             </div>
         </main>

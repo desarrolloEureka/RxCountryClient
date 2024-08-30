@@ -29,6 +29,7 @@ const SignUpHook = (props?: Props) => {
     const [isPatient, setIsPatient] = useState(false);
     const [data, setData] = useState(dataProfessionalObject);
     const [files, setFiles] = useState<any[]>([]);
+    const [fileName, setFileName] = useState("");
     const [errorPass, setErrorPass] = useState(false);
     const [isSendData, setIsSendData] = useState(false);
     const [sigUp, setSignUp] = useState(false);
@@ -66,28 +67,37 @@ const SignUpHook = (props?: Props) => {
         setData({ ...data, ["contract"]: e?.target.value });
     };
     const handleInputFileChange = (event: { target: any }) => {
-        const file = event.target.files[0];
-        if (!file) return;
+        const files = event.target.files;
 
-        if (file) {
+        if (!files || files.length === 0) {
+            resetFileInput();
+            return;
+        }
+
+        const newFile = files[0];
+
+        if (newFile) {
             const img = new Image();
-            img.src = URL.createObjectURL(file);
+            img.src = URL.createObjectURL(newFile);
 
             img.onload = () => {
                 if (img.width <= 400 && img.height <= 400) {
                     setErrorImg("");
+                    setFileName(newFile.name);
                     event.target.files && setFiles([...event.target.files]);
                     // Muestra una vista previa de la imagen
                 } else {
                     setErrorImg(
-                        "La imagen debe tener un tamaño de 400x200 píxeles o menor.",
+                        "La imagen debe tener un tamaño de 400x400 píxeles o menor.",
                     );
+                    setFileName("");
                 }
                 URL.revokeObjectURL(img.src);
             };
 
             img.onerror = () => {
                 setErrorImg("Error al cargar la imagen. Inténtalo de nuevo.");
+                setFileName("");
                 URL.revokeObjectURL(img.src);
             };
         }
@@ -102,6 +112,12 @@ const SignUpHook = (props?: Props) => {
     const handleClose = () => {
         setData(dataProfessionalObject);
         setErrorPass(false);
+    };
+
+    const resetFileInput = () => {
+        setFiles([]);
+        setErrorImg("");
+        setFileName("");
     };
 
     // console.log(data);
@@ -245,6 +261,7 @@ const SignUpHook = (props?: Props) => {
         nextStep,
         professionalsVal,
         errorImg,
+        fileName,
         setNextStep,
         setErrorPass,
         handleClose,

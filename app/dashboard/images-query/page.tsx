@@ -82,26 +82,29 @@ const ImageQueryPage = () => {
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
-            <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
+            <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full py-16 px-5 lg:p-16">
                 <DashboardHeader selectedMenuItem="images-query" />
-                <div className="rounded-3xl shadow-lg bg-company-gray w-full max-w-screen mx-auto">
+                <div className="rounded-xl lg:rounded-3xl shadow-lg mt-16 bg-company-gray w-full max-w-screen mx-auto">
                     <div className="flex justify-end items-center border-b-2 border-company-orange p-8">
                         <div className="flex flex-1 justify-center">
-                            <h3 className="text-2xl text-company-orange">
+                            <h3 className="text-base lg:text-2xl text-company-orange">
                                 Consulta de imágenes por paciente
                             </h3>
                         </div>
-                        <div className="flex flex-col items-center space-y-2 text-white text-sm">
+                        <div className="flex flex-col items-center space-y-2 text-white text-xs sm:text-base">
                             <button
                                 onClick={() => setShowHelp(true)}
-                                className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
+                                className="rounded-full w-5 h-5 lg:w-8 lg:h-8 flex justify-center items-center shadow-lg bg-white"
                             >
-                                <LightIcon color="#5696D3" />
+                                <LightIcon
+                                    className="h-4 lg:h-auto"
+                                    color="#5696D3"
+                                />
                             </button>
                             <span>Ayuda</span>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-8 items-center justify-between w-full mx-auto max-w-[1280px] p-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4 lg:gap-8 items-center justify-between w-full mx-auto max-w-screen p-4 lg:px-16 lg:py-4">
                         <div className="relative col flex flex-col space-y-2">
                             <label
                                 htmlFor="search"
@@ -118,10 +121,10 @@ const ImageQueryPage = () => {
                             />
                             <IoMdSearch className="absolute right-3 bottom-2 text-2xl text-company-blue" />
                         </div>
-                        <div className="relative flex items-end h-full space-x-8 w-full">
+                        <div className="relative flex flex-col lg:flex-row items-center justify-center h-full space-y-4 lg:space-y-0 space-x-0 lg:space-x-8 w-full">
                             <button
                                 onClick={() => setShowFilter(!showFilter)}
-                                className="rounded-full w-24 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
+                                className="rounded-full w-10 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
                             >
                                 <LuSettings2 size={24} />
                             </button>
@@ -227,7 +230,7 @@ const ImageQueryPage = () => {
                                                     : "bg-white text-black"
                                             }`}
                                         >
-                                            todos
+                                            Todos
                                         </button>
                                     </div>
                                 </div>
@@ -347,7 +350,7 @@ const ImageQueryPage = () => {
                             );
                         })}
                     </div>
-                    <div className="flex items-center px-16 py-4 border-t-2 border-company-blue">
+                    <div className="flex items-center justify-between p-4 lg:px-16 lg:py-4 border-t-2 border-company-blue">
                         <button
                             onClick={() =>
                                 downloadCSV(filteredOrders, "Pacientes")
@@ -362,7 +365,7 @@ const ImageQueryPage = () => {
                         </button>
 
                         {totalPages > 0 && (
-                            <div className="flex items-center text-white justify-end w-full">
+                            <div className="flex items-center text-white justify-between space-x-4 w-48 lg:w-52 text-sm lg:text-base">
                                 <select
                                     id="pagination"
                                     name="pagination"
@@ -399,11 +402,11 @@ const ImageQueryPage = () => {
                                     </option>
                                 </select>
 
-                                <div className="flex items-center w-40 justify-end space-x-3">
+                                <div className="flex items-center w-32 justify-around">
                                     {currentPage > 1 &&
                                         currentPage <= totalPages && (
                                             <button
-                                                className={`px-2 py-2 ${
+                                                className={`lg:p-2 ${
                                                     currentPage === 1
                                                         ? "cursor-not-allowed opacity-50"
                                                         : "hover:text-company-blue hover:bg-gray-700 rounded-full text-white"
@@ -414,12 +417,12 @@ const ImageQueryPage = () => {
                                                 <IoIosArrowBack size={24} />
                                             </button>
                                         )}
-                                    <span className="px-0">
+                                    <span className="w-10 lg:w-12 py-2 text-center">
                                         {currentPage} / {totalPages}
                                     </span>
                                     {currentPage < totalPages && (
                                         <button
-                                            className={`px-2 py-2 ${
+                                            className={`lg:p-2 ${
                                                 currentPage === totalPages
                                                     ? "cursor-not-allowed opacity-50"
                                                     : "hover:text-company-blue hover:bg-gray-700 rounded-full text-white"
@@ -440,18 +443,21 @@ const ImageQueryPage = () => {
             </div>
             {showHelp && (
                 <>
-                    <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
+                    <div className="fixed lg:absolute top-[25%] sm:top-[22rem] right-[15%] sm:right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
                         <div className="flex justify-end items-center">
-                            <button onClick={() => setShowHelp(false)}>
+                            <button
+                                type="button"
+                                onClick={() => setShowHelp(false)}
+                            >
                                 <MdClose color="gray" size={24} />
                             </button>
                         </div>
                         <div className="flex items-center space-x-2 text-black pr-6 pb-5 text-justify">
                             <IoAlertCircleSharp
-                                className="text-company-orange mx-4"
+                                className="text-company-orange sm:mx-4"
                                 size={40}
                             />
-                            <p className="w-64">
+                            <p className="w-52 sm:w-64 text-xs sm:text-base">
                                 Si una orden tiene una alerta en la campana de
                                 notificación quiere decir que en ella
                                 encontraras las observaciones por cada area de
@@ -459,8 +465,8 @@ const ImageQueryPage = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="fixed transition-transform right-16 -bottom-3">
-                        <DoctorVector />
+                    <div className="fixed transition-transform right-16 bottom-8">
+                        <DoctorVector className="w-48 sm:w-full" width="100%" />
                     </div>
                 </>
             )}

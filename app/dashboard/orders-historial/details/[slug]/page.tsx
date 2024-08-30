@@ -38,7 +38,7 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
-            <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full p-16 space-y-16">
+            <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full py-16 px-5 lg:p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="orders-historial" />
                 <OrderDetailsContent
                     fromDetails={fromDetails}
