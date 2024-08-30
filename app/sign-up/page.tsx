@@ -225,8 +225,8 @@ export default function SignUp() {
                                     <span className="absolute left-2 bottom-4 text-company-blue text-[1.5rem]">
                                         <ImKey />
                                     </span>
-                                    <Link
-                                        href={""}
+                                    <button
+                                        type="button"
                                         onClick={() =>
                                             setShowPassword(!showPassword)
                                         }
@@ -238,7 +238,7 @@ export default function SignUp() {
                                                 <IoEye />
                                             )}
                                         </span>
-                                    </Link>
+                                    </button>
                                 </div>
                                 <div className="col relative flex flex-col w-full space-y-2">
                                     <label
@@ -264,8 +264,8 @@ export default function SignUp() {
                                     <span className="absolute left-2 bottom-4 text-company-blue text-[1.5rem]">
                                         <ImKey />
                                     </span>
-                                    <Link
-                                        href={""}
+                                    <button
+                                        type="button"
                                         onClick={() =>
                                             setShowPassword(!showPassword)
                                         }
@@ -277,7 +277,7 @@ export default function SignUp() {
                                                 <IoEye />
                                             )}
                                         </span>
-                                    </Link>
+                                    </button>
                                 </div>
                                 <div className="col relative flex flex-col md:col-span-2 lg:col-span-1 w-full space-y-2">
                                     <label
