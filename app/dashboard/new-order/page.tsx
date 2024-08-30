@@ -47,37 +47,44 @@ const NewOrderPage = () => {
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
-            <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen p-16 space-y-16">
+            <div className="bg-black bg-opacity-60 flex flex-col w-full min-h-screen py-16 px-5 lg:p-16 space-y-16">
                 <DashboardHeader selectedMenuItem="create-order" />
                 <form
                     onSubmit={handleSendForm}
-                    className="flex flex-col rounded-[2.5rem] shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
+                    className="flex flex-col rounded-[1.5rem]  sm:rounded-[2.5rem] shadow-lg bg-company-gray w-full max-w-[1440px] mx-auto"
                 >
                     <div className="flex justify-center items-center">
                         {formStep < 6 && (
-                            <div className="flex justify-between items-center w-full p-8">
+                            <div className="flex justify-around items-center w-full p-4 sm:p-8">
                                 <div className="flex items-center space-x-8">
                                     <Link href={"/dashboard"}>
                                         <IoArrowBackCircleOutline
-                                            className="text-company-blue"
+                                            className="text-company-blue hidden sm:flex"
                                             size={32}
+                                        />
+                                        <IoArrowBackCircleOutline
+                                            className="text-company-blue flex sm:hidden"
+                                            size={25}
                                         />
                                     </Link>
                                 </div>
 
-                                <div className="flex flex-1 mx-20">
-                                    <h3 className="text-company-blue text-3xl font-bold">
+                                <div className="flex w-full pl-2 sm:pl-0 mx-0 sm:mx-20">
+                                    <h3 className="text-company-blue text-lg sm:text-3xl font-bold">
                                         {titles[formStep]}
                                     </h3>
                                 </div>
 
-                                <div className="flex flex-col items-center space-y-2 text-white text-sm">
+                                <div className="flex flex-col items-center space-y-2 text-white text-xs sm:text-base">
                                     <button
                                         type="button"
                                         onClick={() => setShowHelp(true)}
                                         className="rounded-full w-8 h-8 flex justify-center items-center shadow-lg bg-white"
                                     >
-                                        <LightIcon color="#5696D3" />
+                                        <LightIcon
+                                            className="h-8 sm:h-auto"
+                                            color="#5696D3"
+                                        />
                                     </button>
                                     <span>Ayuda</span>
                                 </div>
@@ -136,7 +143,7 @@ const NewOrderPage = () => {
                         <div
                             className={`flex ${
                                 formStep < 6 ? "justify-between" : "justify-end"
-                            } items-center p-8`}
+                            } items-center p-4 sm:p-8`}
                         >
                             <div className="text-white">Paso {formStep}/5</div>
                             <div className="flex items-center space-x-8">
@@ -191,7 +198,7 @@ const NewOrderPage = () => {
             </div>
             {showHelp && (
                 <>
-                    <div className="absolute top-[22rem] right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
+                    <div className="fixed lg:absolute top-[25%] sm:top-[22rem] right-[15%] sm:right-[5.5rem] 2xl:right-64 bg-white p-2 rounded-xl">
                         <div className="flex justify-end items-center">
                             <button
                                 type="button"
@@ -202,10 +209,10 @@ const NewOrderPage = () => {
                         </div>
                         <div className="flex items-center space-x-2 text-black pr-6 pb-5 text-justify">
                             <IoAlertCircleSharp
-                                className="text-company-orange mx-4"
+                                className="text-company-orange sm:mx-4"
                                 size={40}
                             />
-                            <p className="w-64">
+                            <p className="w-52 sm:w-64 text-xs sm:text-base">
                                 Si una orden tiene una alerta en la campana de
                                 notificación quiere decir que en ella
                                 encontraras las observaciones por cada area de
@@ -213,8 +220,8 @@ const NewOrderPage = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="fixed transition-transform right-16 -bottom-3">
-                        <DoctorVector />
+                    <div className="fixed transition-transform right-16 bottom-8">
+                        <DoctorVector className="w-48 sm:w-full" width="100%" />
                     </div>
                 </>
             )}

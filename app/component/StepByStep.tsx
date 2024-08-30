@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import {
+    BsCardList,
     BsFillGeoAltFill,
     BsFillPersonVcardFill,
     BsTerminalFill,
@@ -383,8 +384,11 @@ function StepByStep({
                     oldData?.areaList?.includes(area.value),
                 ),
             );
-            setAreaSelected(allAreas.find((area) => area.value === oldData?.sendTo));
+            setAreaSelected(
+                allAreas.find((area) => area.value === oldData?.sendTo),
+            );
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [oldData, userComment, userRol]);
 
     useEffect(() => {
@@ -397,11 +401,11 @@ function StepByStep({
         <div>
             {/* Datos Paciente */}
             {formStep === 0 && (
-                <div className="mx-16 bg-black bg-opacity-50 rounded-2xl p-8 flex flex-col space-y-8">
-                    <h3 className="text-2xl text-company-orange">
+                <div className="mx-4 sm:mx-16 bg-black bg-opacity-50 rounded-2xl p-8 flex flex-col space-y-8">
+                    <h3 className="text-xl sm:text-2xl text-company-orange">
                         Datos del Paciente
                     </h3>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div className="col relative flex flex-col space-y-2">
                             <label htmlFor="idType" className="text-white">
                                 Tipo de Documento&nbsp;
@@ -595,6 +599,7 @@ function StepByStep({
                                 <span className="text-blue-500">*</span>
                             </label>
                             <Datepicker
+                                popoverDirection="up"
                                 disabled={
                                     userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                                     userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
@@ -617,15 +622,7 @@ function StepByStep({
                                 readOnly={true}
                                 i18n={"es"}
                             />
-                            {/* <input
-                                required
-                                value={data && data?.birthDate}
-                                type="date"
-                                name="birthDate"
-                                id="birthDate"
-                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white pl-10 pr-4 calendar-light"
-                                onChange={dateChangeHandler}
-                            /> */}
+
                             <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                 <MdOutlineDateRange />
                             </span>
@@ -790,12 +787,12 @@ function StepByStep({
                     {formStep === 1 && (
                         <>
                             {/* Visualizar PDF */}
-                            <div className="flex flex-col mx-28 my-5 space-y-4">
-                                <div className="flex flex-row">
-                                    <div className="w-1/2">
+                            <div className="flex flex-col mx-4 lg:mx-28 my-5 space-y-4">
+                                <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0">
+                                    <div className="flex items-center justify-center lg:justify-start w-full">
                                         <button
                                             type="button"
-                                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                                            className="flex items-center w-52 bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                                         >
                                             <IoEye
                                                 className="text-company-blue"
@@ -806,7 +803,9 @@ function StepByStep({
                                                 rel="noopener noreferrer"
                                                 target="_blank"
                                             >
-                                                <span>Previsualizar PDF</span>
+                                                <span className="text-nowrap">
+                                                    Previsualizar PDF
+                                                </span>
                                             </Link>
                                         </button>
                                     </div>
@@ -815,9 +814,9 @@ function StepByStep({
                                     {(userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
                                         userRol?.uid ===
                                             "wGU4GU8oDosW4ayQtxqT") && (
-                                        <div className="flex flex-col w-1/2 items-center justify-center">
+                                        <div className="flex w-full items-center justify-center">
                                             <div
-                                                className={`flex flex-row w-1/2 h-full space-x-3 border ${
+                                                className={`flex flex-row w-52 px-4 py-2 h-full space-x-3 border ${
                                                     !_.isEmpty(
                                                         oldData?.orderImagesUrl,
                                                     )
@@ -843,7 +842,7 @@ function StepByStep({
                                                         rel="noopener noreferrer"
                                                         target="_blank"
                                                     >
-                                                        <span className="text-white">
+                                                        <span className="text-white text-nowrap">
                                                             Verificar Imágenes
                                                         </span>
                                                     </Link>
@@ -859,8 +858,8 @@ function StepByStep({
 
                                 {/* Vista verificación de la orden */}
                                 {userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
-                                    <div className="flex flex-row items-center justify-center h-20 space-x-5">
-                                        <div className="flex flex-row text-xl space-x-4 w-1/2">
+                                    <div className="flex flex-col lg:flex-row items-center justify-center h-auto lg:h-20 space-x-0 lg:space-x-5 space-y-2 lg:space-y-0">
+                                        <div className="flex flex-row items-center justify-center text-base lg:text-xl space-x-4 w-full">
                                             <label htmlFor="cboxOrderIncomplete">
                                                 <h1>¿Orden incompleta?</h1>
                                             </label>
@@ -874,13 +873,13 @@ function StepByStep({
                                                     );
                                                     setAreaSelected(null);
                                                 }}
-                                                className="w-7 h-7 border-0"
+                                                className="w-5 h-5 lg:w-7 lg:h-7 border-0"
                                             />
                                         </div>
-                                        <div className="w-1/2 space-y-2">
+                                        <div className="w-full space-y-2">
                                             {isOrderIncomplete && (
                                                 <>
-                                                    <label className="text-company-orange text-xl">
+                                                    <label className="text-company-orange text-base lg:text-xl">
                                                         Área de destino:
                                                     </label>
                                                     <SelectComponent
@@ -913,9 +912,9 @@ function StepByStep({
 
                             {/* Recepción */}
                             {userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" && (
-                                <div className="flex flex-col rounded-xl bg-black bg-opacity-50 my-10 mx-28 divide-y divide-slate-500">
+                                <div className="flex flex-col rounded-xl bg-black bg-opacity-50 mt-4 lg:my-10 mx-4 lg:mx-28 divide-y divide-slate-500">
                                     <div className="flex flex-col p-4 space-y-4">
-                                        <label className="text-company-orange text-xl font-bold">
+                                        <label className="text-company-orange text-base lg:text-xl font-bold">
                                             <span className="text-company-orange">
                                                 *
                                             </span>
@@ -935,7 +934,7 @@ function StepByStep({
                                         />
                                     </div>
 
-                                    <h3 className="text-company-orange text-xl font-bold py-2 px-4">
+                                    <h3 className="text-company-orange text-base lg:text-xl font-bold py-2 px-4">
                                         Observaciones
                                     </h3>
                                     <div className="flex flex-col p-4">
@@ -960,54 +959,33 @@ function StepByStep({
 
                             {/* Despacho */}
                             {userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
-                                <div className="grid grid-cols-4 gap-4 mb-10 mx-28">
-                                    {/* <div className="col-span-1 flex flex-col justify-end items-center">
-                                        <InputFileUpload
-                                            fileName={fileName}
-                                            handleFileChange={handleFileChange}
-                                            fileTypes="application/pdf"
-                                        />
-                                        {errorImg ? (
-                                            <span className="text-base uppercase text-center text-red-400 pt-3">
-                                                {errorImg}
-                                            </span>
-                                        ) : (
-                                            <span
-                                                className={`text-base text-center ${
-                                                    fileName === "SUBIR ARCHIVO"
-                                                        ? "text-company-orange"
-                                                        : "text-green-500"
-                                                } pt-3`}
-                                            >
-                                                SOLO ARCHOVOS PDF
-                                            </span>
-                                        )}
-                                    </div> */}
-                                    <div className="col-span-2 flex flex-col justify-center items-center">
+                                <div className="grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-center items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             fileTypes="image/*, application/pdf"
+                                            multiple
                                         />
                                         {errorImg ? (
-                                            <span className="text-base uppercase text-center text-red-400">
+                                            <span className="text-sm lg:text-base uppercase text-center text-red-400">
                                                 {errorImg}
                                             </span>
                                         ) : (
                                             <span
-                                                className={`text-base text-center ${
+                                                className={`text-sm lg:text-base text-center ${
                                                     fileName === "SUBIR ARCHIVO"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 }`}
                                             >
-                                                IMÁGENES TIPO: PNG, JPG, JPEG,
+                                                ARCHIVOS TIPO: PNG, JPG, JPEG,
                                                 PDF
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col rounded-xl justify-start">
-                                        <h1 className="text-company-orange text-xl font-bold">
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col rounded-xl justify-start">
+                                        <h1 className="text-company-orange text-lg lg:text-xl font-bold">
                                             Diagnosticadores:
                                         </h1>
 
@@ -1027,8 +1005,8 @@ function StepByStep({
                                         </div>
                                     </div>
 
-                                    <div className="col-span-4 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
+                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2 p-4">
@@ -1057,40 +1035,42 @@ function StepByStep({
 
                             {/* Radiología */}
                             {userRol?.uid === "V5iMSnSlSYsiSDFs4UpI" && (
-                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
-                                    <div className="col flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
-                                            fileTypes="image/*, application/pdf, "
+                                            fileTypes="image/*, application/pdf"
+                                            multiple
                                         />
                                         {errorImg ? (
-                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                            <span className="text-sm lg:text-base uppercase text-center text-red-400 pt-3">
                                                 {errorImg}
                                             </span>
                                         ) : (
                                             <span
-                                                className={`text-base text-center ${
+                                                className={`text-sm lg:text-base text-center ${
                                                     fileName === "SUBIR ARCHIVO"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 } pt-3`}
                                             >
-                                                IMÁGENES TIPO: PNG, JPG, JPEG,
-                                                PDF.
+                                                ARCHIVOS TIPO: PNG, JPG, JPEG,
+                                                PDF
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col flex flex-col justify-start items-center">
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-start items-center">
                                         <InputFileUpload
                                             fileName={fileNameSTL}
                                             handleFileChange={
                                                 handleFileChangeSTL
                                             }
-                                            fileTypes=""
+                                            fileTypes=".stl"
+                                            multiple
                                         />
                                         <span
-                                            className={`text-base text-center ${
+                                            className={`text-sm lg:text-base text-center ${
                                                 fileName === "SUBIR ARCHIVO"
                                                     ? "text-company-orange"
                                                     : "text-green-500"
@@ -1100,7 +1080,7 @@ function StepByStep({
                                         </span>
                                     </div>
                                     <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
-                                        <h1 className="text-company-orange text-xl font-bold">
+                                        <h1 className="text-company-orange text-lg lg:text-xl font-bold">
                                             URL WeTransfer:
                                         </h1>
 
@@ -1138,7 +1118,7 @@ function StepByStep({
                                         </div>
                                     </div> */}
                                     <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
+                                        <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2 p-4">
@@ -1167,31 +1147,32 @@ function StepByStep({
 
                             {/* Diagnostico  */}
                             {userRol?.uid === "wGU4GU8oDosW4ayQtxqT" && (
-                                <div className="grid grid-cols-2 gap-4 my-10 mx-28">
-                                    <div className="col-span-2 flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             fileTypes="application/pdf"
+                                            multiple
                                         />
                                         {errorImg ? (
-                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                            <span className="text-sm lg:text-base uppercase text-center text-red-400 pt-3">
                                                 {errorImg}
                                             </span>
                                         ) : (
                                             <span
-                                                className={`text-base text-center ${
+                                                className={`text-sm lg:text-base text-center ${
                                                     fileName === "SUBIR ARCHIVO"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 } pt-3`}
                                             >
-                                                ARCHIVOS PDF.
+                                                ARCHIVOS TIPO PDF
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
+                                    <div className="col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2 p-4">
@@ -1221,20 +1202,21 @@ function StepByStep({
                             {/* Laboratorio y Fotografía  */}
                             {(userRol?.uid === "chbFffCzpRibjYRyoWIx" ||
                                 userRol?.uid === "c24R4P0VcQmQT0VT6nfo") && (
-                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
-                                    <div className="col-span-2 flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             // fileTypes="image/*"
+                                            multiple
                                         />
                                         {errorImg ? (
-                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                            <span className="text-sm lg:text-base uppercase text-center text-red-400 pt-3">
                                                 {errorImg}
                                             </span>
                                         ) : (
                                             <span
-                                                className={`text-base text-center ${
+                                                className={`text-sm lg:text-base text-center ${
                                                     fileName === "SUBIR ARCHIVO"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
@@ -1244,8 +1226,8 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
+                                    <div className="col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2 p-4">
@@ -1274,9 +1256,9 @@ function StepByStep({
 
                             {/* Modelos  */}
                             {userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" && (
-                                <div className="grid grid-cols-3 gap-4 mb-10 mx-28">
-                                    <div className="col-span-1 flex flex-col space-y-8 py-4">
-                                        <h1 className="text-company-orange text-2xl font-bold">
+                                <div className="grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-3 lg:col-span-1 flex flex-col space-y-4  py-0 lg:py-4">
+                                        <h1 className="text-company-orange text-lg lg:text-xl font-bold">
                                             Diagnósticos
                                         </h1>
 
@@ -1296,7 +1278,7 @@ function StepByStep({
                                         </div>
                                     </div>
 
-                                    <div className="col-span-1 flex flex-col space-y-8 py-4 justify-center items-center">
+                                    <div className="col-span-3 lg:col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center">
                                         <h1 className="text-company-orange text-xl">
                                             Tipo de Modelo:
                                         </h1>
@@ -1308,7 +1290,7 @@ function StepByStep({
                                                     value="E"
                                                     checked={modelType === "E"}
                                                     onChange={handleModelType}
-                                                    className="w-6 h-6 border-2"
+                                                    className="w-5 h-5 lg:w-6 border-2"
                                                 />
                                                 <label htmlFor="radio-1">
                                                     Estudio
@@ -1321,7 +1303,7 @@ function StepByStep({
                                                     value="T"
                                                     checked={modelType === "T"}
                                                     onChange={handleModelType}
-                                                    className="w-6 h-6 border-2"
+                                                    className="w-5 h-5 lg:w-6 border-2"
                                                 />
                                                 <label htmlFor="radio-2">
                                                     Trabajo
@@ -1334,7 +1316,7 @@ function StepByStep({
                                                     value="C"
                                                     checked={modelType === "C"}
                                                     onChange={handleModelType}
-                                                    className="w-6 h-6 border-0"
+                                                    className="w-5 h-5 lg:w-6 lg:h-6 border-0"
                                                 />
                                                 <label htmlFor="radio-3">
                                                     Copia
@@ -1343,11 +1325,12 @@ function StepByStep({
                                         </div>
                                     </div>
 
-                                    <div className="col-span-1 flex flex-col justify-end items-center">
+                                    <div className="col-span-3 lg:col-span-1 flex flex-col justify-end items-center pt-4 lg:pt-0">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             // fileTypes="image/*"
+                                            multiple
                                         />
                                         {errorImg ? (
                                             <span className="text-base uppercase text-center text-red-400 pt-3">
@@ -1395,20 +1378,21 @@ function StepByStep({
 
                             {/* Escáner Modelos  */}
                             {userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" && (
-                                <div className="grid grid-cols-2 gap-4 mb-10 mx-28">
-                                    <div className="col-span-2 flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
                                             // fileTypes="image/*"
+                                            multiple
                                         />
                                         {errorImg ? (
-                                            <span className="text-base uppercase text-center text-red-400 pt-3">
+                                            <span className="text-sm lg:text-base uppercase text-center text-red-400 pt-3">
                                                 {errorImg}
                                             </span>
                                         ) : (
                                             <span
-                                                className={`text-base text-center ${
+                                                className={`text-sm lg:text-base text-center ${
                                                     fileName === "SUBIR ARCHIVO"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
@@ -1437,8 +1421,8 @@ function StepByStep({
                                             </span>
                                         </div>
                                     </div> */}
-                                    <div className="col-span-2 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
-                                        <h3 className="text-company-orange text-xl font-bold px-4 py-2">
+                                    <div className="col-span-1 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                        <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
                                         <div className="grid grid-cols-1 gap-2 p-4">
@@ -1470,8 +1454,8 @@ function StepByStep({
             ) : (
                 <>
                     {formStep === 1 && (
-                        <div className="flex flex-col mx-20">
-                            <div className="mx-auto mb-8">
+                        <div className="flex flex-col mx-4 sm:mx-20">
+                            <div className="flex items-center justify-center mx-0 sm:mx-auto mb-8">
                                 <DentalSelect
                                     setSelected={
                                         !isEdit
@@ -1481,7 +1465,7 @@ function StepByStep({
                                     selected={dentalSelectBoneScan}
                                 />
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs lg:text-base">
                                 <div className="flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Intra Orales
@@ -1606,8 +1590,8 @@ function StepByStep({
                         </div>
                     )}
                     {formStep === 2 && (
-                        <div className="flex flex-col mx-20">
-                            <div className="mx-auto mb-8">
+                        <div className="flex flex-col mx-4 sm:mx-20">
+                            <div className="flex items-center justify-center mx-0 sm:mx-auto mb-8">
                                 <DentalSelect
                                     setSelected={
                                         !isEdit
@@ -1617,7 +1601,7 @@ function StepByStep({
                                     selected={dentalSelectTomography}
                                 />
                             </div>
-                            <div className="grid grid-cols-5 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-5 gap-y-4 lg:gap-4 text-xs lg:text-base">
                                 <div className="col-span-3 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Tomografía volumétrica 3D
@@ -1754,13 +1738,13 @@ function StepByStep({
                         </div>
                     )}
                     {formStep === 3 && (
-                        <div className="flex flex-col mx-20">
-                            <div className="grid grid-cols-1 gap-4">
+                        <div className="flex flex-col mx-4 sm:mx-20">
+                            <div className="grid grid-cols-1 gap-4 text-xs lg:text-base">
                                 <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Diagnóstico
                                     </h3>
-                                    <div className="grid grid-cols-4 gap-4">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                                         {optionsData.diagnosis.map(
                                             (option: any, index: any) => {
                                                 return (
@@ -1822,7 +1806,7 @@ function StepByStep({
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Modelos
                                     </h3>
-                                    <div className="grid grid-cols-4 gap-4">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                                         {optionsData.models.map(
                                             (option: any, index: any) => {
                                                 return (
@@ -1882,8 +1866,8 @@ function StepByStep({
                         </div>
                     )}
                     {formStep === 4 && (
-                        <div className="flex flex-col mx-20">
-                            <div className="grid grid-cols-4 gap-4">
+                        <div className="flex flex-col mx-4 sm:mx-20">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-xs lg:text-base">
                                 <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Intra Orales
@@ -1955,7 +1939,7 @@ function StepByStep({
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Extra Orales
                                     </h3>
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                                         {optionsData.extraOralClinicalPhotography.map(
                                             (option: any, index: any) => {
                                                 return (
@@ -2078,11 +2062,12 @@ function StepByStep({
                                         )}
                                     </div>
                                 </div>
+
                                 <div className="col-span-1 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Fondo
                                     </h3>
-                                    <div className="grid grid-cols-1 gap-4">
+                                    <div className="grid grid-cols-2 gap-4">
                                         {optionsData.background.map(
                                             (option: any, index: any) => {
                                                 return (
@@ -2132,7 +2117,7 @@ function StepByStep({
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Formas de entrega adicional
                                     </h3>
-                                    <div className="grid grid-cols-1 gap-4">
+                                    <div className="grid grid-cols-2 gap-4">
                                         {optionsData.clinicalPhotographyDeliveryMethod.map(
                                             (option: any, index: any) => {
                                                 return (
@@ -2192,13 +2177,13 @@ function StepByStep({
                         </div>
                     )}
                     {formStep === 5 && (
-                        <div className="flex flex-col mx-20">
+                        <div className="flex flex-col mx-4 sm:mx-20">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="col-span-2 flex flex-col space-y-4 p-4 rounded-xl bg-black bg-opacity-50">
                                     <h3 className="text-company-orange text-xl font-bold">
                                         Paquete de diagnóstico
                                     </h3>
-                                    <div className="grid grid-cols-4 gap-4">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-xs lg:text-base">
                                         {optionsData.diagnosticPackage.map(
                                             (option: any, index: any) => {
                                                 return (
@@ -2257,7 +2242,7 @@ function StepByStep({
                                 <div
                                     className={`${
                                         userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
-                                            ? "col-span-1"
+                                            ? "col-span-2 lg:col-span-1"
                                             : "col-span-2"
                                     } flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500`}
                                 >
@@ -2308,7 +2293,7 @@ function StepByStep({
                                     </div>
                                 </div>
                                 {userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk" && (
-                                    <div className="col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-xl font-bold px-4 py-2">
                                             Impresión diagnostica
                                         </h3>
@@ -2340,8 +2325,8 @@ function StepByStep({
             )}
 
             {formStep === 6 && (
-                <div className="flex flex-col px-20 py-10 relative">
-                    <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col p-4 lg:px-20 lg:py-10 relative">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div className="flex flex-col space-y-4 p-4">
                             {isEdit ? (
                                 <h2 className="text-company-orange font-bold text-4xl">
@@ -2432,6 +2417,13 @@ function StepByStep({
                                 </div>
                             )}
 
+                            <div className="hidden lg:flex flex-col h-auto justify-center items-center absolute left-[70%] lg:left-[60%] -bottom-0">
+                                <DoctorVector
+                                    className="w-48 lg:w-full"
+                                    width="100%"
+                                />
+                            </div>
+
                             <div className="flex flex-row pt-10 space-x-10">
                                 <div
                                     onClick={(e) => {
@@ -2466,14 +2458,11 @@ function StepByStep({
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col h-auto justify-center items-center absolute left-[60%] -bottom-0">
-                            <DoctorVector width={500} height={500} />
-                        </div>
                     </div>
                 </div>
             )}
             {formStep === 7 && (
-                <div className="flex flex-col p-16 relative">
+                <div className="flex flex-col p-4 sm:p-16 relative">
                     <div className="grid grid-cols-1 gap-4">
                         <div className="flex flex-row space-x-4 rounded-xl bg-black bg-opacity-40">
                             <div className="flex flex-col pr-[40%] pb-[15%] pl-[10%] pt-[10%] space-y-8">
@@ -2493,23 +2482,49 @@ function StepByStep({
                                     </h2>
                                 )}
 
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        router.replace(
-                                            oldData
-                                                ? "/dashboard/orders-historial/?to=send"
-                                                : "/dashboard/orders-historial",
-                                        );
-                                    }}
-                                    className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border-2 rounded-md p-2 bg-company-gray shadow-lg"
-                                >
-                                    <span>Ir al historial</span>
-                                </button>
+                                <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:justify-around">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            router.replace(
+                                                oldData
+                                                    ? "/dashboard/orders-historial/?to=send"
+                                                    : "/dashboard/orders-historial",
+                                            );
+                                        }}
+                                        className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-sky-800 hover:border-sky-300 border rounded-md p-2 bg-company-gray shadow-lg"
+                                    >
+                                        <BsCardList size={24} />
+                                        <span>Ir al historial</span>
+                                    </button>
+                                    {fileName !== "SUBIR ARCHIVO" &&
+                                        fileName !== undefined && (
+                                            <button
+                                                type="button"
+                                                className="w-52 flex justify-center items-center space-x-2 text-white hover:text-sky-300 border-sky-800 hover:border-sky-300 border rounded-md p-2 bg-gray-800 shadow-lg"
+                                            >
+                                                <MdOutlineImageSearch
+                                                    size={24}
+                                                />
+                                                <Link
+                                                    href={`/dashboard/images-query/details/${oldData?.uid}`}
+                                                    rel="noopener noreferrer"
+                                                    target="_blank"
+                                                >
+                                                    <span className="text-white">
+                                                        Verificar Imágenes
+                                                    </span>
+                                                </Link>
+                                            </button>
+                                        )}
+                                </div>
                             </div>
                         </div>
-                        <div className="flex flex-col justify-center items-center absolute left-[60%] -bottom-0">
-                            <DoctorVector width={500} height={500} />
+                        <div className="sm:flex flex-col hidden justify-center items-center absolute left-[60%] -bottom-0">
+                            <DoctorVector
+                                className="w-48 sm:w-full"
+                                width="100%"
+                            />
                         </div>
                     </div>
                 </div>

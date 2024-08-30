@@ -28,11 +28,15 @@ const DentalSelect = (props: Props) => {
     // }, [selectedOptions]);
 
     return (
-        <div className="flex flex-row items-center space-x-10">
-            <div className="">
+        <div className="flex flex-col lg:flex-row items-center space-x-0 lg:space-x-10 text-xs lg:text-base">
+            <div className="flex lg:hidden justify-between w-full px-3">
+                <span className="text-company-orange font-bold">DER</span>
+                <span className="text-company-orange font-bold">IZQ</span>
+            </div>
+            <div className="hidden lg:flex">
                 <span className="text-company-orange font-bold">DER</span>
             </div>
-            <div className="flex flex-col items-center mx-auto">
+            <div className="flex flex-col items-center mx-1 sm:mx-auto">
                 <div className="flex justify-center">
                     <div className="flex m-2">
                         {quadrant(1)
@@ -40,7 +44,7 @@ const DentalSelect = (props: Props) => {
                             .map((tooth, index) => (
                                 <div
                                     key={index}
-                                    className="w-8 flex flex-col justify-between items-center cursor-pointer text-white"
+                                    className="w-[18px] lg:w-8 flex flex-col justify-between items-center cursor-pointer text-white"
                                     onClick={() => {
                                         if (selected?.includes(tooth)) {
                                             const remove = selected.filter(
@@ -63,7 +67,9 @@ const DentalSelect = (props: Props) => {
                                     </span>
                                     <Image
                                         className={`${
-                                            tooth >= 16 ? "w-9" : "w-5"
+                                            tooth >= 16
+                                                ? "w-6 lg:w-9"
+                                                : "w-3 lg:w-5"
                                         }`}
                                         src={`/assets/teeth/${tooth}.svg`}
                                         style={{
@@ -85,7 +91,7 @@ const DentalSelect = (props: Props) => {
                         {quadrant(2).map((tooth, index) => (
                             <div
                                 key={index}
-                                className="w-8 flex flex-col justify-between items-center cursor-pointer text-white"
+                                className="w-[18px] lg:w-8 flex flex-col justify-between items-center cursor-pointer text-white"
                                 onClick={() => {
                                     if (selected?.includes(tooth)) {
                                         const remove = selected.filter(
@@ -107,7 +113,11 @@ const DentalSelect = (props: Props) => {
                                     {tooth}
                                 </span>
                                 <Image
-                                    className={`${tooth >= 26 ? "w-9" : "w-5"}`}
+                                    className={`${
+                                        tooth >= 26
+                                            ? "w-6 lg:w-9"
+                                            : "w-3 lg:w-5"
+                                    }`}
                                     src={`/assets/teeth/${tooth}.svg`}
                                     style={{
                                         filter: `${
@@ -132,7 +142,7 @@ const DentalSelect = (props: Props) => {
                             .map((tooth, index) => (
                                 <div
                                     key={index}
-                                    className="w-8 flex flex-col justify-between items-center cursor-pointer text-white"
+                                    className="w-[18px] lg:w-8 flex flex-col justify-between items-center cursor-pointer text-white"
                                     onClick={() => {
                                         if (selected?.includes(tooth)) {
                                             const remove = selected.filter(
@@ -146,7 +156,9 @@ const DentalSelect = (props: Props) => {
                                 >
                                     <Image
                                         className={`${
-                                            tooth >= 46 ? "w-9" : "w-5"
+                                            tooth >= 46
+                                                ? "w-6 lg:w-9"
+                                                : "w-3 lg:w-5"
                                         }`}
                                         src={`/assets/teeth/${tooth}.svg`}
                                         style={{
@@ -177,7 +189,7 @@ const DentalSelect = (props: Props) => {
                         {quadrant(3).map((tooth, index) => (
                             <div
                                 key={index}
-                                className="w-8 flex flex-col justify-between items-center cursor-pointer text-white"
+                                className="w-[18px] lg:w-8 flex flex-col justify-between items-center cursor-pointer text-white"
                                 onClick={() => {
                                     if (selected?.includes(tooth)) {
                                         const remove = selected.filter(
@@ -190,7 +202,11 @@ const DentalSelect = (props: Props) => {
                                 }}
                             >
                                 <Image
-                                    className={`${tooth >= 36 ? "w-9" : "w-5"}`}
+                                    className={`${
+                                        tooth >= 36
+                                            ? "w-6 lg:w-9"
+                                            : "w-3 lg:w-5"
+                                    }`}
                                     src={`/assets/teeth/${tooth}.svg`}
                                     style={{
                                         filter: `${
@@ -217,7 +233,7 @@ const DentalSelect = (props: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="">
+            <div className="hidden lg:flex">
                 <span className="text-company-orange font-bold">IZQ</span>
             </div>
         </div>

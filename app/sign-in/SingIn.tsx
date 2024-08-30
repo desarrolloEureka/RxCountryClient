@@ -37,13 +37,13 @@ const SingIn = () => {
     }
 
     return (
-        <main className="flex flex-col bg-login-image bg-cover bg-bottom w-full min-h-screen">
+        <main className="flex flex-col bg-login-image h-screen bg-cover bg-bottom w-full min-h-screen">
             <div className="flex flex-col justify-center items-center min-h-[93vh] w-full">
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
                     }}
-                    className="flex flex-col items-center space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80"
+                    className="flex flex-col items-center space-y-8 px-4 py-8 lg:p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80 w-[90%] sm:w-auto"
                 >
                     {userLogin === "Profesional" && (
                         <div className="w-full">
@@ -61,7 +61,7 @@ const SingIn = () => {
                             </Link>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-8 items-center w-full mx-16">
+                    <div className="flex flex-col space-y-8 items-center w-full">
                         <Image
                             src={"/assets/logo.png"}
                             width={0}
@@ -72,50 +72,51 @@ const SingIn = () => {
                             placeholder="blur"
                             blurDataURL={"/assets/logo.png"}
                         />
-                        <div className="flex flex-row justify-between w-full px-16">
-                            <div className="flex space-x-2 justify-center items-center text-white">
-                                <input
-                                    id="radio-1"
-                                    type="radio"
-                                    checked={userLogin === "Funcionario"}
-                                    onChange={(_) => {
-                                        setIsPatient("Funcionario");
-                                        clearFields();
-                                    }}
-                                    className="w-8 h-8 border-2"
-                                />
-                                <label htmlFor="radio-1">Funcionario</label>
-                            </div>
-                            <div className="flex space-x-2 justify-center items-center text-white">
-                                <input
-                                    id="radio-2"
-                                    type="radio"
-                                    checked={userLogin === "Profesional"}
-                                    onChange={(_) => {
-                                        setIsPatient("Profesional");
-                                        clearFields();
-                                    }}
-                                    className="w-8 h-8 border-2"
-                                />
-                                <label htmlFor="radio-2">Profesional</label>
-                            </div>
-                            <div className="flex space-x-2 justify-center items-center text-white">
-                                <input
-                                    id="radio-3"
-                                    type="radio"
-                                    checked={userLogin === "Paciente"}
-                                    onChange={(_) => {
-                                        setIsPatient("Paciente");
-                                        clearFields();
-                                    }}
-                                    className="w-8 h-8 border-0"
-                                />
-                                <label htmlFor="radio-3">Paciente</label>
+                        <div className="flex w-full justify-center items-center sm:px-16">
+                            <div className="flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 space-x-0 sm:space-x-4">
+                                <div className="flex space-x-2 justify-start items-center text-white">
+                                    <input
+                                        id="radio-1"
+                                        type="radio"
+                                        checked={userLogin === "Funcionario"}
+                                        onChange={(_) => {
+                                            setIsPatient("Funcionario");
+                                            clearFields();
+                                        }}
+                                        className="w-6 sm:w-8 h-6 sm:h-8 border-2"
+                                    />
+                                    <label htmlFor="radio-1">Funcionario</label>
+                                </div>
+                                <div className="flex space-x-2 justify-start items-center text-white">
+                                    <input
+                                        id="radio-2"
+                                        type="radio"
+                                        checked={userLogin === "Profesional"}
+                                        onChange={(_) => {
+                                            setIsPatient("Profesional");
+                                            clearFields();
+                                        }}
+                                        className="w-6 sm:w-8 h-6 sm:h-8 border-2"
+                                    />
+                                    <label htmlFor="radio-2">Profesional</label>
+                                </div>
+                                <div className="flex space-x-2 justify-start items-center text-white">
+                                    <input
+                                        id="radio-3"
+                                        type="radio"
+                                        checked={userLogin === "Paciente"}
+                                        onChange={(_) => {
+                                            setIsPatient("Paciente");
+                                            clearFields();
+                                        }}
+                                        className="w-6 sm:w-8 h-6 sm:h-8 border-0"
+                                    />
+                                    <label htmlFor="radio-3">Paciente</label>
+                                </div>
                             </div>
                         </div>
-                        {/* {userLogin !== "Paciente" && (
-                            <> */}
-                        <div className="relative flex flex-col w-full px-16 space-y-2">
+
+                        <div className="relative flex flex-col w-full sm:px-16 space-y-2">
                             <label htmlFor="email" className="text-white">
                                 Correo
                             </label>
@@ -128,10 +129,10 @@ const SingIn = () => {
                                 className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
                                 onChange={changeHandler}
                             />
-                            <IoMail className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                            <IoMail className="sm:ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
                         </div>
 
-                        <div className="relative flex flex-col w-full px-16 space-y-2">
+                        <div className="relative flex flex-col w-full sm:px-16 space-y-2">
                             <label htmlFor="password" className="text-white">
                                 Contraseña
                             </label>
@@ -146,12 +147,12 @@ const SingIn = () => {
                                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                                 onChange={changeHandler}
                             />
-                            <ImKey className="ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
+                            <ImKey className="sm:ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
                             <Link
                                 href={""}
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                <span className="absolute right-2 bottom-4 text-company-blue mr-16 text-[1.5rem]">
+                                <span className="absolute right-2 bottom-4 text-company-blue sm:mr-16 text-[1.5rem]">
                                     {showPassword ? <IoEyeOff /> : <IoEye />}
                                 </span>
                             </Link>
@@ -159,7 +160,7 @@ const SingIn = () => {
 
                         {userLogin === "Funcionario" && (
                             <>
-                                <div className="relative flex flex-col w-full px-16 space-y-2">
+                                <div className="relative flex flex-col w-full sm:px-16 space-y-2">
                                     <label
                                         htmlFor="campus"
                                         className="text-white"
@@ -194,10 +195,10 @@ const SingIn = () => {
                                         )}
                                     </select>
 
-                                    <IoIosBusiness className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                                    <IoIosBusiness className="sm:ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
                                 </div>
                                 {selectedCampus && (
-                                    <div className="relative flex flex-col w-full px-16 space-y-2">
+                                    <div className="relative flex flex-col w-full sm:px-16 space-y-2">
                                         <label
                                             htmlFor="area"
                                             className="text-white"
@@ -232,37 +233,12 @@ const SingIn = () => {
                                             )}
                                         </select>
 
-                                        <MdWork className="ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                                        <MdWork className="sm:ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
                                     </div>
                                 )}
                             </>
                         )}
-                        {/* </>
-                        )} */}
-                        {/* {!isPatient && (
-                            <div className="flex justify-end items-center w-full px-16">
-                                <Link
-                                    href={"/forgot-password"}
-                                    className="text-white underline"
-                                >
-                                    Olvide mi contraseña
-                                </Link>
-                            </div>
-                        )} */}
-                        {/* {userLogin === "Paciente" && (
-                            <div className="flex flex-col w-full px-16 space-y-2">
-                                <label htmlFor="user" className="text-white">
-                                    Usuario (Cédula)
-                                </label>
-                                <input
-                                    id="user"
-                                    name="user"
-                                    type="text"
-                                    required
-                                    className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-2"
-                                />
-                            </div>
-                        )} */}
+
                         {error && (
                             <div
                                 id="alert-additional-content-1"
