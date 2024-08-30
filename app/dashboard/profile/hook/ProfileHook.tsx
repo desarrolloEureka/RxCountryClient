@@ -47,11 +47,8 @@ const ProfileHook = () => {
     const [files, setFiles] = useState<any[]>([]);
     const [fileName, setFileName] = useState("Foto de Perfil");
 
-    console.log(data);
-
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.name;
-        console.log(value);
         setData({ ...data, [value]: e.target.value });
     };
 
@@ -143,8 +140,6 @@ const ProfileHook = () => {
             ...data,
             urlPhoto: (await getUrlPhoto()) ?? "",
         };
-
-        console.log("newData", newData);
 
         // await updateDocumentsByIdFb(
         //     data.uid,
