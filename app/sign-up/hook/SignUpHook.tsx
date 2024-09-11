@@ -233,12 +233,12 @@ const SignUpHook = (props?: Props) => {
     }, [getSpecialties, getContracts]);
 
     useEffect(() => {
-        if (user && userData) {
+        if (user) {
             // setSignUp(true);
 
-            router.replace("/dashboard");
+            router.push("/dashboard");
         }
-    }, [router, user, userData]);
+    }, [router, user]);
 
     return {
         data,
@@ -257,6 +257,7 @@ const SignUpHook = (props?: Props) => {
         professionalsVal,
         errorImg,
         fileName,
+        emailValidation,
         setNextStep,
         setErrorPass,
         handleClose,

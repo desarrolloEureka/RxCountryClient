@@ -34,6 +34,7 @@ export default function SignUp() {
         professionalsVal,
         errorImg,
         fileName,
+        emailValidation,
         setNextStep,
         setErrorPass,
         handleClose,
@@ -220,7 +221,11 @@ export default function SignUp() {
                                         name="confirmEmail"
                                         type="email"
                                         required
-                                        className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-10"
+                                        className={`rounded-xl h-10 bg-transparent ${
+                                            emailValidation
+                                                ? "border-company-blue border"
+                                                : "border-red-600 border-2"
+                                        }  text-white px-10`}
                                         onChange={changeHandler}
                                     />
                                     <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
@@ -441,6 +446,7 @@ export default function SignUp() {
                                     </label>
                                     <select
                                         value={data.state}
+                                        disabled={!data.country}
                                         id="state"
                                         name="state"
                                         // required
@@ -671,7 +677,7 @@ export default function SignUp() {
                                 </svg>
                                 <span>
                                     <strong>
-                                        Ingrese el correo correctamente!.
+                                        ¡Correos No Coinciden!
                                     </strong>
                                     &nbsp;Vuelva a intentar!
                                 </span>
