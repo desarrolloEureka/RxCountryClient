@@ -388,7 +388,7 @@ const NewOrderHook = (props?: Props) => {
 
             await addPatient({
                 email: patientData.email,
-                password: "Dmsdemo123",
+                password: patientData.id,
                 accessTokenUser,
                 uid: documentPatientRef.id,
             }).then(async (res: any) => {
