@@ -53,7 +53,11 @@ export default function Dashboard() {
                             }}
                             className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-white hover:border-gray-300 border-2 rounded-md p-2"
                         >
-                            <span>Empezar</span>
+                            {userData?.rol === "ShHQKRuKJfxHcV70XSvC" ? (
+                                <span>Ver Imágenes</span>
+                            ) : (
+                                <span>Empezar</span>
+                            )}
                             <IoArrowForward />
                         </button>
                     )}

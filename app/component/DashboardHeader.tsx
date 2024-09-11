@@ -273,7 +273,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                                             setOpenLogOutMenu(!openLogOutMenu);
                                         }}
                                         // href=""
-                                        className="block border-t border-gray-500 px-4 py-2 text-sm hover:bg-gray-900 bg-opacity-80 dark:hover:bg-gray-600 dark:text-gray-200"
+                                        className="block border-t border-gray-500 px-4 py-2 text-sm hover:bg-gray-900 bg-opacity-80 dark:hover:bg-gray-600 dark:text-gray-200 cursor-pointer"
                                     >
                                         Cerrar Sesión
                                     </div>

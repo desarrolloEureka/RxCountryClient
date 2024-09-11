@@ -36,6 +36,7 @@ export default function ProfilePage() {
         fileName,
         handleClose,
         user,
+        userData,
     } = ProfileHook();
 
     if (!user) {
@@ -293,7 +294,7 @@ export default function ProfilePage() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mx-4 sm:mx-16">
-                            <div className="col flex flex-col md:col-span-2 relative w-full">
+                            <div className="col flex flex-col lg:col-span-2 relative w-full">
                                 <input
                                     value={data.address}
                                     id="address"
@@ -358,9 +359,7 @@ export default function ProfilePage() {
                                     Teléfono Fijo
                                 </span>
                                 {isEdit && (
-                                    // <Link href={""}>
                                     <RiEditBoxFill className="absolute right-0 bottom-8 text-3xl text-company-orange" />
-                                    // </Link>
                                 )}
                             </div>
                             <div className="col relative flex flex-col w-full">
@@ -369,7 +368,7 @@ export default function ProfilePage() {
                                     id="country"
                                     name="country"
                                     // required
-                                    className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
+                                    className="bg-transparent border-b-2 border-white text-white py-2 pr-10 h-full"
                                     onChange={selectChangeHandlerCountry}
                                 >
                                     <option
@@ -465,76 +464,90 @@ export default function ProfilePage() {
                                     <RiEditBoxFill className="absolute right-4 bottom-8 text-3xl text-company-orange" />
                                 )}
                             </div>
-                            <div className="col relative flex flex-col w-full">
-                                <select
-                                    value={data.specialty}
-                                    id="specialty"
-                                    name="specialty"
-                                    // required
-                                    className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
-                                    onChange={selectChangeHandlerSpecialty}
-                                >
-                                    <option
-                                        value=""
-                                        hidden
-                                        className="bg-black"
-                                    >
-                                        Seleccione...
-                                    </option>
-                                    {specialties?.map(
-                                        (option: any, index: number) => (
+                            {userData?.rol !== "ShHQKRuKJfxHcV70XSvC" && (
+                                <>
+                                    <div className="col relative flex flex-col w-full">
+                                        <select
+                                            value={data.specialty}
+                                            id="specialty"
+                                            name="specialty"
+                                            // required
+                                            className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
+                                            onChange={
+                                                selectChangeHandlerSpecialty
+                                            }
+                                        >
                                             <option
-                                                key={index}
-                                                value={option.name}
-                                                className="bg-black text-white"
+                                                value=""
+                                                hidden
+                                                className="bg-black"
                                             >
-                                                {option.name}
+                                                Seleccione...
                                             </option>
-                                        ),
-                                    )}
-                                </select>
-                                <span className="text-company-orange">
-                                    Especialidad
-                                </span>
-                                {isEdit && (
-                                    <RiEditBoxFill className="absolute right-4 bottom-8 text-3xl text-company-orange" />
-                                )}
-                            </div>
-                            <div className="col relative flex flex-col w-full">
-                                <select
-                                    value={data.contract}
-                                    id="contract"
-                                    name="contract"
-                                    // required
-                                    className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
-                                    onChange={selectChangeHandlerContract}
-                                >
-                                    <option
-                                        value=""
-                                        hidden
-                                        className="bg-black"
-                                    >
-                                        Seleccione...
-                                    </option>
-                                    {contracts?.map(
-                                        (option: any, index: number) => (
+                                            {specialties?.map(
+                                                (
+                                                    option: any,
+                                                    index: number,
+                                                ) => (
+                                                    <option
+                                                        key={index}
+                                                        value={option.name}
+                                                        className="bg-black text-white"
+                                                    >
+                                                        {option.name}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+                                        <span className="text-company-orange">
+                                            Especialidad
+                                        </span>
+                                        {isEdit && (
+                                            <RiEditBoxFill className="absolute right-4 bottom-8 text-3xl text-company-orange" />
+                                        )}
+                                    </div>
+                                    <div className="col relative flex flex-col w-full">
+                                        <select
+                                            value={data.contract}
+                                            id="contract"
+                                            name="contract"
+                                            // required
+                                            className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
+                                            onChange={
+                                                selectChangeHandlerContract
+                                            }
+                                        >
                                             <option
-                                                key={index}
-                                                value={option.name}
-                                                className="bg-black text-white"
+                                                value=""
+                                                hidden
+                                                className="bg-black"
                                             >
-                                                {option.name}
+                                                Seleccione...
                                             </option>
-                                        ),
-                                    )}
-                                </select>
-                                <span className="text-company-orange">
-                                    Convenio
-                                </span>
-                                {isEdit && (
-                                    <RiEditBoxFill className="absolute right-4 bottom-8 text-3xl text-company-orange" />
-                                )}
-                            </div>
+                                            {contracts?.map(
+                                                (
+                                                    option: any,
+                                                    index: number,
+                                                ) => (
+                                                    <option
+                                                        key={index}
+                                                        value={option.name}
+                                                        className="bg-black text-white"
+                                                    >
+                                                        {option.name}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+                                        <span className="text-company-orange">
+                                            Convenio
+                                        </span>
+                                        {isEdit && (
+                                            <RiEditBoxFill className="absolute right-4 bottom-8 text-3xl text-company-orange" />
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     )}
                     {/* <div className="col flex flex-col relative w-full">

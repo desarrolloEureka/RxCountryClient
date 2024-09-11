@@ -218,6 +218,7 @@ const ProfileHook = () => {
         fileName,
         handleClose,
         user,
+        userData,
     };
 };
 
