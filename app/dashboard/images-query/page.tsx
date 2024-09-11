@@ -28,7 +28,7 @@ const ImageQueryPage = () => {
         setShowFilter,
         showHelp,
         setShowHelp,
-        userRol,
+        userData,
         orderMinorMajor,
         setOrderMinorMajor,
         nameAZ,
@@ -361,7 +361,12 @@ const ImageQueryPage = () => {
                             onClick={() =>
                                 downloadCSV(filteredOrders, "Pacientes")
                             }
-                            className="flex flex-col items-center text-white w-20 text-[9px]"
+                            className={`${
+                                userData?.rol === "ShHQKRuKJfxHcV70XSvC" ||
+                                !userData
+                                    ? "invisible"
+                                    : "visible"
+                            } flex flex-col items-center text-white w-20 text-[9px]`}
                         >
                             <BsFileEarmarkExcelFill
                                 className="text-company-blue"

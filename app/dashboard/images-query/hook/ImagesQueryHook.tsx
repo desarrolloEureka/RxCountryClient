@@ -324,7 +324,7 @@ const ImagesQueryHook = () => {
         setShowFilter,
         showHelp,
         setShowHelp,
-        userRol,
+        userData,
         orderMinorMajor,
         setOrderMinorMajor,
         nameAZ,
