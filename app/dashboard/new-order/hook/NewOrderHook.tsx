@@ -88,9 +88,10 @@ const saveAlert = async (callbackFc: () => Promise<void>, router: any) => {
 type Props = {};
 
 const NewOrderHook = (props?: Props) => {
-    const { isActiveUser, userData, accessTokenUser, userRol } = useAuth();
+    const { isActiveUser, userData, accessTokenUser, userRol, user } =
+        useAuth();
 
-    const { campus, uid, area } = userData;
+    const { campus = "", uid = "", area = "" } = userData || {};
 
     const router = useRouter();
 
@@ -263,7 +264,8 @@ const NewOrderHook = (props?: Props) => {
                 console.log("Entró");
 
                 saveAlert(uploadHandle, router).then(() => {
-                    setFormStep((prevStep: number) => prevStep + 1);
+                    // setFormStep((prevStep: number) => prevStep + 1);
+                    router.push("/dashboard/orders-historial/");
                 });
 
                 handleClose();
@@ -465,6 +467,31 @@ const NewOrderHook = (props?: Props) => {
         }
     }, [patientData?.birthDate]);
 
+    // useEffect(() => {
+    //     userData?.rol !== "ZWb0Zs42lnKOjetXH5lq" &&
+    //         userData?.rol !== "Ll6KGdzqdtmLLk0D5jhk" &&
+    //         router.push("/dashboard");
+    // }, [router, userData]);
+
+    useEffect(() => {
+        const allowedRoles: string[] = [
+            "ZWb0Zs42lnKOjetXH5lq",
+            "Ll6KGdzqdtmLLk0D5jhk",
+        ];
+
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (userData && !allowedRoles.includes(userRoleId as string)) {
+            router.push("/dashboard");
+            return;
+        }
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user, userData]);
+
     return {
         userData,
         value,
@@ -501,6 +528,7 @@ const NewOrderHook = (props?: Props) => {
         selectChangeHandlerSentTo,
         handleAreaList,
         areaList,
+        user,
     };
 };
 

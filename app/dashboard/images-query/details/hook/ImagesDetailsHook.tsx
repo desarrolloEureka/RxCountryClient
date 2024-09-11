@@ -13,14 +13,17 @@ import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 import { ImagesDetailsHookProps, Order, PreviewFile } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
-import moment from "moment";
 import _ from "lodash";
+import moment from "moment";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
-    const { userRol, userData } = useAuth();
-    const { campus, area } = userData;
+    const router = useRouter();
+
+    const { userRol, userData, user } = useAuth();
+    const { campus = "", area = "" } = userData || {};
 
     const [ordersData, setOrdersData] = useState<any>();
     const [patientsData, setPatientsData] = useState<any>();
@@ -423,6 +426,15 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         getAreas();
     }, [getAreas, getCampus, getOrders, getPatients]);
 
+    useEffect(() => {
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user]);
+
     return {
         orderAndPatientData: allOrderData,
         handleDeleteFile,
@@ -450,6 +462,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         areaSelected,
         setAreaSelected,
         selectChangeHandlerSentTo,
+        user,
     };
 };
 

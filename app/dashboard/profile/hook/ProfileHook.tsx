@@ -12,6 +12,7 @@ import {
     updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { uploadProfilePhoto } from "@/app/firebase/files";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
@@ -36,7 +37,8 @@ const confirmAlert = () => {
 };
 
 const ProfileHook = () => {
-    const { userData } = useAuth();
+    const router = useRouter();
+    const { userData, user } = useAuth();
     const [data, setData] = useState(dataUserObject);
     const [isEdit, setIsEdit] = useState(false);
     const [nextStep, setNextStep] = useState<boolean>(false);
@@ -180,6 +182,15 @@ const ProfileHook = () => {
         }
     }, [userData]);
 
+    useEffect(() => {
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user]);
+
     return {
         phoneChangeHandler,
         changeHandler,
@@ -206,6 +217,7 @@ const ProfileHook = () => {
         handleInputFileChange,
         fileName,
         handleClose,
+        user,
     };
 };
 

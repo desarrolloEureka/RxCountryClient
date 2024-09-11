@@ -1,37 +1,30 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { IoArrowForward } from "react-icons/io5";
 import DashboardHeader from "../component/DashboardHeader";
 import Spinner from "../component/spinner/Spinner";
 import DashBoardHook from "./hook/DashBoardHook";
-import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
-    const { user, isActiveUser, isLoading, isLoadingValidate } =
+    const { user, isActiveUser, isLoading, isLoadingValidate, userData } =
         DashBoardHook();
 
     const router = useRouter();
 
-    // if (isLoadingValidate) {
-    //     return <Spinner />;
-    // }
-
-    // if (!user) {
-    //     return <Spinner />;
-    // }
-
-    // if (user !== null || user !== undefined) {
-    //     return <Spinner />;
-    // }
+    if (!user) {
+        return <Spinner />;
+    }
 
     return (
         <main className="min-h-screen bg-black dark:bg-black w-full h-screen bg-home-image bg-cover bg-bottom">
             <div className="flex flex-col min-h-screen w-full py-16 px-5 lg:p-16 space-y-16">
                 <DashboardHeader />
-                {/* {isActiveUser ? ( */}
                 <div className="sm:mx-32 flex flex-col space-y-8 min-h-96">
                     <h2 className="text-white font-bold text-2xl sm:text-5xl">
-                        Bienvenido Doc
+                        {userData?.rol === "ZWb0Zs42lnKOjetXH5lq"
+                            ? "Bienvenido Doc"
+                            : "¡Bienvenido!"}
                     </h2>
                     <p className="text-white w-[80%] xl:w-[30%] text-justify text-sm sm:text-base">
                         Lorem ipsum dolor sit amet, consectetuer adipiscing
@@ -41,32 +34,30 @@ export default function Dashboard() {
                         suscipit lobortis nisl ut aliquip ex ea commodo
                         consequat.
                     </p>
-                    <button
-                        onClick={() => {
-                            router.push("/dashboard/new-order");
-                        }}
-                        className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-white hover:border-gray-300 border-2 rounded-md p-2"
-                    >
-                        <span>Empezar</span>
-                        <IoArrowForward />
-                    </button>
+
+                    {userData?.rol && (
+                        <button
+                            onClick={() => {
+                                if (
+                                    userData?.rol === "ZWb0Zs42lnKOjetXH5lq" ||
+                                    userData?.rol === "Ll6KGdzqdtmLLk0D5jhk"
+                                ) {
+                                    router.push("/dashboard/new-order");
+                                } else if (
+                                    userData?.rol === "ShHQKRuKJfxHcV70XSvC"
+                                ) {
+                                    router.push("/dashboard/images-query");
+                                } else {
+                                    router.push("/dashboard/orders-historial");
+                                }
+                            }}
+                            className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-white hover:border-gray-300 border-2 rounded-md p-2"
+                        >
+                            <span>Empezar</span>
+                            <IoArrowForward />
+                        </button>
+                    )}
                 </div>
-                {/* ) : (
-                    <div className="flex flex-1 justify-center items-center">
-                        <div className="flex flex-col space-y-8 p-8 rounded-3xl border-2 border-company-blue bg-black bg-opacity-80">
-                            <div className="flex flex-col space-y-8 items-center mx-16">
-                                <h2 className="text-company-orange text-xl">
-                                    ¡Bienvenido a Rx Country!
-                                </h2>
-                                <p className="text-white text-center w-96">
-                                    Tu registro está a verificación por parte
-                                    del área administrativa. Espera a la
-                                    activación de tu cuenta. ¡Gracias!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )} */}
             </div>
         </main>
     );

@@ -143,8 +143,8 @@ const SingIn = () => {
                                 type={showPassword ? "text" : "password"}
                                 required
                                 className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
-                                title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres"
-                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                // title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres"
+                                // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                                 onChange={changeHandler}
                             />
                             <ImKey className="sm:ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
@@ -237,6 +237,17 @@ const SingIn = () => {
                                     </div>
                                 )}
                             </>
+                        )}
+
+                        {userLogin !== "Paciente" && (
+                            <div className="flex justify-end items-center w-full px-16">
+                                <Link
+                                    href={"/forgot-password"}
+                                    className="text-white underline"
+                                >
+                                    Olvide mi contraseña
+                                </Link>
+                            </div>
                         )}
 
                         {error && (

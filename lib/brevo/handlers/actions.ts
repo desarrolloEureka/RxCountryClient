@@ -22,7 +22,7 @@ export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
             htmlContent: plantillaBienvenida({
                 userName: `${data.name} ${data.lastName}`,
                 userEmail: data.email,
-                password: data.password,
+                password: data.id,
                 loginUrl: "https://rx-country-client.vercel.app/sign-in",
                 contactEmail: "soporte-rxcountry@yopmail.com",
             }),

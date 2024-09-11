@@ -1,5 +1,6 @@
 "use client";
 import ImagesGroup from "@/app/component/ImageQuery/ImagesGroup";
+import Spinner from "@/app/component/spinner/Spinner";
 import ImagesDetailsHook from "../hook/ImagesDetailsHook";
 
 const ImageQueryDetails = ({
@@ -34,9 +35,13 @@ const ImageQueryDetails = ({
         areaSelected,
         setAreaSelected,
         selectChangeHandlerSentTo,
+        user,
     } = ImagesDetailsHook({
         slug,
     });
+    if (!user) {
+        return <Spinner />;
+    }
     return (
         <main className="w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 min-h-screen w-full pb-10 pt-5 px-5 lg:p-16">

@@ -2,6 +2,19 @@
 import tailwindConfig from "@/tailwind.config";
 import { Document, Image, Page, Text, View, Font } from "@react-pdf/renderer";
 import { createTw } from "react-pdf-tailwind";
+import JsBarcode from "jsbarcode";
+
+// Función para generar el código de barras en base64
+const generateBarcode = (text: string) => {
+    const canvas = document.createElement("canvas");
+    JsBarcode(canvas, text, {
+        format: "CODE128",
+        displayValue: false,
+        width: 200,
+        height: 100,
+    }); // O el formato que prefieras
+    return canvas.toDataURL("image/png");
+};
 
 Font.register({
     family: "Open Sans",
@@ -35,6 +48,7 @@ const OrderPDF = ({
     optionsData,
 }: Props) => {
     const tw = createTw(tailwindConfig);
+    const barcodeData = generateBarcode(orderData?.uid); // El texto o número del código de barras
 
     return (
         <Document title={`Orden #${orderData?.uid}`}>
@@ -82,12 +96,17 @@ const OrderPDF = ({
                         </Text> */}
                     </View>
 
-                    <View style={tw("basis-1/4 pl-2")}>
+                    <View style={tw("basis-1/4 px-2")}>
                         <View style={tw("h-1/3")}>
                             <Text>{`Orden # 00${orderData?.uid}`}</Text>
                         </View>
                         <View style={tw("h-2/3 items-center justify-center")}>
-                            <Text style={tw("text-base")}>CÓDIGO BARRAS</Text>
+                            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                            <Image
+                                src={barcodeData}
+                                style={tw("w-full h-full p-1")}
+                            />
+                            {/* <Text style={tw("text-base")}>CÓDIGO BARRAS</Text> */}
                         </View>
                     </View>
                 </View>
@@ -1672,7 +1691,8 @@ const OrderPDF = ({
                                             "ZWb0Zs42lnKOjetXH5lq"
                                                 ? orderData?.observationComment
                                                       .message
-                                                : orderData?.recObservationComment
+                                                : orderData
+                                                      ?.recObservationComment
                                                       .message}
                                         </Text>
                                     </View>

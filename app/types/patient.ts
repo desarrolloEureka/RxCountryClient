@@ -28,4 +28,5 @@ export interface Patient {
     lastName: string;
     phone: string;
     email: string;
+    serviceOrders: string[];
 }

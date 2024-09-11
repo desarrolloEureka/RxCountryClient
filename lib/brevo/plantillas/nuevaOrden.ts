@@ -23,6 +23,21 @@ export const plantillaNuevaOrden = (data: any): string => {
                                     <p style="color: #4a5568;"><strong>Especialidad del Profesional:</strong> ${data.professionalSpecialty}</p>
                                     <p style="color: #4a5568;"><strong>Correo:</strong> ${data.professionalEmail}</p>
                                     <p style="color: #4a5568;"><strong>Fecha de Creación:</strong> ${data.orderDate}</p>
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <a
+                                            href="${data.loginUrl}"
+                                            style="
+                                                margin-top: 1.5rem;
+                                                display: inline-block;
+                                                background-color: #2563eb;
+                                                color: #ffffff;
+                                                padding: 0.5rem 1rem;
+                                                border-radius: 0.5rem;
+                                                text-decoration: none;
+                                            "
+                                            >Iniciar Sesión</a
+                                        >
+                                    </div>
                                 </div>
                             </div>
                             <div style="text-align: center; padding: 1rem; color: #718096; font-size: 0.875rem; border-top: 1px solid #e2e8f0;">

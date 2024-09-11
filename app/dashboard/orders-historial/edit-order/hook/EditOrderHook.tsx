@@ -58,11 +58,11 @@ const calculateAge = (birthDate: Date | string): number => {
 };
 
 const EditOrderHook = ({ slug }: Props) => {
-    const { userRol, userData } = useAuth();
+    const { userRol, userData, user } = useAuth();
 
     const router = useRouter();
 
-    const { campus, area, uid } = userData;
+    const { campus = "", area = "", uid = "" } = userData || {};
 
     const currentDate = moment().format();
 
@@ -870,6 +870,34 @@ const EditOrderHook = ({ slug }: Props) => {
     //     }
     // }, [area, newDataOrder, oldDataOrder, updateOrderData]);
 
+    useEffect(() => {
+        const allowedRoles: string[] = [
+            "wGU4GU8oDosW4ayQtxqT",
+            "g9xGywTJG7WSJ5o1bTsH",
+            "chbFffCzpRibjYRyoWIx",
+            "c24R4P0VcQmQT0VT6nfo",
+            "ZWb0Zs42lnKOjetXH5lq",
+            "1cxJ0a8uCX7OTesEHT2G",
+            "9RZ9uhaiwMC7VcTyIzhl",
+            "FHSly0jguw1lwYSj8EHV",
+            "Ll6KGdzqdtmLLk0D5jhk",
+            "V5iMSnSlSYsiSDFs4UpI",
+            "VEGkDuMXs2mCGxXUPCWI",
+        ];
+
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (userData && !allowedRoles.includes(userRoleId as string)) {
+            router.push("/dashboard");
+            return;
+        }
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user, userData]);
+
     return {
         router,
         value,
@@ -931,6 +959,7 @@ const EditOrderHook = ({ slug }: Props) => {
         handleInputUrlDropbox,
         handleModelType,
         modelType,
+        user,
     };
 };
 

@@ -1,6 +1,7 @@
 "use client";
 import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
+import Spinner from "@/app/component/spinner/Spinner";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
 import Link from "next/link";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";
@@ -50,6 +51,7 @@ const ImageQueryPage = () => {
         formatearFecha,
         getLastUserData,
         getOrderStatus,
+        user,
     } = ImagesQueryHook();
 
     const modalLastUpdate = (item: any) => {
@@ -79,6 +81,10 @@ const ImageQueryPage = () => {
             confirmButtonColor: "#228cf0",
         });
     };
+
+    if (!user) {
+        return <Spinner />;
+    }
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
