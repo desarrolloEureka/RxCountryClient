@@ -11,8 +11,9 @@ export type DataProfessionalObject = {
     state: any;
     city: string;
     email: string;
-    password: string;
-    confirmPassword: string;
+    confirmEmail: string;
+    // password: string;
+    // confirmPassword: string;
     specialty: string;
     contract: string;
     rol: string;

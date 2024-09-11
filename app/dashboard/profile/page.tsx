@@ -1,4 +1,5 @@
 "use client";
+import Spinner from "@/app/component/spinner/Spinner";
 import Image from "next/image";
 import Link from "next/link";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -34,7 +35,13 @@ export default function ProfilePage() {
         handleInputFileChange,
         fileName,
         handleClose,
+        user,
     } = ProfileHook();
+
+    if (!user) {
+        return <Spinner />;
+    }
+
     return (
         <main className="flex flex-col justify-center items-center min-h-screen w-full bg-gray-image bg-cover">
             <div className="px-4 lg:px-16 py-8 mx-4 mb-16 mt-8 lg:my-0 bg-company-gray rounded-2xl shadow-xl flex flex-col items-center space-y-4">

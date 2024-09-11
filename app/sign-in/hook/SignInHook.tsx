@@ -65,7 +65,28 @@ const SignUpHook = () => {
         // verifica las credenciales
         const authenticateUser = async (email: string, password: string) => {
             try {
-                await loginFirebase(email, password);
+                await loginFirebase(email, password).then((data: any) => {
+                    const currentUser = data.user;
+                    // Si es funcionario añade sus respectiva area y rol seleccionados.
+                    if (
+                        selectedCampus &&
+                        selectedCampus !== currentUser.campus
+                    ) {
+                        // console.log("En el if");
+                        const reference = "functionary";
+                        updateDocumentsByIdFb(
+                            currentUser.uid,
+                            {
+                                campus: selectedCampus,
+                                area: selectedArea,
+                                rol: allRoles.find(
+                                    (item: any) => item.area === selectedArea,
+                                ).uid,
+                            },
+                            reference,
+                        );
+                    }
+                });
                 setError("");
             } catch (error: any) {
                 if (error.code === "auth/invalid-credential") {
@@ -177,34 +198,9 @@ const SignUpHook = () => {
 
     useEffect(() => {
         if (user && userData) {
-            // Si es profesional o paciente ingresa directamente
-            if (
-                userData.rol === "ZWb0Zs42lnKOjetXH5lq" ||
-                userData.rol === "ShHQKRuKJfxHcV70XSvC"
-            ) {
-                router.replace("/dashboard");
-            }
-
-            // Si es funcionario añade sus respectiva area y rol seleccionados.
-            if (selectedCampus && userData.campus) {
-                // console.log("En el if");
-                const reference = "functionary";
-                updateDocumentsByIdFb(
-                    userData.uid,
-                    {
-                        campus: selectedCampus,
-                        area: selectedArea,
-                        rol: allRoles.find(
-                            (item: any) => item.area === selectedArea,
-                        ).uid,
-                    },
-                    reference,
-                ).then(() => {
-                    router.replace("/dashboard");
-                });
-            }
+            router.replace("/dashboard");
         }
-    }, [router, user, userData, selectedCampus, selectedArea, allRoles]);
+    }, [router, user, userData]);
 
     return {
         user,

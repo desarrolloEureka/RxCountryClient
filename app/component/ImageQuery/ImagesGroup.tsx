@@ -1,4 +1,5 @@
 "use client";
+import { AreasSelector } from "@/app/types/areas";
 import { PreviewFile } from "@/app/types/order";
 import { RolesBd } from "@/app/types/roles";
 import Image from "next/image";
@@ -7,9 +8,8 @@ import { ChangeEvent } from "react";
 import { IoIosSave } from "react-icons/io";
 import { LuFilePlus2 } from "react-icons/lu";
 import { RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
-import InputFileUpload from "../UpLoadButton";
 import SelectComponent from "../SelectComponent";
-import { AreasSelector } from "@/app/types/areas";
+import InputFileUpload from "../UpLoadButton";
 
 type Props = {
     orderAndPatientData: any;

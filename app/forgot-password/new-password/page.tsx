@@ -73,7 +73,7 @@ export default function NewPassword() {
           </Link>
         </div>
       </div>
-      <footer className="absolute bottom-0 flex justify-between items-center w-full p-4 bg-company-blue">
+      {/* <footer className="absolute bottom-0 flex justify-between items-center w-full p-4 bg-company-blue">
         <Link href="" className="underline text-white text-sm">
           Acerca de RxCountry
         </Link>
@@ -88,7 +88,7 @@ export default function NewPassword() {
             alt={"logo"}
           />
         </Link>
-      </footer>
+      </footer> */}
     </main>
   );
 }

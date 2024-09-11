@@ -17,8 +17,8 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 const ImagesQueryHook = () => {
     const router = useRouter();
-    const { userData, userRol } = useAuth();
-    const { campus, area, uid } = userData;
+    const { userData, userRol, user } = useAuth();
+    const { campus = "", area = "", uid = "" } = userData || {};
 
     const [showFilter, setShowFilter] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
@@ -306,6 +306,15 @@ const ImagesQueryHook = () => {
         getProfessionals();
     }, [getOrders, getPatients, getFunctionary, getProfessionals]);
 
+    useEffect(() => {
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user]);
+
     return {
         handleSearchInputChange,
         handleValueChange,
@@ -338,6 +347,7 @@ const ImagesQueryHook = () => {
         formatearFecha,
         getLastUserData,
         getOrderStatus,
+        user,
     };
 };
 

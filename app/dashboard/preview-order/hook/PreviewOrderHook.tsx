@@ -1,3 +1,5 @@
+import { dataAllOptions } from "@/app/data/documentsData";
+import useAuth from "@/app/firebase/auth";
 import {
     getAllOptions,
     getAllOrders,
@@ -6,16 +8,18 @@ import {
 } from "@/app/firebase/documents";
 import { Order } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
-import { useCallback, useEffect, useState } from "react";
-import moment from "moment";
 import _ from "lodash";
-import { dataAllOptions } from "@/app/data/documentsData";
+import moment from "moment";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 type Props = {
     slug: string;
 };
 
 const PreviewOrderHook = ({ slug }: Props) => {
+    const router = useRouter();
+    const { user } = useAuth();
     const [ordersData, setOrdersData] = useState<any>();
     const [patientsData, setPatientsData] = useState<any>();
     const [professionalsData, setProfessionalsData] = useState<any>();
@@ -103,13 +107,18 @@ const PreviewOrderHook = ({ slug }: Props) => {
     }, []);
 
     useEffect(() => {
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user]);
+
+    useEffect(() => {
         getOrders();
         getOptions();
-        // getAreas();
-        // getCampus();
         getPatients();
-        // getDiagnoses();
-        // getDiagnostician();
         getProfessionals();
     }, [getOptions, getOrders, getPatients, getProfessionals]);
 

@@ -1,10 +1,9 @@
 "use client";
 import Spinner from "@/app/component/spinner/Spinner";
 import useAuth from "@/app/firebase/auth";
-import AuthValidate from "@/app/hook/AuthValidate";
+import Logout from "@/app/hook/Logout";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Logout from "@/app/hook/Logout";
 
 export default function VerificationEmailSend() {
     const router = useRouter();

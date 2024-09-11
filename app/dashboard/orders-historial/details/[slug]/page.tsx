@@ -1,9 +1,9 @@
 "use client";
 import DashboardHeader from "@/app/component/DashboardHeader";
 import OrderDetailsContent from "@/app/component/OrderDetailsContent";
-import DetailsHook from "../hook/DetailsHook";
-import { Suspense } from "react";
 import Spinner from "@/app/component/spinner/Spinner";
+import { Suspense } from "react";
+import DetailsHook from "../hook/DetailsHook";
 
 const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
     const {
@@ -34,7 +34,12 @@ const OrderDetails = ({ params: { slug } }: { params: { slug: string } }) => {
         formatearFecha,
         getLastUserData,
         areasSelected,
+        user,
     } = DetailsHook({ slug });
+
+    if (!user) {
+        return <Spinner />;
+    }
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">

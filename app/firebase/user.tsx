@@ -105,8 +105,8 @@ export const registerFirebase = async (user: string, password: string) =>
 export const loginFirebase = async (user: string, password: string) =>
     await signInWithEmailAndPassword(auth, user, password);
 
-export const resetPasswordFirebase = async (email: string) =>
-    await sendPasswordResetEmail(auth, email);
+export const resetPasswordFirebase = async (email: string, actionCodeSettings?: any) =>
+    await sendPasswordResetEmail(auth, email, actionCodeSettings);
 
 export const confirmPasswordResetFirebase = async (
     oobCode: string,

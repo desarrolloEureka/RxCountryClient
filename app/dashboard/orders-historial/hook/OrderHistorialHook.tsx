@@ -7,7 +7,7 @@ import {
     getAllOrders,
     getAllPatients,
     getAllProfessionals,
-    updateDocumentsByIdFb,
+    updateDocumentsByIdFb
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
 import { Order, OrdersByRol } from "@/app/types/order";
@@ -19,9 +19,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 const OrderHistorialHook = () => {
-    const { isActiveUser, userData, userRol } = useAuth();
+    const { isActiveUser, userData, userRol, user, isLoading } = useAuth();
 
-    const { campus, area, uid } = userData;
+    const { campus = "", area = "", uid = "" } = userData || {};
 
     const searchParams = useSearchParams();
 
@@ -467,6 +467,34 @@ const OrderHistorialHook = () => {
         }
     }, [fromEdit, searchParams]);
 
+    useEffect(() => {
+        const allowedRoles: string[] = [
+            "wGU4GU8oDosW4ayQtxqT",
+            "g9xGywTJG7WSJ5o1bTsH",
+            "chbFffCzpRibjYRyoWIx",
+            "c24R4P0VcQmQT0VT6nfo",
+            "ZWb0Zs42lnKOjetXH5lq",
+            "1cxJ0a8uCX7OTesEHT2G",
+            "9RZ9uhaiwMC7VcTyIzhl",
+            "FHSly0jguw1lwYSj8EHV",
+            "Ll6KGdzqdtmLLk0D5jhk",
+            "V5iMSnSlSYsiSDFs4UpI",
+            "VEGkDuMXs2mCGxXUPCWI",
+        ];
+
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (userData && !allowedRoles.includes(userRoleId as string)) {
+            router.push("/dashboard");
+            return;
+        }
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user, userData]);
+
     return {
         userArea: area,
         getAreaName,
@@ -513,6 +541,7 @@ const OrderHistorialHook = () => {
         getLastUserData,
         itemsPerPage,
         totalItems,
+        user,
     };
 };
 
