@@ -1,6 +1,7 @@
 "use client";
 import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
+import Spinner from "@/app/component/spinner/Spinner";
 import StepByStep from "@/app/component/StepByStep";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
 import Link from "next/link";
@@ -65,7 +66,12 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
         handleModelType,
         modelType,
         handleFileChangeSTL,
+        user,
     } = EditOrderHook({ slug });
+
+    if (!user) {
+        return <Spinner />;
+    }
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">

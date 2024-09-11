@@ -129,19 +129,18 @@ const SignUpHook = (props?: Props) => {
         data.name &&
         data.lastName &&
         data.email &&
-        data.password &&
-        data.confirmPassword &&
+        data.confirmEmail &&
         data.phone !== "57" &&
         data.phone !== "" &&
         data.phone.length > 11;
 
-    const passValidation = data.confirmPassword === data.password;
+    const emailValidation = data.email === data.confirmEmail;
 
     // Handle del registro
     const uploadHandle = async () => {
-        const { password, confirmPassword, ...rest } = data;
+        const { confirmEmail, ...rest } = data;
         let newUrlPhoto: string = "";
-        const res = await registerFirebase(data.email, password)
+        const res = await registerFirebase(data.email, data.id)
             .then(async (result: any) => {
                 const newUser = result.user;
 
@@ -202,7 +201,7 @@ const SignUpHook = (props?: Props) => {
     // Handle de formulario, valida las contraseñas
     const handleSendForm = async (e?: any) => {
         // console.log("data", data);
-        if (professionalsVal && passValidation) {
+        if (professionalsVal && emailValidation) {
             e.preventDefault();
             e.stopPropagation();
             console.log("Entró");
@@ -211,7 +210,7 @@ const SignUpHook = (props?: Props) => {
         } else {
             e.preventDefault();
             e.stopPropagation();
-            !passValidation && setErrorPass(true);
+            !emailValidation && setErrorPass(true);
             console.log("Falló");
         }
     };
@@ -234,16 +233,12 @@ const SignUpHook = (props?: Props) => {
     }, [getSpecialties, getContracts]);
 
     useEffect(() => {
-        if (user) {
+        if (user && userData) {
             // setSignUp(true);
 
             router.replace("/dashboard");
-
-            // user?.emailVerified
-            //     ? router.replace("/dashboard")
-            //     : router.replace("/sign-up/verification-email-send");
         }
-    }, [router, user, userData?.isActive]);
+    }, [router, user, userData]);
 
     return {
         data,

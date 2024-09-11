@@ -91,5 +91,5 @@ export const titles: string[] = [
     "Tomografía Volumétrica 3D en las Sedes Country-Santa Bárbara-Marly",
     "Diagnósticos/Modelos",
     "Fotografía Clínica",
-    "Entregas",
+    "Entregas y Observaciones",
 ];

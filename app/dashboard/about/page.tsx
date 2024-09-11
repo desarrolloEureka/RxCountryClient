@@ -1,16 +1,28 @@
 "use client";
 import Spinner from "@/app/component/spinner/Spinner";
-import AuthValidate from "@/app/hook/AuthValidate";
+import useAuth from "@/app/firebase/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 export default function AboutPage() {
-    const { user } = AuthValidate();
+    const { user } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        const userRoleId = localStorage.getItem("userRoleId") ?? "";
+
+        if (!user && !userRoleId) {
+            router.push("/sign-in");
+            return;
+        }
+    }, [router, user]);
 
     if (!user) {
         return <Spinner />;
     }
-    
+
     return (
         <main className="flex flex-col justify-start items-center min-h-screen w-full bg-gray-image bg-cover">
             <div className="px-8 md:px-20 lg:px-20 xl:px-52 py-8 flex flex-col items-start space-y-4">

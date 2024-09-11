@@ -1,7 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect } from "react";
-import AuthValidate from "./AuthValidate";
 import useAuth from "../firebase/auth";
 
 const PageHook = () => {
@@ -9,9 +8,10 @@ const PageHook = () => {
     const { user, isLoading, isActiveUser } = useAuth();
 
     useLayoutEffect(() => {
-        user && !isLoading && isActiveUser
+        user && !isLoading
             ? router.replace("/dashboard")
             : router.replace("/sign-in");
+
         // console.log("entre en PageHook");
     }, [isActiveUser, isLoading, router, user]);
 

@@ -201,7 +201,33 @@ export default function SignUp() {
                                         <IoMail />
                                     </span>
                                 </div>
-                                <div className="col relative flex flex-col w-full space-y-2">
+                                <div className="col relative flex md:col-span-2 flex-col w-full space-y-2">
+                                    <label
+                                        htmlFor="confirmEmail"
+                                        className="text-white"
+                                    >
+                                        Confirmar Correo&nbsp;
+                                        <span className="text-blue-500">*</span>
+                                    </label>
+
+                                    <input
+                                        onPaste={(e) => {
+                                            alert("No puedes pegar");
+                                            e.preventDefault();
+                                        }}
+                                        value={data.confirmEmail}
+                                        id="confirmEmail"
+                                        name="confirmEmail"
+                                        type="email"
+                                        required
+                                        className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-10"
+                                        onChange={changeHandler}
+                                    />
+                                    <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                        <IoMail />
+                                    </span>
+                                </div>
+                                {/* <div className="col relative flex flex-col w-full space-y-2">
                                     <label
                                         htmlFor="password"
                                         className="text-white"
@@ -278,7 +304,7 @@ export default function SignUp() {
                                             )}
                                         </span>
                                     </button>
-                                </div>
+                                </div> */}
                                 <div className="col relative flex flex-col md:col-span-2 lg:col-span-1 w-full space-y-2">
                                     <label
                                         htmlFor="phone"
@@ -644,7 +670,9 @@ export default function SignUp() {
                                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                                 </svg>
                                 <span>
-                                    <strong>Contraseñas no coinciden!.</strong>
+                                    <strong>
+                                        Ingrese el correo correctamente!.
+                                    </strong>
                                     &nbsp;Vuelva a intentar!
                                 </span>
                                 <button
