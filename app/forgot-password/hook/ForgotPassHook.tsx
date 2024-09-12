@@ -25,7 +25,7 @@ export const ForgotPassHook = () => {
 
         try {
             await resetPasswordFirebase(email, actionCodeSettings).then(() => {
-                router.push("/forgot-password/success");
+                router.replace("/forgot-password/success");
             });
         } catch (error) {
             console.log("Error: ", error);
