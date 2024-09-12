@@ -198,7 +198,7 @@ const SignUpHook = () => {
 
     useEffect(() => {
         if (user && userData) {
-            router.replace("/dashboard");
+            router.push("/dashboard");
         }
     }, [router, user, userData]);
 

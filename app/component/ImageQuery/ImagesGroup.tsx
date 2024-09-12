@@ -352,7 +352,7 @@ const ImagesGroup = ({
                 )}
 
                 {isModalOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 flex items-center justify-center z-50 text-white">
                         <div className="w-3/4 max-w-3xl mx-auto py-6 rounded-lg shadow-lg bg-[#1d1d1d]">
                             <div className="flex justify-between items-center border-b border-gray-500 pb-2 px-6">
                                 <h2 className="text-xl font-bold">

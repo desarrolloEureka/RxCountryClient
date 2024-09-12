@@ -265,7 +265,7 @@ const NewOrderHook = (props?: Props) => {
 
                 saveAlert(uploadHandle, router).then(() => {
                     // setFormStep((prevStep: number) => prevStep + 1);
-                    router.push("/dashboard/orders-historial/");
+                    router.replace("/dashboard/orders-historial/");
                 });
 
                 handleClose();

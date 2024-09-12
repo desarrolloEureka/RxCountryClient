@@ -858,7 +858,7 @@ function StepByStep({
 
                                 {/* Vista verificación de la orden */}
                                 {userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
-                                    <div className="flex flex-col lg:flex-row items-center justify-center h-auto lg:h-20 space-x-0 lg:space-x-5 space-y-2 lg:space-y-0">
+                                    <div className="flex flex-col lg:flex-row items-center justify-center h-auto lg:h-20 space-x-0 lg:space-x-5 space-y-2 lg:space-y-0 text-white">
                                         <div className="flex flex-row items-center justify-center text-base lg:text-xl space-x-4 w-full">
                                             <label htmlFor="cboxOrderIncomplete">
                                                 <h1>¿Orden incompleta?</h1>
@@ -2424,7 +2424,7 @@ function StepByStep({
                                 />
                             </div>
 
-                            <div className="flex flex-row pt-10 space-x-10">
+                            <div className="flex flex-row pt-10 space-x-10 justify-center sm:justify-start">
                                 <div
                                     onClick={(e) => {
                                         e.preventDefault();

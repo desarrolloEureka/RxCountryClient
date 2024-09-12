@@ -81,18 +81,41 @@ const NewOrderPage = () => {
                 >
                     <div className="flex justify-center items-center">
                         {formStep < 6 && (
-                            <div className="flex justify-around items-center w-full p-4 sm:p-8">
-                                <div className="flex items-center">
-                                    <Link href={"/dashboard"}>
+                            <div
+                                className={`flex ${
+                                    formStep === 0 ? "flex-row" : "flex-col"
+                                } sm:flex-row justify-around items-center w-full p-4 sm:p-8`}
+                            >
+                                <div className="flex items-start sm:items-center w-full sm:w-auto">
+                                    <Link
+                                        href={
+                                            formStep === 0 ? "/dashboard" : ""
+                                        }
+                                        onClick={() => {
+                                            formStep !== 0 &&
+                                                setFormStep(
+                                                    (prevStep: number) =>
+                                                        prevStep - 1,
+                                                );
+                                        }}
+                                        className="hidden sm:flex items-center"
+                                    >
                                         <IoArrowBackCircleOutline
-                                            className="text-company-blue hidden sm:flex"
+                                            className="text-company-blue "
                                             size={32}
                                         />
+                                    </Link>
+                                    <div
+                                        onClick={() => {
+                                            setFormStep(0);
+                                        }}
+                                        className="flex sm:hidden items-center cursor-pointer"
+                                    >
                                         <IoArrowBackCircleOutline
-                                            className="text-company-blue flex sm:hidden"
+                                            className="text-company-blue"
                                             size={25}
                                         />
-                                    </Link>
+                                    </div>
                                 </div>
 
                                 <div
@@ -105,7 +128,7 @@ const NewOrderPage = () => {
                                     </h3>
                                 </div>
 
-                                <div className="flex flex-col w-[80%] sm:hidden">
+                                <div className="flex flex-col w-[90%] sm:hidden">
                                     {titles.map((title, index) => (
                                         <div
                                             key={index}
@@ -211,9 +234,11 @@ const NewOrderPage = () => {
                                 formStep < 6 ? "justify-between" : "justify-end"
                             } items-center p-4 sm:p-8`}
                         >
-                            <div className="text-white">Paso {formStep}/5</div>
+                            <div className="text-white invisible">
+                                Paso {formStep}/5
+                            </div>
                             <div className="flex items-center space-x-8">
-                                {formStep > 0 && (
+                                {/* {formStep > 0 && (
                                     <>
                                         <div
                                             onClick={() => {
@@ -234,10 +259,10 @@ const NewOrderPage = () => {
                                             className="flex sm:hidden items-center cursor-pointer text-company-blue"
                                         >
                                             <BiChevronLeft size={32} />
-                                            {/* <span>Atrás</span> */}
+                                            <span>Atrás</span>
                                         </div>
                                     </>
-                                )}
+                                )} */}
                                 <button
                                     type={patientVal ? "button" : "submit"}
                                     onClick={() => {
@@ -299,7 +324,7 @@ const NewOrderPage = () => {
                                             userRol?.uid ===
                                                 "ZWb0Zs42lnKOjetXH5lq") && (
                                             <>
-                                                {/* <span>Siguiente</span> */}
+                                                <span>Siguiente</span>
                                                 <BiChevronRight size={32} />
                                             </>
                                         )
