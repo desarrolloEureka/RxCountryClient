@@ -18,7 +18,10 @@ import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 import { datePickerProps, EditedOrderStatusByRol } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
-import { handleSendNewOrderEmail } from "@/lib/brevo/handlers/actions";
+import {
+    handleSendNewOrderEmail,
+    handleSendWelcomeEmail,
+} from "@/lib/brevo/handlers/actions";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/navigation";
@@ -335,6 +338,7 @@ const NewOrderHook = (props?: Props) => {
 
         const patientAndOrderData = {
             ...newOrderData,
+            id: patientData.id,
             name: patientData.name,
             lastName: patientData.lastName,
             email: patientData.email,
@@ -409,6 +413,10 @@ const NewOrderHook = (props?: Props) => {
                     }).then(async (res) => {
                         // Envía la notificación al correo del paciente
 
+                        // Envía el correo de nuevo usuario bienvenida
+                        await handleSendWelcomeEmail(patientAndOrderData);
+
+                        // Envía el corro de nueva orden
                         await handleSendNewOrderEmail(patientAndOrderData);
 
                         setCurrentOrderId(parseInt(res.id));
@@ -482,12 +490,12 @@ const NewOrderHook = (props?: Props) => {
         const userRoleId = localStorage.getItem("userRoleId") ?? "";
 
         if (userData && !allowedRoles.includes(userRoleId as string)) {
-            router.push("/dashboard");
+            router.replace("/dashboard");
             return;
         }
 
         if (!user && !userRoleId) {
-            router.push("/sign-in");
+            router.replace("/sign-in");
             return;
         }
     }, [router, user, userData]);

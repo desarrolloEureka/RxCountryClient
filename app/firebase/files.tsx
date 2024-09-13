@@ -9,8 +9,7 @@ import moment from "moment";
 import {
     DownloadFileProps,
     uploadFileImageProps,
-    uploadFilePDFProps,
-    uploadProfilePhotoProps,
+    uploadProfilePhotoProps
 } from "../types/files";
 
 const currentDate = moment().format("YYYY-MM-DD");
