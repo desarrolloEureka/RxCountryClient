@@ -26,7 +26,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
-// const analytics = getAnalytics(firebaseApp);
 
 const db = firebaseApp.firestore();
 const auth = firebase.auth();
