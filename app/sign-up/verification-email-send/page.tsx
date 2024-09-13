@@ -40,7 +40,7 @@ export default function VerificationEmailSend() {
                     </p>
                     <button
                         className="bg-company-blue rounded-2xl px-5 py-3 text-white"
-                        onClick={() => router.push("/sign-in")}
+                        onClick={() => router.replace("/sign-in")}
                     >
                         Continuar
                     </button>

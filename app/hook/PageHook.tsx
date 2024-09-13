@@ -9,8 +9,8 @@ const PageHook = () => {
 
     useLayoutEffect(() => {
         user && !isLoading
-            ? router.push("/dashboard")
-            : router.push("/sign-in");
+            ? router.replace("/dashboard")
+            : router.replace("/sign-in");
 
         // console.log("entre en PageHook");
     }, [isActiveUser, isLoading, router, user]);

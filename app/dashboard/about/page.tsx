@@ -14,7 +14,7 @@ export default function AboutPage() {
         const userRoleId = localStorage.getItem("userRoleId") ?? "";
 
         if (!user && !userRoleId) {
-            router.push("/sign-in");
+            router.replace("/sign-in");
             return;
         }
     }, [router, user]);

@@ -485,12 +485,12 @@ const OrderHistorialHook = () => {
         const userRoleId = localStorage.getItem("userRoleId") ?? "";
 
         if (userData && !allowedRoles.includes(userRoleId as string)) {
-            router.push("/dashboard");
+            router.replace("/dashboard");
             return;
         }
 
         if (!user && !userRoleId) {
-            router.push("/sign-in");
+            router.replace("/sign-in");
             return;
         }
     }, [router, user, userData]);
