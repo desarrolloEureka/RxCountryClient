@@ -338,6 +338,7 @@ const NewOrderHook = (props?: Props) => {
 
         const patientAndOrderData = {
             ...newOrderData,
+            id: patientData.id,
             name: patientData.name,
             lastName: patientData.lastName,
             email: patientData.email,
