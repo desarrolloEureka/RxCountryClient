@@ -105,9 +105,12 @@ const NewOrderPage = () => {
                                             size={32}
                                         />
                                     </Link>
-                                    <div
+                                    <Link
+                                        href={
+                                            formStep === 0 ? "/dashboard" : ""
+                                        }
                                         onClick={() => {
-                                            setFormStep(0);
+                                            formStep !== 0 && setFormStep(0);
                                         }}
                                         className="flex sm:hidden items-center cursor-pointer"
                                     >
@@ -115,7 +118,7 @@ const NewOrderPage = () => {
                                             className="text-company-blue"
                                             size={25}
                                         />
-                                    </div>
+                                    </Link>
                                 </div>
 
                                 <div
