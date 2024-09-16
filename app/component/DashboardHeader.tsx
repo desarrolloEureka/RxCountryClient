@@ -3,13 +3,14 @@ import { auth } from "@/shared/firebase/firebase";
 import { signOut } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TfiClose } from "react-icons/tfi";
 import { VscMenu } from "react-icons/vsc";
 import useAuth from "../firebase/auth";
 import ImagesRequestIcon from "./icons/ImagesRequestIcon.jsx";
 import OrderHistorialIcon from "./icons/OrderHistorialIcon.jsx";
 import OrderIcon from "./icons/OrderIcon.jsx";
+import Spinner from "./spinner/Spinner";
 
 interface Props {
     // selectedMenuItem?: "create-order" | "orders-historial" | "images-query";
@@ -50,6 +51,16 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [handleClickOutside]);
+
+    if (!userData || !userRol?.uid) {
+        return (
+            <nav className="flex bg-gray-700 bg-opacity-80 rounded-2xl px-4 lg:px-8 py-2.5 lg:py-0">
+                <div className="relative flex flex-wrap lg:flex-nowrap justify-between items-center w-full">
+                    <Spinner background="bg-transparent" screenH="min-h-36" />
+                </div>
+            </nav>
+        );
+    }
 
     return (
         <nav className="flex bg-gray-700 bg-opacity-80 rounded-2xl px-4 lg:px-8 py-2.5 lg:py-0">

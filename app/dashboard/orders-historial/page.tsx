@@ -111,10 +111,10 @@ const OrderHistorialPage = () => {
             <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
                 <div className="bg-black bg-opacity-60 flex flex-col min-h-screen w-full py-16 px-5 sm:p-16 space-y-16">
                     <DashboardHeader selectedMenuItem="orders-historial" />
-                    <div className="rounded-xl lg:rounded-3xl shadow-lg bg-company-gray w-full max-w-screen mx-auto min-h-screen">
+                    <div className="rounded-xl lg:rounded-3xl shadow-lg bg-company-gray w-full max-w-screen mx-auto min-h-96">
                         <Spinner
                             background="bg-transparent"
-                            // screenH="min-h-96"
+                            screenH="min-h-96"
                         />
                     </div>
                 </div>
