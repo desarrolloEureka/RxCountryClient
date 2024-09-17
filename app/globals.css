@@ -185,3 +185,26 @@ input.calendar-light {
 .custom-scrollbar-textarea {
     resize: none;
 }
+
+input::placeholder {
+    color: rgb(223, 223, 223);
+    font-size: 15px;
+}
+
+/* ----------------------------------- */
+
+.scroll-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.scroll-arrow {
+    position: absolute;
+    top: 5%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 32px;
+    color: rgb(255, 255, 255);
+    pointer-events: none;
+}

@@ -4,6 +4,7 @@ import { signOut } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { RiArrowDropDownLine } from "react-icons/ri";
 import { TfiClose } from "react-icons/tfi";
 import { VscMenu } from "react-icons/vsc";
 import useAuth from "../firebase/auth";
@@ -118,8 +119,8 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                                     : "hidden"
                             } flex-row lg:flex lg:flex-col lg:justify-center h-auto lg:h-36 items-center space-y-0 lg:space-y-2 space-x-2 lg:space-x-0 py-1 ${
                                 selectedMenuItem === "create-order"
-                                    ? "text-company-orange border-b-2 border-company-orange"
-                                    : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
+                                    ? "text-company-orange border-0 sm:border-b-2 border-company-orange"
+                                    : "text-white hover:text-company-orange sm:hover:border-b-2 sm:hover:border-company-orange"
                             }`}
                         >
                             <OrderIcon
@@ -156,8 +157,8 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                                         : "hidden"
                                 } flex-row lg:flex lg:flex-col lg:justify-center h-auto lg:h-36 items-center space-y-0 lg:space-y-2 space-x-2 lg:space-x-0 py-1 px-1 lg:px-0 ${
                                     selectedMenuItem === "orders-historial"
-                                        ? "text-company-orange border-b-2 border-company-orange"
-                                        : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
+                                        ? "text-company-orange border-0 sm:border-b-2 border-company-orange"
+                                        : "text-white hover:text-company-orange sm:hover:border-b-2 sm:hover:border-company-orange"
                                 }`}
                             >
                                 <OrderHistorialIcon
@@ -185,8 +186,8 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                                 : "hidden"
                         } flex-row lg:flex lg:flex-col lg:justify-center h-auto lg:h-36 items-center space-y-0 lg:space-y-2 space-x-2 lg:space-x-0 py-1 px-1 lg:px-0 ${
                             selectedMenuItem === "images-query"
-                                ? "text-company-orange border-b-2 border-company-orange"
-                                : "text-white hover:text-company-orange hover:border-b-2 hover:border-company-orange"
+                                ? "text-company-orange border-0 sm:border-b-2 border-company-orange"
+                                : "text-white hover:text-company-orange sm:hover:border-b-2 sm:hover:border-company-orange"
                         }`}
                     >
                         <ImagesRequestIcon
@@ -205,10 +206,10 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
 
                 {/* Dropdown Menu User */}
                 <div className="relative grow flex lg:flex items-center justify-center lg:order-2 p-4 lg:p-0">
-                    <Link
-                        href={""}
+                    <div
                         onClick={() => setOpenProfileMenu(!openProfileMenu)}
-                        className="flex flex-row lg:flex-col items-center space-y-0 lg:space-y-2 space-x-4 lg:space-x-0 text-white"
+                        className="flex flex-row lg:flex-col items-center space-y-0 lg:space-y-2 space-x-4 lg:space-x-0 text-white cursor-pointer"
+                        // ref={wrapperRef}
                     >
                         <div className="relative flex w-10 h-10 lg:w-20 lg:h-20 rounded-full overflow-hidden border-2 border-gray-300">
                             <Image
@@ -224,20 +225,30 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                                 id="user-menu-button"
                             />
                         </div>
-                        <div className="flex flex-col text-center">
-                            <span className="text-sm sm:text-xl text-capitalize">
-                                {name}
-                            </span>
-                            <span className="text-[10px] sm:text-sm text-capitalize text-nowrap">{`${userRol?.name} ${userCampus}`}</span>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col text-center w-full">
+                                <span className="text-base sm:text-xl text-capitalize text-white">
+                                    {name}
+                                </span>
+                                <span className="text-[13px] sm:text-sm text-capitalize text-company-blue text-nowrap">{`${userRol?.name} ${userCampus}`}</span>
+                            </div>
+                            <RiArrowDropDownLine
+                                className={`w-full flex lg:hidden ease-in-out duration-700 ${
+                                    openProfileMenu
+                                        ? "rotate-180 text-company-blue"
+                                        : "text-company-orange"
+                                }`}
+                                size={40}
+                            />
                         </div>
-                    </Link>
+                    </div>
                     {openProfileMenu && (
                         <div
-                            className="z-50 absolute right-0 -top-1 my-4 text-bas w-48 list-none bg-black bg-opacity-80 text-white divide-y divide-gray-100 rounded-lg shadow"
+                            className="z-50 absolute right-0 top-12 lg:top-32 my-4 text-base w-48 list-none bg-black bg-opacity-80 text-white divide-y divide-gray-100 rounded-lg shadow"
                             id="user-dropdown"
                             ref={wrapperRef}
                         >
-                            <div
+                            {/* <div
                                 onClick={() =>
                                     setOpenProfileMenu(!openProfileMenu)
                                 }
@@ -249,7 +260,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                                 <span className="block text-sm font-medium text-gray-500 truncate dark:text-gray-400">
                                     {`${userRol?.name} ${userCampus}`}
                                 </span>
-                            </div>
+                            </div> */}
                             <ul
                                 className="py-2"
                                 aria-labelledby="user-menu-button"
@@ -280,53 +291,52 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                                 </li>
                                 <li>
                                     <div
-                                        onClick={() => {
-                                            setOpenLogOutMenu(!openLogOutMenu);
-                                        }}
-                                        // href=""
+                                        // onClick={() => {
+                                        //     setOpenLogOutMenu(!openLogOutMenu);
+                                        // }}
                                         className="block border-t border-gray-500 px-4 py-2 text-sm hover:bg-gray-900 bg-opacity-80 dark:hover:bg-gray-600 dark:text-gray-200 cursor-pointer"
                                     >
                                         Cerrar Sesión
                                     </div>
                                 </li>
-                                {openLogOutMenu && (
-                                    <li>
-                                        <div
-                                            // href="/"
-                                            className="flex flex-row w-full border-t border-gray-500 divide-x divide-gray-500"
+                                {/* {openLogOutMenu && ( */}
+                                <li>
+                                    <div
+                                        // href="/"
+                                        className="flex flex-row w-full border-t border-gray-500 divide-x divide-gray-500"
+                                    >
+                                        <button
+                                            className="flex w-full items-center justify-center px-4 py-2 text-sm hover:bg-gray-800 bg-opacity-80 dark:hover:bg-gray-600 dark:text-gray-200"
+                                            type="button"
+                                            onClick={() => {
+                                                setOpenLogOutMenu(
+                                                    !openLogOutMenu,
+                                                );
+                                                setOpenProfileMenu(
+                                                    !openProfileMenu,
+                                                );
+                                                logOut();
+                                            }}
                                         >
-                                            <button
-                                                className="flex w-full items-center justify-center px-4 py-2 text-sm hover:bg-gray-800 bg-opacity-80 dark:hover:bg-gray-600 dark:text-gray-200"
-                                                type="button"
-                                                onClick={() => {
-                                                    setOpenLogOutMenu(
-                                                        !openLogOutMenu,
-                                                    );
-                                                    setOpenProfileMenu(
-                                                        !openProfileMenu,
-                                                    );
-                                                    logOut();
-                                                }}
-                                            >
-                                                <Link href="/sign-in">Sí</Link>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setOpenLogOutMenu(
-                                                        !openLogOutMenu,
-                                                    );
-                                                    setOpenProfileMenu(
-                                                        !openProfileMenu,
-                                                    );
-                                                }}
-                                                className="flex w-full items-center justify-center px-4 py-2 text-sm hover:bg-gray-800 bg-opacity-80 dark:hover:bg-gray-600 dark:text-gray-200"
-                                            >
-                                                No
-                                            </button>
-                                        </div>
-                                    </li>
-                                )}
+                                            <Link href="/sign-in">Sí</Link>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setOpenLogOutMenu(
+                                                    !openLogOutMenu,
+                                                );
+                                                setOpenProfileMenu(
+                                                    !openProfileMenu,
+                                                );
+                                            }}
+                                            className="flex w-full items-center justify-center px-4 py-2 text-sm hover:bg-gray-800 bg-opacity-80 dark:hover:bg-gray-600 dark:text-gray-200"
+                                        >
+                                            No
+                                        </button>
+                                    </div>
+                                </li>
+                                {/* )} */}
                             </ul>
                         </div>
                     )}

@@ -7,7 +7,7 @@ import {
     getAllOrders,
     getAllPatients,
     getAllProfessionals,
-    updateDocumentsByIdFb
+    updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { AreasSelector } from "@/app/types/areas";
 import { Order, OrdersByRol } from "@/app/types/order";
@@ -19,7 +19,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 const OrderHistorialHook = () => {
-    const { isActiveUser, userData, userRol, user, isLoading } = useAuth();
+    const { userData, userRol, user } = useAuth();
 
     const { campus = "", area = "", uid = "" } = userData || {};
 
@@ -54,6 +54,8 @@ const OrderHistorialHook = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [helperText, setHelperText] = useState<string>("");
+
     const totalItems: number = 30;
 
     const [itemsPerPage, setItemsPerPage] = useState<number>(totalItems);
@@ -62,10 +64,6 @@ const OrderHistorialHook = () => {
         startDate: null,
         endDate: null,
     });
-
-    // const backToOrder = () => {
-    //     setShowPdf(false);
-    // };
 
     const formatearFecha = (fechaISO: string): string => {
         return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
@@ -309,6 +307,9 @@ const OrderHistorialHook = () => {
     const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearch(value);
+        if (!value) {
+            setHelperText("");
+        }
     };
 
     const setStatusOpenOrder = async (uid: string) => {
@@ -503,6 +504,7 @@ const OrderHistorialHook = () => {
         setShowFilter,
         showHelp,
         setShowHelp,
+        setHelperText,
         selectedOrder,
         setSelectedOrder,
         userRol,
@@ -521,6 +523,7 @@ const OrderHistorialHook = () => {
         formatearFecha,
         handleSearchInputChange,
         filteredOrders,
+        helperText,
         showPdf,
         setShowPdf,
         orderId,

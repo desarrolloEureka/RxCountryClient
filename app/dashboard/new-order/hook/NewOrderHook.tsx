@@ -398,6 +398,9 @@ const NewOrderHook = (props?: Props) => {
             }).then(async (res: any) => {
                 const patientId = res.data.userId;
 
+                // Envía el correo de nuevo usuario bienvenida
+                await handleSendWelcomeEmail(patientAndOrderData);
+
                 // Guarda la información del nuevo paciente
 
                 await saveOneDocumentFb(documentPatientRef, {
@@ -412,9 +415,6 @@ const NewOrderHook = (props?: Props) => {
                         patientId: documentPatientRef.id,
                     }).then(async (res) => {
                         // Envía la notificación al correo del paciente
-
-                        // Envía el correo de nuevo usuario bienvenida
-                        await handleSendWelcomeEmail(patientAndOrderData);
 
                         // Envía el corro de nueva orden
                         await handleSendNewOrderEmail(patientAndOrderData);
