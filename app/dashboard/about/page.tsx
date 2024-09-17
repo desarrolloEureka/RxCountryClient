@@ -1,6 +1,7 @@
 "use client";
 import Spinner from "@/app/component/spinner/Spinner";
 import useAuth from "@/app/firebase/auth";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -57,7 +58,18 @@ export default function AboutPage() {
                     </p>
                     <div className="w-full flex flex-col justify-center items-center p-10 sm:p-16">
                         <span>Desarrollado por:</span>
-                        LOGO
+                        <div className="w-1/2 flex items-center justify-center">
+                            <Image
+                                src={"/assets/LogoEurekaDreams.png"}
+                                width={0}
+                                height={0}
+                                sizes="1200px"
+                                alt={"logo"}
+                                style={{ width: "100%", height: "auto" }}
+                                placeholder="blur"
+                                blurDataURL={"/assets/LogoEurekaDreams.png"}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
