@@ -25,53 +25,40 @@ export default function AboutPage() {
 
     return (
         <main className="flex flex-col justify-start items-center min-h-screen w-full bg-gray-image bg-cover">
-            <div className="px-8 md:px-20 lg:px-20 xl:px-52 py-8 flex flex-col items-start space-y-4">
-                <div className="mt-28">
+            <div className="px-8 pb-16 md:px-20 lg:px-20 xl:px-52 lg:py-8 flex flex-col items-start space-y-4">
+                <div className="mt-28 w-full">
                     <Link href={"/dashboard"}>
-                        <div className="flex items-center space-x-2 text-company-blue font-bold text-3xl underline ">
-                            <IoArrowBackCircleOutline />
-                            <h1>Acerca De</h1>
+                        <div className="flex flex-row items-center  justify-items-start space-x-2 text-company-blue font-bold text-3xl">
+                            <IoArrowBackCircleOutline
+                                className="w-1/8"
+                                size={32}
+                            />
+                            <h1 className="w-full">Acerca De</h1>
                         </div>
                     </Link>
                 </div>
-                <div className="pt-28 text-white text-justify">
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                <div className="flex flex-col pt-28 text-white text-justify">
+                    <p>
+                        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
+                        ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
+                        ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
+                        ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
+                        ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
+                        ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
+                        ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
+                        ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+                        Lorem ipsum Lorem ipsum
+                    </p>
+                    <div className="w-full flex flex-col justify-center items-center p-10 sm:p-16">
+                        <span>Desarrollado por:</span>
+                        LOGO
+                    </div>
                 </div>
             </div>
         </main>

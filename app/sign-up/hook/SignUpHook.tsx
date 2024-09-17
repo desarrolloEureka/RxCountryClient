@@ -236,7 +236,7 @@ const SignUpHook = (props?: Props) => {
         if (user) {
             // setSignUp(true);
 
-            router.replace("/dashboard");
+            router.push("/sign-up/welcome-message");
         }
     }, [router, user]);
 

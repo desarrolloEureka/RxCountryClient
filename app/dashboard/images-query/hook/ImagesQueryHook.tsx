@@ -37,6 +37,8 @@ const ImagesQueryHook = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [helperText, setHelperText] = useState<string>("");
+
     const [itemsPerPage, setItemsPerPage] = useState(30);
 
     const [value, setValue] = useState({
@@ -205,6 +207,9 @@ const ImagesQueryHook = () => {
     const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearch(value);
+        if (!value) {
+            setHelperText("");
+        }
     };
 
     const getOrderStatus = (item: any) => {
@@ -324,6 +329,8 @@ const ImagesQueryHook = () => {
         setShowFilter,
         showHelp,
         setShowHelp,
+        helperText,
+        setHelperText,
         userData,
         orderMinorMajor,
         setOrderMinorMajor,
