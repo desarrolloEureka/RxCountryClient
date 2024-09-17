@@ -11,15 +11,16 @@ export default function WelcomeMessage() {
     useEffect(() => {
         const userRoleId = localStorage.getItem("userRoleId") ?? "";
 
-        if (!userData && !userRoleId) {
-            router.replace("/sign-in");
-            return;
-        }
+        // if (!userRoleId) {
+        //     router.replace("/sign-in");
+        //     return;
+        // }
+
     }, [router, user, userData]);
 
-    if (!user) {
-        return <Spinner />;
-    }
+    // if (!user) {
+    //     return <Spinner />;
+    // }
 
     return (
         <main className="relative flex flex-col justify-center items-center bg-login-image bg-cover bg-bottom min-h-screen w-full">
