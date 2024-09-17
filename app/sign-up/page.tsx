@@ -3,13 +3,10 @@ import Link from "next/link";
 import { BsFillGeoAltFill, BsFillPersonVcardFill } from "react-icons/bs";
 import { FaFileContract } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
-import { ImKey } from "react-icons/im";
 import {
     IoArrowBackCircleOutline,
-    IoEye,
-    IoEyeOff,
     IoMail,
-    IoPerson,
+    IoPerson
 } from "react-icons/io5";
 import { RiRoadMapLine } from "react-icons/ri";
 import PhoneInput from "react-phone-input-2";
@@ -344,10 +341,7 @@ export default function SignUp() {
                                     </span> */}
                                 </div>
                                 <div className="col flex flex-col md:col-span-2 lg:col-span-3 items-center">
-                                    <p
-                                        className="mt-1 text-sm text-center text-white"
-                                        id="file_input_help"
-                                    >
+                                    <p className="mt-1 text-sm text-center text-company-orange">
                                         Los campos con&nbsp;(&nbsp;
                                         <span className="text-blue-500">*</span>
                                         &nbsp;) son obligatorios.
@@ -356,6 +350,13 @@ export default function SignUp() {
                             </>
                         ) : (
                             <>
+                                <div className="col flex flex-col md:col-span-2 lg:col-span-3 items-center">
+                                    <p className="mt-1 text-sm text-center text-company-blue">
+                                        <span className="font-bold">Nota:</span>{" "}
+                                        Los siguientes campos no son
+                                        obligatorios.
+                                    </p>
+                                </div>
                                 <div className="col relative flex flex-col md:col-span-2 lg:col-span-1 w-full space-y-2">
                                     <label
                                         htmlFor="phone2"
@@ -593,40 +594,13 @@ export default function SignUp() {
                                         <FaFileContract />
                                     </span>
                                 </div>
-                                {/* <div className="col flex flex-col w-full space-y-2">
-                            <label htmlFor="isActive" className="text-white">
-                                Estado&nbsp;
-                                <span className="text-blue-500">*</span>
-                            </label>
-                            <select
-                                id="isActive"
-                                name="isActive"
-                                required
-                                className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-4"
-                                onChange={selectChangeHandlerStatus}
-                            >
-                                <option value="" hidden className="bg-black">
-                                    Seleccione...
-                                </option>
-                                {isActiveData.map((option) => (
-                                    <option
-                                        key={option.value}
-                                        value={option.value}
-                                        className="bg-black"
-                                    >
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div> */}
-                                <div className="col flex flex-col w-full space-y-2">
+
+                                <div className="col hidden sm:flex flex-col w-full space-y-2">
                                     <label
                                         htmlFor="urlPhoto"
                                         className="text-white"
                                     >
                                         Foto de Perfil
-                                        {/* &nbsp;
-                                <span className="text-blue-500">*</span> */}
                                     </label>
                                     <input
                                         className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded-xl border-company-blue border bg-transparent bg-clip-padding px-3 pt-[0.45rem] text-base text-white font-normal text-surface transition duration-300 ease-in-out file:-mx-3 file:text-white file:-my-[0.32rem] file:me-3 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-e file:border-solid file:border-inherit file:bg-transparent file:px-3 file:py-[0.32rem] file:text-surface focus:border-primary focus:text-white focus:shadow-inset focus:outline-none dark:border-company-blue dark:text-white file:dark:text-white hover:border-white"
@@ -638,7 +612,7 @@ export default function SignUp() {
                                         // required
                                     />
                                 </div>
-                                <div className="col flex flex-col md:col-span-2 lg:col-span-3 items-end">
+                                <div className="col hidden sm:flex flex-col md:col-span-2 lg:col-span-3 items-end">
                                     {errorImg ? (
                                         <p style={{ color: "red" }}>
                                             {errorImg}
@@ -676,9 +650,7 @@ export default function SignUp() {
                                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                                 </svg>
                                 <span>
-                                    <strong>
-                                        ¡Correos No Coinciden!
-                                    </strong>
+                                    <strong>¡Correos No Coinciden!</strong>
                                     &nbsp;Vuelva a intentar!
                                 </span>
                                 <button

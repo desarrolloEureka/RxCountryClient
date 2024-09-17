@@ -93,3 +93,6 @@ export const titles: string[] = [
     "Fotografía Clínica",
     "Entregas y Observaciones",
 ];
+
+export const initialHelperText: string =
+    "Si una orden tiene una alerta en la campana de notificación quiere decir que en ella encontraras las observaciones por cada area de esta orden.";

@@ -5,7 +5,7 @@ import Spinner from "@/app/component/spinner/Spinner";
 import StepByStep from "@/app/component/StepByStep";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
 import Link from "next/link";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import { BiChevronRight } from "react-icons/bi";
 import { IoAlertCircleSharp, IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { RiArrowDropDownLine } from "react-icons/ri";
@@ -146,8 +146,8 @@ const NewOrderPage = () => {
                                                 <div
                                                     className={`flex flex-row justify-between items-center w-full ${
                                                         formStep === index
-                                                            ? "text-company-orange border-b-2 border-company-orange"
-                                                            : "text-company-blue border-b border-company-blue"
+                                                            ? "text-company-orange"
+                                                            : "text-company-blue"
                                                     }`}
                                                 >
                                                     <h3 className="text-lg sm:text-3xl font-bold w-[90%] text-ellipsis overflow-hidden text-nowrap">
