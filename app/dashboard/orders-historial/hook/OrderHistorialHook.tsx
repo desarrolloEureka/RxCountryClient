@@ -545,6 +545,7 @@ const OrderHistorialHook = () => {
         itemsPerPage,
         totalItems,
         user,
+        orderList,
     };
 };
 

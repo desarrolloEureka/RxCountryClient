@@ -196,12 +196,12 @@ input::placeholder {
 .scroll-container {
     position: relative;
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .scroll-arrow {
     position: absolute;
-    top: 5%;
+    top: 0%;
     right: 10px;
     transform: translateY(-50%);
     font-size: 32px;

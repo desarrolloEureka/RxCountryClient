@@ -91,9 +91,9 @@ const SignUpHook = () => {
             } catch (error: any) {
                 if (error.code === "auth/invalid-credential") {
                     setError("¡Las credenciales son incorrectas!");
-                } else {
-                    setError("Error inicio de sesión");
+                    return;
                 }
+                setError("Error inicio de sesión");
             }
         };
 
