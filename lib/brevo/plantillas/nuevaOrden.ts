@@ -20,8 +20,6 @@ export const plantillaNuevaOrden = (data: any): string => {
                                 <div style="background-color: #f7fafc; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
                                     <p style="color: #4a5568;"><strong>Número de Orden:</strong> ${data.uid}</p>
                                     <p style="color: #4a5568;"><strong>Nombre del Profesional:</strong> ${data.professionalName}</p>
-                                    <p style="color: #4a5568;"><strong>Especialidad del Profesional:</strong> ${data.professionalSpecialty}</p>
-                                    <p style="color: #4a5568;"><strong>Correo:</strong> ${data.professionalEmail}</p>
                                     <p style="color: #4a5568;"><strong>Fecha de Creación:</strong> ${data.orderDate}</p>
                                     <div style="display: flex; align-items: center; justify-content: center;">
                                         <a

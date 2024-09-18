@@ -47,7 +47,7 @@ const OrderHistorialPage = () => {
         setDateMajorMinor,
         all,
         setAll,
-        allDataOrders,
+        orderList,
         ordersByRol,
         formatearFecha,
         handleSearchInputChange,
@@ -193,7 +193,7 @@ const OrderHistorialPage = () => {
                                     userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                                     userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl"
                                         ? "items-start"
-                                        : " items-center"
+                                        : "items-start sm:items-center"
                                 }`}
                             >
                                 <h3
@@ -329,14 +329,15 @@ const OrderHistorialPage = () => {
                                     i18n={"es"}
                                 />
                             </div>
-                            <div className="flex flex-row sm:flex-col justify-center items-center border-t-2 border-company-orange sm:border-0 w-full sm:w-auto pt-5 sm:p-0">
-                                <span className="text-company-blue text-center">
+                            <div className="flex flex-row sm:flex-col justify-start sm:justify-center items-center border-t-2 border-company-orange sm:border-0 w-full sm:w-auto px-4 pt-5 sm:p-0">
+                                <span className="text-[#158eff] text-center font-bold">
                                     Lista de Resultados:&nbsp;
                                 </span>
                                 <span>
                                     {Number(filteredOrders?.length)}
                                     &nbsp;de&nbsp;
-                                    {Number(ordersData?.length | 0)}
+                                    {/* {Number(ordersData?.length | 0)} */}
+                                    {Number(orderList?.length)}
                                 </span>
                             </div>
                             {showFilter && (
@@ -474,6 +475,9 @@ const OrderHistorialPage = () => {
                                         <div className="text-center text-nowrap w-40">
                                             <span>Acciones</span>
                                         </div>
+                                    </div>
+                                    <div className="scroll-arrow flex lg:hidden border-none">
+                                        <LiaLongArrowAltRightSolid />
                                     </div>
                                     {filteredOrders?.map(
                                         (item: any, index: number) => {
@@ -674,9 +678,6 @@ const OrderHistorialPage = () => {
                                     <span>No hay datos para mostrar</span>
                                 </div>
                             )}
-                        </div>
-                        <div className="scroll-arrow flex lg:hidden">
-                            <LiaLongArrowAltRightSolid />
                         </div>
                     </div>
 

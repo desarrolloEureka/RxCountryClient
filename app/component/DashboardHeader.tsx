@@ -246,7 +246,7 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
                         <div
                             className="z-50 absolute right-0 top-12 lg:top-32 my-4 text-base w-48 list-none bg-black bg-opacity-80 text-white divide-y divide-gray-100 rounded-lg shadow"
                             id="user-dropdown"
-                            ref={wrapperRef}
+                            // ref={wrapperRef}
                         >
                             {/* <div
                                 onClick={() =>

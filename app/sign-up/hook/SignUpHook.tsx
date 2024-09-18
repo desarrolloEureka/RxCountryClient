@@ -8,6 +8,7 @@ import { dataProfessionalObject } from "@/app/data/professionalData";
 import useAuth from "@/app/firebase/auth";
 import {
     getAllContracts,
+    getAllProfessionals,
     getAllSpecialties,
     getDocumentRef,
     saveOneDocumentFb,
@@ -34,11 +35,20 @@ const SignUpHook = (props?: Props) => {
     const [isSendData, setIsSendData] = useState(false);
     const [sigUp, setSignUp] = useState(false);
     const [nextStep, setNextStep] = useState(true);
+    const [errorEmail, setErrorEmail] = useState<string>("");
+    const [errorId, setErrorId] = useState<string>("");
+    const [showError, setShowError] = useState<boolean>(false);
 
     const [specialties, setSpecialties] = useState<any[]>();
     const [contracts, setContracts] = useState<any>();
 
     const [errorImg, setErrorImg] = useState("");
+    const [idsProfessionalsData, setIdsProfessionalsData] = useState<string[]>(
+        [],
+    );
+    const [emailsProfessionalsData, setEmailsProfessionalsData] = useState<
+        string[]
+    >([]);
 
     // Handlers de formulario
     const changeHandler = (e: any) => {
@@ -114,6 +124,12 @@ const SignUpHook = (props?: Props) => {
         setErrorPass(false);
     };
 
+    const handleCloseError = () => {
+        setShowError(false);
+        setErrorId("");
+        setErrorEmail("");
+    };
+
     const resetFileInput = () => {
         setFiles([]);
         setErrorImg("");
@@ -136,66 +152,119 @@ const SignUpHook = (props?: Props) => {
 
     const emailValidation = data.email === data.confirmEmail;
 
-    // Handle del registro
     const uploadHandle = async () => {
         const { confirmEmail, ...rest } = data;
         let newUrlPhoto: string = "";
-        const res = await registerFirebase(data.email, data.id)
-            .then(async (result: any) => {
-                const newUser = result.user;
 
-                // Envía el correo de nuevo usuario
-                await handleSendWelcomeEmail(data);
+        // Verificar si el ID y el correo ya existen en la base de datos
+        const isIdUserFound = idsProfessionalsData?.includes(data.id);
+        const isEmailFound = emailsProfessionalsData?.includes(data.email);
 
-                if (newUser !== null) {
-                    setIsSendData(true);
+        if (isIdUserFound) {
+            setShowError(true);
+            setErrorId("Este usuario (documento) ya existe");
+            return;
+        }
 
-                    // Actualiza la info
-                    const user = newUser.auth.currentUser;
-                    await updateProfileFirebase(
-                        user,
-                        `${data.name} ${data.lastName}`,
-                    );
+        if (isEmailFound) {
+            setShowError(true);
+            setErrorEmail("Este correo ya existe");
+            return;
+        }
 
-                    const reference = "professionals";
-                    const documentRef: any = getDocumentRef(
-                        reference,
-                        newUser.uid,
-                    );
+        try {
+            // Intenta registrar al usuario en Firebase
+            const result = await registerFirebase(data.email, data.id);
+            const newUser = result?.user;
 
-                    // Guarda los archivos(foto perfil)
-                    for (const record of files) {
-                        const urlName = record.name.split(".")[0];
-                        await uploadProfilePhoto({
-                            folder: newUser.uid,
-                            fileName: urlName.split(" ").join("_"),
-                            file: record,
-                            reference,
-                        })
-                            .then((res) => {
-                                newUrlPhoto = res;
-                            })
-                            .catch((err: any) => {
-                                console.log(err);
-                            });
-                    }
+            if (!newUser) throw new Error("No se pudo crear el usuario.");
 
-                    // Guarda la información del usuario
-                    await saveOneDocumentFb(documentRef, {
-                        ...rest,
-                        urlPhoto: newUrlPhoto,
-                        uid: newUser.uid,
-                    }).then(() => {
-                        setIsSendData(false);
-                    });
-                }
-                // setSignUp(true);
-            })
-            .catch((error: any) => {
-                console.log(error);
-                setSignUp(false);
+            // Envía el correo de bienvenida
+            await handleSendWelcomeEmail(data);
+
+            // Actualiza el perfil del usuario
+            await updateUserProfile(newUser);
+
+            // Sube la foto de perfil
+            newUrlPhoto = await uploadUserProfilePhoto(newUser.uid, files);
+
+            // Guarda la información del usuario
+            await saveUserData(newUser, rest, newUrlPhoto);
+
+            setIsSendData(false);
+            setShowError(false);
+            setErrorEmail("");
+            setErrorId("");
+        } catch (error: any) {
+            handleErrors(error);
+        }
+    };
+
+    // Función auxiliar para actualizar el perfil del usuario
+    const updateUserProfile = async (user: any) => {
+        const currentUser = user.auth.currentUser;
+        if (!currentUser) throw new Error("Usuario no autenticado.");
+
+        await updateProfileFirebase(
+            currentUser,
+            `${data.name} ${data.lastName}`,
+        );
+    };
+
+    // Función auxiliar para subir la foto de perfil
+    const uploadUserProfilePhoto = async (uid: string, files: File[]) => {
+        let newUrlPhoto = "";
+
+        for (const record of files) {
+            const urlName = record.name.split(".")[0].split(" ").join("_");
+
+            try {
+                newUrlPhoto = await uploadProfilePhoto({
+                    folder: uid,
+                    fileName: urlName,
+                    file: record,
+                    reference: "professionals",
+                });
+            } catch (err: any) {
+                console.error("Error subiendo la foto de perfil:", err);
+                throw new Error("Error subiendo la foto de perfil.");
+            }
+        }
+
+        return newUrlPhoto;
+    };
+
+    // Función auxiliar para guardar los datos del usuario
+    const saveUserData = async (user: any, rest: any, urlPhoto: string) => {
+        const reference = "professionals";
+        const documentRef = getDocumentRef(reference, user.uid);
+
+        try {
+            await saveOneDocumentFb(documentRef, {
+                ...rest,
+                urlPhoto,
+                uid: user.uid,
             });
-        return res;
+        } catch (error) {
+            console.error("Error guardando los datos del usuario:", error);
+            throw new Error("Error guardando los datos del usuario.");
+        }
+    };
+
+    // Función auxiliar para manejar los errores
+    const handleErrors = (error: any) => {
+        console.error("Error en el proceso:", error);
+
+        if (
+            error.code === "auth/email-already-exists" ||
+            error.code === "auth/email-already-in-use"
+        ) {
+            setErrorEmail("¡El correo ya existe!");
+        } else {
+            setErrorEmail("Error al registrar el usuario.");
+        }
+
+        setShowError(true);
     };
 
     // Handle de formulario, valida las contraseñas
@@ -204,9 +273,8 @@ const SignUpHook = (props?: Props) => {
         if (professionalsVal && emailValidation) {
             e.preventDefault();
             e.stopPropagation();
-            console.log("Entró");
+            // console.log("Entró");
             await uploadHandle();
-            handleClose();
         } else {
             e.preventDefault();
             e.stopPropagation();
@@ -227,10 +295,25 @@ const SignUpHook = (props?: Props) => {
         allContracts && setContracts(allContracts);
     }, []);
 
+    // Obtiene los datos de colección de Profesionales
+    const getProfessionals = useCallback(async () => {
+        const allProfessionalsData = await getAllProfessionals();
+        const idsProfessionals: string[] = allProfessionalsData.map(
+            (user) => user.id,
+        );
+        const emailProfessionals: string[] = allProfessionalsData.map(
+            (user) => user.email,
+        );
+        allProfessionalsData &&
+            (setIdsProfessionalsData(idsProfessionals),
+            setEmailsProfessionalsData(emailProfessionals));
+    }, []);
+
     useEffect(() => {
+        getProfessionals();
         getSpecialties();
         getContracts();
-    }, [getSpecialties, getContracts]);
+    }, [getSpecialties, getContracts, getProfessionals]);
 
     useEffect(() => {
         if (user) {
@@ -243,6 +326,7 @@ const SignUpHook = (props?: Props) => {
     return {
         data,
         user,
+        showError,
         errorPass,
         showPassword,
         isPatient,
@@ -258,6 +342,10 @@ const SignUpHook = (props?: Props) => {
         errorImg,
         fileName,
         emailValidation,
+        errorEmail,
+        errorId,
+        handleCloseError,
+        setShowError,
         setNextStep,
         setErrorPass,
         handleClose,
