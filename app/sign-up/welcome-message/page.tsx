@@ -1,6 +1,7 @@
 "use client";
 import Spinner from "@/app/component/spinner/Spinner";
 import useAuth from "@/app/firebase/auth";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -15,7 +16,6 @@ export default function WelcomeMessage() {
         //     router.replace("/sign-in");
         //     return;
         // }
-
     }, [router, user, userData]);
 
     // if (!user) {
@@ -34,12 +34,13 @@ export default function WelcomeMessage() {
                         regístrate en nuestra plataforma. Esperamos que tengas
                         la mejor experiencia posible.
                     </p>
-                    <button
+                    <Link
+                        href={"/dashboard"}
                         className="bg-company-blue rounded-2xl px-5 py-3 text-white"
-                        onClick={() => router.push("/sign-in")}
+                        // onClick={() => router.replace("/dashboard")}
                     >
                         Continuar
-                    </button>
+                    </Link>
                 </div>
             </div>
         </main>

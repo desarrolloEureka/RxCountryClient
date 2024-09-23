@@ -6,6 +6,7 @@ import StepByStep from "@/app/component/StepByStep";
 import DoctorVector from "@/app/component/vectors/DoctorVector";
 import Link from "next/link";
 import { BiChevronRight } from "react-icons/bi";
+import { FaCheck } from "react-icons/fa";
 import { IoAlertCircleSharp, IoArrowBackCircleOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { RiArrowDropDownLine } from "react-icons/ri";
@@ -13,6 +14,7 @@ import NewOrderHook from "./hook/NewOrderHook";
 
 const NewOrderPage = () => {
     const {
+        emailFound,
         userData,
         value,
         showHelp,
@@ -33,6 +35,7 @@ const NewOrderPage = () => {
         currentOrderId,
         suggestions,
         wrapperRef,
+        emailFoundAlert,
         handleClose,
         changeHandler,
         idChangeHandler,
@@ -240,7 +243,7 @@ const NewOrderPage = () => {
                             <div className="text-white invisible">
                                 Paso {formStep}/5
                             </div>
-                            <div className="flex items-center space-x-8">
+                            <div className="flex items-center">
                                 {/* {formStep > 0 && (
                                     <>
                                         <div
@@ -270,11 +273,16 @@ const NewOrderPage = () => {
                                     type={patientVal ? "button" : "submit"}
                                     onClick={() => {
                                         if (patientVal) {
+                                            if (emailFound) {
+                                                emailFoundAlert();
+                                                return;
+                                            }
                                             setFormStep(
                                                 (prevStep: number) =>
                                                     prevStep + 1,
                                             );
-                                            setIsDataSelected(false);
+                                            return;
+                                            // setIsDataSelected(false);
                                         }
                                     }}
                                     className="hidden sm:flex items-center cursor-pointer text-company-blue"
@@ -296,48 +304,76 @@ const NewOrderPage = () => {
                                         </>
                                     )}
                                 </button>
-                                <button
-                                    type={patientVal ? "button" : "submit"}
-                                    onClick={() => {
-                                        if (patientVal) {
-                                            const isUserProfessional =
-                                                userRol?.uid ===
-                                                "ZWb0Zs42lnKOjetXH5lq";
-                                            const shouldIncrementStep =
-                                                formStep === 0 ||
-                                                (!isUserProfessional &&
-                                                    formStep === 5);
+                                <div className="flex sm:hidden flex-row justify-between space-x-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setFormStep(6);
+                                            // setIsDataSelected(false);
+                                        }}
+                                        className={`${
+                                            formStep === 0 ? "hidden" : "flex"
+                                        } sm:hidden items-center cursor-pointer text-company-blue space-x-2`}
+                                    >
+                                        <span>Terminar</span>
+                                        <FaCheck size={18} />
+                                    </button>
 
-                                            setFormStep(
-                                                shouldIncrementStep
-                                                    ? (prevStep: number) =>
-                                                          prevStep + 1
-                                                    : isUserProfessional
-                                                    ? 6
-                                                    : 5,
-                                            );
-                                            setIsDataSelected(false);
-                                        }
-                                    }}
-                                    className="flex sm:hidden items-center cursor-pointer text-company-blue"
-                                >
-                                    {isDataSelected || formStep === 0 ? (
-                                        (areaList.length > 0 ||
-                                            formStep < 5 ||
-                                            userRol?.uid ===
-                                                "ZWb0Zs42lnKOjetXH5lq") && (
+                                    <button
+                                        type={patientVal ? "button" : "submit"}
+                                        onClick={() => {
+                                            // const isUserProfessional =
+                                            //     userRol?.uid ===
+                                            //     "ZWb0Zs42lnKOjetXH5lq";
+                                            // const shouldIncrementStep =
+                                            //     formStep === 0 ||
+                                            //     (!isUserProfessional &&
+                                            //         formStep === 5);
+                                            // setFormStep(
+                                            //     shouldIncrementStep
+                                            //         ? (prevStep: number) =>
+                                            //               prevStep + 1
+                                            //         : isUserProfessional
+                                            //         ? 6
+                                            //         : 5,
+                                            // );
+
+                                            if (patientVal) {
+                                                if (emailFound) {
+                                                    emailFoundAlert();
+                                                    return;
+                                                }
+                                                setFormStep(
+                                                    (prevStep: number) =>
+                                                        prevStep + 1,
+                                                );
+                                                return;
+                                                // setIsDataSelected(false);
+                                            }
+                                        }}
+                                        className={`${
+                                            // formStep > 4 parra mostrar ambos botones
+                                            formStep !== 0 ? "hidden" : "flex"
+                                        } sm:hidden items-center cursor-pointer text-company-blue`}
+                                    >
+                                        {isDataSelected || formStep === 0 ? (
+                                            (areaList.length > 0 ||
+                                                formStep < 5 ||
+                                                userRol?.uid ===
+                                                    "ZWb0Zs42lnKOjetXH5lq") && (
+                                                <>
+                                                    <span>Siguiente</span>
+                                                    <BiChevronRight size={32} />
+                                                </>
+                                            )
+                                        ) : (
                                             <>
-                                                <span>Siguiente</span>
+                                                <span>Omitir</span>
                                                 <BiChevronRight size={32} />
                                             </>
-                                        )
-                                    ) : (
-                                        <>
-                                            <span>Cerrar</span>
-                                            <BiChevronRight size={32} />
-                                        </>
-                                    )}
-                                </button>
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}

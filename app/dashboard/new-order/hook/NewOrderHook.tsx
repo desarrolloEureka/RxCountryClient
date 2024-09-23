@@ -5,6 +5,7 @@ import useAuth from "@/app/firebase/auth";
 import {
     getAllAreasOptions,
     getAllCampusOptions,
+    getAllDocumentsFb,
     getAllOptions,
     getAllOrders,
     getAllPatients,
@@ -29,16 +30,19 @@ import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 
 const calculateAge = (birthDate: Date | string): number => {
-    const today = new Date();
-    const birthDay = new Date(birthDate);
-    let age = today.getFullYear() - birthDay.getFullYear();
-    const monthsDiff = today.getMonth() - birthDay.getMonth();
-    const daysDiff: number = today.getDate() - birthDay.getDate();
+    // Convierte el birthDate a un objeto de tipo moment
+    const birthDay = moment(birthDate);
+    const today = moment(); // Fecha actual
 
-    if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff <= 0)) {
+    // Calcula la diferencia en años
+    let age = today.diff(birthDay, "years");
+
+    // Verifica si la fecha de cumpleaños ya ocurrió este año
+    if (today.isBefore(birthDay.add(age, "years"))) {
         age--;
     }
 
+    // Si la edad es negativa, ajustarla a 0
     if (age < 0) {
         age = 0;
     }
@@ -86,6 +90,30 @@ const saveAlert = async (callbackFc: () => Promise<void>, router: any) => {
             }
         });
     }
+};
+
+const emailFoundAlert = () => {
+    Swal.fire({
+        icon: "error",
+        title: "Error Email",
+        text: "¡Este correo ya existe!",
+        background: "#404040",
+        color: "#e9a225",
+        confirmButtonColor: "#1f2937",
+        confirmButtonText: "Ok",
+    });
+};
+
+const incompleteDataAlert = () => {
+    Swal.fire({
+        icon: "warning",
+        title: "¡Error!",
+        text: "¡Falta llenar datos requeridos! - Fecha Nacimiento.",
+        background: "#404040",
+        color: "#e9a225",
+        confirmButtonColor: "#1f2937",
+        confirmButtonText: "Ok",
+    });
 };
 
 type Props = {};
@@ -136,6 +164,8 @@ const NewOrderHook = (props?: Props) => {
     const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
 
     const [patientExist, setPatientExist] = useState(false);
+
+    const [emailFound, setEmailFound] = useState<any>();
 
     const [value, setValue] = useState<datePickerProps>({
         startDate: null,
@@ -209,8 +239,8 @@ const NewOrderHook = (props?: Props) => {
         const dateFormat = value ? e.startDate : "";
         setPatientData({
             ...patientData,
-            ["birthDate"]: dateFormat,
-            ["age"]: dateFormat ? `${calculateAge(dateFormat)}` : "",
+            birthDate: dateFormat,
+            age: dateFormat ? `${calculateAge(dateFormat)}` : "",
         });
     };
 
@@ -284,9 +314,39 @@ const NewOrderHook = (props?: Props) => {
         } else {
             e.preventDefault();
             e.stopPropagation();
-            setError(true);
+            // setError(true);
+            incompleteDataAlert();
             console.log("Falló");
         }
+    };
+
+    const savePatientData = async (
+        documentPatientRef: any,
+        documentNewOrderRef: any,
+        patientAndOrderData: any,
+        newOrderData: any,
+    ) => {
+        // Guarda la información del nuevo paciente
+
+        await saveOneDocumentFb(documentPatientRef, {
+            ...patientData,
+            uid: documentPatientRef.id,
+            serviceOrders: [documentNewOrderRef.id],
+        }).then(async () => {
+            // Se crea la nueva orden de servicio y la guarda
+
+            await saveOneDocumentFb(documentNewOrderRef, {
+                ...newOrderData,
+                patientId: documentPatientRef.id,
+            }).then(async (res) => {
+                // Envía la notificación al correo del paciente
+
+                // Envía el corro de nueva orden
+                await handleSendNewOrderEmail(patientAndOrderData);
+
+                setCurrentOrderId(parseInt(res.id));
+            });
+        });
     };
 
     const uploadHandle = async () => {
@@ -402,26 +462,12 @@ const NewOrderHook = (props?: Props) => {
                 await handleSendWelcomeEmail(patientAndOrderData);
 
                 // Guarda la información del nuevo paciente
-
-                await saveOneDocumentFb(documentPatientRef, {
-                    ...patientData,
-                    uid: patientId,
-                    serviceOrders: [documentNewOrderRef.id],
-                }).then(async () => {
-                    // Se crea la nueva orden de servicio y la guarda
-
-                    await saveOneDocumentFb(documentNewOrderRef, {
-                        ...newOrderData,
-                        patientId: documentPatientRef.id,
-                    }).then(async (res) => {
-                        // Envía la notificación al correo del paciente
-
-                        // Envía el corro de nueva orden
-                        await handleSendNewOrderEmail(patientAndOrderData);
-
-                        setCurrentOrderId(parseInt(res.id));
-                    });
-                });
+                await savePatientData(
+                    documentPatientRef,
+                    documentNewOrderRef,
+                    patientAndOrderData,
+                    newOrderData,
+                );
             });
         }
     };
@@ -451,13 +497,42 @@ const NewOrderHook = (props?: Props) => {
         allCampusData && setAllCampus(allCampusData);
     }, []);
 
+    const getAllEmails = useCallback(async () => {
+        const professionalsDocs = await getAllDocumentsFb("professionals");
+        const functionaryDocs = await getAllDocumentsFb("functionary");
+        const usersDocs = await getAllDocumentsFb("users");
+        const patientsDocs = await getAllDocumentsFb("users");
+
+        const re =
+            /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+
+        if (patientData.email.toLowerCase().match(re)) {
+            const currentUserData =
+                usersDocs?.find(
+                    (doc: any) => doc.email === patientData.email,
+                ) ||
+                functionaryDocs?.find(
+                    (doc: any) => doc.email === patientData.email,
+                ) ||
+                professionalsDocs?.find(
+                    (doc: any) => doc.email === patientData.email,
+                ) ||
+                patientsDocs?.find(
+                    (doc: any) => doc.email === patientData.email,
+                );
+
+            setEmailFound(currentUserData);
+        }
+    }, [patientData]);
+
     useEffect(() => {
+        getAllEmails();
         getOptions();
         getOrders();
         getPatients();
         getAreas();
         getCampus();
-    }, [getOptions, getOrders, getPatients, getAreas, getCampus]);
+    }, [getOptions, getOrders, getPatients, getAreas, getCampus, getAllEmails]);
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -501,6 +576,7 @@ const NewOrderHook = (props?: Props) => {
     }, [router, user, userData]);
 
     return {
+        emailFound,
         userData,
         value,
         showHelp,
@@ -524,6 +600,7 @@ const NewOrderHook = (props?: Props) => {
         currentOrderId,
         suggestions,
         wrapperRef,
+        emailFoundAlert,
         handleClose,
         changeHandler,
         idChangeHandler,

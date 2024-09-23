@@ -130,8 +130,8 @@ const ImagesQueryHook = () => {
         //Paciente
         ShHQKRuKJfxHcV70XSvC: allDataOrders?.filter(
             (order: any) =>
-                order.status === "finalizada" &&
-                !_.isEmpty(order.orderImagesUrl) &&
+                // order.status === "finalizada" &&
+                // !_.isEmpty(order.orderImagesUrl) &&
                 order.patientId === uid,
         ),
     };
