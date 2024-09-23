@@ -40,16 +40,19 @@ type Props = {
 };
 
 const calculateAge = (birthDate: Date | string): number => {
-    const today = new Date();
-    const birthDay = new Date(birthDate);
-    let age = today.getFullYear() - birthDay.getFullYear();
-    const monthsDiff = today.getMonth() - birthDay.getMonth();
-    const daysDiff: number = today.getDate() - birthDay.getDate();
+    // Convierte el birthDate a un objeto de tipo moment
+    const birthDay = moment(birthDate);
+    const today = moment(); // Fecha actual
 
-    if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff <= 0)) {
+    // Calcula la diferencia en años
+    let age = today.diff(birthDay, "years");
+
+    // Verifica si la fecha de cumpleaños ya ocurrió este año
+    if (today.isBefore(birthDay.add(age, "years"))) {
         age--;
     }
 
+    // Si la edad es negativa, ajustarla a 0
     if (age < 0) {
         age = 0;
     }

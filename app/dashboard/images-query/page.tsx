@@ -94,6 +94,18 @@ const ImageQueryPage = () => {
         });
     };
 
+    const imagesNotFoundAlert = () => {
+        Swal.fire({
+            icon: "info",
+            title: "¡Imágenes no disponibles!",
+            text: "Por el momento no hay imágenes disponibles, regresa más tarde",
+            background: "#404040",
+            color: "#e9a225",
+            confirmButtonColor: "#1f2937",
+            confirmButtonText: "Ok",
+        });
+    };
+
     if (!user) {
         return <Spinner />;
     }
@@ -420,13 +432,36 @@ const ImageQueryPage = () => {
                                                         </button>
                                                     </div>
                                                     <div className="col flex justify-between text-nowrap text-company-blue w-48 px-14">
-                                                        <Link
-                                                            href={`/dashboard/images-query/details/${item.uid}`}
-                                                            rel="noopener noreferrer"
-                                                            target="_blank"
-                                                        >
-                                                            <IoEye size={24} />
-                                                        </Link>
+                                                        {(item.orderImagesUrl ||
+                                                            item.orderSTLFiles ||
+                                                            item.orderPDFUrl) &&
+                                                        (item.orderImagesUrl
+                                                            ?.length > 0 ||
+                                                            item.orderSTLFiles
+                                                                ?.length > 0 ||
+                                                            item.orderPDFUrl
+                                                                ?.length >
+                                                                0) ? (
+                                                            <Link
+                                                                href={`/dashboard/images-query/details/${item.uid}`}
+                                                                rel="noopener noreferrer"
+                                                                target="_blank"
+                                                            >
+                                                                <IoEye
+                                                                    size={24}
+                                                                />
+                                                            </Link>
+                                                        ) : (
+                                                            <button
+                                                                onClick={
+                                                                    imagesNotFoundAlert
+                                                                }
+                                                            >
+                                                                <IoEye
+                                                                    size={24}
+                                                                />
+                                                            </button>
+                                                        )}
                                                         <Link
                                                             href={`/dashboard/preview-order/${item.uid}`}
                                                             rel="noopener noreferrer"

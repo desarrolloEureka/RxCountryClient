@@ -555,13 +555,13 @@ export default function SignUp() {
                                         <FaUserDoctor />
                                     </span>
                                 </div>
-                                <div className="col relative flex flex-col w-full space-y-2">
+                                {/* <div className="col relative flex flex-col w-full space-y-2">
                                     <label
                                         htmlFor="contract"
                                         className="text-white"
                                     >
                                         Convenio&nbsp;
-                                        {/* <span className="text-blue-500">*</span> */}
+                                        <span className="text-blue-500">*</span>
                                     </label>
                                     <select
                                         value={data.contract}
@@ -593,9 +593,9 @@ export default function SignUp() {
                                     <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
                                         <FaFileContract />
                                     </span>
-                                </div>
+                                </div> */}
 
-                                <div className="col hidden sm:flex flex-col w-full space-y-2">
+                                <div className="col md:col-span-2 hidden sm:flex flex-col w-full space-y-2">
                                     <label
                                         htmlFor="urlPhoto"
                                         className="text-white"
