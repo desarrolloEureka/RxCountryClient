@@ -651,11 +651,14 @@ const EditOrderHook = ({ slug }: Props) => {
                     ? oldDataOrder?.completedAreas &&
                       !_.isEmpty(oldDataOrder?.completedAreas)
                         ? oldDataOrder?.completedAreas.includes(area) ||
-                          area === "0OaigBxmSmUa90dvawB1" ||
+                          (area === "0OaigBxmSmUa90dvawB1" &&
+                              !isOrderIncomplete) ||
                           area === "qxdH34kAupnAPSuVIIvn"
                             ? oldDataOrder?.completedAreas
                             : [...oldDataOrder?.completedAreas, area]
-                        : area === "qxdH34kAupnAPSuVIIvn"
+                        : area === "qxdH34kAupnAPSuVIIvn" ||
+                          (area === "0OaigBxmSmUa90dvawB1" &&
+                              !isOrderIncomplete)
                         ? []
                         : [area]
                     : [],
