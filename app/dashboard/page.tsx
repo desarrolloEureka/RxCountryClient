@@ -5,6 +5,7 @@ import { IoArrowForward } from "react-icons/io5";
 import DashboardHeader from "../component/DashboardHeader";
 import Spinner from "../component/spinner/Spinner";
 import DashBoardHook from "./hook/DashBoardHook";
+import Link from "next/link";
 
 export default function Dashboard() {
     const { user, isActiveUser, isLoading, isLoadingValidate, userData } =
@@ -36,21 +37,15 @@ export default function Dashboard() {
                     </p>
 
                     {userData?.rol && (
-                        <button
-                            onClick={() => {
-                                if (
-                                    userData?.rol === "ZWb0Zs42lnKOjetXH5lq" ||
-                                    userData?.rol === "Ll6KGdzqdtmLLk0D5jhk"
-                                ) {
-                                    router.push("/dashboard/new-order");
-                                } else if (
-                                    userData?.rol === "ShHQKRuKJfxHcV70XSvC"
-                                ) {
-                                    router.push("/dashboard/images-query");
-                                } else {
-                                    router.push("/dashboard/orders-historial");
-                                }
-                            }}
+                        <Link
+                            href={
+                                userData?.rol === "ZWb0Zs42lnKOjetXH5lq" ||
+                                userData?.rol === "Ll6KGdzqdtmLLk0D5jhk"
+                                    ? "/dashboard/new-order"
+                                    : userData?.rol === "ShHQKRuKJfxHcV70XSvC"
+                                    ? "/dashboard/images-query"
+                                    : "/dashboard/orders-historial"
+                            }
                             className="w-48 flex justify-center items-center space-x-2 text-white hover:text-gray-300 text-center border-white hover:border-gray-300 border-2 rounded-md p-2"
                         >
                             {userData?.rol === "ShHQKRuKJfxHcV70XSvC" ? (
@@ -59,7 +54,7 @@ export default function Dashboard() {
                                 <span>Empezar</span>
                             )}
                             <IoArrowForward />
-                        </button>
+                        </Link>
                     )}
                 </div>
             </div>

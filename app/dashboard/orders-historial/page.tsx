@@ -333,7 +333,7 @@ const OrderHistorialPage = () => {
                                 <span className="text-[#158eff] text-center font-bold">
                                     Lista de Resultados:&nbsp;
                                 </span>
-                                <span>
+                                <span className="text-white">
                                     {Number(filteredOrders?.length)}
                                     &nbsp;de&nbsp;
                                     {/* {Number(ordersData?.length | 0)} */}
