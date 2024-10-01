@@ -218,7 +218,7 @@ const NewOrderHook = (props?: Props) => {
         const list: string[] = value.map(
             (item: { value: string; label: string }) => item.value,
         );
-        setAreaList(list);
+        setAreaList([...list, "0OaigBxmSmUa90dvawB1"]);
     };
 
     const selectChangeHandlerIdType = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -456,7 +456,7 @@ const NewOrderHook = (props?: Props) => {
                 accessTokenUser,
                 uid: documentPatientRef.id,
             }).then(async (res: any) => {
-                const patientId = res.data.userId;
+                // const patientId = res.data.userId;
 
                 // Envía el correo de nuevo usuario bienvenida
                 await handleSendWelcomeEmail(patientAndOrderData);

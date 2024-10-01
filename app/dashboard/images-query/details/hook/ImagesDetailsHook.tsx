@@ -4,15 +4,16 @@ import {
     arrayRemoveFb,
     getAllAreasOptions,
     getAllCampusOptions,
-    getAllOrders,
     getAllPatients,
     updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { uploadFile } from "@/app/firebase/files";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
-import { ImagesDetailsHookProps, Order, PreviewFile } from "@/app/types/order";
+import { ImagesDetailsHookProps, PreviewFile } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
+import { db } from "@/shared/firebase/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     const [previewImages, setPreviewImages] = useState<PreviewFile[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [fileName, setFileName] = useState("SUBIR ARCHIVO");
+    const [fileName, setFileName] = useState("Subir Archivo");
     const [files, setFiles] = useState<File[]>([]);
 
     const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
@@ -93,7 +94,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     };
 
     const resetFileInput = () => {
-        setFileName("SUBIR ARCHIVO");
+        setFileName("Subir Archivo");
         setFiles([]);
         setModelType("T");
     };
@@ -367,10 +368,10 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         return urlFiles;
     };
 
-    const getOrders = useCallback(async () => {
-        const allOrdersData = await getAllOrders();
-        allOrdersData && setOrdersData(allOrdersData);
-    }, []);
+    // const getOrders = useCallback(async () => {
+    //     const allOrdersData = await getAllOrders();
+    //     allOrdersData && setOrdersData(allOrdersData);
+    // }, []);
 
     const getPatients = useCallback(async () => {
         const allPatientsData = await getAllPatients();
@@ -399,32 +400,50 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     }, [allOrderData?.orderImagesUrl]);
 
     useEffect(() => {
-        const allDataOrders = ordersData?.flatMap((order: Order) => {
-            const patient = patientsData?.find(
-                (patient: Patient) => patient.uid === order.patientId,
-            );
-
-            if (patient) {
-                const { id, name, lastName, phone, email, age } = patient;
-                return { ...order, id, name, lastName, phone, email, age };
-            }
-
-            return [];
-        });
-        const orderAndPatientData = allDataOrders?.find(
-            (item: any) => item.uid === slug,
+        const patient = patientsData?.find(
+            (patient: Patient) => patient.uid === ordersData.patientId,
         );
-        if (orderAndPatientData) {
+
+        if (patient) {
+            const { id, name, lastName, phone, email, age } = patient;
+
+            const orderAndPatientData = {
+                ...ordersData,
+                id,
+                name,
+                lastName,
+                phone,
+                email,
+                age,
+            };
+
             setAllOrderData(orderAndPatientData);
         }
-    }, [ordersData, patientsData, slug]);
+    }, [ordersData, patientsData]);
 
     useEffect(() => {
-        getOrders();
+        const docRef = doc(db, "serviceOrders", slug);
+
+        const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
+            if (querySnapshot.exists()) {
+                const source = querySnapshot.metadata.hasPendingWrites
+                    ? "Local"
+                    : "Server";
+                const data = querySnapshot.data();
+                console.log("doc.data", data, source);
+                setOrdersData(data);
+            }
+        });
+
+        return () => unsubscribe();
+    }, [slug]);
+
+    useEffect(() => {
+        // getOrders();
         getPatients();
         getCampus();
         getAreas();
-    }, [getAreas, getCampus, getOrders, getPatients]);
+    }, [getAreas, getCampus, getPatients]);
 
     useEffect(() => {
         const userRoleId = localStorage.getItem("userRoleId") ?? "";
