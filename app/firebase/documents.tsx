@@ -8,6 +8,8 @@ import {
     onSnapshot,
     setDoc,
     updateDoc,
+    query,
+    where,
 } from "firebase/firestore";
 import moment from "moment";
 import { AreasBd, AreasSelector } from "../types/areas";
@@ -177,6 +179,42 @@ export const getAllOrders = async () => {
         });
     }
     return dataResult;
+};
+
+export const getOrderById = async (id: string) => {
+    const q = query(collection(db, "serviceOrders"), where("uid", "==", id));
+    const querySnapshot = await getDocs(q);
+
+    const order = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+    }));
+    return order;
+};
+
+export const getOrderByIdInRealTime = (id: string) => {
+    const dataResult: any[] = [];
+    let source: string = "";
+
+    // const q = query(collection(db, "serviceOrders"), where("uid", "==", id));
+
+    const docRef = doc(db, "serviceOrders", id);
+
+    // const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
+        // if (!querySnapshot.empty) {
+        if (querySnapshot.exists()) {
+            // querySnapshot.forEach((doc: any) => {
+            source = querySnapshot.metadata.hasPendingWrites
+                ? "Local"
+                : "Server";
+            const data = querySnapshot.data();
+            console.log("doc.data", data, source);
+            dataResult.push(data);
+            // });
+        }
+    });
+
+    return { unsubscribe, dataResult, source };
 };
 
 export const getAllOrdersOnSub = () => {

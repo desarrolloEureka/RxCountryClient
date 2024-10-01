@@ -789,7 +789,7 @@ function StepByStep({
                             {/* Visualizar PDF */}
                             <div className="flex flex-col mx-4 lg:mx-28 my-5 space-y-4">
                                 <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0">
-                                    <div className="flex items-center justify-center lg:justify-start w-full">
+                                    {/* <div className="flex items-center justify-center lg:justify-start w-full">
                                         <button
                                             type="button"
                                             className="flex items-center w-52 bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
@@ -808,7 +808,7 @@ function StepByStep({
                                                 </span>
                                             </Link>
                                         </button>
-                                    </div>
+                                    </div> */}
 
                                     {/* Visualizar imágenes en despacho y diagnostico  */}
                                     {(userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
@@ -924,7 +924,11 @@ function StepByStep({
                                         <SelectWithCheckbox
                                             // isDisabled={areaSelected}
                                             isMulti
-                                            options={allAreas}
+                                            options={allAreas.filter(
+                                                (area) =>
+                                                    area.value !==
+                                                    "0OaigBxmSmUa90dvawB1",
+                                            )}
                                             selectChangeHandler={(e) => {
                                                 handleAreaList(e);
                                                 setAreasListSelected(e);
@@ -959,8 +963,28 @@ function StepByStep({
 
                             {/* Despacho */}
                             {userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
-                                <div className="grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28">
-                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-center items-center">
+                                <div className="grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-3 lg:col-span-1 flex items-start justify-center w-full">
+                                        <button
+                                            type="button"
+                                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52"
+                                        >
+                                            <IoEye
+                                                className="text-company-blue"
+                                                size={24}
+                                            />
+                                            <Link
+                                                href={`/dashboard/preview-order/${oldData?.uid}`}
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <span className="text-nowrap">
+                                                    Previsualizar PDF
+                                                </span>
+                                            </Link>
+                                        </button>
+                                    </div>
+                                    <div className="col-span-3 lg:col-span-1 flex flex-col justify-center items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
@@ -974,7 +998,7 @@ function StepByStep({
                                         ) : (
                                             <span
                                                 className={`text-sm lg:text-base text-center ${
-                                                    fileName === "SUBIR ARCHIVO"
+                                                    fileName === "Subir Archivo"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 }`}
@@ -984,7 +1008,7 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 lg:col-span-1 flex flex-col rounded-xl justify-start">
+                                    <div className="col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start">
                                         <h1 className="text-company-orange text-lg lg:text-xl font-bold">
                                             Diagnosticadores:
                                         </h1>
@@ -1005,7 +1029,7 @@ function StepByStep({
                                         </div>
                                     </div>
 
-                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                    <div className="col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
@@ -1033,10 +1057,30 @@ function StepByStep({
                                 </div>
                             )}
 
-                            {/* Radiología */}
+                            {/* Radiología  */}
                             {userRol?.uid === "V5iMSnSlSYsiSDFs4UpI" && (
-                                <div className="grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28">
-                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-3 lg:col-span-1 flex items-start justify-center w-full">
+                                        <button
+                                            type="button"
+                                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52"
+                                        >
+                                            <IoEye
+                                                className="text-company-blue"
+                                                size={24}
+                                            />
+                                            <Link
+                                                href={`/dashboard/preview-order/${oldData?.uid}`}
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <span className="text-nowrap">
+                                                    Previsualizar PDF
+                                                </span>
+                                            </Link>
+                                        </button>
+                                    </div>
+                                    <div className="col-span-3 lg:col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
@@ -1050,7 +1094,7 @@ function StepByStep({
                                         ) : (
                                             <span
                                                 className={`text-sm lg:text-base text-center ${
-                                                    fileName === "SUBIR ARCHIVO"
+                                                    fileName === "Subir Archivo"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 } pt-3`}
@@ -1060,7 +1104,7 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-start items-center">
+                                    <div className="col-span-3 lg:col-span-1 flex flex-col justify-start items-center">
                                         <InputFileUpload
                                             fileName={fileNameSTL}
                                             handleFileChange={
@@ -1071,7 +1115,7 @@ function StepByStep({
                                         />
                                         <span
                                             className={`text-sm lg:text-base text-center ${
-                                                fileName === "SUBIR ARCHIVO"
+                                                fileName === "Subir Archivo"
                                                     ? "text-company-orange"
                                                     : "text-green-500"
                                             } pt-3`}
@@ -1079,7 +1123,7 @@ function StepByStep({
                                             ARCHIVOS TIPO STL
                                         </span>
                                     </div>
-                                    <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
+                                    <div className="col-span-3 flex flex-col space-y-2 rounded-xl">
                                         <h1 className="text-company-orange text-lg lg:text-xl font-bold">
                                             URL WeTransfer:
                                         </h1>
@@ -1117,7 +1161,7 @@ function StepByStep({
                                             </span>
                                         </div>
                                     </div> */}
-                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                    <div className="col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
@@ -1147,8 +1191,28 @@ function StepByStep({
 
                             {/* Diagnostico  */}
                             {userRol?.uid === "wGU4GU8oDosW4ayQtxqT" && (
-                                <div className="grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28">
-                                    <div className="col-span-1 flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-2 lg:col-span-1 flex items-start justify-center w-full">
+                                        <button
+                                            type="button"
+                                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52"
+                                        >
+                                            <IoEye
+                                                className="text-company-blue"
+                                                size={24}
+                                            />
+                                            <Link
+                                                href={`/dashboard/preview-order/${oldData?.uid}`}
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <span className="text-nowrap">
+                                                    Previsualizar PDF
+                                                </span>
+                                            </Link>
+                                        </button>
+                                    </div>
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
@@ -1162,7 +1226,7 @@ function StepByStep({
                                         ) : (
                                             <span
                                                 className={`text-sm lg:text-base text-center ${
-                                                    fileName === "SUBIR ARCHIVO"
+                                                    fileName === "Subir Archivo"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 } pt-3`}
@@ -1171,7 +1235,7 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
@@ -1202,8 +1266,28 @@ function StepByStep({
                             {/* Laboratorio y Fotografía  */}
                             {(userRol?.uid === "chbFffCzpRibjYRyoWIx" ||
                                 userRol?.uid === "c24R4P0VcQmQT0VT6nfo") && (
-                                <div className="grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28">
-                                    <div className="col-span-1 flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-3 lg:col-span-1 flex items-start justify-center w-full">
+                                        <button
+                                            type="button"
+                                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52"
+                                        >
+                                            <IoEye
+                                                className="text-company-blue"
+                                                size={24}
+                                            />
+                                            <Link
+                                                href={`/dashboard/preview-order/${oldData?.uid}`}
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <span className="text-nowrap">
+                                                    Previsualizar PDF
+                                                </span>
+                                            </Link>
+                                        </button>
+                                    </div>
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
@@ -1217,7 +1301,7 @@ function StepByStep({
                                         ) : (
                                             <span
                                                 className={`text-sm lg:text-base text-center ${
-                                                    fileName === "SUBIR ARCHIVO"
+                                                    fileName === "Subir Archivo"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 } pt-3`}
@@ -1226,7 +1310,7 @@ function StepByStep({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                    <div className="col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
@@ -1257,6 +1341,26 @@ function StepByStep({
                             {/* Modelos  */}
                             {userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" && (
                                 <div className="grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-3 flex items-center justify-center w-full">
+                                        <button
+                                            type="button"
+                                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52"
+                                        >
+                                            <IoEye
+                                                className="text-company-blue"
+                                                size={24}
+                                            />
+                                            <Link
+                                                href={`/dashboard/preview-order/${oldData?.uid}`}
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <span className="text-nowrap">
+                                                    Previsualizar PDF
+                                                </span>
+                                            </Link>
+                                        </button>
+                                    </div>
                                     <div className="col-span-3 lg:col-span-1 flex flex-col space-y-4  py-0 lg:py-4">
                                         <h1 className="text-company-orange text-lg lg:text-xl font-bold">
                                             Diagnósticos
@@ -1339,7 +1443,7 @@ function StepByStep({
                                         ) : (
                                             <span
                                                 className={`text-base text-center ${
-                                                    fileName === "SUBIR ARCHIVO"
+                                                    fileName === "Subir Archivo"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 } pt-3`}
@@ -1378,8 +1482,28 @@ function StepByStep({
 
                             {/* Escáner Modelos  */}
                             {userRol?.uid === "VEGkDuMXs2mCGxXUPCWI" && (
-                                <div className="grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28">
-                                    <div className="col-span-1 flex flex-col justify-end items-center">
+                                <div className="grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28">
+                                    <div className="col-span-2 lg:col-span-1 flex items-start justify-center w-full">
+                                        <button
+                                            type="button"
+                                            className="flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52"
+                                        >
+                                            <IoEye
+                                                className="text-company-blue"
+                                                size={24}
+                                            />
+                                            <Link
+                                                href={`/dashboard/preview-order/${oldData?.uid}`}
+                                                rel="noopener noreferrer"
+                                                target="_blank"
+                                            >
+                                                <span className="text-nowrap">
+                                                    Previsualizar PDF
+                                                </span>
+                                            </Link>
+                                        </button>
+                                    </div>
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col justify-end items-center">
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
@@ -1393,7 +1517,7 @@ function StepByStep({
                                         ) : (
                                             <span
                                                 className={`text-sm lg:text-base text-center ${
-                                                    fileName === "SUBIR ARCHIVO"
+                                                    fileName === "Subir Archivo"
                                                         ? "text-company-orange"
                                                         : "text-green-500"
                                                 } pt-3`}
@@ -1421,7 +1545,7 @@ function StepByStep({
                                             </span>
                                         </div>
                                     </div> */}
-                                    <div className="col-span-1 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
+                                    <div className="col-span-2 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500">
                                         <h3 className="text-company-orange text-lg lg:text-xl font-bold px-4 py-2">
                                             Observaciones
                                         </h3>
@@ -2259,7 +2383,11 @@ function StepByStep({
                                             <SelectWithCheckbox
                                                 // isDisabled={areaSelected}
                                                 isMulti
-                                                options={allAreas}
+                                                options={allAreas.filter(
+                                                    (area) =>
+                                                        area.value !==
+                                                        "0OaigBxmSmUa90dvawB1",
+                                                )}
                                                 selectChangeHandler={(e) => {
                                                     handleAreaList(e);
                                                     setAreasListSelected(e);
@@ -2497,7 +2625,7 @@ function StepByStep({
                                         <BsCardList size={24} />
                                         <span>Ir al historial</span>
                                     </button>
-                                    {fileName !== "SUBIR ARCHIVO" &&
+                                    {fileName !== "Subir Archivo" &&
                                         fileName !== undefined && (
                                             <button
                                                 type="button"

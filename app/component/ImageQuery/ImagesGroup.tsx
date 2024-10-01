@@ -367,7 +367,7 @@ const ImagesGroup = ({
                                 </button>
                             </div>
 
-                            <div className="my-4">
+                            <div className="my-4 flex items-center justify-center">
                                 <InputFileUpload
                                     fileName={fileName}
                                     handleFileChange={handleFileChange}

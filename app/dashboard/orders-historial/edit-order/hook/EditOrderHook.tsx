@@ -8,7 +8,6 @@ import {
     getAllDiagnosesOptions,
     getAllDiagnosticianOptions,
     getAllOptions,
-    getAllOrders,
     getAllPatients,
     getDocumentRef,
     saveOneDocumentFb,
@@ -28,6 +27,8 @@ import {
 } from "@/app/types/order";
 import { DataPatientObject } from "@/app/types/patient";
 import { handleSendFinishedOrderEmail } from "@/lib/brevo/handlers/actions";
+import { db } from "@/shared/firebase/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/navigation";
@@ -86,7 +87,7 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [optionsData, setOptionsData] = useState<any>(dataAllOptions);
 
-    const [ordersData, setOrdersData] = useState<any>();
+    const [orderData, setOrderData] = useState<any>();
 
     const [patientData, setPatientData] = useState(dataPatientObject);
 
@@ -126,8 +127,8 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [showSave, setShowSave] = useState<boolean>(false);
 
-    const [fileName, setFileName] = useState("SUBIR ARCHIVO");
-    const [fileNameSTL, setFileNameSTL] = useState("SUBIR ARCHIVO");
+    const [fileName, setFileName] = useState("Subir Archivo");
+    const [fileNameSTL, setFileNameSTL] = useState("Subir Archivo");
 
     const [errorImg, setErrorImg] = useState<string | null>(null);
 
@@ -147,9 +148,7 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const [suggestions, setSuggestions] = useState<DataPatientObject[]>([]);
 
-    const oldDataOrder = ordersData?.find((order: any) => order.uid === slug);
-
-    // const [patientExist, setPatientExist] = useState(false);
+    const oldDataOrder = orderData;
 
     const reference = "serviceOrders";
     const patientRef = "patients";
@@ -173,18 +172,12 @@ const EditOrderHook = ({ slug }: Props) => {
                 result = [
                     "qxdH34kAupnAPSuVIIvn",
                     "Wxdi41YreLGK0UiL2YQU",
-                    // "0OaigBxmSmUa90dvawB1",
                     area,
                     ...areasCompleted,
                 ];
                 return result;
             }
-            result = [
-                "qxdH34kAupnAPSuVIIvn",
-                "Wxdi41YreLGK0UiL2YQU",
-                // "0OaigBxmSmUa90dvawB1",
-                area,
-            ];
+            result = ["qxdH34kAupnAPSuVIIvn", "Wxdi41YreLGK0UiL2YQU", area];
             return result;
         };
 
@@ -242,10 +235,7 @@ const EditOrderHook = ({ slug }: Props) => {
         const list: string[] = value.map(
             (item: { value: string; label: string }) => item.value,
         );
-        setAreaList([
-            ...list,
-            // "0OaigBxmSmUa90dvawB1"
-        ]);
+        setAreaList([...list, "0OaigBxmSmUa90dvawB1"]);
     };
 
     const selectChangeHandlerDiagnoses = (value: any) => {
@@ -265,7 +255,6 @@ const EditOrderHook = ({ slug }: Props) => {
             (patient: DataPatientObject) => patient.id === id,
         );
 
-        // patient && (setPatientData({ ...patient }), setPatientExist(true));
         patient && setPatientData({ ...patient });
         setSuggestions([]);
     };
@@ -312,7 +301,7 @@ const EditOrderHook = ({ slug }: Props) => {
         const uploadFiles = e.target.files;
 
         if (!uploadFiles || uploadFiles.length === 0) {
-            setFileNameSTL("SUBIR ARCHIVO");
+            setFileNameSTL("Subir Archivo");
             setFilesSTL([]);
             return;
         }
@@ -425,7 +414,7 @@ const EditOrderHook = ({ slug }: Props) => {
     };
 
     const resetFileInput = () => {
-        setFileName("SUBIR ARCHIVO");
+        setFileName("Subir Archivo");
         setFiles([]);
     };
 
@@ -547,7 +536,6 @@ const EditOrderHook = ({ slug }: Props) => {
             campus && currentCampusName && currentCampusName.substring(0, 1);
 
         if (files.length > 0) {
-            let count = 1;
             for (const record of files) {
                 const urlName = record.name.split(".")[0];
                 const fileType = record.type.split("/");
@@ -558,11 +546,14 @@ const EditOrderHook = ({ slug }: Props) => {
                             userRol?.uid === "g9xGywTJG7WSJ5o1bTsH"
                                 ? `${firstLetterCampus}${modelType}-${moment().format(
                                       "YYYYMMDD",
-                                  )}-${patientData?.id}-${count++}`
+                                  )}-${patientData?.id}-${moment().format(
+                                      "HHmmss",
+                                  )}`
                                 : urlName.split(" ").join("_"),
                         file: record,
-                        area: allAreas?.find((item) => item.value === area)
-                            ?.label as string,
+                        area: allAreas?.find(
+                            (item) => item.value === (sentToArea ?? area),
+                        )?.label as string,
                         idOrder,
                     })
                         .then((res: string) => {
@@ -576,8 +567,9 @@ const EditOrderHook = ({ slug }: Props) => {
                         folder: patientData?.id,
                         fileName: urlName.split(" ").join("_"),
                         file: record,
-                        area: allAreas?.find((item) => item.value === area)
-                            ?.label as string,
+                        area: allAreas?.find(
+                            (item) => item.value === (sentToArea ?? area),
+                        )?.label as string,
                         idOrder,
                     })
                         .then((res: string) => {
@@ -596,8 +588,9 @@ const EditOrderHook = ({ slug }: Props) => {
                     folder: patientData?.id,
                     fileName: record.name.split(" ").join("_"),
                     file: record,
-                    area: allAreas?.find((item) => item.value === area)
-                        ?.label as string,
+                    area: allAreas?.find(
+                        (item) => item.value === (sentToArea ?? area),
+                    )?.label as string,
                     idOrder,
                 })
                     .then((res: string) => {
@@ -650,15 +643,15 @@ const EditOrderHook = ({ slug }: Props) => {
                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"
                     ? oldDataOrder?.completedAreas &&
                       !_.isEmpty(oldDataOrder?.completedAreas)
-                        ? oldDataOrder?.completedAreas.includes(area) ||
-                          (area === "0OaigBxmSmUa90dvawB1" &&
-                              !isOrderIncomplete) ||
-                          area === "qxdH34kAupnAPSuVIIvn"
+                        ? oldDataOrder?.completedAreas.includes(area)
+                            ? oldDataOrder?.completedAreas
+                            : (area === "0OaigBxmSmUa90dvawB1" &&
+                                  isOrderIncomplete) ||
+                              area === "qxdH34kAupnAPSuVIIvn"
                             ? oldDataOrder?.completedAreas
                             : [...oldDataOrder?.completedAreas, area]
                         : area === "qxdH34kAupnAPSuVIIvn" ||
-                          (area === "0OaigBxmSmUa90dvawB1" &&
-                              !isOrderIncomplete)
+                          (area === "0OaigBxmSmUa90dvawB1" && isOrderIncomplete)
                         ? []
                         : [area]
                     : [],
@@ -775,10 +768,10 @@ const EditOrderHook = ({ slug }: Props) => {
         allOptionsData && setOptionsData(allOptionsData);
     }, []);
 
-    const getOrders = useCallback(async () => {
-        const allOrdersData = await getAllOrders();
-        allOrdersData && setOrdersData(allOrdersData);
-    }, []);
+    // const getOrder = useCallback(async () => {
+    //     const order = await getOrderById(slug);
+    //     order && setOrdersData(order);
+    // }, [slug]);
 
     const getAreas = useCallback(async () => {
         const allAreasData = await getAllAreasOptions();
@@ -822,8 +815,25 @@ const EditOrderHook = ({ slug }: Props) => {
     }, [allPatients, isEdit, oldDataOrder?.patientId]);
 
     useEffect(() => {
+        const docRef = doc(db, "serviceOrders", slug);
+
+        const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
+            if (querySnapshot.exists()) {
+                const source = querySnapshot.metadata.hasPendingWrites
+                    ? "Local"
+                    : "Server";
+                const data = querySnapshot.data();
+                console.log("doc.data", data, source);
+                setOrderData(data);
+            }
+        });
+
+        return () => unsubscribe();
+    }, [slug]);
+
+    useEffect(() => {
         getOptions();
-        getOrders();
+        // getOrder();
         getAreas();
         getCampus();
         getPatients();
@@ -831,7 +841,7 @@ const EditOrderHook = ({ slug }: Props) => {
         getDiagnostician();
     }, [
         getOptions,
-        getOrders,
+        // getOrder,
         getAreas,
         getCampus,
         getPatients,
