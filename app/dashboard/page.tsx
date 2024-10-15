@@ -27,14 +27,23 @@ export default function Dashboard() {
                             ? "Bienvenido Doc"
                             : "¡Bienvenido!"}
                     </h2>
-                    <p className="text-white w-[80%] xl:w-[30%] text-justify text-sm sm:text-base">
-                        Lorem ipsum dolor sit amet, consectetuer adipiscing
-                        elit, sed diam nonummy nibh euismod tincidunt ut laoreet
-                        dolore magna aliquam erat volutpat. Ut wisi enim ad
-                        minim veniam, quis nostrud exerci tation ullamcorper
-                        suscipit lobortis nisl ut aliquip ex ea commodo
-                        consequat.
-                    </p>
+                    {/* Texto de bienvenida */}
+                    {/* Pacientes */}
+                    {userData?.rol === "ShHQKRuKJfxHcV70XSvC" ? (
+                        <p className="text-white w-[80%] xl:w-[30%] text-justify text-sm sm:text-base">
+                            Bienvenidos a la era digital, en la que trabajamos
+                            por brindarles un mejor servicio y en un menor
+                            tiempo tener las imágenes de laboratorio listas para
+                            consultar en la nube.
+                        </p>
+                    ) : (
+                        // Profesionales
+                        <p className="text-white w-[80%] xl:w-[30%] text-justify text-sm sm:text-base">
+                            Bienvenidos a la era digital, en la que trabajamos
+                            por brindarles un mejor servicio y en menor tiempo
+                            tener las imágenes listas para consultar en la nube.
+                        </p>
+                    )}
 
                     {userData?.rol && (
                         <Link

@@ -430,7 +430,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                     ? "Local"
                     : "Server";
                 const data = querySnapshot.data();
-                console.log("doc.data", data, source);
+                // console.log("doc.data", data, source);
                 setOrdersData(data);
             }
         });
