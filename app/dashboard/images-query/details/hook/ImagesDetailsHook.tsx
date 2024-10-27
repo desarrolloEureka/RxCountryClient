@@ -301,7 +301,6 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             campus && currentCampusName && currentCampusName.substring(0, 1);
 
         if (files.length > 0) {
-            let count = 1;
             for (const record of files) {
                 const urlName = record.name.split(".")[0];
                 const fileType = record.type.split("/");
@@ -319,7 +318,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                                 : urlName.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find(
-                            (item) => item.value === (sentToArea ?? area),
+                            (item) => item.value === (sentToArea ? sentToArea : area),
                         )?.label as string,
                         idOrder,
                     })
@@ -335,7 +334,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         fileName: urlName.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find(
-                            (item) => item.value === (sentToArea ?? area),
+                            (item) => item.value === (sentToArea ? sentToArea : area),
                         )?.label as string,
                         idOrder,
                     })
@@ -351,7 +350,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         fileName: record.name.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find(
-                            (item) => item.value === (sentToArea ?? area),
+                            (item) => item.value === (sentToArea ? sentToArea : area),
                         )?.label as string,
                         idOrder,
                     })

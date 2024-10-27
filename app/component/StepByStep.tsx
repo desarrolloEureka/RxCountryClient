@@ -988,7 +988,7 @@ function StepByStep({
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
-                                            fileTypes="image/*, application/pdf"
+                                            // fileTypes="image/*, application/pdf"
                                             multiple
                                         />
                                         {errorImg ? (
@@ -1004,7 +1004,7 @@ function StepByStep({
                                                 }`}
                                             >
                                                 ARCHIVOS TIPO: PNG, JPG, JPEG,
-                                                PDF
+                                                PDF, STL
                                             </span>
                                         )}
                                     </div>
@@ -1084,7 +1084,7 @@ function StepByStep({
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
-                                            fileTypes="image/*, application/pdf"
+                                            // fileTypes="image/*, application/pdf"
                                             multiple
                                         />
                                         {errorImg ? (
@@ -1100,7 +1100,7 @@ function StepByStep({
                                                 } pt-3`}
                                             >
                                                 ARCHIVOS TIPO: PNG, JPG, JPEG,
-                                                PDF
+                                                PDF, STL
                                             </span>
                                         )}
                                     </div>
@@ -1216,7 +1216,7 @@ function StepByStep({
                                         <InputFileUpload
                                             fileName={fileName}
                                             handleFileChange={handleFileChange}
-                                            fileTypes="application/pdf"
+                                            // fileTypes="application/pdf"
                                             multiple
                                         />
                                         {errorImg ? (
@@ -1231,7 +1231,8 @@ function StepByStep({
                                                         : "text-green-500"
                                                 } pt-3`}
                                             >
-                                                ARCHIVOS TIPO PDF
+                                                ARCHIVOS TIPO: PNG, JPG, JPEG,
+                                                PDF, STL
                                             </span>
                                         )}
                                     </div>
@@ -1306,7 +1307,8 @@ function StepByStep({
                                                         : "text-green-500"
                                                 } pt-3`}
                                             >
-                                                IMÁGENES TIPO: PNG, JPG, JPEG.
+                                                ARCHIVOS TIPO: PNG, JPG, JPEG,
+                                                PDF, STL
                                             </span>
                                         )}
                                     </div>
@@ -1448,7 +1450,8 @@ function StepByStep({
                                                         : "text-green-500"
                                                 } pt-3`}
                                             >
-                                                IMÁGENES TIPO: PNG, JPG, JPEG.
+                                                ARCHIVOS TIPO: PNG, JPG, JPEG,
+                                                PDF, STL
                                             </span>
                                         )}
                                     </div>

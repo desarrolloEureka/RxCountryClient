@@ -291,7 +291,7 @@ const ImagesGroup = ({
                                         width: "90%",
                                         height: "auto",
                                     }}
-                                    alt={"logo"}
+                                    alt={typeFile}
                                     placeholder="blur"
                                     blurDataURL={fileSrcSelected}
                                 />
@@ -328,7 +328,7 @@ const ImagesGroup = ({
                 {fileSrcSelected !== "https://via.placeholder.com/1920" && (
                     <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0">
                         <Link
-                            className="flex  justify-center items-center py-2 w-48 xl:w-64 mx-auto rounded-xl bg-gray-500 hover:bg-gray-400 text-white"
+                            className="flex justify-center items-center py-2 w-48 xl:w-64 mx-auto rounded-xl bg-gray-500 hover:bg-gray-400 text-white"
                             target="_blank"
                             href={fileSrcSelected}
                             download="download"
