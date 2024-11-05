@@ -2532,13 +2532,10 @@ function StepByStep({
                                 </h2>
                             )}
                             <p className="text-white w-full text-justify pb-10">
-                                Lorem ipsum dolor sit amet, consectetuer
-                                adipiscing elit, sed diam nonummy nibh euismod
-                                tincidunt ut laoreet dolore magna aliquam erat
-                                volutpat. Ut wisi enim ad minim veniam, quis
-                                nostrud exerci tation ullamcorper suscipit
-                                lobortis nisl ut aliquip ex ea commodo
-                                consequat.
+                                La orden de servicio ha sido actualizada y será 
+                                almacenada con los cambios realizados, podrás 
+                                visualizarla en línea con el estado de las mismas 
+                                en cualquier momento.
                             </p>
                             {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                                 userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" && (
