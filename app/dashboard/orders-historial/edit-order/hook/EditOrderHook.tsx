@@ -320,22 +320,24 @@ const EditOrderHook = ({ slug }: Props) => {
             return;
         }
 
-        const validatedFiles: File[] = [];
+        // const validatedFiles: File[] = [];
+        const validatedFiles: File[] = [...uploadFiles];
         const errors: string[] = [];
 
-        Array.from(uploadFiles).forEach((file) => {
-            const fileType = file.type.split("/");
-            if (
-                userRol?.uid === "V5iMSnSlSYsiSDFs4UpI" ||
-                userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
-            ) {
-                handleUserRoleFile(file, fileType, validatedFiles, errors);
-            } else if (userRol?.uid === "wGU4GU8oDosW4ayQtxqT") {
-                handleDefaultUserPDF(file, fileType, validatedFiles, errors);
-            } else {
-                handleDefaultUserFile(file, fileType, validatedFiles, errors);
-            }
-        });
+        // Array.from(uploadFiles).forEach((file) => {
+        //     const fileType = file.type.split("/");
+        //     if (
+        //         userRol?.uid === "V5iMSnSlSYsiSDFs4UpI" || // Radiología
+        //         userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" // Despacho
+        //     ) {
+        //         handleUserRoleFile(file, fileType, validatedFiles, errors);
+        //     } else if (userRol?.uid === "wGU4GU8oDosW4ayQtxqT") {
+        //         // Diagnostico
+        //         handleDefaultUserPDF(file, fileType, validatedFiles, errors);
+        //     } else {
+        //         handleDefaultUserFile(file, fileType, validatedFiles, errors);
+        //     }
+        // });
 
         if (errors.length > 0) {
             setErrorImg(errors.join("; "));
@@ -574,6 +576,22 @@ const EditOrderHook = ({ slug }: Props) => {
                     })
                         .then((res: string) => {
                             urlFiles.pdf.push(res);
+                        })
+                        .catch((err: any) => {
+                            console.log(err);
+                        });
+                } else {
+                    await uploadFile({
+                        folder: patientData?.id,
+                        fileName: urlName.split(" ").join("_"),
+                        file: record,
+                        area: allAreas?.find(
+                            (item) => item.value === (sentToArea ?? area),
+                        )?.label as string,
+                        idOrder,
+                    })
+                        .then((res: string) => {
+                            urlFiles.STL.push(res);
                         })
                         .catch((err: any) => {
                             console.log(err);
@@ -823,7 +841,7 @@ const EditOrderHook = ({ slug }: Props) => {
                     ? "Local"
                     : "Server";
                 const data = querySnapshot.data();
-                console.log("doc.data", data, source);
+                // console.log("doc.data", data, source);
                 setOrderData(data);
             }
         });

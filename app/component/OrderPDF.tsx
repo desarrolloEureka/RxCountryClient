@@ -29,11 +29,6 @@ Font.register({
     ],
 });
 
-Font.register({
-    family: "Oswald",
-    src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
-});
-
 type Props = {
     orderData: any;
     formatearFecha: (fechaISO: string) => string;
@@ -659,7 +654,12 @@ const OrderPDF = ({
                             <Text>{`Orden # 00${orderData?.uid}`}</Text>
                         </View>
                         <View style={tw("h-2/3 items-center justify-center")}>
-                            <Text style={tw("text-base")}>CÓDIGO BARRAS</Text>
+                            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                            <Image
+                                src={barcodeData}
+                                style={tw("w-full h-full p-1")}
+                            />
+                            {/* <Text style={tw("text-base")}>CÓDIGO BARRAS</Text> */}
                         </View>
                     </View>
                 </View>
@@ -1206,7 +1206,12 @@ const OrderPDF = ({
                             <Text>{`Orden # 00${orderData?.uid}`}</Text>
                         </View>
                         <View style={tw("h-2/3 items-center justify-center")}>
-                            <Text style={tw("text-base")}>CÓDIGO BARRAS</Text>
+                            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                            <Image
+                                src={barcodeData}
+                                style={tw("w-full h-full p-1")}
+                            />
+                            {/* <Text style={tw("text-base")}>CÓDIGO BARRAS</Text> */}
                         </View>
                     </View>
                 </View>

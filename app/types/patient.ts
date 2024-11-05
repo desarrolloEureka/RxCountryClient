@@ -13,6 +13,7 @@ export type DataPatientObject = {
     state: any;
     city: string;
     email: string;
+    confirmEmail: string;
     rol: string;
     urlPhoto: string;
     serviceOrders: string[];

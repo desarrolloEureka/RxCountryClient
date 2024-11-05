@@ -2,7 +2,7 @@ import { FaFileCirclePlus } from "react-icons/fa6";
 
 export default function InputFileUpload({
     fileName,
-    fileTypes = ".jpg, .jpeg, .png",
+    fileTypes = ".jpg, .jpeg, .png, .pdf, .stl",
     handleFileChange,
     multiple,
 }: {

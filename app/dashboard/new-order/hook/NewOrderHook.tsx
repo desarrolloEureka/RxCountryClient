@@ -108,7 +108,7 @@ const incompleteDataAlert = () => {
     Swal.fire({
         icon: "warning",
         title: "¡Error!",
-        text: "¡Falta llenar datos requeridos! - Fecha Nacimiento.",
+        text: "¡Falta llenar datos requeridos o hay datos incompletos, verifique antes de guardar! - Correo o Fecha Nacimiento.",
         background: "#404040",
         color: "#e9a225",
         confirmButtonColor: "#1f2937",
@@ -230,7 +230,9 @@ const NewOrderHook = (props?: Props) => {
             (patient: DataPatientObject) => patient.id === id,
         );
 
-        patient && (setPatientData({ ...patient }), setPatientExist(true));
+        patient &&
+            (setPatientData({ ...patient, confirmEmail: patient.email }),
+            setPatientExist(true));
         setSuggestions([]);
     };
 
@@ -276,6 +278,8 @@ const NewOrderHook = (props?: Props) => {
         patientData.age &&
         patientData.birthDate &&
         patientData.email &&
+        patientData.confirmEmail &&
+        patientData.confirmEmail === patientData.email &&
         patientData.phone !== "57" &&
         patientData.phone !== "" &&
         patientData.phone.length > 11;
@@ -332,26 +336,24 @@ const NewOrderHook = (props?: Props) => {
             ...patientData,
             uid: documentPatientRef.id,
             serviceOrders: [documentNewOrderRef.id],
-        }).then(async () => {
-            // Se crea la nueva orden de servicio y la guarda
-
-            await saveOneDocumentFb(documentNewOrderRef, {
-                ...newOrderData,
-                patientId: documentPatientRef.id,
-            }).then(async (res) => {
-                // Envía la notificación al correo del paciente
-
-                // Envía el corro de nueva orden
-                await handleSendNewOrderEmail(patientAndOrderData);
-
-                setCurrentOrderId(parseInt(res.id));
-            });
         });
+        // Se crea la nueva orden de servicio y la guarda
+
+        await saveOneDocumentFb(documentNewOrderRef, {
+            ...newOrderData,
+            patientId: documentPatientRef.id,
+        }).then(async (res) => {
+            setCurrentOrderId(parseInt(res.id));
+        });
+
+        // Envía el corro de nueva orden
+        await handleSendNewOrderEmail(patientAndOrderData);
     };
 
     const uploadHandle = async () => {
         const patientRef = "patients";
         const newOrderRef = "serviceOrders";
+        const patientDataNew = _.omit(patientData, ["confirmEmail"]);
         const oldOrderId = ordersData.reduce((maxId: any, order: any) => {
             const orderId = parseInt(order.uid, 10);
             return orderId > maxId ? orderId : maxId;
@@ -398,10 +400,10 @@ const NewOrderHook = (props?: Props) => {
 
         const patientAndOrderData = {
             ...newOrderData,
-            id: patientData.id,
-            name: patientData.name,
-            lastName: patientData.lastName,
-            email: patientData.email,
+            id: patientDataNew.id,
+            name: patientDataNew.name,
+            lastName: patientDataNew.lastName,
+            email: patientDataNew.email,
             orderDate: moment(newOrderData.timestamp).format(
                 "DD/MM/YYYY HH:mm:ss",
             ),
@@ -410,7 +412,7 @@ const NewOrderHook = (props?: Props) => {
         if (patientExist) {
             const documentPatientRef: any = getDocumentRef(
                 patientRef,
-                patientData.uid,
+                patientDataNew.uid,
             );
 
             // Si el paciente existe actualiza la información del paciente
@@ -418,57 +420,55 @@ const NewOrderHook = (props?: Props) => {
             await updateDocumentsByIdFb(
                 documentPatientRef.id,
                 {
-                    ...patientData,
-                    serviceOrders: patientData.serviceOrders
-                        ? patientData.serviceOrders.includes(
+                    ...patientDataNew,
+                    serviceOrders: patientDataNew.serviceOrders
+                        ? patientDataNew.serviceOrders.includes(
                               documentNewOrderRef.id,
                           )
-                            ? patientData.serviceOrders
+                            ? patientDataNew.serviceOrders
                             : [
-                                  ...patientData.serviceOrders,
+                                  ...patientDataNew.serviceOrders,
                                   documentNewOrderRef.id,
                               ]
                         : [documentNewOrderRef.id],
                 },
                 patientRef,
-            ).then(async () => {
-                // Se crea una nueva orden de servicio y la guarda
+            );
 
-                await saveOneDocumentFb(documentNewOrderRef, {
-                    ...newOrderData,
-                    patientId: documentPatientRef.id,
-                }).then(async (res) => {
-                    // Envía la notificación al correo del paciente
+            // Se crea una nueva orden de servicio y la guarda
 
-                    await handleSendNewOrderEmail(patientAndOrderData);
-
-                    setCurrentOrderId(parseInt(res.id));
-                });
+            await saveOneDocumentFb(documentNewOrderRef, {
+                ...newOrderData,
+                patientId: documentPatientRef.id,
+            }).then(async (res) => {
+                setCurrentOrderId(parseInt(res.id));
             });
+
+            // Envía la notificación al correo del paciente
+            
+            await handleSendNewOrderEmail(patientAndOrderData);
         } else {
             const documentPatientRef: any = getReference(patientRef);
 
             // Si el paciente es nuevo se crea en Auth de firebase
 
             await addPatient({
-                email: patientData.email,
-                password: patientData.id,
+                email: patientDataNew.email,
+                password: patientDataNew.id,
                 accessTokenUser,
                 uid: documentPatientRef.id,
-            }).then(async (res: any) => {
-                // const patientId = res.data.userId;
-
-                // Envía el correo de nuevo usuario bienvenida
-                await handleSendWelcomeEmail(patientAndOrderData);
-
-                // Guarda la información del nuevo paciente
-                await savePatientData(
-                    documentPatientRef,
-                    documentNewOrderRef,
-                    patientAndOrderData,
-                    newOrderData,
-                );
             });
+
+            // Envía el correo de nuevo usuario bienvenida
+            await handleSendWelcomeEmail(patientAndOrderData);
+
+            // Guarda la información del nuevo paciente
+            await savePatientData(
+                documentPatientRef,
+                documentNewOrderRef,
+                patientAndOrderData,
+                newOrderData,
+            );
         }
     };
 

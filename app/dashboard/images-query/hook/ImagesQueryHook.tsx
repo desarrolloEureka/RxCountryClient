@@ -67,8 +67,10 @@ const ImagesQueryHook = () => {
         //Profesional
         ZWb0Zs42lnKOjetXH5lq: allDataOrders?.filter(
             (order: any) =>
-                // order.modifiedBy.userRolId === userRol?.uid &&
-                order.status === "finalizada",
+                order.createdBy.userRol === userRol?.uid &&
+                order.createdBy.userId === uid,
+            // order.modifiedBy.userRolId === userRol?.uid
+            // order.status === "finalizada",
         ),
 
         //Recepción
