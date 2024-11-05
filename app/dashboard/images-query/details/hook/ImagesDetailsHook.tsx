@@ -41,6 +41,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     const [modelType, setModelType] = useState<string>("T");
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
+    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
     const [fileSrcSelected, setFileSrcSelected] = useState<string>(
         "https://via.placeholder.com/1920",
     );
@@ -55,6 +57,76 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
     const [areaSelected, setAreaSelected] = useState<any>(null);
     const [sentToArea, setSentToArea] = useState<string>("");
+
+    const arrayWithAllUrls: string[] = allOrderData && [
+        ...allOrderData?.orderPDFUrl,
+        ...allOrderData?.orderImagesUrl,
+        ...allOrderData?.orderSTLFiles,
+    ];
+
+    const getIndexOfCurrentImage = (): number => {
+        return arrayWithAllUrls?.indexOf(fileSrcSelected);
+    };
+
+    // console.log("Prueba", 0+1 % arrayWithAllUrls?.length);
+
+    const isFirstFile: boolean = getIndexOfCurrentImage() === 0;
+    const isLastFile: boolean =
+        getIndexOfCurrentImage() === arrayWithAllUrls?.length - 1;
+
+    // Función para avanzar al siguiente archivo
+    const nextImage = () => {
+        setCurrentImageIndex((prevIndex) => {
+            const getIndex: number = (prevIndex + 1) % arrayWithAllUrls?.length;
+            const urlFile: string = arrayWithAllUrls[getIndex];
+            if (allOrderData?.orderImagesUrl.includes(urlFile)) {
+                const getIdFile: number =
+                    allOrderData?.orderImagesUrl.indexOf(urlFile);
+                setIdFileSelected(getIdFile);
+                setTypeFile("images");
+            } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
+                const getIdFile: number =
+                    allOrderData?.orderSTLFiles.indexOf(urlFile);
+                setIdFileSelected(getIdFile);
+                setTypeFile("STL");
+            } else {
+                const getIdFile: number =
+                    allOrderData?.orderPDFUrl.indexOf(urlFile);
+                setIdFileSelected(getIdFile);
+                setTypeFile("pdf");
+            }
+            setFileSrcSelected(urlFile);
+            return getIndex;
+        });
+    };
+
+    // Función para retroceder al archivo anterior
+    const prevImage = () => {
+        setCurrentImageIndex((prevIndex) => {
+            const getIndex: number =
+                (prevIndex - 1 + arrayWithAllUrls?.length) %
+                arrayWithAllUrls?.length;
+            const urlFile: string = arrayWithAllUrls[getIndex];
+            if (allOrderData?.orderImagesUrl.includes(urlFile)) {
+                const getIdFile: number =
+                    allOrderData?.orderImagesUrl.indexOf(urlFile);
+                setIdFileSelected(getIdFile);
+                setTypeFile("images");
+            } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
+                const getIdFile: number =
+                    allOrderData?.orderSTLFiles.indexOf(urlFile);
+                setIdFileSelected(getIdFile);
+                setTypeFile("STL");
+            } else {
+                const getIdFile: number =
+                    allOrderData?.orderPDFUrl.indexOf(urlFile);
+                setIdFileSelected(getIdFile);
+                setTypeFile("pdf");
+            }
+            setFileSrcSelected(urlFile);
+            return getIndex;
+        });
+    };
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -318,7 +390,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                                 : urlName.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find(
-                            (item) => item.value === (sentToArea ? sentToArea : area),
+                            (item) =>
+                                item.value === (sentToArea ? sentToArea : area),
                         )?.label as string,
                         idOrder,
                     })
@@ -334,7 +407,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         fileName: urlName.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find(
-                            (item) => item.value === (sentToArea ? sentToArea : area),
+                            (item) =>
+                                item.value === (sentToArea ? sentToArea : area),
                         )?.label as string,
                         idOrder,
                     })
@@ -350,7 +424,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         fileName: record.name.split(" ").join("_"),
                         file: record,
                         area: allAreas?.find(
-                            (item) => item.value === (sentToArea ? sentToArea : area),
+                            (item) =>
+                                item.value === (sentToArea ? sentToArea : area),
                         )?.label as string,
                         idOrder,
                     })
@@ -394,6 +469,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                     "https://via.placeholder.com/1920",
             );
             setIdFileSelected(0);
+            setCurrentImageIndex(0);
             // setTypeFile("images");
         }
     }, [allOrderData?.orderImagesUrl]);
@@ -481,6 +557,11 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         setAreaSelected,
         selectChangeHandlerSentTo,
         user,
+        isFirstFile,
+        isLastFile,
+        currentImageIndex,
+        nextImage,
+        prevImage,
     };
 };
 

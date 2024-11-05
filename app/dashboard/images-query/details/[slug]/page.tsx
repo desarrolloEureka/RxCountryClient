@@ -36,6 +36,10 @@ const ImageQueryDetails = ({
         setAreaSelected,
         selectChangeHandlerSentTo,
         user,
+        isFirstFile,
+        isLastFile,
+        nextImage,
+        prevImage,
     } = ImagesDetailsHook({
         slug,
     });
@@ -46,6 +50,10 @@ const ImageQueryDetails = ({
         <main className="w-full bg-gray-image bg-fixed bg-cover">
             <div className="bg-black bg-opacity-60 min-h-screen w-full pb-10 pt-5 px-5 lg:p-16">
                 <ImagesGroup
+                    nextImage={nextImage}
+                    prevImage={prevImage}
+                    isFirstFile={isFirstFile}
+                    isLastFile={isLastFile}
                     orderAndPatientData={orderAndPatientData}
                     isModalOpen={isModalOpen}
                     previewImages={previewImages}

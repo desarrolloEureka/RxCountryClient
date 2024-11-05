@@ -5,6 +5,7 @@ import { RolesBd } from "@/app/types/roles";
 import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { IoIosSave } from "react-icons/io";
 import { LuFilePlus2 } from "react-icons/lu";
 import { RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
@@ -38,6 +39,10 @@ type Props = {
     weTransferUrl: string;
     typeFileToUpLoad: string;
     allAreas: AreasSelector[];
+    isFirstFile: boolean;
+    isLastFile: boolean;
+    nextImage: () => void;
+    prevImage: () => void;
 };
 
 const ImagesGroup = ({
@@ -67,6 +72,10 @@ const ImagesGroup = ({
     areaSelected,
     setAreaSelected,
     selectChangeHandlerSentTo,
+    isFirstFile,
+    isLastFile,
+    nextImage,
+    prevImage,
 }: Props) => {
     return (
         <div className="mx-auto h-auto flex rounded-xl lg:rounded-[2.5rem] bg-company-gray w-full">
@@ -269,60 +278,117 @@ const ImagesGroup = ({
                         }`}
                 </h2>
                 {typeFile === "images" || typeFile === "STL" ? (
-                    <div className="flex flex-col justify-center items-center space-y-4">
-                        <h3 className="text-white text-center">
-                            {typeFile === "STL" ? "Archivo" : "Imagen"}{" "}
-                            {idFileSelected + 1}
-                        </h3>
+                    <div className="flex flex-col justify-center items-center space-y-4 ">
+                        <div className="flex flex-row items-center w-full justify-around">
+                            <div className="">
+                                {!isFirstFile && (
+                                    <div
+                                        onClick={() => {
+                                            prevImage();
+                                        }}
+                                        className="text-company-blue text-center cursor-pointer p-3 rounded-full bg-gray-700 border border-company-blue hover:text-white hover:border-white"
+                                    >
+                                        <FaChevronLeft size={36} />
+                                    </div>
+                                )}
+                            </div>
 
-                        {typeFile === "images" ? (
-                            <Link
-                                className="flex flex-1 items-center justify-center"
-                                href={fileSrcSelected}
-                                download="download"
-                                // target="_blank"
-                            >
-                                <Image
-                                    src={fileSrcSelected}
-                                    width={0}
-                                    height={0}
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    style={{
-                                        width: "90%",
-                                        height: "auto",
-                                    }}
-                                    alt={typeFile}
-                                    placeholder="blur"
-                                    blurDataURL={fileSrcSelected}
-                                />
-                            </Link>
-                        ) : (
-                            <Image
-                                src="/assets/stl.png"
-                                width={0}
-                                height={0}
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                style={{
-                                    width: "50%",
-                                    height: "auto",
-                                }}
-                                alt={"logo"}
-                                placeholder="blur"
-                                blurDataURL={fileSrcSelected}
-                            />
-                        )}
+                            <div className="">
+                                <h3 className="text-white text-center">
+                                    {typeFile === "STL" ? "Archivo" : "Imagen"}{" "}
+                                    {idFileSelected + 1}
+                                </h3>
+                                {typeFile === "images" ? (
+                                    <Link
+                                        className="flex flex-1 items-center justify-center"
+                                        href={fileSrcSelected}
+                                        download="download"
+                                        // target="_blank"
+                                    >
+                                        <Image
+                                            src={fileSrcSelected}
+                                            width={0}
+                                            height={0}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            style={{
+                                                width: "90%",
+                                                height: "auto",
+                                            }}
+                                            alt={typeFile}
+                                            placeholder="blur"
+                                            blurDataURL={fileSrcSelected}
+                                        />
+                                    </Link>
+                                ) : (
+                                    <Image
+                                        src="/assets/stl.png"
+                                        width={0}
+                                        height={0}
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        style={{
+                                            width: "50%",
+                                            height: "auto",
+                                        }}
+                                        alt={"logo"}
+                                        placeholder="blur"
+                                        blurDataURL={fileSrcSelected}
+                                    />
+                                )}
+                            </div>
+
+                            <div className="">
+                                {!isLastFile && (
+                                    <div
+                                        onClick={() => {
+                                            nextImage();
+                                        }}
+                                        className="text-company-blue text-center cursor-pointer p-3 rounded-full bg-gray-700 border border-company-blue hover:text-white hover:border-white"
+                                    >
+                                        <FaChevronRight size={36} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 ) : (
                     <div className="flex flex-col items-center space-y-4 h-[65vh] min-h-max">
                         <h3 className="text-white text-center">
                             Documento {idFileSelected + 1}
                         </h3>
-                        <iframe
-                            src={fileSrcSelected}
-                            width="100%"
-                            height="100%"
-                            className=""
-                        />
+                        <div className="flex flex-row items-center w-full justify-around">
+                            <div className="px-4">
+                                {!isFirstFile && (
+                                    <div
+                                        onClick={() => {
+                                            prevImage();
+                                        }}
+                                        className="text-company-blue text-center cursor-pointer p-3 rounded-full border hover:bg-gray-700"
+                                    >
+                                        <FaChevronLeft size={36} />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="h-[65vh] min-h-max w-full">
+                                <iframe
+                                    src={fileSrcSelected}
+                                    width="100%"
+                                    height="100%"
+                                    className=""
+                                />
+                            </div>
+                            <div className="px-4">
+                                {!isLastFile && (
+                                    <div
+                                        onClick={() => {
+                                            nextImage();
+                                        }}
+                                        className="text-company-blue text-center cursor-pointer p-3 rounded-full border hover:bg-gray-700"
+                                    >
+                                        <FaChevronRight size={36} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 )}
                 {fileSrcSelected !== "https://via.placeholder.com/1920" && (

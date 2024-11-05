@@ -13,7 +13,6 @@ import {
 import { FaCircle } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import {
-    IoCall,
     IoCheckmark,
     IoCloseSharp,
     IoEye,
@@ -405,8 +404,8 @@ function StepByStep({
                     <h3 className="text-xl sm:text-2xl text-company-orange">
                         Datos del Paciente
                     </h3>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="col relative flex flex-col space-y-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                        <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                             <label htmlFor="idType" className="text-white">
                                 Tipo de Documento&nbsp;
                                 <span className="text-blue-500">*</span>
@@ -445,7 +444,7 @@ function StepByStep({
                             </span>
                         </div>
                         <div
-                            className="col relative flex flex-col space-y-2"
+                            className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2"
                             // ref={wrapperRef}
                         >
                             <label htmlFor="patientId" className="text-white">
@@ -494,7 +493,7 @@ function StepByStep({
                                 </span>
                             )}
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
+                        <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                             <label htmlFor="firstName" className="text-white">
                                 Nombres&nbsp;
                                 <span className="text-blue-500">*</span>
@@ -516,7 +515,11 @@ function StepByStep({
                                 <IoPerson />
                             </span>
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
+                        <div
+                            className={`col-span-1 ${
+                                oldData ? "lg:col-span-4" : "lg:col-span-3"
+                            } relative flex flex-col space-y-2`}
+                        >
                             <label htmlFor="lastName" className="text-white">
                                 Apellidos&nbsp;
                                 <span className="text-blue-500">*</span>
@@ -538,29 +541,89 @@ function StepByStep({
                                 <IoPerson />
                             </span>
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
+                        <div
+                            className={`col-span-1 ${
+                                oldData ? "lg:col-span-4" : "lg:col-span-3"
+                            } relative flex flex-col space-y-2`}
+                        >
                             <label htmlFor="email" className="text-white">
                                 Correo&nbsp;
                                 <span className="text-blue-500">*</span>
                             </label>
                             <input
                                 disabled={
-                                    userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
-                                    userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                    oldData ||
+                                    (userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                        userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk")
                                 }
                                 value={data && data?.email}
                                 type="email"
                                 name="email"
                                 required
                                 id="email"
-                                className="rounded-xl h-10 bg-transparent border border-company-blue text-white px-10"
+                                className={`rounded-xl h-10 bg-transparent border ${
+                                    oldData ||
+                                    (userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                        userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk")
+                                        ? "border-gray-600 text-gray-400"
+                                        : "border-company-blue text-white"
+                                } px-10`}
                                 onChange={changeHandler}
                             />
-                            <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                            <span
+                                className={`absolute left-2 bottom-2 ${
+                                    oldData ||
+                                    (userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                                        userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk")
+                                        ? "text-gray-600"
+                                        : "text-company-blue"
+                                } text-[1.5rem]`}
+                            >
                                 <IoMail />
                             </span>
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
+                        {!oldData && (
+                            <div
+                                className={`col-span-1 lg:col-span-3 relative ${
+                                    oldData ? "hidden" : "flex"
+                                } flex-col space-y-2`}
+                            >
+                                <label htmlFor="email" className="text-white">
+                                    Confirmar Correo&nbsp;
+                                    <span className="text-blue-500">*</span>
+                                </label>
+                                <input
+                                    onPaste={(e) => {
+                                        alert("No puedes pegar");
+                                        e.preventDefault();
+                                    }}
+                                    disabled={
+                                        userRol?.uid !==
+                                            "ZWb0Zs42lnKOjetXH5lq" &&
+                                        userRol?.uid !== "Ll6KGdzqdtmLLk0D5jhk"
+                                    }
+                                    value={data && data?.confirmEmail}
+                                    type="email"
+                                    name="confirmEmail"
+                                    required
+                                    id="email"
+                                    className={`rounded-xl h-10 bg-transparent ${
+                                        data?.confirmEmail === data?.email
+                                            ? "border-company-blue border"
+                                            : "border-red-600 border-2"
+                                    } text-white px-10`}
+                                    onChange={changeHandler}
+                                />
+                                <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
+                                    <IoMail />
+                                </span>
+                            </div>
+                        )}
+                        <div
+                            className={`col-span-1 ${
+                                oldData ? "lg:col-span-4" : "lg:col-span-3"
+                            } relative flex flex-col space-y-2`}
+                        >
                             <label htmlFor="phone" className="text-white">
                                 Celular&nbsp;
                                 <span className="text-blue-500">*</span>
@@ -593,7 +656,7 @@ function StepByStep({
                                 <IoCall />
                             </span> */}
                         </div>
-                        <div className="col relative flex flex-col space-y-2 w-full">
+                        <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2 w-full">
                             <label htmlFor="data-picker" className="text-white">
                                 Fecha de Nacimiento&nbsp;
                                 <span className="text-blue-500">*</span>
@@ -627,7 +690,7 @@ function StepByStep({
                                 <MdOutlineDateRange />
                             </span>
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
+                        <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                             <label htmlFor="age" className="text-white">
                                 Edad&nbsp;
                                 <span className="text-blue-500">*</span>
@@ -646,7 +709,7 @@ function StepByStep({
                                 <MdOutlineDateRange />
                             </span>
                         </div>
-                        <div className="col relative flex flex-col space-y-2">
+                        <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                             <label htmlFor="address" className="text-white">
                                 Dirección&nbsp;(opcional)
                             </label>
@@ -669,7 +732,7 @@ function StepByStep({
                         </div>
                         {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" && (
                             <>
-                                <div className="col relative flex flex-col space-y-2">
+                                <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                                     <label
                                         htmlFor="Doctor"
                                         className="text-white"
@@ -698,7 +761,7 @@ function StepByStep({
                                         <FaUserDoctor />
                                     </span>
                                 </div>
-                                <div className="col relative flex flex-col space-y-2">
+                                <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                                     <label
                                         htmlFor="Specialty"
                                         className="text-white"
@@ -738,7 +801,7 @@ function StepByStep({
                                         <FaUserDoctor />
                                     </span>
                                 </div>
-                                <div className="col relative flex flex-col space-y-2">
+                                <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                                     <label
                                         htmlFor="emailDoctor"
                                         className="text-white"

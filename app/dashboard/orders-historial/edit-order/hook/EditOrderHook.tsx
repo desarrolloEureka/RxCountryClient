@@ -841,7 +841,7 @@ const EditOrderHook = ({ slug }: Props) => {
                     ? "Local"
                     : "Server";
                 const data = querySnapshot.data();
-                console.log("doc.data", data, source);
+                // console.log("doc.data", data, source);
                 setOrderData(data);
             }
         });
