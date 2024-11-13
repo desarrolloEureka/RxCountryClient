@@ -648,6 +648,17 @@ const EditOrderHook = ({ slug }: Props) => {
             oldDataOrder.uid,
         );
 
+        const areasStatus: { [key: string]: string } = Object.fromEntries(
+            areaList.map((key: string) => {
+                return [
+                    key,
+                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                        ? "no asignada"
+                        : "asignada",
+                ];
+            }),
+        );
+
         const filesUrls = await getOrdersUrls(oldDataOrder.uid);
 
         const newOrderData = {
@@ -655,7 +666,17 @@ const EditOrderHook = ({ slug }: Props) => {
             ...selectedOptions,
             uid: oldDataOrder?.uid,
             patientId: oldDataOrder?.patientId,
-            status: editedOrderStatusByRol[userRol?.uid!],
+            // status: editedOrderStatusByRol[userRol?.uid!],
+            status:
+                userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
+                    ? isOrderIncomplete
+                        ? "reasignada"
+                        : "finalizada"
+                    : oldDataOrder?.status,
+            areasStatus:
+                userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk"
+                    ? areasStatus
+                    : (areasStatus[userRol?.uid!] = "completada"),
             assignedCampus: campus ? campus : "",
             completedAreas:
                 userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq"

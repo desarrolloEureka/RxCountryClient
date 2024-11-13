@@ -466,9 +466,9 @@ const OrderHistorialPage = () => {
                                         <div className="text-start text-nowrap w-48">
                                             <span>Fecha de Actualización</span>
                                         </div>
-                                        <div className="text-start text-nowrap w-28">
+                                        {/* <div className="text-start text-nowrap w-28">
                                             <span>Enviado a:</span>
-                                        </div>
+                                        </div> */}
                                         <div className="text-start text-nowrap w-24">
                                             <span>Comentarios</span>
                                         </div>
@@ -573,7 +573,7 @@ const OrderHistorialPage = () => {
                                                                 : "Sin Registro"}
                                                         </p>
                                                     </div>
-                                                    <div className="text-nowrap text-start w-28">
+                                                    {/* <div className="text-nowrap text-start w-28">
                                                         <p className="truncate">
                                                             {item.sendTo
                                                                 ? getAreaName(
@@ -581,7 +581,7 @@ const OrderHistorialPage = () => {
                                                                   )
                                                                 : "No Registrado"}
                                                         </p>
-                                                    </div>
+                                                    </div> */}
                                                     <div className="flex justify-center text-nowrap text-company-blue w-24">
                                                         <button
                                                             onClick={() => {
@@ -603,8 +603,13 @@ const OrderHistorialPage = () => {
                                             >
                                                 <IoIosNotifications size={24} />
                                             </button> */}
-                                                        {((userArea ===
+                                                        {/* {((userArea ===
                                                             item.sendTo &&
+                                                            item.status !==
+                                                                "finalizada") || */}
+                                                        {((item.areasStatus?.[
+                                                            userArea
+                                                        ] === "asignada" &&
                                                             item.status !==
                                                                 "finalizada") ||
                                                             userRol?.uid ===

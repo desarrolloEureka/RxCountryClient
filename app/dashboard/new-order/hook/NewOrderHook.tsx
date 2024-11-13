@@ -363,18 +363,38 @@ const NewOrderHook = (props?: Props) => {
 
         const documentNewOrderRef: any = getDocumentRef(newOrderRef, orderId);
 
+        const areasStatus: { [key: string]: string } = Object.fromEntries(
+            areaList.map((key: string) => {
+                return [
+                    key,
+                    userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                        ? "no asignada"
+                        : "asignada",
+                ];
+            }),
+        );
+
         const newOrderData = {
             ...selectedOptions,
             uid: documentNewOrderRef.id,
             status: editedOrderStatusByRol[userRol?.uid!],
-            sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
+            // status:
+            //     userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+            //         ? "enviada"
+            //         : "en proceso",
+            // sendTo: sentToArea || "qxdH34kAupnAPSuVIIvn",
+            sendTo:
+                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq"
+                    ? "qxdH34kAupnAPSuVIIvn"
+                    : "",
             areaList,
+            areasStatus: areasStatus ?? {},
             isActive: true,
             isDeleted: false,
-            modifiedBy: {
-                userRolId: userRol?.uid,
-                userId: userData?.uid,
-            },
+            // modifiedBy: {
+            //     userRolId: userRol?.uid,
+            //     userId: userData?.uid,
+            // },
             createdBy: {
                 userRol: userRol?.uid,
                 userId: userData?.uid,
@@ -408,6 +428,8 @@ const NewOrderHook = (props?: Props) => {
                 "DD/MM/YYYY HH:mm:ss",
             ),
         };
+
+        console.log("newOrderData", newOrderData);
 
         if (patientExist) {
             const documentPatientRef: any = getDocumentRef(
@@ -445,7 +467,7 @@ const NewOrderHook = (props?: Props) => {
             });
 
             // Envía la notificación al correo del paciente
-            
+
             await handleSendNewOrderEmail(patientAndOrderData);
         } else {
             const documentPatientRef: any = getReference(patientRef);

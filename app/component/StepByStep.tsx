@@ -383,9 +383,9 @@ function StepByStep({
                     oldData?.areaList?.includes(area.value),
                 ),
             );
-            setAreaSelected(
-                allAreas.find((area) => area.value === oldData?.sendTo),
-            );
+            // setAreaSelected(
+            //     allAreas.find((area) => area.value === oldData?.sendTo),
+            // );
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [oldData, userComment, userRol]);
@@ -2540,7 +2540,7 @@ function StepByStep({
                                 lobortis nisl ut aliquip ex ea commodo
                                 consequat.
                             </p>
-                            {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
+                            {/* {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                                 userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" && (
                                     <div className="flex flex-col">
                                         {!_.isEmpty(areaList) && (
@@ -2584,32 +2584,34 @@ function StepByStep({
                                             </div>
                                         )}
                                     </div>
-                                )}
+                                )} */}
 
-                            {(areaSelected ||
-                                // userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" ||
-                                userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" ||
-                                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq") && (
-                                <div className="flex justify-center items-center">
-                                    <button
-                                        type={
-                                            areaSelected ? "button" : "submit"
-                                        }
-                                        onClick={(e) => {
-                                            areaSelected && handleSendForm(e);
-                                        }}
-                                        className="w-48 h-10 flex mb-5 items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
-                                    >
-                                        <span>
-                                            {userRol?.uid ===
-                                                "9RZ9uhaiwMC7VcTyIzhl" &&
-                                            !isOrderIncomplete
-                                                ? "Finalizar Orden"
-                                                : "Guardar y Enviar"}
-                                        </span>
-                                    </button>
-                                </div>
-                            )}
+                            {/* {(areaSelected ||
+                                // userRol?.uid === "Ll6KGdzqdtmLLk0D5jhk" || // Recepción
+                                userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" || // Despacho
+                                userRol?.uid === "ZWb0Zs42lnKOjetXH5lq") && ( // Profesional */}
+                            <div className="flex justify-center items-center">
+                                <button
+                                    type={
+                                        "button"
+                                        // areaSelected ? "button" : "submit"
+                                    }
+                                    onClick={(e) => {
+                                        // areaSelected && handleSendForm(e);
+                                        handleSendForm(e);
+                                    }}
+                                    className="w-48 h-10 flex mb-5 items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white"
+                                >
+                                    <span>
+                                        {userRol?.uid ===
+                                            "9RZ9uhaiwMC7VcTyIzhl" &&
+                                        !isOrderIncomplete
+                                            ? "Finalizar Orden"
+                                            : "Guardar y Enviar"}
+                                    </span>
+                                </button>
+                            </div>
+                            {/* )} */}
 
                             <div className="hidden lg:flex flex-col h-auto justify-center items-center absolute left-[70%] lg:left-[60%] -bottom-0">
                                 <DoctorVector

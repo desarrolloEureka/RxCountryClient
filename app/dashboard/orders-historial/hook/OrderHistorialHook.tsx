@@ -116,14 +116,17 @@ const OrderHistorialHook = () => {
                     order.assignedCampus === campus &&
                     (order.status === "asignada" ||
                         order.status === "reasignada") &&
-                    order.sendTo === area,
+                    (order.sendTo === area ||
+                        (order.areasStatus?.[area] === "asignada" &&
+                            order.areaList?.includes(area))),
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
-                    // order.assignedCampus === campus &&
+                    order.assignedCampus === campus &&
                     // order.status === "asignada",
-                    order.sendTo !== area,
+                    // order.sendTo !== area,
+                    order.areasStatus?.[area] !== "asignada",
             ),
         },
         //Fotografía
@@ -133,14 +136,17 @@ const OrderHistorialHook = () => {
                     order.assignedCampus === campus &&
                     (order.status === "asignada" ||
                         order.status === "reasignada") &&
-                    order.sendTo === area,
+                    (order.sendTo === area ||
+                        (order.areasStatus?.[area] === "asignada" &&
+                            order.areaList?.includes(area))),
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     // order.assignedCampus === campus &&
                     // order.status === "asignada",
-                    order.sendTo !== area,
+                    // order.sendTo !== area,
+                    order.areasStatus?.[area] !== "asignada",
             ),
         },
         //Laboratorio
@@ -150,14 +156,17 @@ const OrderHistorialHook = () => {
                     order.assignedCampus === campus &&
                     (order.status === "asignada" ||
                         order.status === "reasignada") &&
-                    order.sendTo === area,
+                    (order.sendTo === area ||
+                        (order.areasStatus?.[area] === "asignada" &&
+                            order.areaList?.includes(area))),
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     // order.assignedCampus === campus &&
                     // order.status === "asignada",
-                    order.sendTo !== area,
+                    // order.sendTo !== area,
+                    order.areasStatus?.[area] !== "asignada",
             ),
         },
         //Radiología
@@ -167,14 +176,17 @@ const OrderHistorialHook = () => {
                     order.assignedCampus === campus &&
                     (order.status === "asignada" ||
                         order.status === "reasignada") &&
-                    order.sendTo === area,
+                    (order.sendTo === area ||
+                        (order.areasStatus?.[area] === "asignada" &&
+                            order.areaList?.includes(area))),
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     // order.assignedCampus === campus &&
                     // order.status === "asignada",
-                    order.sendTo !== area,
+                    // order.sendTo !== area,
+                    order.areasStatus?.[area] !== "asignada",
             ),
         },
         //Diagnostico
@@ -184,14 +196,17 @@ const OrderHistorialHook = () => {
                     order.assignedCampus === campus &&
                     (order.status === "asignada" ||
                         order.status === "reasignada") &&
-                    order.sendTo === area,
+                    (order.sendTo === area ||
+                        (order.areasStatus?.[area] === "asignada" &&
+                            order.areaList?.includes(area))),
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     // order.assignedCampus === campus &&
                     // order.status === "asignada",
-                    order.sendTo !== area,
+                    // order.sendTo !== area,
+                    order.areasStatus?.[area] !== "asignada",
             ),
         },
         //Escáner Digital
@@ -201,7 +216,9 @@ const OrderHistorialHook = () => {
                     order.assignedCampus === campus &&
                     (order.status === "asignada" ||
                         order.status === "reasignada") &&
-                    order.sendTo === area,
+                    (order.sendTo === area ||
+                        (order.areasStatus?.[area] === "asignada" &&
+                            order.areaList?.includes(area))),
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
@@ -209,6 +226,7 @@ const OrderHistorialHook = () => {
                     // order.assignedCampus === campus &&
                     // order.status === "asignada",
                     order.sendTo !== area,
+                // order.areasStatus?.[area] !== "asignada",
             ),
         },
         //Despacho
@@ -216,22 +234,27 @@ const OrderHistorialHook = () => {
             received: allDataOrders?.filter(
                 (order: any) =>
                     order.assignedCampus === campus &&
-                    order.status === "asignada" &&
-                    order.sendTo === area,
+                    (order.status === "asignada" ||
+                        order.status === "reasignada") &&
+                    (order.sendTo === area ||
+                        (order.areasStatus?.[area] === "asignada" &&
+                            order.areaList?.includes(area))),
             ),
             send: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     order.assignedCampus === campus &&
-                    order.status === "finalizada" &&
-                    order.sendTo === area,
+                    order.status === "finalizada",
+                // order.sendTo === area,
+                // order.areasStatus?.[area] === "asignada",
             ),
             reassigned: allDataOrders?.filter(
                 (order: any) =>
                     order.modifiedBy.userRolId === userRol?.uid &&
                     order.assignedCampus === campus &&
                     order.status === "reasignada" &&
-                    order.sendTo !== area,
+                    // order.sendTo !== area,
+                    order.areasStatus?.[area] !== "asignada",
             ),
         },
     };
@@ -337,8 +360,8 @@ const OrderHistorialHook = () => {
 
     const getOrderStatus = (item: any) => {
         const isModifiedByUser = item.modifiedBy.userRolId === userRol?.uid;
-        const isEditingByUser = "";
-        const isSentToUserArea = item.sendTo === area;
+        const isSentToUserArea =
+            item.sendTo === area || item.sendTo === "multiArea";
 
         if (item.status !== "finalizada") {
             if (!item.sendTo && userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq") {
@@ -357,6 +380,9 @@ const OrderHistorialHook = () => {
         const result: string | undefined = allAreas?.find(
             (item) => item.value === areaId,
         )?.label;
+        if (!result) {
+            return undefined;
+        }
         return result;
     };
 
