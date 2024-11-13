@@ -2,7 +2,8 @@
 import Spinner from "@/app/component/spinner/Spinner";
 import Image from "next/image";
 import Link from "next/link";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { IoArrowBackCircleOutline, IoEye, IoEyeOff } from "react-icons/io5";
+import { MdOutlineClose } from "react-icons/md";
 import { RiEditBoxFill } from "react-icons/ri";
 import PhoneInput from "react-phone-input-2";
 import "../../style.css";
@@ -37,6 +38,19 @@ export default function ProfilePage() {
         handleClose,
         user,
         userData,
+        newPassword,
+        error,
+        success,
+        setNewPassword,
+        showPassword,
+        setShowPassword,
+        currentPassword,
+        setCurrentPassword,
+        confirmPassword,
+        setConfirmPassword,
+        handleChangePassword,
+        setError,
+        setSuccess,
     } = ProfileHook();
 
     if (!user) {
@@ -45,7 +59,7 @@ export default function ProfilePage() {
 
     return (
         <main className="flex flex-col justify-center items-center min-h-screen w-full bg-gray-image bg-cover">
-            <div className="px-4 lg:px-16 py-8 mx-4 mb-16 mt-8 lg:my-0 bg-company-gray rounded-2xl shadow-xl flex flex-col items-center space-y-4">
+            <div className="px-4 lg:px-16 py-8 mx-4 mb-16 mt-8 bg-company-gray rounded-2xl shadow-xl flex flex-col items-center space-y-4">
                 <div className="w-full flex items-center space-x-2 text-company-blue font-bold text-xl">
                     {!isEdit && (
                         <Link
@@ -129,13 +143,13 @@ export default function ProfilePage() {
                 <div className="flex flex-col space-y-5">
                     {!nextStep ? (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mx-4 sm:mx-16">
-                            <div className="col relative flex flex-col w-full">
+                            <div className="col-span-2 lg:col-span-1 relative flex flex-col w-full">
                                 <select
                                     value={data.idType}
                                     id="idType"
                                     name="idType"
                                     required
-                                    className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
+                                    className="bg-transparent border-b-2 border-white text-white py-[9px] pr-10"
                                     onChange={selectChangeHandlerIdType}
                                 >
                                     <option
@@ -164,7 +178,7 @@ export default function ProfilePage() {
                                     Tipo Documento
                                 </span>
                             </div>
-                            <div className="col relative flex flex-col w-full">
+                            <div className="col-span-2 lg:col-span-1 relative flex flex-col w-full">
                                 <input
                                     value={data.id}
                                     id="dni"
@@ -181,7 +195,7 @@ export default function ProfilePage() {
                                     <RiEditBoxFill className="absolute right-0 bottom-8 text-3xl text-company-orange" />
                                 )}
                             </div>
-                            <div className="col flex flex-col relative w-full">
+                            <div className="col-span-2 lg:col-span-1 flex flex-col relative w-full">
                                 <input
                                     name="name"
                                     type="text"
@@ -199,7 +213,7 @@ export default function ProfilePage() {
                                     // </Link>
                                 )}
                             </div>
-                            <div className="col flex flex-col relative w-full">
+                            <div className="col-span-2 lg:col-span-1 flex flex-col relative w-full">
                                 <input
                                     name="lastName"
                                     type="text"
@@ -217,7 +231,7 @@ export default function ProfilePage() {
                                     // </Link>
                                 )}
                             </div>
-                            <div className="col flex flex-col relative w-full">
+                            <div className="col-span-2 lg:col-span-1 flex flex-col relative w-full">
                                 <input
                                     // disabled
                                     name="email"
@@ -237,7 +251,7 @@ export default function ProfilePage() {
                                     // </Link>
                                 )}
                             </div>
-                            <div className="col flex flex-col relative w-full">
+                            <div className="col-span-2 lg:col-span-1 flex flex-col relative w-full">
                                 <PhoneInput
                                     // disabled={!isEdit}
                                     autoFormat={false}
@@ -260,7 +274,7 @@ export default function ProfilePage() {
                                     }}
                                     containerStyle={{
                                         borderBottom: "2px solid white",
-                                        margin: "5px 0 0 0",
+                                        // margin: "5px 0 0 0",
                                     }}
                                     buttonStyle={{
                                         breakBefore: "initial",
@@ -291,6 +305,167 @@ export default function ProfilePage() {
                                     // </Link>
                                 )}
                             </div>
+
+                            {isEdit && (
+                                <>
+                                    <div className="col-span-2 flex flex-col relative w-full">
+                                        <input
+                                            // disabled
+                                            name="currentPassword"
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
+                                            readOnly={!isEdit}
+                                            value={currentPassword}
+                                            onChange={(e) =>
+                                                setCurrentPassword(
+                                                    e.target.value,
+                                                )
+                                            }
+                                        />
+                                        <span className="text-company-orange">
+                                            Contraseña Actual
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setShowPassword(!showPassword);
+                                            }}
+                                        >
+                                            {showPassword ? (
+                                                <IoEyeOff className="absolute right-0 bottom-8 text-3xl text-company-orange" />
+                                            ) : (
+                                                <IoEye className="absolute right-0 bottom-8 text-3xl text-company-orange" />
+                                            )}
+                                        </button>
+                                    </div>
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col relative w-full">
+                                        <input
+                                            // disabled
+                                            name="password"
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            className="bg-transparent border-b-2 border-white text-white py-2 pr-10"
+                                            readOnly={!isEdit}
+                                            value={newPassword}
+                                            onChange={(e) =>
+                                                setNewPassword(e.target.value)
+                                            }
+                                        />
+                                        <span className="text-company-orange">
+                                            Nueva Contraseña
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setShowPassword(!showPassword);
+                                            }}
+                                        >
+                                            {showPassword ? (
+                                                <IoEyeOff className="absolute right-0 bottom-8 text-3xl text-company-orange" />
+                                            ) : (
+                                                <IoEye className="absolute right-0 bottom-8 text-3xl text-company-orange" />
+                                            )}
+                                        </button>
+                                    </div>
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col relative w-full">
+                                        <input
+                                            // disabled
+                                            name="confirmPassword"
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            className="bg-transparent border-b-2 border-white text-white py-2 pr-10 w-full"
+                                            readOnly={!isEdit}
+                                            value={confirmPassword}
+                                            onChange={(e) =>
+                                                setConfirmPassword(
+                                                    e.target.value,
+                                                )
+                                            }
+                                        />
+                                        <span className="text-company-orange">
+                                            Confirmar Contraseña
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setShowPassword(!showPassword);
+                                            }}
+                                        >
+                                            {showPassword ? (
+                                                <IoEyeOff className="absolute right-0 bottom-8 text-3xl text-company-orange" />
+                                            ) : (
+                                                <IoEye className="absolute right-0 bottom-8 text-3xl text-company-orange" />
+                                            )}
+                                        </button>
+                                    </div>
+                                    <div className="col-span-2 flex flex-col relative w-full items-center">
+                                        <button
+                                            type="button"
+                                            onClick={handleChangePassword}
+                                            className="border-company-blue bg-slate-700 flex space-x-2 items-center border py-2 px-4 rounded-md text-white"
+                                        >
+                                            <span>Cambiar Contraseña</span>
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+
+                            {error && (
+                                <div className="col-span-2 flex items-center justify-center">
+                                    <div
+                                        className="border border-red-500 text-red-100 px-4 py-3 rounded relative bg-red-800 flex flex-row justify-between items-center space-x-4"
+                                        role="alert"
+                                    >
+                                        <span
+                                            className="block sm:inline text-sm
+                                         sm:text-base"
+                                        >
+                                            {error}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setError(null)}
+                                        >
+                                            <MdOutlineClose className="fill-current h-6 w-6 text-red-200" />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {success && (
+                                <div className="col-span-2 flex items-center justify-center">
+                                    <div
+                                        className="bg-green-700 border border-green-500 text-green-100 px-4 py-3 rounded relative flex flex-row justify-between items-center space-x-4"
+                                        role="alert"
+                                    >
+                                        <span
+                                            className="block sm:inline text-base
+                                         sm:text-sm"
+                                        >
+                                            {success}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setSuccess(null)}
+                                        >
+                                            <MdOutlineClose className="fill-current h-6 w-6 text-green-200" />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mx-4 sm:mx-16">
@@ -466,7 +641,7 @@ export default function ProfilePage() {
                             </div>
                             {userData?.rol !== "ShHQKRuKJfxHcV70XSvC" && (
                                 <>
-                                    <div className="col relative flex flex-col w-full">
+                                    <div className="col-span-2 flex flex-col relative w-full">
                                         <select
                                             value={data.specialty}
                                             id="specialty"
@@ -506,7 +681,7 @@ export default function ProfilePage() {
                                             <RiEditBoxFill className="absolute right-4 bottom-8 text-3xl text-company-orange" />
                                         )}
                                     </div>
-                                    <div className="col relative flex flex-col w-full">
+                                    {/* <div className="col relative flex flex-col w-full">
                                         <select
                                             value={data.contract}
                                             id="contract"
@@ -545,7 +720,7 @@ export default function ProfilePage() {
                                         {isEdit && (
                                             <RiEditBoxFill className="absolute right-4 bottom-8 text-3xl text-company-orange" />
                                         )}
-                                    </div>
+                                    </div> */}
                                 </>
                             )}
                         </div>

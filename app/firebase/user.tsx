@@ -3,14 +3,16 @@ import axios from "axios";
 import {
     confirmPasswordReset,
     createUserWithEmailAndPassword,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
-    sendEmailVerification,
+    updatePassword,
     updateProfile,
+    User,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-
-const user = auth.currentUser;
 
 const backendClient = async (accessTokenUser: string) => {
     return axios.create({
@@ -49,29 +51,54 @@ export const addPatient = async ({
     });
 };
 
-export const updatePassword = async ({
-    uid,
-    password,
-    accessTokenUser,
-}: {
-    uid: string;
-    password: string;
-    accessTokenUser: string;
-}) => {
-    return new Promise((resolve, reject) => {
-        backendClient(accessTokenUser).then(async (client) => {
-            const data = await client.post(`auth/updatePassword`, {
-                uid,
-                password,
-            });
-            console.log(data.status);
-            if (data.status === 200) {
-                resolve(data);
-            } else {
-                reject(data);
-            }
-        });
-    });
+// export const updatePasswordUser = async ({
+//     uid,
+//     password,
+//     accessTokenUser,
+// }: {
+//     uid: string;
+//     password: string;
+//     accessTokenUser: string;
+// }) => {
+//     return new Promise((resolve, reject) => {
+//         backendClient(accessTokenUser).then(async (client) => {
+//             const data = await client.post(`auth/updatePassword`, {
+//                 uid,
+//                 password,
+//             });
+//             console.log(data.status);
+//             if (data.status === 200) {
+//                 resolve(data);
+//             } else {
+//                 reject(data);
+//             }
+//         });
+//     });
+// };
+
+export const reauthenticate = async (
+    email: string,
+    password: string,
+    user: any,
+) => {
+    try {
+        return await reauthenticateWithCredential(
+            user as User,
+            EmailAuthProvider.credential(email, password),
+        );
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
+
+export const updatePass = async (newPassword: string, user: any) => {
+    try {
+        return await updatePassword(user as User, newPassword);
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
 };
 
 export const saveUserById = async (data: any) => {
@@ -105,8 +132,10 @@ export const registerFirebase = async (user: string, password: string) =>
 export const loginFirebase = async (user: string, password: string) =>
     await signInWithEmailAndPassword(auth, user, password);
 
-export const resetPasswordFirebase = async (email: string, actionCodeSettings?: any) =>
-    await sendPasswordResetEmail(auth, email, actionCodeSettings);
+export const resetPasswordFirebase = async (
+    email: string,
+    actionCodeSettings?: any,
+) => await sendPasswordResetEmail(auth, email, actionCodeSettings);
 
 export const confirmPasswordResetFirebase = async (
     oobCode: string,
