@@ -12,11 +12,10 @@ import {
     updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
 import { uploadProfilePhoto } from "@/app/firebase/files";
+import { reauthenticate, updatePass } from "@/app/firebase/user";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
-// type props = {};
 
 const referenceByRol: { [key: string]: string } = {
     ZWb0Zs42lnKOjetXH5lq: "professionals",
@@ -48,6 +47,66 @@ const ProfileHook = () => {
     const [errorImg, setErrorImg] = useState<string | null>(null);
     const [files, setFiles] = useState<any[]>([]);
     const [fileName, setFileName] = useState("Foto de Perfil");
+
+    const [newPassword, setNewPassword] = useState("");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleChangePassword = async (e: any) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(null);
+
+        if (!user) {
+            setError("Usuario no autenticado");
+            return;
+        }
+
+        if (!currentPassword) {
+            setError("¡Debes ingresar la contraseña actual!");
+            return;
+        }
+
+        if (!newPassword) {
+            setError("¡Debes ingresar la nueva contraseña!");
+            return;
+        }
+
+        if (!confirmPassword) {
+            setError("¡Debes confirmar la nueva contraseña!");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setError("¡Las contraseñas no coinciden!");
+            return;
+        }
+
+        try {
+            const reauthenticateResult = await reauthenticate(
+                userData.email,
+                currentPassword,
+                user,
+            );
+            if (!reauthenticateResult) {
+                throw new Error("Error al reautenticar");
+            }
+            await updatePass(newPassword, user);
+            setSuccess("Contraseña cambiada exitosamente");
+            setTimeout(() => {
+                setError(null);
+                setSuccess(null);
+                setNewPassword("");
+                setCurrentPassword("");
+                setConfirmPassword("");
+            }, 3000);
+        } catch (error: any) {
+            setError(error.message);
+        }
+    };
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.name;
@@ -219,6 +278,19 @@ const ProfileHook = () => {
         handleClose,
         user,
         userData,
+        newPassword,
+        handleChangePassword,
+        error,
+        success,
+        setNewPassword,
+        showPassword,
+        setShowPassword,
+        currentPassword,
+        setCurrentPassword,
+        confirmPassword,
+        setConfirmPassword,
+        setError,
+        setSuccess,
     };
 };
 
