@@ -407,7 +407,7 @@ function StepByStep({
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                         <div className="col-span-1 lg:col-span-4 relative flex flex-col space-y-2">
                             <label htmlFor="idType" className="text-white">
-                                Tipo de Documento&nbsp;
+                                Tipo de Documento1&nbsp;
                                 <span className="text-blue-500">*</span>
                             </label>
                             <select
@@ -1042,7 +1042,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    Previsualizar PDF
+                                                    Ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -1138,7 +1138,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    Previsualizar PDF
+                                                    Ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -1270,7 +1270,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    Previsualizar PDF
+                                                    Ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -1346,7 +1346,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    Previsualizar PDF
+                                                    ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -1421,7 +1421,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    Previsualizar PDF
+                                                    ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -1564,7 +1564,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    Previsualizar PDF
+                                                    ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>

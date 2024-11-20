@@ -264,19 +264,36 @@ const ImagesGroup = ({
             <div className="flex flex-col space-y-4 w-full p-4 lg:p-12">
                 <h2 className="text-company-orange text-sm lg:text-xl">
                     {orderAndPatientData &&
-                        `Orden #${orderAndPatientData?.uid} / Nombre: ${
+                    (
+                        <>
+                            {`Orden #${orderAndPatientData?.uid}`}
+                            <br />
+                            {`${orderAndPatientData?.name} ${orderAndPatientData?.lastName}`}
+                        </>
+                    )
+                        }
+                         {/*
+
+                         `Orden #${orderAndPatientData?.uid} / Nombre: ${
                             orderAndPatientData?.name
                         } ${
                             orderAndPatientData?.lastName
-                        } - Tel: +${orderAndPatientData?.phone.substring(
-                            0,
-                            2,
-                        )} ${orderAndPatientData?.phone.substring(
-                            2,
-                        )} - Email: ${orderAndPatientData?.email} - Edad: ${
-                            orderAndPatientData?.age
-                        }`}
+                        }
+                        `
+                    - Tel: +${orderAndPatientData?.phone.substring(
+                                0,
+                                2,
+                            )} ${orderAndPatientData?.phone.substring(
+                                2,
+                            )} - Email: ${orderAndPatientData?.email} - Edad: ${
+                                orderAndPatientData?.age
+                            }
+
+                    /// si se solicitan de nuevo agregar antes de ´}
+
+                    */}
                 </h2>
+               
                 {typeFile === "images" || typeFile === "STL" ? (
                     <div className="flex flex-col justify-center items-center space-y-4 ">
                         <div className="flex flex-row items-center w-full justify-around">

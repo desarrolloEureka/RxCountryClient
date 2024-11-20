@@ -135,7 +135,7 @@ const OrderDetailsContent = ({
                             target="_blank"
                         >
                             <span className="text-nowrap">
-                                Previsualizar PDF
+                                ver PDF ODS
                             </span>
                         </Link>
                     </button>

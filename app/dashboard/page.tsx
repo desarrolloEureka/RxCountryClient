@@ -22,7 +22,7 @@ export default function Dashboard() {
             <div className="flex flex-col min-h-screen w-full py-16 px-5 lg:p-16 space-y-16">
                 <DashboardHeader />
                 <div className="sm:mx-32 flex flex-col space-y-8 min-h-96">
-                    <h2 className="text-white font-bold text-2xl sm:text-5xl">
+                    <h2 className="font-abhaya text-white font-bold text-2xl sm:text-5xl">
                         {userData?.rol === "ZWb0Zs42lnKOjetXH5lq"
                             ? "Bienvenido Doc"
                             : "¡Bienvenido!"}
@@ -32,16 +32,17 @@ export default function Dashboard() {
                     {userData?.rol === "ShHQKRuKJfxHcV70XSvC" ? (
                         <p className="text-white w-[80%] xl:w-[30%] text-justify text-sm sm:text-base">
                             Bienvenidos a la era digital, en la que trabajamos
-                            por brindarles un mejor servicio y en un menor
-                            tiempo tener las imágenes de laboratorio listas para
-                            consultar en la nube.
+                            por brindarles un mejor servicio y en menor tiempo
+                            tener las imágenes listas para consultar en la nube.
                         </p>
                     ) : (
                         // Profesionales
                         <p className="text-white w-[80%] xl:w-[30%] text-justify text-sm sm:text-base">
-                            Bienvenidos a la era digital, en la que trabajamos
-                            por brindarles un mejor servicio y en menor tiempo
-                            tener las imágenes listas para consultar en la nube.
+                            A continuación podrás crear ordenes para tus 
+                            pacientes de manera rápida y sencilla, ademas de 
+                            que quedaran guardadas en tu historial de ordenes y 
+                            desde allí podrás editarlas, volver a revisarlas y
+                            enviarlas a otros especialistas.
                         </p>
                     )}
 

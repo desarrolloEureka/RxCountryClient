@@ -13,6 +13,15 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import NewOrderHook from "./hook/NewOrderHook";
 
 const NewOrderPage = () => {
+
+    const helpMessages = {
+        0: "Agrega en cada campo los datos correspondientes de tu paciente para poder consultarlo de manera sencilla más adelante.",
+        1: "Selecciona una o más opciones según asi se requiera, ademas selecciona cada diente a trabajar este cambiara de color una vez des click en el y quedara seleccionado automaticamente.",
+        2: "Selecciona una o varias opciones según corresponda ",
+        3: "Selecciona una o varias opciones según corresponda, adicional a esto indica las observaciones para otros especialistas y la impresión diagnostica de tu paciente ",
+        
+    };
+
     const {
         emailFound,
         userData,
@@ -396,10 +405,7 @@ const NewOrderPage = () => {
                                 size={40}
                             />
                             <p className="w-52 sm:w-64 text-xs sm:text-base">
-                                Si una orden tiene una alerta en la campana de
-                                notificación quiere decir que en ella
-                                encontraras las observaciones por cada area de
-                                esta orden.
+                                {helpMessages[0] || "No hay ayuda disponible para esta sección."}
                             </p>
                         </div>
                     </div>
