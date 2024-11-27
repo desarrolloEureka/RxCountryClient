@@ -95,4 +95,6 @@ export const titles: string[] = [
 ];
 
 export const initialHelperText: string =
-    "Si una orden tiene una alerta en la campana de notificación quiere decir que en ella encontraras las observaciones por cada area de esta orden.";
+    "Aca encontraras una lista con las ordenes que has creado, puedes ver la orden, editarla y ver las observaciones de cada área desde la campana"
+ //   "Agrega en cada campo los datos correspondientes de tu paciente para poder consultarlo de manera sencilla más adelante."    
+//"Si una orden tiene una alerta en la campana de notificación quiere decir que en ella encontraras las observaciones por cada area de esta orden.";

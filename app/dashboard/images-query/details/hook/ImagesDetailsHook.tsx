@@ -7,7 +7,7 @@ import {
     getAllPatients,
     updateDocumentsByIdFb,
 } from "@/app/firebase/documents";
-import { uploadFile } from "@/app/firebase/files";
+import { uploadFile, urlFile } from "@/app/firebase/files";
 import { AreasSelector } from "@/app/types/areas";
 import { CampusSelector } from "@/app/types/campus";
 import { ImagesDetailsHookProps, PreviewFile } from "@/app/types/order";
@@ -217,6 +217,45 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             }),
         );
     };
+
+    const downloadImagen = async (urlFile: string) => {
+        //console.log("URL del archivo a descargar:", urlFile);
+        
+        try {
+            //console.log("prueba",fileSrcSelected)
+            // Realiza la solicitud fetch para obtener el archivo
+            const response = await fetch(fileSrcSelected);
+    
+            // Verifica si la respuesta es exitosa
+            if (!response.ok) {
+                throw new Error(`Error al descargar el archivo. Código HTTP: ${response.status}`);
+            }
+    
+            // Convierte la respuesta en un Blob
+            const blob = await response.blob();
+    
+            // Crea una URL temporal para descargar el Blob
+            const url = URL.createObjectURL(blob);
+    
+            // Crea un enlace para forzar la descarga
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName; // Establece el nombre del archivo (predeterminado si no se pasa)
+            document.body.appendChild(a); // Añade temporalmente el enlace al DOM
+            a.click(); // Simula el clic para descargar
+            document.body.removeChild(a); // Remueve el enlace del DOM
+    
+            // Libera la URL temporal
+            URL.revokeObjectURL(url);
+    
+            //console.log("Descarga completada.");
+        } catch (err) {
+            //console.error("Error al descargar la imagen:", err);
+            alert("Hubo un error al intentar descargar el archivo. Revisa la consola para más detalles.");
+        }
+    };
+    
+    
 
     const deleteFile = async (urlFile: string, typeFile: string) => {
         const orderRef = "serviceOrders";
@@ -562,6 +601,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         currentImageIndex,
         nextImage,
         prevImage,
+        downloadImagen,
     };
 };
 

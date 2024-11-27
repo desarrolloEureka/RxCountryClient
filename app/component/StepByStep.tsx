@@ -1346,7 +1346,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    ver PDF ODS
+                                                    Ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -1421,7 +1421,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    ver PDF ODS
+                                                    Ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -1564,7 +1564,7 @@ function StepByStep({
                                                 target="_blank"
                                             >
                                                 <span className="text-nowrap">
-                                                    ver PDF ODS
+                                                    Ver PDF ODS
                                                 </span>
                                             </Link>
                                         </button>
@@ -2532,10 +2532,9 @@ function StepByStep({
                                 </h2>
                             )}
                             <p className="text-white w-full text-justify pb-10">
-                                La orden de servicio ha sido actualizada y será 
-                                almacenada con los cambios realizados, podrás 
-                                visualizarla en línea con el estado de las mismas 
-                                en cualquier momento.
+                                La orden de servicio ha sido actualizada y será almacenada con los 
+                                cambios realizados. Podrás visualizar en línea el estado de la misma en 
+                                cualquier momento.
                             </p>
                             {userRol?.uid !== "ZWb0Zs42lnKOjetXH5lq" &&
                                 userRol?.uid !== "9RZ9uhaiwMC7VcTyIzhl" && (
