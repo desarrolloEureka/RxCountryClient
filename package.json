@@ -25,6 +25,7 @@
         "dotenv": "^16.4.5",
         "firebase": "^10.12.5",
         "fs-extra": "^11.2.0",
+        "http-proxy-middleware": "^3.0.3",
         "jsbarcode": "^3.11.6",
         "lodash": "^4.17.21",
         "moment": "^2.30.1",

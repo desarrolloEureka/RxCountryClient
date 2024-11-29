@@ -970,7 +970,7 @@ function StepByStep({
                         rel='noopener noreferrer'
                         target='_blank'
                       >
-                        <span className='text-nowrap'>Previsualizar PDF</span>
+                        <span className='text-nowrap'>Ver PDF ODS</span>
                       </Link>
                     </button>
                   </div>
@@ -1052,7 +1052,7 @@ function StepByStep({
                         rel='noopener noreferrer'
                         target='_blank'
                       >
-                        <span className='text-nowrap'>Previsualizar PDF</span>
+                        <span className='text-nowrap'>Ver PDF ODS</span>
                       </Link>
                     </button>
                   </div>
@@ -1172,7 +1172,7 @@ function StepByStep({
                         rel='noopener noreferrer'
                         target='_blank'
                       >
-                        <span className='text-nowrap'>Previsualizar PDF</span>
+                        <span className='text-nowrap'>Ver PDF ODS</span>
                       </Link>
                     </button>
                   </div>
@@ -1238,7 +1238,7 @@ function StepByStep({
                         rel='noopener noreferrer'
                         target='_blank'
                       >
-                        <span className='text-nowrap'>Previsualizar PDF</span>
+                        <span className='text-nowrap'>Ver PDF ODS</span>
                       </Link>
                     </button>
                   </div>
@@ -1303,7 +1303,7 @@ function StepByStep({
                         rel='noopener noreferrer'
                         target='_blank'
                       >
-                        <span className='text-nowrap'>Previsualizar PDF</span>
+                        <span className='text-nowrap'>Ver PDF ODS</span>
                       </Link>
                     </button>
                   </div>
@@ -1426,7 +1426,7 @@ function StepByStep({
                         rel='noopener noreferrer'
                         target='_blank'
                       >
-                        <span className='text-nowrap'>Previsualizar PDF</span>
+                        <span className='text-nowrap'>Ver PDF ODS</span>
                       </Link>
                     </button>
                   </div>

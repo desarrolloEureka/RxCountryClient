@@ -696,7 +696,13 @@ const OrderHistorialPage = () => {
     </main>
   );
 };
-
+/**
+ * se agrega al fina de los div de showhelp si se quiere al doctor vector 
+  <div className="fixed transition-transform right-16 bottom-8">
+                        <DoctorVector className="w-48 sm:w-full" width="100%" />
+                    </div>
+ *
+ */
 export default function Page() {
   return (
     <Suspense fallback={<Spinner background='bg-gray-image' />}>

@@ -13,43 +13,54 @@ import { RiArrowDropDownLine } from 'react-icons/ri';
 import NewOrderHook from './hook/NewOrderHook';
 
 const NewOrderPage = () => {
-  const {
-    emailFound,
-    userData,
-    value,
-    showHelp,
-    uidUser,
-    allAreas,
-    setShowHelp,
-    formStep,
-    setFormStep,
-    isDataSelected,
-    setIsDataSelected,
-    widthSlider,
-    isEdit,
-    userRol,
-    optionsData,
-    patientData,
-    titles,
-    patientVal,
-    currentOrderId,
-    suggestions,
-    wrapperRef,
-    emailFoundAlert,
-    handleClose,
-    changeHandler,
-    idChangeHandler,
-    handleInputChange,
-    selectChangeHandlerIdType,
-    dateChangeHandler,
-    phoneChangeHandler,
-    setSelectedOptions,
-    handleSendForm,
-    selectChangeHandlerSentTo,
-    handleAreaList,
-    areaList,
-    user,
-  } = NewOrderHook();
+
+    const helpMessages: { [key: number]: string } = {
+        0: "Agrega en cada campo los datos correspondientes de tu paciente para poder consultarlo de manera sencilla más adelante.",
+        1: "Selecciona una o más opciones según asi se requiera, ademas selecciona cada diente a trabajar este cambiara de color una vez des click en el y quedara seleccionado automaticamente.",
+        2: "Agrega en cada campo los datos correspondientes de tu paciente para poder consultarlo de manera sencilla más adelante.",
+        3: "Selecciona una o varias opciones según corresponda ",
+        4: "Selecciona una o varias opciones según corresponda ",
+        5: "Selecciona una o varias opciones según corresponda, adicional a esto indica las observaciones para otros especialistas y la impresión diagnostica de tu paciente"
+    };
+    
+
+    const {
+        emailFound,
+        userData,
+        value,
+        showHelp,
+        uidUser,
+        allAreas,
+        setShowHelp,
+        formStep,
+        setFormStep,
+        isDataSelected,
+        setIsDataSelected,
+        widthSlider,
+        isEdit,
+        userRol,
+        optionsData,
+        patientData,
+        titles,
+        patientVal,
+        currentOrderId,
+        suggestions,
+        wrapperRef,
+        emailFoundAlert,
+        handleClose,
+        changeHandler,
+        idChangeHandler,
+        handleInputChange,
+        selectChangeHandlerIdType,
+        dateChangeHandler,
+        phoneChangeHandler,
+        setSelectedOptions,
+        handleSendForm,
+        selectChangeHandlerSentTo,
+        handleAreaList,
+        areaList,
+        user,
+    } = NewOrderHook();
 
   if (!user) {
     return <Spinner />;
@@ -364,19 +375,19 @@ const NewOrderPage = () => {
                 size={40}
               />
               <p className='w-52 sm:w-64 text-xs sm:text-base'>
-                Si una orden tiene una alerta en la campana de notificación
-                quiere decir que en ella encontraras las observaciones por cada
-                area de esta orden.
+                  {helpMessages[formStep] || "No hay ayuda disponible para esta sección."}
               </p>
             </div>
-          </div>
-          <div className='fixed transition-transform right-16 bottom-8'>
-            <DoctorVector className='w-48 sm:w-full' width='100%' />
           </div>
         </>
       )}
     </main>
   );
 };
-
+/*
+Icono del doctor vector si se quiere de nuevo se agregaa despues de los div de en showhelp
+<div className="fixed transition-transform right-16 bottom-8">
+                        <DoctorVector className="w-48 sm:w-full" width="100%" />
+                    </div>
+*/
 export default NewOrderPage;

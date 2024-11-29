@@ -40,6 +40,7 @@ const ImageQueryDetails = ({
         isLastFile,
         nextImage,
         prevImage,
+        downloadImagen,
     } = ImagesDetailsHook({
         slug,
     });
@@ -80,6 +81,7 @@ const ImageQueryDetails = ({
                     areaSelected={areaSelected}
                     setAreaSelected={setAreaSelected}
                     selectChangeHandlerSentTo={selectChangeHandlerSentTo}
+                    downloadImagen = {downloadImagen}
                 />
             </div>
         </main>

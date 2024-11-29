@@ -135,7 +135,7 @@ const OrderDetailsContent = ({
                             target="_blank"
                         >
                             <span className="text-nowrap">
-                                Previsualizar PDF
+                                Ver PDF ODS
                             </span>
                         </Link>
                     </button>
@@ -216,7 +216,7 @@ const OrderDetailsContent = ({
                     )}
 
                     {/* Diagnostico */}
-                    {(orderAndPatientData?.diaObservationComment ||
+                    {(orderAndPatientData?.calObservationComment ||
                         userRol.uid === "wGU4GU8oDosW4ayQtxqT") && (
                         <div
                             className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
@@ -229,15 +229,15 @@ const OrderDetailsContent = ({
                                 onClick={() => setExpandRx6(!expandRx6)}
                                 className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
-                                Diagnostico
+                                Calidad
                                 {expandRx6 ? (
                                     <>
-                                        {orderAndPatientData?.diaObservationComment && (
+                                        {orderAndPatientData?.calObservationComment && (
                                             <>
                                                 <span className="text-xs lg:text-base">
                                                     {`Usuario: ${getLastUserData(
                                                         orderAndPatientData
-                                                            ?.diaObservationComment
+                                                            ?.calObservationComment
                                                             ?.userId,
                                                     )}`}
                                                 </span>
@@ -245,7 +245,7 @@ const OrderDetailsContent = ({
                                                     {`Fecha: ${
                                                         formatearFecha(
                                                             orderAndPatientData
-                                                                ?.diaObservationComment
+                                                                ?.calObservationComment
                                                                 ?.timestamp,
                                                         ).split(" ")[0]
                                                     }`}
@@ -254,7 +254,7 @@ const OrderDetailsContent = ({
                                                     {`Hora: ${
                                                         formatearFecha(
                                                             orderAndPatientData
-                                                                ?.diaObservationComment
+                                                                ?.calObservationComment
                                                                 ?.timestamp,
                                                         ).split(" ")[1]
                                                     }`}
@@ -276,7 +276,7 @@ const OrderDetailsContent = ({
 
                                     <p className="text-sm lg:text-base">
                                         {orderAndPatientData
-                                            ?.diaObservationComment?.message ||
+                                            ?.calObservationComment?.message ||
                                             "Sin comentarios"}
                                     </p>
                                 </div>

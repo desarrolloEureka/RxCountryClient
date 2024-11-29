@@ -605,13 +605,15 @@ const ImageQueryPage = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="fixed transition-transform right-16 bottom-8">
-                        <DoctorVector className="w-48 sm:w-full" width="100%" />
-                    </div>
+                    
                 </>
             )}
         </main>
     );
 };
-
+/* 
+                    <div className="fixed transition-transform right-16 bottom-8">
+                        <DoctorVector className="w-48 sm:w-full" width="100%" />
+                    </div>
+*/ 
 export default ImageQueryPage;

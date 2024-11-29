@@ -43,6 +43,7 @@ type Props = {
     isLastFile: boolean;
     nextImage: () => void;
     prevImage: () => void;
+    downloadImagen: (urlFile: string) => void;
 };
 
 const ImagesGroup = ({
@@ -76,6 +77,7 @@ const ImagesGroup = ({
     isLastFile,
     nextImage,
     prevImage,
+    downloadImagen,
 }: Props) => {
     return (
         <div className="mx-auto h-auto flex rounded-xl lg:rounded-[2.5rem] bg-company-gray w-full">
@@ -264,19 +266,36 @@ const ImagesGroup = ({
             <div className="flex flex-col space-y-4 w-full p-4 lg:p-12">
                 <h2 className="text-company-orange text-sm lg:text-xl">
                     {orderAndPatientData &&
-                        `Orden #${orderAndPatientData?.uid} / Nombre: ${
+                    (
+                        <>
+                            {`Orden #${orderAndPatientData?.uid}`}
+                            <br />
+                            {`${orderAndPatientData?.name} ${orderAndPatientData?.lastName}`}
+                        </>
+                    )
+                        }
+                         {/*
+
+                         `Orden #${orderAndPatientData?.uid} / Nombre: ${
                             orderAndPatientData?.name
                         } ${
                             orderAndPatientData?.lastName
-                        } - Tel: +${orderAndPatientData?.phone.substring(
-                            0,
-                            2,
-                        )} ${orderAndPatientData?.phone.substring(
-                            2,
-                        )} - Email: ${orderAndPatientData?.email} - Edad: ${
-                            orderAndPatientData?.age
-                        }`}
+                        }
+                        `
+                    - Tel: +${orderAndPatientData?.phone.substring(
+                                0,
+                                2,
+                            )} ${orderAndPatientData?.phone.substring(
+                                2,
+                            )} - Email: ${orderAndPatientData?.email} - Edad: ${
+                                orderAndPatientData?.age
+                            }
+
+                    /// si se solicitan de nuevo agregar antes de ´}
+
+                    */}
                 </h2>
+               
                 {typeFile === "images" || typeFile === "STL" ? (
                     <div className="flex flex-col justify-center items-center space-y-4 ">
                         <div className="flex flex-row items-center w-full justify-around">
@@ -393,14 +412,17 @@ const ImagesGroup = ({
                 )}
                 {fileSrcSelected !== "https://via.placeholder.com/1920" && (
                     <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0">
-                        <Link
+                        <button  
                             className="flex justify-center items-center py-2 w-48 xl:w-64 mx-auto rounded-xl bg-gray-500 hover:bg-gray-400 text-white"
-                            target="_blank"
-                            href={fileSrcSelected}
-                            download="download"
+                            //target="_blank"
+                            onClick={() =>
+                                downloadImagen(fileSrcSelected)
+                            }
+                            //href={fileSrcSelected}
+                            //download="download"
                         >
                             <span>Descargar</span>
-                        </Link>
+                        </button>
 
                         {userRol?.uid !== "ShHQKRuKJfxHcV70XSvC" && (
                             <button
