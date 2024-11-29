@@ -2344,14 +2344,16 @@ function StepByStep({
                 </div>
               </div>
             </div>
-            <div className='sm:flex flex-col hidden justify-center items-center absolute left-[60%] -bottom-0'>
-              <DoctorVector className='w-48 sm:w-full' width='100%' />
-            </div>
+            
           </div>
         </div>
       )}
     </div>
   );
 }
-
+/**va despues del tercer div de form
+ * <div className='sm:flex flex-col hidden justify-center items-center absolute left-[60%] -bottom-0'>
+              <DoctorVector className='w-48 sm:w-full' width='100%' />
+            </div>
+ */
 export default StepByStep;

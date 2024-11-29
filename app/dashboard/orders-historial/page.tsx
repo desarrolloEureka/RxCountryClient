@@ -3,7 +3,7 @@ import { initialHelperText } from '@/app/component/constants/formConstants';
 import DashboardHeader from '@/app/component/DashboardHeader';
 import LightIcon from '@/app/component/icons/LightIcon';
 import Spinner from '@/app/component/spinner/Spinner';
-import DoctorVector from '@/app/component/vectors/DoctorVector';
+//import DoctorVector from '@/app/component/vectors/DoctorVector';
 import _ from 'lodash';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -227,7 +227,7 @@ const OrderHistorialPage = () => {
                         : ' text-gray-400'
                     }`}
                   >
-                    Ordenes Reenviadas
+                    Ordenes Incompletas
                   </h3>
                 </div>
               )}
@@ -688,9 +688,7 @@ const OrderHistorialPage = () => {
               </p>
             </div>
           </div>
-          <div className='fixed transition-transform right-16 bottom-8'>
-            <DoctorVector className='w-48 sm:w-full' width='100%' />
-          </div>
+          
         </>
       )}
     </main>

@@ -528,7 +528,8 @@ const EditOrderHook = ({ slug }: Props) => {
 
     if (files.length > 0) {
       for (const record of files) {
-        const urlName = record.name.split('.')[0];
+        var urlName = record.name.split('.')[0];
+        urlName = urlName + Math.floor(Math.random() * 1000);
         const fileType = record.type.split('/');
         if (fileType[0] === 'image') {
           await uploadFile({

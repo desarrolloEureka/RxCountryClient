@@ -3,7 +3,7 @@ import DashboardHeader from '@/app/component/DashboardHeader';
 import LightIcon from '@/app/component/icons/LightIcon';
 import Spinner from '@/app/component/spinner/Spinner';
 import StepByStep from '@/app/component/StepByStep';
-import DoctorVector from '@/app/component/vectors/DoctorVector';
+//import DoctorVector from '@/app/component/vectors/DoctorVector';
 import Link from 'next/link';
 import { BiChevronRight } from 'react-icons/bi';
 import { FaCheck } from 'react-icons/fa';

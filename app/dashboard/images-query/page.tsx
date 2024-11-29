@@ -3,7 +3,7 @@ import { initialHelperText } from "@/app/component/constants/formConstants";
 import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
 import Spinner from "@/app/component/spinner/Spinner";
-import DoctorVector from "@/app/component/vectors/DoctorVector";
+//import DoctorVector from "@/app/component/vectors/DoctorVector";
 import _ from "lodash";
 import Link from "next/link";
 import { BsFileEarmarkExcelFill } from "react-icons/bs";

@@ -3,7 +3,7 @@ import DashboardHeader from '@/app/component/DashboardHeader';
 import LightIcon from '@/app/component/icons/LightIcon';
 import Spinner from '@/app/component/spinner/Spinner';
 import StepByStep from '@/app/component/StepByStep';
-import DoctorVector from '@/app/component/vectors/DoctorVector';
+//import DoctorVector from '@/app/component/vectors/DoctorVector';
 import Link from 'next/link';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import {
@@ -275,9 +275,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
               </p>
             </div>
           </div>
-          <div className='fixed transition-transform right-16 bottom-8'>
-            <DoctorVector className='w-48 sm:w-full' width='100%' />
-          </div>
+          
         </>
       )}
     </main>
