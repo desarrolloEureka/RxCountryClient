@@ -1,6 +1,6 @@
 [
     {
-      "origin": ["http://localhost:3000", "https://miapp.firebaseapp.com"],
+      "origin": ["*"],
       "method": ["GET", "POST", "DELETE"],
       "maxAgeSeconds": 3600
     }
