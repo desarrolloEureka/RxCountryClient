@@ -1,6 +1,6 @@
 [
     {
-      "origin": ["*"],
+      "origin": ["http://localhost:3000", "https://miapp.firebaseapp.com","https://rx-country-client-dev.vercel.app"],
       "method": ["GET", "POST", "DELETE"],
       "maxAgeSeconds": 3600
     }
