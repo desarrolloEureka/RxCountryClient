@@ -201,7 +201,7 @@ const OrderHistorialPage = () => {
                   }`}
                 >
                   {userRol?.uid !== '9RZ9uhaiwMC7VcTyIzhl'
-                    ? 'Ordenes Enviadas'
+                    ? 'Ordenes Gestionadas'
                     : 'Ordenes Finalizadas'}
                 </h3>
               </div>
