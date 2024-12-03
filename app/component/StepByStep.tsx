@@ -2302,12 +2302,9 @@ function StepByStep({
                   </h2>
                 ) : (
                   <h2 className='text-company-orange font-bold text-4xl'>
-                    {`La orden #${currentOrderId} ha sido enviada con éxito al área
-                                    encargada${
-                                      areaSelected
-                                        ? ': ' + areaSelected.label + '.'
-                                        : '.'
-                                    }`}
+                    {`La orden #${currentOrderId} ha sido gestionada con éxito ${
+                      areaSelected ? ': ' + areaSelected.label + '.' : '.'
+                    }`}
                   </h2>
                 )}
 
@@ -2344,7 +2341,6 @@ function StepByStep({
                 </div>
               </div>
             </div>
-            
           </div>
         </div>
       )}

@@ -527,34 +527,36 @@ const OrderHistorialPage = () => {
                                             >
                                                 <IoIosNotifications size={24} />
                                             </button> */}
-                          {// Validamos si `userArea` está en `item.sendTo`
-                          ((((Array.isArray(item.sendTo) &&
-                            item.sendTo.some(
-                              (area: any) => area.value === userArea
-                            )) ||
-                            (!Array.isArray(item.sendTo) &&
-                              item.sendTo === userArea)) &&
-                            item.status !== 'finalizada') ||
-                            userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq' ||
-                            userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk') && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                userRol?.uid !== item.modifiedBy.userRolId &&
-                                userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq'
-                                  ? setStatusOpenOrder(item.uid).then(() => {
-                                      router.push(
+                          {
+                            // Validamos si `userArea` está en `item.sendTo`
+                            ((((Array.isArray(item.sendTo) &&
+                              item.sendTo.some(
+                                (area: any) => area.value === userArea
+                              )) ||
+                              (!Array.isArray(item.sendTo) &&
+                                item.sendTo === userArea)) &&
+                              item.status !== 'finalizada') ||
+                              userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq' ||
+                              userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk') && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  userRol?.uid !== item.modifiedBy.userRolId &&
+                                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq'
+                                    ? setStatusOpenOrder(item.uid).then(() => {
+                                        router.push(
+                                          `/dashboard/orders-historial/edit-order/${item.uid}`
+                                        );
+                                      })
+                                    : router.push(
                                         `/dashboard/orders-historial/edit-order/${item.uid}`
                                       );
-                                    })
-                                  : router.push(
-                                      `/dashboard/orders-historial/edit-order/${item.uid}`
-                                    );
-                              }}
-                            >
-                              <RiEditBoxFill size={24} />
-                            </button>
-                          )}
+                                }}
+                              >
+                                <RiEditBoxFill size={24} />
+                              </button>
+                            )
+                          }
 
                           <Link
                             href={`/dashboard/preview-order/${item.uid}`}
@@ -688,7 +690,6 @@ const OrderHistorialPage = () => {
               </p>
             </div>
           </div>
-          
         </>
       )}
     </main>
