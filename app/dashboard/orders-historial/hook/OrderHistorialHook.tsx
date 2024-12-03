@@ -69,7 +69,7 @@ const OrderHistorialHook = () => {
     return moment(fechaISO).format('DD/MM/YYYY HH:mm:ss');
   };
 
-  console.log('ordersData???????', ordersData);
+  // console.log('ordersData???????', ordersData);
 
   const allDataOrders = ordersData?.flatMap((order: Order) => {
     const patient = patientsData?.find(
@@ -84,7 +84,7 @@ const OrderHistorialHook = () => {
     return [];
   });
 
-  console.log('allDataOrders>>>', allDataOrders);
+  // console.log('allDataOrders>>>', allDataOrders);
 
   const ordersByRol: OrdersByRol = {
     //Profesional
@@ -142,15 +142,23 @@ const OrderHistorialHook = () => {
             ? order.sendTo.some((item: any) => item.value === area) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
-      send: allDataOrders?.filter(
-        (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
-          // order.assignedCampus === campus &&
-          // order.status === "asignada",
-          (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
-            : order.sendTo === area) // Validación para string
-      ),
+      send: allDataOrders?.filter((order: any) => {
+        console.log('area>>>>>>><', area);
+        console.log('order.completedAreas', order.completedAreas);
+
+        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
+        if (
+          !Array.isArray(order.completedAreas) ||
+          !order.completedAreas.includes(area)
+        ) {
+          return false; // Si no cumple con esta condición, descartar la orden
+        }
+
+        // Validaciones adicionales para `sendTo`
+        return Array.isArray(order.sendTo)
+          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          : order.sendTo === area; // Validación para string
+      }),
     },
     //Laboratorio
     chbFffCzpRibjYRyoWIx: {
@@ -162,15 +170,20 @@ const OrderHistorialHook = () => {
             ? order.sendTo.some((item: any) => item.value === area) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
-      send: allDataOrders?.filter(
-        (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
-          // order.assignedCampus === campus &&
-          // order.status === "asignada",
-          (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
-            : order.sendTo === area) // Validación para string
-      ),
+      send: allDataOrders?.filter((order: any) => {
+        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
+        if (
+          !Array.isArray(order.completedAreas) ||
+          !order.completedAreas.includes(area)
+        ) {
+          return false; // Si no cumple con esta condición, descartar la orden
+        }
+
+        // Validaciones adicionales para `sendTo`
+        return Array.isArray(order.sendTo)
+          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          : order.sendTo === area; // Validación para string
+      }),
     },
     //Radiología
     V5iMSnSlSYsiSDFs4UpI: {
@@ -182,15 +195,20 @@ const OrderHistorialHook = () => {
             ? order.sendTo.some((item: any) => item.value === area) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
-      send: allDataOrders?.filter(
-        (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
-          // order.assignedCampus === campus &&
-          // order.status === "asignada",
-          (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
-            : order.sendTo === area) // Validación para string
-      ),
+      send: allDataOrders?.filter((order: any) => {
+        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
+        if (
+          !Array.isArray(order.completedAreas) ||
+          !order.completedAreas.includes(area)
+        ) {
+          return false; // Si no cumple con esta condición, descartar la orden
+        }
+
+        // Validaciones adicionales para `sendTo`
+        return Array.isArray(order.sendTo)
+          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          : order.sendTo === area; // Validación para string
+      }),
     },
     //Diagnostico
     wGU4GU8oDosW4ayQtxqT: {
@@ -202,15 +220,20 @@ const OrderHistorialHook = () => {
             ? order.sendTo.some((item: any) => item.value === area) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
-      send: allDataOrders?.filter(
-        (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
-          // order.assignedCampus === campus &&
-          // order.status === "asignada",
-          (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
-            : order.sendTo === area) // Validación para string
-      ),
+      send: allDataOrders?.filter((order: any) => {
+        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
+        if (
+          !Array.isArray(order.completedAreas) ||
+          !order.completedAreas.includes(area)
+        ) {
+          return false; // Si no cumple con esta condición, descartar la orden
+        }
+
+        // Validaciones adicionales para `sendTo`
+        return Array.isArray(order.sendTo)
+          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          : order.sendTo === area; // Validación para string
+      }),
     },
     //Escáner Digital
     VEGkDuMXs2mCGxXUPCWI: {
@@ -222,15 +245,20 @@ const OrderHistorialHook = () => {
             ? order.sendTo.some((item: any) => item.value === area) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
-      send: allDataOrders?.filter(
-        (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
-          // order.assignedCampus === campus &&
-          // order.status === "asignada",
-          (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
-            : order.sendTo === area) // Validación para string
-      ),
+      send: allDataOrders?.filter((order: any) => {
+        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
+        if (
+          !Array.isArray(order.completedAreas) ||
+          !order.completedAreas.includes(area)
+        ) {
+          return false; // Si no cumple con esta condición, descartar la orden
+        }
+
+        // Validaciones adicionales para `sendTo`
+        return Array.isArray(order.sendTo)
+          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          : order.sendTo === area; // Validación para string
+      }),
     },
     //Despacho
     ['9RZ9uhaiwMC7VcTyIzhl']: {
@@ -244,7 +272,6 @@ const OrderHistorialHook = () => {
       ),
       send: allDataOrders?.filter(
         (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
           order.assignedCampus === campus &&
           order.status === 'finalizada' &&
           (Array.isArray(order.sendTo)
@@ -263,11 +290,11 @@ const OrderHistorialHook = () => {
     },
   };
 
-  console.log('area', area);
+  // console.log('area??????', area);
 
-  console.log('campus', campus);
+  // console.log('campus', campus);
 
-  console.log('ordersByRol', ordersByRol);
+  // console.log('ordersByRol', ordersByRol);
   const orderList = ordersByRol[userRol?.uid!]?.[selectedOrder];
 
   let filteredOrders: any[] = orderList?.filter((order: any) => {
