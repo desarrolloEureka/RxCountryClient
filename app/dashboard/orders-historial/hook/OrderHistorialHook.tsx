@@ -119,18 +119,20 @@ const OrderHistorialHook = () => {
           order.assignedCampus === campus &&
           (order.status === 'asignada' || order.status === 'reasignada') &&
           (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+            ? order.sendTo.some(
+                (item: any) => item.value === area && !item.edited
+              ) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
-      send: allDataOrders?.filter(
-        (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
-          // order.assignedCampus === campus &&
-          // order.status === "asignada",
-          (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
-            : order.sendTo === area) // Validación para string
-      ),
+      send: allDataOrders?.filter((order: any) => {
+        console.log('area>>>>>>><', area);
+        console.log('order.completedAreas', order.completedAreas);
+
+        // Validaciones adicionales para `sendTo`
+        return Array.isArray(order.sendTo)
+          ? order.sendTo.some((item: any) => item.value === area && item.edited) // Validación para array
+          : order.sendTo === area; // Validación para string
+      }),
     },
     //Fotografía
     c24R4P0VcQmQT0VT6nfo: {
@@ -139,24 +141,18 @@ const OrderHistorialHook = () => {
           order.assignedCampus === campus &&
           (order.status === 'asignada' || order.status === 'reasignada') &&
           (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+            ? order.sendTo.some(
+                (item: any) => item.value === area && !item.edited
+              ) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
       send: allDataOrders?.filter((order: any) => {
         console.log('area>>>>>>><', area);
         console.log('order.completedAreas', order.completedAreas);
 
-        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
-        if (
-          !Array.isArray(order.completedAreas) ||
-          !order.completedAreas.includes(area)
-        ) {
-          return false; // Si no cumple con esta condición, descartar la orden
-        }
-
         // Validaciones adicionales para `sendTo`
         return Array.isArray(order.sendTo)
-          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          ? order.sendTo.some((item: any) => item.value === area && item.edited) // Validación para array
           : order.sendTo === area; // Validación para string
       }),
     },
@@ -167,21 +163,18 @@ const OrderHistorialHook = () => {
           order.assignedCampus === campus &&
           (order.status === 'asignada' || order.status === 'reasignada') &&
           (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+            ? order.sendTo.some(
+                (item: any) => item.value === area && !item.edited
+              ) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
       send: allDataOrders?.filter((order: any) => {
-        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
-        if (
-          !Array.isArray(order.completedAreas) ||
-          !order.completedAreas.includes(area)
-        ) {
-          return false; // Si no cumple con esta condición, descartar la orden
-        }
+        console.log('area>>>>>>><', area);
+        console.log('order.completedAreas', order.completedAreas);
 
         // Validaciones adicionales para `sendTo`
         return Array.isArray(order.sendTo)
-          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          ? order.sendTo.some((item: any) => item.value === area && item.edited) // Validación para array
           : order.sendTo === area; // Validación para string
       }),
     },
@@ -192,21 +185,18 @@ const OrderHistorialHook = () => {
           order.assignedCampus === campus &&
           (order.status === 'asignada' || order.status === 'reasignada') &&
           (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+            ? order.sendTo.some(
+                (item: any) => item.value === area && !item.edited
+              ) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
       send: allDataOrders?.filter((order: any) => {
-        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
-        if (
-          !Array.isArray(order.completedAreas) ||
-          !order.completedAreas.includes(area)
-        ) {
-          return false; // Si no cumple con esta condición, descartar la orden
-        }
+        console.log('area>>>>>>><', area);
+        console.log('order.completedAreas', order.completedAreas);
 
         // Validaciones adicionales para `sendTo`
         return Array.isArray(order.sendTo)
-          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          ? order.sendTo.some((item: any) => item.value === area && item.edited) // Validación para array
           : order.sendTo === area; // Validación para string
       }),
     },
@@ -217,21 +207,18 @@ const OrderHistorialHook = () => {
           order.assignedCampus === campus &&
           (order.status === 'asignada' || order.status === 'reasignada') &&
           (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+            ? order.sendTo.some(
+                (item: any) => item.value === area && !item.edited
+              ) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
       send: allDataOrders?.filter((order: any) => {
-        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
-        if (
-          !Array.isArray(order.completedAreas) ||
-          !order.completedAreas.includes(area)
-        ) {
-          return false; // Si no cumple con esta condición, descartar la orden
-        }
+        console.log('area>>>>>>><', area);
+        console.log('order.completedAreas', order.completedAreas);
 
         // Validaciones adicionales para `sendTo`
         return Array.isArray(order.sendTo)
-          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          ? order.sendTo.some((item: any) => item.value === area && item.edited) // Validación para array
           : order.sendTo === area; // Validación para string
       }),
     },
@@ -242,21 +229,18 @@ const OrderHistorialHook = () => {
           order.assignedCampus === campus &&
           (order.status === 'asignada' || order.status === 'reasignada') &&
           (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+            ? order.sendTo.some(
+                (item: any) => item.value === area && !item.edited
+              ) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
       send: allDataOrders?.filter((order: any) => {
-        // Verificar que `completedAreas` exista y sea un array, y que incluya el área
-        if (
-          !Array.isArray(order.completedAreas) ||
-          !order.completedAreas.includes(area)
-        ) {
-          return false; // Si no cumple con esta condición, descartar la orden
-        }
+        console.log('area>>>>>>><', area);
+        console.log('order.completedAreas', order.completedAreas);
 
         // Validaciones adicionales para `sendTo`
         return Array.isArray(order.sendTo)
-          ? order.sendTo.some((item: any) => item.value === area) // Validación para array
+          ? order.sendTo.some((item: any) => item.value === area && item.edited) // Validación para array
           : order.sendTo === area; // Validación para string
       }),
     },
