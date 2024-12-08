@@ -291,6 +291,32 @@ const NewOrderPage = () => {
                   )}
                 </button>
                 <div className='flex sm:hidden flex-row justify-between space-x-4'>
+                  {/* Botón Atrás */}
+                  <button
+                    type="button"
+                    onClick={() => setFormStep((prevStep: number) => Math.max(prevStep - 1, 0))}
+                    className={`${
+                      formStep === 0 ? 'hidden' : 'flex'
+                    } sm:hidden items-center cursor-pointer text-company-blue space-x-2`}
+                    >
+                    <IoArrowBackCircleOutline size={20} />
+                    <span className="ml-2">Atrás</span>
+                  </button>
+
+                  {/* Botón Siguiente */}
+                  <button
+                    type="button"
+                    onClick={() => setFormStep((prevStep: number) => Math.min(prevStep + 1, 6))}
+                    className={`${
+                      formStep === 0 || formStep === 5  ? 'hidden' : 'flex'
+                    } sm:hidden items-center cursor-pointer text-company-blue space-x-2`}
+                  >
+                    
+                    <span className="mr-2">Siguiente</span>
+                    <BiChevronRight size={20} />
+                  </button>
+                 
+                 
                   <button
                     type='button'
                     onClick={() => {
