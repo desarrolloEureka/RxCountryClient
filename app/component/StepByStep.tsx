@@ -33,6 +33,7 @@ import SelectComponent from './SelectComponent';
 import SelectWithCheckbox from './SelectWithCheckbox';
 import InputFileUpload from './UpLoadButton';
 import DoctorVector from './vectors/DoctorVector';
+import Swal from 'sweetalert2';
 
 interface Props {
   value: {
@@ -2239,8 +2240,43 @@ function StepByStep({
                 <div className='flex justify-center items-center'>
                   <button
                     type={areasListSelected ? 'button' : 'submit'}
-                    onClick={(e) => {
-                      areasListSelected && handleSendForm(e);
+                    onClick={async (e) => {
+                      //areasListSelected && handleSendForm(e);
+                      if (areasListSelected) {
+                        e.preventDefault(); // Previene el comportamiento predeterminado del formulario
+                        Swal.fire({
+                          position: 'center',
+                          title: 'Guardando Orden...',
+                          text: 'Por favor espera mientras procesamos la información.',
+                          allowOutsideClick: false,
+                          background: '#404040',
+                          color: '#e9a225',
+                          didOpen: () => {
+                            Swal.showLoading(); // Muestra el indicador de carga
+                          },
+                        });
+                        try {
+                          await handleSendForm(e); // Llama a la función de guardado
+                          Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: 'La orden se guardó correctamente.',
+                            background: '#404040',
+                            color: '#e9a225',
+                            showConfirmButton: false,
+                            timer: 2000,
+                          });
+                        } catch (error) {
+                          Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al guardar la orden.',
+                            background: '#404040',
+                            color: '#e9a225',
+                            confirmButtonColor: '#1f2937',
+                          });
+                        }
+                      }
                     }}
                     className='w-48 h-10 flex mb-5 items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white'
                   >
