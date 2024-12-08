@@ -2256,16 +2256,7 @@ function StepByStep({
                           },
                         });
                         try {
-                          await handleSendForm(e); // Llama a la función de guardado
-                          Swal.fire({
-                            icon: 'success',
-                            title: 'Éxito',
-                            text: 'La orden se guardó correctamente.',
-                            background: '#404040',
-                            color: '#e9a225',
-                            showConfirmButton: false,
-                            timer: 2000,
-                          });
+                          await areasListSelected && handleSendForm(e); // Llama a la función de guardado
                         } catch (error) {
                           Swal.fire({
                             icon: 'error',
