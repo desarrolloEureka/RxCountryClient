@@ -95,7 +95,7 @@ const EditOrderHook = ({ slug }: Props) => {
 
   const [currentOrderId, setCurrentOrderId] = useState<number>(1);
 
-  const [sentToArea, setSentToArea] = useState<string>('');
+  const [sentToArea, setSentToArea] = useState<any>();
 
   const [areaList, setAreaList] = useState<string[]>([]);
 
@@ -628,6 +628,36 @@ const EditOrderHook = ({ slug }: Props) => {
 
   const uploadHandle = async () => {
     console.log('oldDataOrder.uid', oldDataOrder.uid);
+    console.log('oldDataOrder?.completedAreas', oldDataOrder?.completedAreas);
+    console.log('area', area);
+    console.log('oldDataOrder?.sendTo', oldDataOrder?.sendTo);
+    console.log('userRol?.uid', userRol?.uid);
+    console.log('sentToArea', sentToArea);
+
+    const sendToArray =
+      userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'
+        ? sentToArea
+        : oldDataOrder?.sendTo;
+
+    const addEdited = () =>
+      sendToArray?.map((val: any) => {
+        console.log('addddddddd', val.value, area);
+        val.value == area ? (val.edited = true) : (val.edited = false);
+        return val;
+      });
+
+    const removeEdited = () =>
+      sendToArray?.map((val: any) => {
+        console.log('removeEditeddddddd', val.value, area);
+        val.edited = false;
+        return val;
+      });
+
+    const newSendTo =
+      userRol?.uid == 'qxdH34kAupnAPSuVIIvn' ||
+      userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'
+        ? removeEdited()
+        : addEdited();
 
     const documentEditOrderRef: any = getDocumentRef(
       reference,
@@ -662,14 +692,15 @@ const EditOrderHook = ({ slug }: Props) => {
       // oldDataOrder?.areaList && !_.isEmpty(oldDataOrder?.areaList)
       //     ? oldDataOrder?.areaList
       //     : areaList,
-      sendTo:
-        sentToArea ||
-        (userRol?.uid === 'VEGkDuMXs2mCGxXUPCWI' ||
-        userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH'
-          ? '0OaigBxmSmUa90dvawB1'
-          : oldDataOrder?.sendTo),
+      // sendTo:
+      //   sentToArea ||
+      //   (userRol?.uid === 'VEGkDuMXs2mCGxXUPCWI' ||
+      //   userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH'
+      //     ? '0OaigBxmSmUa90dvawB1'
+      //     : oldDataOrder?.sendTo),
       // : userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
       // ? ""
+      sendTo: newSendTo,
       isActive: true,
       isDeleted: false,
       modifiedBy: {
@@ -728,6 +759,7 @@ const EditOrderHook = ({ slug }: Props) => {
             },
           ],
     };
+    console.log('newSendTo', newSendTo);
 
     const patientAndOrderData = {
       ...newOrderData,
