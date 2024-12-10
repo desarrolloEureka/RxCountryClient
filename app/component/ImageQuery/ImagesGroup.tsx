@@ -101,8 +101,8 @@ const ImagesGroup = ({
                     )}
                 </div>
                 <div className="flex flex-auto flex-col overflow-y-auto custom-scrollbar h-96 px-0 lg:px-10 w-full text-xs lg:text-base">
-                    {orderAndPatientData?.orderPDFUrl &&
-                        orderAndPatientData?.orderPDFUrl?.map(
+                    {/* {orderAndPatientData?.orderImagesUrl &&
+                        orderAndPatientData?.orderImagesUrl?.map(
                             (item: any, index: number) => {
                                 return (
                                     <div
@@ -133,71 +133,107 @@ const ImagesGroup = ({
                                     </div>
                                 );
                             },
-                        )}
+                        )} */}
                     {orderAndPatientData?.orderImagesUrl &&
                         orderAndPatientData?.orderImagesUrl?.map(
                             (item: any, index: number) => {
-                                return (
-                                    <div
-                                        key={index}
-                                        className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
-                                        onClick={() =>
-                                            handleSelectFile(
-                                                item,
-                                                index,
-                                                "images",
-                                            )
-                                        }
-                                    >
-                                        <Image
-                                            src={item}
-                                            width={0}
-                                            height={0}
-                                            sizes="200px"
-                                            style={{
-                                                width: "100%",
-                                                height: "auto",
-                                            }}
-                                            alt={"logo"}
-                                            placeholder="blur"
-                                            blurDataURL={item}
-                                        />
-                                        <h3 className="text-white text-center">
-                                            {`Imagen ${index + 1}`}
-                                        </h3>
-                                    </div>
-                                );
+                                console.log("-a-sdaas--d-s-d-a-d");
+                                console.log(item);
+                                if (item.includes(".pdf")){
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
+                                            onClick={() =>
+                                                handleSelectFile(item, index, "pdf")
+                                            }
+                                        >
+                                            <Image
+                                                src="/assets/icons/PDF.svg"
+                                                width={0}
+                                                height={0}
+                                                sizes="500px"
+                                                style={{
+                                                    width: "60%",
+                                                    height: "auto",
+                                                }}
+                                                alt={"logo"}
+                                                placeholder="blur"
+                                                blurDataURL={
+                                                    "/assets/icons/PDF.svg"
+                                                }
+                                            />
+                                            <h3 className="text-white text-center">
+                                                {`PDF ${index + 1}`}
+                                            </h3>
+                                        </div>
+                                    );
+                                }else if (item.includes(".stl")) {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
+                                            onClick={() =>
+                                                handleSelectFile(item, index, "STL")
+                                            }
+                                        >
+                                            <Image
+                                                src="/assets/stl.png"
+                                                width={0}
+                                                height={0}
+                                                sizes="200px"
+                                                style={{
+                                                    width: "100%",
+                                                    height: "auto",
+                                                }}
+                                                alt={"logo stl file"}
+                                                placeholder="blur"
+                                                blurDataURL={item}
+                                            />
+                                            <h3 className="text-white text-center">
+                                                {`Archivo ${index + 1}`}
+                                            </h3>
+                                        </div>
+                                    );
+                                }else {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
+                                            onClick={() =>
+                                                handleSelectFile(
+                                                    item,
+                                                    index,
+                                                    "images",
+                                                )
+                                            }
+                                        >
+                                            <Image
+                                                src={item}
+                                                width={0}
+                                                height={0}
+                                                sizes="200px"
+                                                style={{
+                                                    width: "100%",
+                                                    height: "auto",
+                                                }}
+                                                alt={"logo"}
+                                                placeholder="blur"
+                                                blurDataURL={item}
+                                            />
+                                            <h3 className="text-white text-center">
+                                                {`Imagen ${index + 1}`}
+                                            </h3>
+                                        </div>
+                                    );
+                                }                                 
+                                
                             },
                         )}
                     {orderAndPatientData?.orderSTLFiles &&
                         orderAndPatientData?.orderSTLFiles?.map(
                             (item: any, index: number) => {
-                                return (
-                                    <div
-                                        key={index}
-                                        className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
-                                        onClick={() =>
-                                            handleSelectFile(item, index, "STL")
-                                        }
-                                    >
-                                        <Image
-                                            src="/assets/stl.png"
-                                            width={0}
-                                            height={0}
-                                            sizes="200px"
-                                            style={{
-                                                width: "100%",
-                                                height: "auto",
-                                            }}
-                                            alt={"logo stl file"}
-                                            placeholder="blur"
-                                            blurDataURL={item}
-                                        />
-                                        <h3 className="text-white text-center">
-                                            {`Archivo ${index + 1}`}
-                                        </h3>
-                                    </div>
-                                );
+                                
                             },
                         )}
                     {orderAndPatientData?.urlWeTransfer && (
@@ -339,7 +375,8 @@ const ImagesGroup = ({
                                         />
                                     </Link>
                                 ) : (
-                                    <Image
+                                    <div className="flex flex-1 items-center justify-center">
+                                        <Image
                                         src="/assets/stl.png"
                                         width={0}
                                         height={0}
@@ -352,6 +389,8 @@ const ImagesGroup = ({
                                         placeholder="blur"
                                         blurDataURL={fileSrcSelected}
                                     />
+                                    </div>
+                                    
                                 )}
                             </div>
 
