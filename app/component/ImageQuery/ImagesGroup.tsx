@@ -195,6 +195,33 @@ const ImagesGroup = ({
                                             </h3>
                                         </div>
                                     );
+                                }else if(item.includes(".ply")){
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="flex flex-col items-center py-4 space-y-1 cursor-pointer"
+                                            onClick={() =>
+                                                handleSelectFile(item, index, "STL")
+                                            }
+                                        >
+                                            <Image
+                                                src="/assets/stl.png"
+                                                width={0}
+                                                height={0}
+                                                sizes="200px"
+                                                style={{
+                                                    width: "100%",
+                                                    height: "auto",
+                                                }}
+                                                alt={"logo stl file"}
+                                                placeholder="blur"
+                                                blurDataURL={item}
+                                            />
+                                            <h3 className="text-white text-center">
+                                                {`Archivo ${index + 1}`}
+                                            </h3>
+                                        </div>
+                                    );
                                 }else {
                                     return (
                                         <div

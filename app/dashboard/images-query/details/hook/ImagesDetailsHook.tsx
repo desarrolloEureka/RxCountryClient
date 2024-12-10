@@ -291,6 +291,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             images: "orderImagesUrl",
             pdf: "orderImagesUrl",
             STL: "orderImagesUrl",
+            PLY: "orderImagesUrl",
         };
 
         const filesUrls = await getOrdersUrls(slug);
