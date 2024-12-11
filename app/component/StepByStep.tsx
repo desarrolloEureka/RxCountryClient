@@ -812,8 +812,44 @@ function StepByStep({
           {formStep === 1 && (
             <>
               {/* Visualizar PDF */}
-              <div className='flex flex-col mx-4 lg:mx-28 my-5 space-y-4'>
-                <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0'>
+              <div className='pace-y-4flex flex-col mx-4 lg:mx-28 my-5 space-y-4'>
+                <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 gap-4'>
+                  
+                  
+                  {/* Despacho */}
+                  {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
+                    <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                      {/* Primer contenedor */}
+                      <div className="flex items-center justify-start">
+                        <button
+                          type="button"
+                          className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                        >
+                          <IoEye className="text-company-blue" size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            <span className="text-nowrap">Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                    
+                      {/* Segundo contenedor */}
+                      <div className="flex  flex-col justify-start ">
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          multiple
+                        />
+                      </div>
+                    </div>
+                
+                  )}
+                  
+                  
+                  
                   {/* <div className="flex items-center justify-center lg:justify-start w-full">
                                         <button
                                             type="button"
@@ -838,9 +874,9 @@ function StepByStep({
                   {/* Visualizar imágenes en despacho y diagnostico  */}
                   {(userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' ||
                     userRol?.uid === 'wGU4GU8oDosW4ayQtxqT') && (
-                    <div className='flex w-full items-center justify-center'>
+                    <div className='flex'>
                       <div
-                        className={`flex flex-row w-52 px-4 py-2 h-full space-x-3 border ${
+                        className={`w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52 ${
                           !_.isEmpty(oldData?.orderImagesUrl)
                             ? 'border-company-blue hover:bg-gray-700'
                             : 'border-company-orange'
@@ -872,30 +908,33 @@ function StepByStep({
                       </div>
                     </div>
                   )}
-                </div>
 
-                {/* Vista verificación de la orden */}
-                {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
-                  <div className='flex flex-col lg:flex-row items-center justify-center h-auto lg:h-20 space-x-0 lg:space-x-5 space-y-2 lg:space-y-0 text-white'>
-                    <div className='flex flex-row items-center justify-center text-base lg:text-xl space-x-4 w-full'>
-                      <label htmlFor='cboxOrderIncomplete'>
-                        <h1>¿Orden incompleta?</h1>
-                      </label>
-                      <input
-                        id='cboxOrderIncomplete'
-                        type='checkbox'
-                        checked={isOrderIncomplete}
-                        onChange={(e) => {
-                          handleCheckOrderIncomplete(e);
-                          setAreaSelected(null);
-                        }}
-                        className='w-5 h-5 lg:w-7 lg:h-7 border-0'
-                      />
-                    </div>
-                    <div className='w-full space-y-2'>
+                    {/* Vista verificación de la orden */}
+                    {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
+                    <div className="flex flex-col items-start space-y-2">
+                      {/* Botón para Orden Incompleta */}
+                      <div className="flex flex-row items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCheckOrderIncomplete(!isOrderIncomplete);
+                          }}
+
+                          
+                          className={`w-52 h-16 flex items-center justify-center space-x-2 px-4 py-2 border rounded-xl text-white ${
+                            isOrderIncomplete
+                              ? 'bg-gray-600 hover:bg-gray-500 border-company-orange'
+                              : 'bg-gray-800 hover:bg-gray-700 border-company-blue'
+                          }`}
+                        >
+                          <span>{isOrderIncomplete ? 'Orden incompleta' : '¿Orden incompleta?'}</span>
+                        </button>
+                      </div>
+
+                      {/* Área de destino */}
                       {isOrderIncomplete && (
-                        <>
-                          <label className='text-company-orange text-base lg:text-xl'>
+                        <div className="w-full space-y-2">
+                          <label className="text-company-orange text-sm lg:text-base font-normal">
                             Área de destino:
                           </label>
                           <SelectComponent
@@ -910,94 +949,20 @@ function StepByStep({
                             }}
                             optionSelected={areaSelected}
                           />
-                        </>
+                        </div>
                       )}
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
 
-              {/* Recepción */}
-              {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
-                <div className='flex flex-col rounded-xl bg-black bg-opacity-50 mt-4 lg:my-10 mx-4 lg:mx-28 divide-y divide-slate-500'>
-                  <div className='flex flex-col p-4 space-y-4'>
-                    <label className='text-company-orange text-base lg:text-xl font-bold'>
-                      <span className='text-company-orange'>*</span>
-                      &nbsp; Según la orden seleccione áreas a intervenir:
-                    </label>
-                    <SelectWithCheckbox
-                      // isDisabled={areaSelected}
-                      isMulti
-                      options={allAreas}
-                      selectChangeHandler={(e) => {
-                        handleAreaList(e);
-                        setAreasListSelected(e);
-                        setAreaSelected(null);
-                      }}
-                      optionSelected={areasListSelected}
-                    />
-                  </div>
-
-                  <h3 className='text-company-orange text-base lg:text-xl font-bold py-2 px-4'>
-                    Observaciones
-                  </h3>
-                  <div className='flex flex-col p-4'>
-                    <textarea
-                      value={observationComment}
-                      id='Observations'
-                      name='observations'
-                      rows={6}
-                      cols={50}
-                      className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
-                      placeholder='Escribe aquí tus observaciones...'
-                      // onChange={commentChangeHandler}
-                      onChange={(e) => setObservationComment(e.target.value)}
-                    />
-                  </div>
                 </div>
-              )}
+
+                
+              </div>
 
               {/* Despacho */}
               {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
                 <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
-                      >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
-                  </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-center items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*, application/pdf"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        }`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
+                  
                   <div className='col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start'>
                     <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
                       Diagnosticadores:
@@ -1039,6 +1004,51 @@ function StepByStep({
                 </div>
               )}
 
+
+
+
+
+              {/* Recepción */}
+              {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
+                <div className='flex flex-col rounded-xl bg-black bg-opacity-50 mt-4 lg:my-10 mx-4 lg:mx-28 divide-y divide-slate-500'>
+                  <div className='flex flex-col p-4 space-y-4'>
+                    <label className='text-company-orange text-base lg:text-xl font-bold'>
+                      <span className='text-company-orange'>*</span>
+                      &nbsp; Según la orden seleccione áreas a intervenir:
+                    </label>
+                    <SelectWithCheckbox
+                      // isDisabled={areaSelected}
+                      isMulti
+                      options={allAreas}
+                      selectChangeHandler={(e) => {
+                        handleAreaList(e);
+                        setAreasListSelected(e);
+                        setAreaSelected(null);
+                      }}
+                      optionSelected={areasListSelected}
+                    />
+                  </div>
+
+                  <h3 className='text-company-orange text-base lg:text-xl font-bold py-2 px-4'>
+                    Observaciones
+                  </h3>
+                  <div className='flex flex-col p-4'>
+                    <textarea
+                      value={observationComment}
+                      id='Observations'
+                      name='observations'
+                      rows={6}
+                      cols={50}
+                      className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
+                      placeholder='Escribe aquí tus observaciones...'
+                      // onChange={commentChangeHandler}
+                      onChange={(e) => setObservationComment(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+
+              
               {/* Radiología  */}
               {userRol?.uid === 'V5iMSnSlSYsiSDFs4UpI' && (
                 <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>

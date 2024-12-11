@@ -411,10 +411,15 @@ const EditOrderHook = ({ slug }: Props) => {
     setFiles([]);
   };
 
-  const handleCheckOrderIncomplete = (e: any) => {
-    const value = e.target.checked;
+  // const handleCheckOrderIncomplete = (e: any) => {
+  //   const value = e.target.checked;
+  //   setIsOrderIncomplete(value);
+  // };
+
+  const handleCheckOrderIncomplete = (value: boolean) => {
     setIsOrderIncomplete(value);
   };
+  
 
   const confirmAlert = () => {
     Swal.fire({
