@@ -820,7 +820,7 @@ function StepByStep({
                   {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
                     <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
                       {/* Primer contenedor */}
-                      <div className="flex items-center justify-start">
+                      <div className="flex  justify-start">
                         <button
                           type="button"
                           className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
@@ -870,6 +870,51 @@ function StepByStep({
                                             </Link>
                                         </button>
                                     </div> */}
+                  {/* Diagnostico  */}
+                  {userRol?.uid === 'wGU4GU8oDosW4ayQtxqT' && (
+                    <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                      <div className='flex items-center justify-start'>
+                        <button
+                          type='button'
+                          className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
+                        >
+                          <IoEye className='text-company-blue' size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel='noopener noreferrer'
+                            target='_blank'
+                          >
+                            <span className='text-nowrap'>Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                      <div className='flex  flex-col justify-start'>
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          // fileTypes="application/pdf"
+                          multiple
+                        />
+                        {/* {errorImg ? (
+                          <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
+                            {errorImg}
+                          </span>
+                        ) : (
+                          <span
+                            className={`text-sm lg:text-base text-center ${
+                              fileName === 'Subir Archivo'
+                                ? 'text-company-orange'
+                                : 'text-green-500'
+                            } pt-3`}
+                          >
+                            
+                          </span>
+                        )} */}
+                      </div>
+                    </div>
+                  )}
+
+
 
                   {/* Visualizar imágenes en despacho y diagnostico  */}
                   {(userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' ||
@@ -1051,46 +1096,37 @@ function StepByStep({
               
               {/* Radiología  */}
               {userRol?.uid === 'V5iMSnSlSYsiSDFs4UpI' && (
-                <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
-                      >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
-                  </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-end items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*, application/pdf"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-start items-center'>
+                <div className='grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28'>
+                   <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                      {/* Primer contenedor */}
+                      <div className="flex  justify-start">
+                        <button
+                          type="button"
+                          className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                        >
+                          <IoEye className="text-company-blue" size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            <span className="text-nowrap">Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                    
+                      {/* Segundo contenedor */}
+                      <div className="flex  flex-col justify-start ">
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          multiple
+                        />
+                      </div>
+                    </div>
+                  
+                  
+                  {/* <div className='col-span-3 lg:col-span-1 flex flex-col justify-start items-center'>
                     <InputFileUpload
                       fileName={fileNameSTL}
                       handleFileChange={handleFileChangeSTL}
@@ -1106,7 +1142,7 @@ function StepByStep({
                     >
                       ARCHIVOS TIPO STL
                     </span>
-                  </div>
+                  </div> */}
                   <div className='col-span-3 flex flex-col space-y-2 rounded-xl'>
                     <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
                       URL WeTransfer:
@@ -1172,44 +1208,7 @@ function StepByStep({
               {/* Diagnostico  */}
               {userRol?.uid === 'wGU4GU8oDosW4ayQtxqT' && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-2 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
-                      >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
-                  </div>
-                  <div className='col-span-2 lg:col-span-1 flex flex-col justify-end items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="application/pdf"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
+                  
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
                       Observaciones
@@ -1238,44 +1237,49 @@ function StepByStep({
               {(userRol?.uid === 'chbFffCzpRibjYRyoWIx' ||
                 userRol?.uid === 'c24R4P0VcQmQT0VT6nfo') && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
+                  <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                    {/* Botón Ver PDF ODS */}
+                    <div className="col-span-2 lg:col-span-1 flex items-center justify-start">
+                      <button
+                        type="button"
+                        className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                       >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
+                        <IoEye className="text-company-blue" size={24} />
+                        <Link
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <span className="text-nowrap">Ver PDF ODS</span>
+                        </Link>
+                      </button>
+                    </div>
+
+                    {/* Botón Subir Archivo */}
+                    <div className="col-span-2 lg:col-span-1 flex flex-col items-start">
+                      <InputFileUpload
+                        fileName={fileName}
+                        handleFileChange={handleFileChange}
+                        multiple
+                      />
+                      {errorImg ? (
+                        <span className="text-sm lg:text-base uppercase text-center text-red-400 pt-3">
+                          {errorImg}
+                        </span>
+                      ) : (
+                        <span
+                          className={`text-sm lg:text-base text-center ${
+                            fileName === 'Subir Archivo'
+                              ? 'text-company-orange'
+                              : 'text-green-500'
+                          } pt-3`}
+                        >
+                          {/* Mensaje de estado */}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className='col-span-2 lg:col-span-1 flex flex-col justify-end items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
+                  
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
                       Observaciones
@@ -1302,23 +1306,49 @@ function StepByStep({
 
               {/* Modelos  */}
               {userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH' && (
-                <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 flex items-center justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
+                <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
+                  <div className="flex flex-wrap col-span-2 flex flex-row items-start justify-start gap-4">
+                    <div className='col-span-1 flex items-start justify-start'>
+                      <button
+                        type='button'
+                        className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
                       >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
+                        <IoEye className='text-company-blue' size={24} />
+                        <Link
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          rel='noopener noreferrer'
+                          target='_blank'
+                        >
+                          <span className='text-nowrap'>Ver PDF ODS</span>
+                        </Link>
+                      </button>
+                    </div>
+                    <div className=' col-span-1 flex flex-col justify-end items-center pt-4 lg:pt-0'>
+                      <InputFileUpload
+                        fileName={fileName}
+                        handleFileChange={handleFileChange}
+                        // fileTypes="image/*"
+                        multiple
+                      />
+                      {errorImg ? (
+                        <span className='text-base uppercase text-center text-red-400 pt-3'>
+                          {errorImg}
+                        </span>
+                      ) : (
+                        <span
+                          className={`text-base text-center ${
+                            fileName === 'Subir Archivo'
+                              ? 'text-company-orange'
+                              : 'text-green-500'
+                          } pt-3`}
+                        >
+                        
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col space-y-4  py-0 lg:py-4'>
+                  
+                  <div className='col-span-1 flex flex-col space-y-4 py-0 lg:py-4'>
                     <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
                       Diagnósticos
                     </h1>
@@ -1335,11 +1365,11 @@ function StepByStep({
                     </div>
                   </div>
 
-                  <div className='col-span-3 lg:col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center'>
+                  <div className='col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center'>
                     <h1 className='text-company-orange text-xl'>
                       Tipo de Modelo:
                     </h1>
-                    <div className='flex flex-row justify-around w-full'>
+                    <div className='flex flex-wrap justify-around gap-4 w-full'>
                       <div className='flex space-x-2 justify-center items-center text-white'>
                         <input
                           id='radio-1'
@@ -1349,9 +1379,9 @@ function StepByStep({
                           onChange={handleModelType}
                           className='w-5 h-5 lg:w-6 border-2'
                         />
-                        <label htmlFor='radio-1'>Estudio</label>
+                        <label htmlFor='radio-1' className="whitespace-nowrap">Estudio</label>
                       </div>
-                      <div className='flex space-x-2 justify-center items-center text-white'>
+                      <div className='flex space-x-2 justify-center items-center text-white min-w-[100px]'>
                         <input
                           id='radio-2'
                           type='radio'
@@ -1360,9 +1390,9 @@ function StepByStep({
                           onChange={handleModelType}
                           className='w-5 h-5 lg:w-6 border-2'
                         />
-                        <label htmlFor='radio-2'>Trabajo</label>
+                        <label htmlFor='radio-2' className="whitespace-nowrap">Trabajo</label>
                       </div>
-                      <div className='flex space-x-2 justify-center items-center text-white'>
+                      <div className='flex space-x-2 justify-center items-center text-white min-w-[100px]'>
                         <input
                           id='radio-3'
                           type='radio'
@@ -1371,35 +1401,13 @@ function StepByStep({
                           onChange={handleModelType}
                           className='w-5 h-5 lg:w-6 lg:h-6 border-0'
                         />
-                        <label htmlFor='radio-3'>Copia</label>
+                        <label htmlFor='radio-3'  className="whitespace-nowrap">Copia</label>
                       </div>
                     </div>
                   </div>
 
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-end items-center pt-4 lg:pt-0'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
-                  <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
+                  
+                  <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-company-orange text-xl font-bold px-4 py-2'>
                       Observaciones
                     </h3>
@@ -1426,7 +1434,34 @@ function StepByStep({
               {/* Escáner Modelos  */}
               {userRol?.uid === 'VEGkDuMXs2mCGxXUPCWI' && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-2 lg:col-span-1 flex items-start justify-center w-full'>
+                  <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                      {/* Primer contenedor */}
+                      <div className="flex  justify-start">
+                        <button
+                          type="button"
+                          className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                        >
+                          <IoEye className="text-company-blue" size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            <span className="text-nowrap">Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                    
+                      {/* Segundo contenedor */}
+                      <div className="flex  flex-col justify-start ">
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          multiple
+                        />
+                      </div>
+                    </div>
+                  {/* <div className='col-span-2 lg:col-span-1 flex items-start justify-center w-full'>
                     <button
                       type='button'
                       className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
@@ -1463,7 +1498,7 @@ function StepByStep({
                         IMÁGENES TIPO: PNG, JPG, JPEG.
                       </span>
                     )}
-                  </div>
+                  </div> */}
                   {/* <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             Ubicación del Archivo:
