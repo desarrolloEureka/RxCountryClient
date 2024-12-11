@@ -297,17 +297,8 @@ const NewOrderHook = (props?: Props) => {
             background: "#404040",
             color: "#e9a225",
         }).then(async (result) => {
-            if (!result.isConfirmed) {
+            if (result.isConfirmed) {
                 console.log("Entró profesional");
-
-                saveAlert(uploadHandle, router).then(() => {
-                    // setFormStep((prevStep: number) => prevStep + 1);
-                    router.replace("/dashboard/orders-historial/");
-                });
-
-                handleClose();
-            }else{
-                console.log("Entró recepcion");
 
                 saveAlert(uploadHandle, router).then(() => {
                     // setFormStep((prevStep: number) => prevStep + 1);

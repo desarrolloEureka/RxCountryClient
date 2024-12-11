@@ -815,7 +815,50 @@ function StepByStep({
               <div className='pace-y-4flex flex-col mx-4 lg:mx-28 my-5 space-y-4'>
                 <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 gap-4'>
                   
-                  
+                  {/* Vista verificación de la orden */}
+                  {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
+                    <div className="flex flex-col items-start space-y-2">
+                      {/* Botón para Orden Incompleta */}
+                      <div className="flex flex-row items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCheckOrderIncomplete(!isOrderIncomplete);
+                          }}
+
+                          
+                          className={`w-52 h-16 flex items-center justify-center space-x-2 px-4 py-2 border rounded-xl text-white ${
+                            isOrderIncomplete
+                              ? 'bg-gray-600 hover:bg-gray-500 border-company-orange'
+                              : 'bg-gray-800 hover:bg-gray-700 border-company-blue'
+                          }`}
+                        >
+                          <span>{isOrderIncomplete ? 'Orden incompleta' : '¿Orden incompleta?'}</span>
+                        </button>
+                      </div>
+
+                      {/* Área de destino */}
+                      {isOrderIncomplete && (
+                        <div className="w-full space-y-2">
+                          <label className="text-company-orange text-sm lg:text-base font-normal">
+                            Área de destino:
+                          </label>
+                          <SelectComponent
+                            options={allAreas.filter((area) =>
+                              oldData?.areaList
+                                ? oldData?.areaList?.includes(area.value)
+                                : area
+                            )}
+                            selectChangeHandler={(e) => {
+                              selectChangeHandlerSentTo(e?.value);
+                              setAreaSelected(e);
+                            }}
+                            optionSelected={areaSelected}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {/* Despacho */}
                   {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
                     <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
@@ -954,50 +997,7 @@ function StepByStep({
                     </div>
                   )}
 
-                    {/* Vista verificación de la orden */}
-                    {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
-                    <div className="flex flex-col items-start space-y-2">
-                      {/* Botón para Orden Incompleta */}
-                      <div className="flex flex-row items-center space-x-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleCheckOrderIncomplete(!isOrderIncomplete);
-                          }}
-
-                          
-                          className={`w-52 h-16 flex items-center justify-center space-x-2 px-4 py-2 border rounded-xl text-white ${
-                            isOrderIncomplete
-                              ? 'bg-gray-600 hover:bg-gray-500 border-company-orange'
-                              : 'bg-gray-800 hover:bg-gray-700 border-company-blue'
-                          }`}
-                        >
-                          <span>{isOrderIncomplete ? 'Orden incompleta' : '¿Orden incompleta?'}</span>
-                        </button>
-                      </div>
-
-                      {/* Área de destino */}
-                      {isOrderIncomplete && (
-                        <div className="w-full space-y-2">
-                          <label className="text-company-orange text-sm lg:text-base font-normal">
-                            Área de destino:
-                          </label>
-                          <SelectComponent
-                            options={allAreas.filter((area) =>
-                              oldData?.areaList
-                                ? oldData?.areaList?.includes(area.value)
-                                : area
-                            )}
-                            selectChangeHandler={(e) => {
-                              selectChangeHandlerSentTo(e?.value);
-                              setAreaSelected(e);
-                            }}
-                            optionSelected={areaSelected}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                    
 
                 </div>
 
@@ -2296,9 +2296,7 @@ function StepByStep({
                           allowOutsideClick: false,
                           background: '#404040',
                           color: '#e9a225',
-                          didOpen: () => {
-                            Swal.showLoading(); // Muestra el indicador de carga
-                          },
+                          
                         });
                         try {
                           await areasListSelected && handleSendForm(e); // Llama a la función de guardado

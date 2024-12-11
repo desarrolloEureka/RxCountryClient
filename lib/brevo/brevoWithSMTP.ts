@@ -21,7 +21,7 @@ export const sendEmailSMTP = async ({ subject, to, htmlContent }: Params) => {
     const listEmails = to.map((item) => item.email);
 
     const emailObject = {
-        from: '"Rx Country No Reply" <fernando@eurekadreams.com>', // sender address
+        from: '"Rx Country No Reply" <virtual@rxcountry.com.co>', // sender address
         to: listEmails, // list of receivers
         subject: subject, // Subject line
         html: htmlContent, // HTML body
