@@ -861,9 +861,9 @@ function StepByStep({
                   )}
                   {/* Despacho */}
                   {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
-                    <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                    <div className="flex flex-wrap flex-row  justify-start gap-4">
                       {/* Primer contenedor */}
-                      <div className="flex  justify-start">
+                      <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
                         <button
                           type="button"
                           className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
@@ -915,8 +915,8 @@ function StepByStep({
                                     </div> */}
                   {/* Diagnostico  */}
                   {userRol?.uid === 'wGU4GU8oDosW4ayQtxqT' && (
-                    <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
-                      <div className='flex items-center justify-start'>
+                    <div className="flex flex-wrap flex-row justify-start gap-4">
+                      <div className='flex items-center justify-start text-sm lg:text-base font-normal text-company-orange'>
                         <button
                           type='button'
                           className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
@@ -931,7 +931,7 @@ function StepByStep({
                           </Link>
                         </button>
                       </div>
-                      <div className='flex  flex-col justify-start'>
+                      <div className='flex flex-col justify-start text-sm lg:text-base font-normal text-company-orange'>
                         <InputFileUpload
                           fileName={fileName}
                           handleFileChange={handleFileChange}
@@ -964,7 +964,7 @@ function StepByStep({
                     userRol?.uid === 'wGU4GU8oDosW4ayQtxqT') && (
                     <div className='flex'>
                       <div
-                        className={`w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52 ${
+                        className={`text-sm lg:text-base font-normal text-company-orange w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52 ${
                           !_.isEmpty(oldData?.orderImagesUrl)
                             ? 'border-company-blue hover:bg-gray-700'
                             : 'border-company-orange'
@@ -1009,7 +1009,7 @@ function StepByStep({
                 <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
                   
                   <div className='col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start'>
-                    <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
+                    <h1 className='text-sm lg:text-base text-company-orange font-bold'>
                       Diagnosticadores:
                     </h1>
 
@@ -1026,7 +1026,7 @@ function StepByStep({
                   </div>
 
                   <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-sm lg:text-base text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
                     <div className='grid grid-cols-1 gap-2 p-4'>
@@ -1097,9 +1097,9 @@ function StepByStep({
               {/* Radiología  */}
               {userRol?.uid === 'V5iMSnSlSYsiSDFs4UpI' && (
                 <div className='grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                   <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                   <div className="flex flex-wrap flex-row   justify-start gap-4">
                       {/* Primer contenedor */}
-                      <div className="flex  justify-start">
+                      <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
                         <button
                           type="button"
                           className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
@@ -1116,7 +1116,7 @@ function StepByStep({
                       </div>
                     
                       {/* Segundo contenedor */}
-                      <div className="flex  flex-col justify-start ">
+                      <div className="flex  flex-col justify-start text-sm lg:text-base font-normal text-company-orange">
                         <InputFileUpload
                           fileName={fileName}
                           handleFileChange={handleFileChange}
@@ -1144,7 +1144,7 @@ function StepByStep({
                     </span>
                   </div> */}
                   <div className='col-span-3 flex flex-col space-y-2 rounded-xl'>
-                    <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
+                    <h1 className='text-company-orange text-sm  text-company-orange text-lg lg:text-xl font-bold'>
                       URL WeTransfer:
                     </h1>
 
@@ -1182,10 +1182,10 @@ function StepByStep({
                                         </div>
                                     </div> */}
                   <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm  text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1210,10 +1210,10 @@ function StepByStep({
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
                   
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1237,9 +1237,9 @@ function StepByStep({
               {(userRol?.uid === 'chbFffCzpRibjYRyoWIx' ||
                 userRol?.uid === 'c24R4P0VcQmQT0VT6nfo') && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                  <div className="flex flex-wrap flex-row justify-start gap-4">
                     {/* Botón Ver PDF ODS */}
-                    <div className="col-span-2 lg:col-span-1 flex items-center justify-start">
+                    <div className="text-sm lg:text-base font-normal text-company-orange col-span-2 lg:col-span-1 flex items-center justify-start">
                       <button
                         type="button"
                         className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
@@ -1256,13 +1256,13 @@ function StepByStep({
                     </div>
 
                     {/* Botón Subir Archivo */}
-                    <div className="col-span-2 lg:col-span-1 flex flex-col items-start">
+                    <div className="text-sm lg:text-base font-normal text-company-orange col-span-2 lg:col-span-1 flex flex-col items-start">
                       <InputFileUpload
                         fileName={fileName}
                         handleFileChange={handleFileChange}
                         multiple
                       />
-                      {errorImg ? (
+                      {/* {errorImg ? (
                         <span className="text-sm lg:text-base uppercase text-center text-red-400 pt-3">
                           {errorImg}
                         </span>
@@ -1274,17 +1274,17 @@ function StepByStep({
                               : 'text-green-500'
                           } pt-3`}
                         >
-                          {/* Mensaje de estado */}
+                         
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </div>
                   
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1308,7 +1308,7 @@ function StepByStep({
               {userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH' && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
                   <div className="flex flex-wrap col-span-2 flex flex-row items-start justify-start gap-4">
-                    <div className='col-span-1 flex items-start justify-start'>
+                    <div className='col-span-1 flex items-start justify-start text-sm lg:text-base font-normal text-company-orange'>
                       <button
                         type='button'
                         className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
@@ -1323,7 +1323,7 @@ function StepByStep({
                         </Link>
                       </button>
                     </div>
-                    <div className=' col-span-1 flex flex-col justify-end items-center pt-4 lg:pt-0'>
+                    <div className=' col-span-1 flex flex-col justify-end items-center lg:pt-0 text-sm lg:text-base font-normal text-company-orange' >
                       <InputFileUpload
                         fileName={fileName}
                         handleFileChange={handleFileChange}
@@ -1349,11 +1349,11 @@ function StepByStep({
                   </div>
                   
                   <div className='col-span-1 flex flex-col space-y-4 py-0 lg:py-4'>
-                    <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
+                    <h1 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold'>
                       Diagnósticos
                     </h1>
 
-                    <div className='grid grid-cols-1 gap-4'>
+                    <div className='grid grid-cols-1 gap-4 text-sm lg:text-base font-normal text-company-orange'>
                       <SelectComponent
                         options={allDiagnoses}
                         selectChangeHandler={(e) => {
@@ -1365,12 +1365,12 @@ function StepByStep({
                     </div>
                   </div>
 
-                  <div className='col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center'>
-                    <h1 className='text-company-orange text-xl'>
+                  <div className='col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center text-sm lg:text-base font-normal text-company-orange'>
+                    <h1 className='text-sm lg:text-base font-normal text-company-orange '>
                       Tipo de Modelo:
                     </h1>
                     <div className='flex flex-wrap justify-around gap-4 w-full'>
-                      <div className='flex space-x-2 justify-center items-center text-white'>
+                      <div className='flex space-x-2 justify-center items-center text-white '>
                         <input
                           id='radio-1'
                           type='radio'
@@ -1379,7 +1379,7 @@ function StepByStep({
                           onChange={handleModelType}
                           className='w-5 h-5 lg:w-6 border-2'
                         />
-                        <label htmlFor='radio-1' className="whitespace-nowrap">Estudio</label>
+                        <label htmlFor='radio-1' className="whitespace-nowrap ">Estudio</label>
                       </div>
                       <div className='flex space-x-2 justify-center items-center text-white min-w-[100px]'>
                         <input
@@ -1408,10 +1408,10 @@ function StepByStep({
 
                   
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-xl font-bold px-4 py-2'>
+                    <h3 className='text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1434,9 +1434,9 @@ function StepByStep({
               {/* Escáner Modelos  */}
               {userRol?.uid === 'VEGkDuMXs2mCGxXUPCWI' && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className="flex flex-wrap flex-row space-x-4  justify-start gap-4">
+                  <div className="flex flex-wrap flex-row  justify-start gap-4">
                       {/* Primer contenedor */}
-                      <div className="flex  justify-start">
+                      <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
                         <button
                           type="button"
                           className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
@@ -1453,7 +1453,7 @@ function StepByStep({
                       </div>
                     
                       {/* Segundo contenedor */}
-                      <div className="flex  flex-col justify-start ">
+                      <div className="flex  flex-col justify-start text-sm lg:text-base font-normal text-company-orange">
                         <InputFileUpload
                           fileName={fileName}
                           handleFileChange={handleFileChange}
@@ -1519,7 +1519,7 @@ function StepByStep({
                                         </div>
                                     </div> */}
                   <div className='col-span-2 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
                     <div className='grid grid-cols-1 gap-2 p-4'>
@@ -1530,7 +1530,7 @@ function StepByStep({
                         name='observations'
                         rows={4}
                         cols={50}
-                        className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
+                        className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea text-sm lg:text-base font-normal text-company-orange'
                         placeholder='Escribe aquí tus observaciones...'
                         // onChange={
                         //     commentChangeHandler

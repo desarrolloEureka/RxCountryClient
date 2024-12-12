@@ -205,7 +205,7 @@ const ImagesGroup = ({
                                             }
                                         >
                                             <Image
-                                                src="/assets/stl.png"
+                                                src="/assets/iconoply.png"
                                                 width={0}
                                                 height={0}
                                                 sizes="200px"

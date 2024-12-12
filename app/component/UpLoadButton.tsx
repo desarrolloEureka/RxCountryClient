@@ -26,11 +26,11 @@ export default function InputFileUpload({
 
                 {fileName === "Subir Archivo" && <FaFileCirclePlus size={26} />}
                 <div className="flex flex-col items-center">
-                    <span className={`text-xs lg:text-base ${
+                    <span className={`text-sm lg:text-base font-normal text-company-orange ${
                           fileName === 'Subir Archivo'
                             ? 'text-company-orange'
                             : 'text-green-500'
-                        } pt-3`}
+                        }`}
                         
                         
                         style={{
