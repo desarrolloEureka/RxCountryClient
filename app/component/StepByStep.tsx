@@ -33,6 +33,7 @@ import SelectComponent from './SelectComponent';
 import SelectWithCheckbox from './SelectWithCheckbox';
 import InputFileUpload from './UpLoadButton';
 import DoctorVector from './vectors/DoctorVector';
+import Swal from 'sweetalert2';
 
 interface Props {
   value: {
@@ -811,8 +812,87 @@ function StepByStep({
           {formStep === 1 && (
             <>
               {/* Visualizar PDF */}
-              <div className='flex flex-col mx-4 lg:mx-28 my-5 space-y-4'>
-                <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0'>
+              <div className='pace-y-4flex flex-col mx-4 lg:mx-28 my-5 space-y-4'>
+                <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 gap-4'>
+                  
+                  {/* Vista verificación de la orden */}
+                  {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
+                    <div className="flex flex-col items-start space-y-2">
+                      {/* Botón para Orden Incompleta */}
+                      <div className="flex flex-row items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleCheckOrderIncomplete(!isOrderIncomplete);
+                          }}
+
+                          
+                          className={`w-52 h-16 flex items-center justify-center space-x-2 px-4 py-2 border rounded-xl text-white ${
+                            isOrderIncomplete
+                              ? 'bg-gray-600 hover:bg-gray-500 border-company-orange'
+                              : 'bg-gray-800 hover:bg-gray-700 border-company-blue'
+                          }`}
+                        >
+                          <span>{isOrderIncomplete ? 'Orden incompleta' : '¿Orden incompleta?'}</span>
+                        </button>
+                      </div>
+
+                      {/* Área de destino */}
+                      {isOrderIncomplete && (
+                        <div className="w-full space-y-2">
+                          <label className="text-company-orange text-sm lg:text-base font-normal">
+                            Área de destino:
+                          </label>
+                          <SelectComponent
+                            options={allAreas.filter((area) =>
+                              oldData?.areaList
+                                ? oldData?.areaList?.includes(area.value)
+                                : area
+                            )}
+                            selectChangeHandler={(e) => {
+                              selectChangeHandlerSentTo(e?.value);
+                              setAreaSelected(e);
+                            }}
+                            optionSelected={areaSelected}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {/* Despacho */}
+                  {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
+                    <div className="flex flex-wrap flex-row  justify-start gap-4">
+                      {/* Primer contenedor */}
+                      <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
+                        <button
+                          type="button"
+                          className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                        >
+                          <IoEye className="text-company-blue" size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            <span className="text-nowrap">Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                    
+                      {/* Segundo contenedor */}
+                      <div className="flex  flex-col justify-start ">
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          multiple
+                        />
+                      </div>
+                    </div>
+                
+                  )}
+                  
+                  
+                  
                   {/* <div className="flex items-center justify-center lg:justify-start w-full">
                                         <button
                                             type="button"
@@ -833,13 +913,58 @@ function StepByStep({
                                             </Link>
                                         </button>
                                     </div> */}
+                  {/* Diagnostico  */}
+                  {userRol?.uid === 'wGU4GU8oDosW4ayQtxqT' && (
+                    <div className="flex flex-wrap flex-row justify-start gap-4">
+                      <div className='flex items-center justify-start text-sm lg:text-base font-normal text-company-orange'>
+                        <button
+                          type='button'
+                          className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
+                        >
+                          <IoEye className='text-company-blue' size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel='noopener noreferrer'
+                            target='_blank'
+                          >
+                            <span className='text-nowrap'>Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                      <div className='flex flex-col justify-start text-sm lg:text-base font-normal text-company-orange'>
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          // fileTypes="application/pdf"
+                          multiple
+                        />
+                        {/* {errorImg ? (
+                          <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
+                            {errorImg}
+                          </span>
+                        ) : (
+                          <span
+                            className={`text-sm lg:text-base text-center ${
+                              fileName === 'Subir Archivo'
+                                ? 'text-company-orange'
+                                : 'text-green-500'
+                            } pt-3`}
+                          >
+                            
+                          </span>
+                        )} */}
+                      </div>
+                    </div>
+                  )}
+
+
 
                   {/* Visualizar imágenes en despacho y diagnostico  */}
                   {(userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' ||
                     userRol?.uid === 'wGU4GU8oDosW4ayQtxqT') && (
-                    <div className='flex w-full items-center justify-center'>
+                    <div className='flex'>
                       <div
-                        className={`flex flex-row w-52 px-4 py-2 h-full space-x-3 border ${
+                        className={`text-sm lg:text-base font-normal text-company-orange w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52 ${
                           !_.isEmpty(oldData?.orderImagesUrl)
                             ? 'border-company-blue hover:bg-gray-700'
                             : 'border-company-orange'
@@ -871,50 +996,62 @@ function StepByStep({
                       </div>
                     </div>
                   )}
+
+                    
+
                 </div>
 
-                {/* Vista verificación de la orden */}
-                {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
-                  <div className='flex flex-col lg:flex-row items-center justify-center h-auto lg:h-20 space-x-0 lg:space-x-5 space-y-2 lg:space-y-0 text-white'>
-                    <div className='flex flex-row items-center justify-center text-base lg:text-xl space-x-4 w-full'>
-                      <label htmlFor='cboxOrderIncomplete'>
-                        <h1>¿Orden incompleta?</h1>
-                      </label>
-                      <input
-                        id='cboxOrderIncomplete'
-                        type='checkbox'
-                        checked={isOrderIncomplete}
-                        onChange={(e) => {
-                          handleCheckOrderIncomplete(e);
-                          setAreaSelected(null);
+                
+              </div>
+
+              {/* Despacho */}
+              {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
+                <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
+                  
+                  <div className='col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start'>
+                    <h1 className='text-sm lg:text-base text-company-orange font-bold'>
+                      Diagnosticadores:
+                    </h1>
+
+                    <div className='grid grid-cols-1 gap-4'>
+                      <SelectComponent
+                        options={allDiagnostician}
+                        selectChangeHandler={(e) => {
+                          selectChangeHandlerDiagnostician(e?.value);
+                          setDiagnosticianSelected(e);
                         }}
-                        className='w-5 h-5 lg:w-7 lg:h-7 border-0'
+                        optionSelected={diagnosticianSelected}
                       />
                     </div>
-                    <div className='w-full space-y-2'>
-                      {isOrderIncomplete && (
-                        <>
-                          <label className='text-company-orange text-base lg:text-xl'>
-                            Área de destino:
-                          </label>
-                          <SelectComponent
-                            options={allAreas.filter((area) =>
-                              oldData?.areaList
-                                ? oldData?.areaList?.includes(area.value)
-                                : area
-                            )}
-                            selectChangeHandler={(e) => {
-                              selectChangeHandlerSentTo(e?.value);
-                              setAreaSelected(e);
-                            }}
-                            optionSelected={areaSelected}
-                          />
-                        </>
-                      )}
+                  </div>
+
+                  <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
+                    <h3 className='text-sm lg:text-base text-company-orange font-bold px-4 py-2'>
+                      Observaciones
+                    </h3>
+                    <div className='grid grid-cols-1 gap-2 p-4'>
+                      <textarea
+                        // disabled
+                        value={observationComment}
+                        id='Observations'
+                        name='observations'
+                        rows={4}
+                        cols={50}
+                        className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
+                        placeholder='Escribe aquí tus observaciones...'
+                        // onChange={
+                        //     commentChangeHandler
+                        // }
+                        onChange={(e) => setObservationComment(e.target.value)}
+                      />
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+
+
+
+
 
               {/* Recepción */}
               {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
@@ -956,130 +1093,40 @@ function StepByStep({
                 </div>
               )}
 
-              {/* Despacho */}
-              {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
-                <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
-                      >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
-                  </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-center items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*, application/pdf"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        }`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start'>
-                    <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
-                      Diagnosticadores:
-                    </h1>
-
-                    <div className='grid grid-cols-1 gap-4'>
-                      <SelectComponent
-                        options={allDiagnostician}
-                        selectChangeHandler={(e) => {
-                          selectChangeHandlerDiagnostician(e?.value);
-                          setDiagnosticianSelected(e);
-                        }}
-                        optionSelected={diagnosticianSelected}
-                      />
-                    </div>
-                  </div>
-
-                  <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
-                      Observaciones
-                    </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
-                      <textarea
-                        // disabled
-                        value={observationComment}
-                        id='Observations'
-                        name='observations'
-                        rows={4}
-                        cols={50}
-                        className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
-                        placeholder='Escribe aquí tus observaciones...'
-                        // onChange={
-                        //     commentChangeHandler
-                        // }
-                        onChange={(e) => setObservationComment(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
+              
               {/* Radiología  */}
               {userRol?.uid === 'V5iMSnSlSYsiSDFs4UpI' && (
-                <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
-                      >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
-                  </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-end items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*, application/pdf"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-start items-center'>
+                <div className='grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28'>
+                   <div className="flex flex-wrap flex-row   justify-start gap-4">
+                      {/* Primer contenedor */}
+                      <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
+                        <button
+                          type="button"
+                          className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                        >
+                          <IoEye className="text-company-blue" size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            <span className="text-nowrap">Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                    
+                      {/* Segundo contenedor */}
+                      <div className="flex  flex-col justify-start text-sm lg:text-base font-normal text-company-orange">
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          multiple
+                        />
+                      </div>
+                    </div>
+                  
+                  
+                  {/* <div className='col-span-3 lg:col-span-1 flex flex-col justify-start items-center'>
                     <InputFileUpload
                       fileName={fileNameSTL}
                       handleFileChange={handleFileChangeSTL}
@@ -1095,9 +1142,9 @@ function StepByStep({
                     >
                       ARCHIVOS TIPO STL
                     </span>
-                  </div>
+                  </div> */}
                   <div className='col-span-3 flex flex-col space-y-2 rounded-xl'>
-                    <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
+                    <h1 className='text-company-orange text-sm  text-company-orange text-lg lg:text-xl font-bold'>
                       URL WeTransfer:
                     </h1>
 
@@ -1135,10 +1182,10 @@ function StepByStep({
                                         </div>
                                     </div> */}
                   <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm  text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1161,49 +1208,12 @@ function StepByStep({
               {/* Diagnostico  */}
               {userRol?.uid === 'wGU4GU8oDosW4ayQtxqT' && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-2 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
-                      >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
-                  </div>
-                  <div className='col-span-2 lg:col-span-1 flex flex-col justify-end items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="application/pdf"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
+                  
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1224,52 +1234,56 @@ function StepByStep({
               )}
 
               {/* Laboratorio y Fotografía  */}
-              {(userRol?.uid === 'chbFffCzpRibjYRyoWIx' ||
-                userRol?.uid === 'c24R4P0VcQmQT0VT6nfo') && (
+              {(userRol?.uid === 'chbFffCzpRibjYRyoWIx') && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 lg:col-span-1 flex items-start justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
+                  <div className="flex flex-wrap flex-row justify-start gap-4">
+                    {/* Botón Ver PDF ODS */}
+                    <div className="text-sm lg:text-base font-normal text-company-orange col-span-2 lg:col-span-1 flex items-center justify-start">
+                      <button
+                        type="button"
+                        className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                       >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
+                        <IoEye className="text-company-blue" size={24} />
+                        <Link
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <span className="text-nowrap">Ver PDF ODS</span>
+                        </Link>
+                      </button>
+                    </div>
+
+                    {/* Botón Subir Archivo */}
+                    <div className="text-sm lg:text-base font-normal text-company-orange col-span-2 lg:col-span-1 flex flex-col items-start">
+                      <InputFileUpload
+                        fileName={fileName}
+                        handleFileChange={handleFileChange}
+                        multiple
+                      />
+                      {/* {errorImg ? (
+                        <span className="text-sm lg:text-base uppercase text-center text-red-400 pt-3">
+                          {errorImg}
+                        </span>
+                      ) : (
+                        <span
+                          className={`text-sm lg:text-base text-center ${
+                            fileName === 'Subir Archivo'
+                              ? 'text-company-orange'
+                              : 'text-green-500'
+                          } pt-3`}
+                        >
+                         
+                        </span>
+                      )} */}
+                    </div>
                   </div>
-                  <div className='col-span-2 lg:col-span-1 flex flex-col justify-end items-center'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-sm lg:text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-sm lg:text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
+                  
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1290,29 +1304,56 @@ function StepByStep({
               )}
 
               {/* Modelos  */}
-              {userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH' && (
-                <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-3 flex items-center justify-center w-full'>
-                    <button
-                      type='button'
-                      className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
-                    >
-                      <IoEye className='text-company-blue' size={24} />
-                      <Link
-                        href={`/dashboard/preview-order/${oldData?.uid}`}
-                        rel='noopener noreferrer'
-                        target='_blank'
+              {(userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH'||
+                userRol?.uid === 'c24R4P0VcQmQT0VT6nfo')  && (
+                <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
+                  <div className="flex flex-wrap col-span-2 flex flex-row items-start justify-start gap-4">
+                    <div className='col-span-1 flex items-start justify-start text-sm lg:text-base font-normal text-company-orange'>
+                      <button
+                        type='button'
+                        className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
                       >
-                        <span className='text-nowrap'>Ver PDF ODS</span>
-                      </Link>
-                    </button>
+                        <IoEye className='text-company-blue' size={24} />
+                        <Link
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          rel='noopener noreferrer'
+                          target='_blank'
+                        >
+                          <span className='text-nowrap'>Ver PDF ODS</span>
+                        </Link>
+                      </button>
+                    </div>
+                    <div className=' col-span-1 flex flex-col justify-end items-center lg:pt-0 text-sm lg:text-base font-normal text-company-orange' >
+                      <InputFileUpload
+                        fileName={fileName}
+                        handleFileChange={handleFileChange}
+                        // fileTypes="image/*"
+                        multiple
+                      />
+                      {errorImg ? (
+                        <span className='text-base uppercase text-center text-red-400 pt-3'>
+                          {errorImg}
+                        </span>
+                      ) : (
+                        <span
+                          className={`text-base text-center ${
+                            fileName === 'Subir Archivo'
+                              ? 'text-company-orange'
+                              : 'text-green-500'
+                          } pt-3`}
+                        >
+                        
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className='col-span-3 lg:col-span-1 flex flex-col space-y-4  py-0 lg:py-4'>
-                    <h1 className='text-company-orange text-lg lg:text-xl font-bold'>
+                  
+                  <div className='col-span-1 flex flex-col space-y-4 py-0 lg:py-4'>
+                    <h1 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold'>
                       Diagnósticos
                     </h1>
 
-                    <div className='grid grid-cols-1 gap-4'>
+                    <div className='grid grid-cols-1 gap-4 text-sm lg:text-base font-normal text-company-orange'>
                       <SelectComponent
                         options={allDiagnoses}
                         selectChangeHandler={(e) => {
@@ -1324,12 +1365,12 @@ function StepByStep({
                     </div>
                   </div>
 
-                  <div className='col-span-3 lg:col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center'>
-                    <h1 className='text-company-orange text-xl'>
+                  <div className='col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center text-sm lg:text-base font-normal text-company-orange'>
+                    <h1 className='text-sm lg:text-base font-normal text-company-orange '>
                       Tipo de Modelo:
                     </h1>
-                    <div className='flex flex-row justify-around w-full'>
-                      <div className='flex space-x-2 justify-center items-center text-white'>
+                    <div className='flex flex-wrap justify-around gap-4 w-full'>
+                      <div className='flex space-x-2 justify-center items-center text-white '>
                         <input
                           id='radio-1'
                           type='radio'
@@ -1338,9 +1379,9 @@ function StepByStep({
                           onChange={handleModelType}
                           className='w-5 h-5 lg:w-6 border-2'
                         />
-                        <label htmlFor='radio-1'>Estudio</label>
+                        <label htmlFor='radio-1' className="whitespace-nowrap ">Estudio</label>
                       </div>
-                      <div className='flex space-x-2 justify-center items-center text-white'>
+                      <div className='flex space-x-2 justify-center items-center text-white min-w-[100px]'>
                         <input
                           id='radio-2'
                           type='radio'
@@ -1349,9 +1390,9 @@ function StepByStep({
                           onChange={handleModelType}
                           className='w-5 h-5 lg:w-6 border-2'
                         />
-                        <label htmlFor='radio-2'>Trabajo</label>
+                        <label htmlFor='radio-2' className="whitespace-nowrap">Trabajo</label>
                       </div>
-                      <div className='flex space-x-2 justify-center items-center text-white'>
+                      <div className='flex space-x-2 justify-center items-center text-white min-w-[100px]'>
                         <input
                           id='radio-3'
                           type='radio'
@@ -1360,39 +1401,17 @@ function StepByStep({
                           onChange={handleModelType}
                           className='w-5 h-5 lg:w-6 lg:h-6 border-0'
                         />
-                        <label htmlFor='radio-3'>Copia</label>
+                        <label htmlFor='radio-3'  className="whitespace-nowrap">Copia</label>
                       </div>
                     </div>
                   </div>
 
-                  <div className='col-span-3 lg:col-span-1 flex flex-col justify-end items-center pt-4 lg:pt-0'>
-                    <InputFileUpload
-                      fileName={fileName}
-                      handleFileChange={handleFileChange}
-                      // fileTypes="image/*"
-                      multiple
-                    />
-                    {errorImg ? (
-                      <span className='text-base uppercase text-center text-red-400 pt-3'>
-                        {errorImg}
-                      </span>
-                    ) : (
-                      <span
-                        className={`text-base text-center ${
-                          fileName === 'Subir Archivo'
-                            ? 'text-company-orange'
-                            : 'text-green-500'
-                        } pt-3`}
-                      >
-                        ARCHIVOS TIPO: PNG, JPG, JPEG, PDF, STL
-                      </span>
-                    )}
-                  </div>
-                  <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-xl font-bold px-4 py-2'>
+                  
+                  <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
+                    <h3 className='text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
+                    <div className='grid grid-cols-1 gap-2 p-4 text-sm lg:text-base font-normal text-company-orange'>
                       <textarea
                         // disabled
                         value={observationComment}
@@ -1415,7 +1434,34 @@ function StepByStep({
               {/* Escáner Modelos  */}
               {userRol?.uid === 'VEGkDuMXs2mCGxXUPCWI' && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  <div className='col-span-2 lg:col-span-1 flex items-start justify-center w-full'>
+                  <div className="flex flex-wrap flex-row  justify-start gap-4">
+                      {/* Primer contenedor */}
+                      <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
+                        <button
+                          type="button"
+                          className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
+                        >
+                          <IoEye className="text-company-blue" size={24} />
+                          <Link
+                            href={`/dashboard/preview-order/${oldData?.uid}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            <span className="text-nowrap">Ver PDF ODS</span>
+                          </Link>
+                        </button>
+                      </div>
+                    
+                      {/* Segundo contenedor */}
+                      <div className="flex  flex-col justify-start text-sm lg:text-base font-normal text-company-orange">
+                        <InputFileUpload
+                          fileName={fileName}
+                          handleFileChange={handleFileChange}
+                          multiple
+                        />
+                      </div>
+                    </div>
+                  {/* <div className='col-span-2 lg:col-span-1 flex items-start justify-center w-full'>
                     <button
                       type='button'
                       className='flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white w-52'
@@ -1452,7 +1498,7 @@ function StepByStep({
                         IMÁGENES TIPO: PNG, JPG, JPEG.
                       </span>
                     )}
-                  </div>
+                  </div> */}
                   {/* <div className="col-span-2 flex flex-col space-y-2 rounded-xl">
                                         <h1 className="text-company-orange text-2xl font-bold">
                                             Ubicación del Archivo:
@@ -1473,7 +1519,7 @@ function StepByStep({
                                         </div>
                                     </div> */}
                   <div className='col-span-2 flex flex-col  rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-lg lg:text-xl font-bold px-4 py-2'>
+                    <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
                     </h3>
                     <div className='grid grid-cols-1 gap-2 p-4'>
@@ -1484,7 +1530,7 @@ function StepByStep({
                         name='observations'
                         rows={4}
                         cols={50}
-                        className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
+                        className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea text-sm lg:text-base font-normal text-company-orange'
                         placeholder='Escribe aquí tus observaciones...'
                         // onChange={
                         //     commentChangeHandler
@@ -2239,8 +2285,32 @@ function StepByStep({
                 <div className='flex justify-center items-center'>
                   <button
                     type={areasListSelected ? 'button' : 'submit'}
-                    onClick={(e) => {
-                      areasListSelected && handleSendForm(e);
+                    onClick={async (e) => {
+                      //areasListSelected && handleSendForm(e);
+                      if (areasListSelected) {
+                        e.preventDefault(); // Previene el comportamiento predeterminado del formulario
+                        Swal.fire({
+                          position: 'center',
+                          title: 'Guardando Orden...',
+                          text: 'Por favor espera mientras procesamos la información.',
+                          allowOutsideClick: false,
+                          background: '#404040',
+                          color: '#e9a225',
+                          
+                        });
+                        try {
+                          await areasListSelected && handleSendForm(e); // Llama a la función de guardado
+                        } catch (error) {
+                          Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al guardar la orden.',
+                            background: '#404040',
+                            color: '#e9a225',
+                            //confirmButtonColor: '#1f2937',
+                          });
+                        }
+                      }
                     }}
                     className='w-48 h-10 flex mb-5 items-center justify-center bg-gray-800 hover:bg-gray-700 shadow-md px-1 py-2 border border-company-blue rounded-xl text-white'
                   >

@@ -67,7 +67,7 @@ const EditOrderHook = ({ slug }: Props) => {
   const router = useRouter();
 
   const { campus = '', area = '', uid = '' } = userData || {};
-
+ 
   const currentDate = moment().format();
 
   const [showHelp, setShowHelp] = useState(false);
@@ -411,10 +411,15 @@ const EditOrderHook = ({ slug }: Props) => {
     setFiles([]);
   };
 
-  const handleCheckOrderIncomplete = (e: any) => {
-    const value = e.target.checked;
+  // const handleCheckOrderIncomplete = (e: any) => {
+  //   const value = e.target.checked;
+  //   setIsOrderIncomplete(value);
+  // };
+
+  const handleCheckOrderIncomplete = (value: boolean) => {
     setIsOrderIncomplete(value);
   };
+  
 
   const confirmAlert = () => {
     Swal.fire({
@@ -523,26 +528,20 @@ const EditOrderHook = ({ slug }: Props) => {
       (item) => item.value === campus
     )?.label;
 
+    const areaFolder = allAreas?.find((item) => item.value === (area??sentToArea[0]?.value))
+        ?.label as string
+    
     const firstLetterCampus =
       campus && currentCampusName && currentCampusName.substring(0, 1);
 
     if (files.length > 0) {
       for (const record of files) {
-        var urlName = record.name.split('.')[0];
-        urlName = urlName + Math.floor(Math.random() * 1000);
-        const fileType = record.type.split('/');
-        if (fileType[0] === 'image') {
+        
           await uploadFile({
             folder: patientData?.id,
-            fileName:
-              userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH'
-                ? `${firstLetterCampus}${modelType}-${moment().format(
-                    'YYYYMMDD'
-                  )}-${patientData?.id}-${moment().format('HHmmss')}`
-                : urlName.split(' ').join('_'),
+            fileName: record.name.split(' ').join('_'),
             file: record,
-            area: allAreas?.find((item) => item.value === (sentToArea ?? area))
-              ?.label as string,
+            area: areaFolder,
             idOrder,
           })
             .then((res: string) => {
@@ -551,58 +550,10 @@ const EditOrderHook = ({ slug }: Props) => {
             .catch((err: any) => {
               console.log(err);
             });
-        } else if (fileType[1] === 'pdf') {
-          await uploadFile({
-            folder: patientData?.id,
-            fileName: urlName.split(' ').join('_'),
-            file: record,
-            area: allAreas?.find((item) => item.value === (sentToArea ?? area))
-              ?.label as string,
-            idOrder,
-          })
-            .then((res: string) => {
-              urlFiles.pdf.push(res);
-            })
-            .catch((err: any) => {
-              console.log(err);
-            });
-        } else {
-          await uploadFile({
-            folder: patientData?.id,
-            fileName: urlName.split(' ').join('_'),
-            file: record,
-            area: allAreas?.find((item) => item.value === (sentToArea ?? area))
-              ?.label as string,
-            idOrder,
-          })
-            .then((res: string) => {
-              urlFiles.STL.push(res);
-            })
-            .catch((err: any) => {
-              console.log(err);
-            });
-        }
+        } 
       }
-    }
-    if (filesSTL.length > 0) {
-      for (const record of filesSTL) {
-        // const urlName = record.name.split(".")[0];
-        await uploadFile({
-          folder: patientData?.id,
-          fileName: record.name.split(' ').join('_'),
-          file: record,
-          area: allAreas?.find((item) => item.value === (sentToArea ?? area))
-            ?.label as string,
-          idOrder,
-        })
-          .then((res: string) => {
-            urlFiles.STL.push(res);
-          })
-          .catch((err: any) => {
-            console.log(err);
-          });
-      }
-    }
+    
+   
     return urlFiles;
   };
 

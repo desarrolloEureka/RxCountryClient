@@ -64,6 +64,7 @@ const SignUpHook = () => {
 
         // verifica las credenciales
         const authenticateUser = async (email: string, password: string) => {
+            
             try {
                 await loginFirebase(email, password).then((data: any) => {
                     const currentUser = data.user;
@@ -74,6 +75,7 @@ const SignUpHook = () => {
                     ) {
                         // console.log("En el if");
                         const reference = "functionary";
+                        
                         updateDocumentsByIdFb(
                             currentUser.uid,
                             {
@@ -85,6 +87,7 @@ const SignUpHook = () => {
                             },
                             reference,
                         );
+                        
                     }
                 });
                 setError("");
@@ -95,6 +98,9 @@ const SignUpHook = () => {
                 }
                 setError("Error inicio de sesión");
             }
+            console.log("currentUser.rol:");
+            console.log(currentUser);
+            console.log(currentUser.rol);
         };
 
         // Verifica si existe el correo en base de datos.

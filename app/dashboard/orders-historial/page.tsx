@@ -280,6 +280,7 @@ const OrderHistorialPage = () => {
                 }}
                 className='text-[10px] absolute right-3 -bottom-1.5 text-2xl text-company-blue cursor-pointer'
               >
+                
                 Buscar
               </span>
             </div>
@@ -446,6 +447,7 @@ const OrderHistorialPage = () => {
                     <LiaLongArrowAltRightSolid />
                   </div>
                   {filteredOrders?.map((item: any, index: number) => {
+
                     return (
                       <div
                         key={index}

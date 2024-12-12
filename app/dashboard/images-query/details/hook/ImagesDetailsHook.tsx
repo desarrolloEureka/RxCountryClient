@@ -13,6 +13,7 @@ import { CampusSelector } from "@/app/types/campus";
 import { ImagesDetailsHookProps, PreviewFile } from "@/app/types/order";
 import { Patient } from "@/app/types/patient";
 import { db } from "@/shared/firebase/firebase";
+import { Console } from "console";
 import { doc, onSnapshot } from "firebase/firestore";
 import _ from "lodash";
 import moment from "moment";
@@ -210,6 +211,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     };
 
     const handleSaveFile = (typeFile: string) => {
+        console.log(typeFile);
         confirmSaveAlert(() =>
             saveFile(typeFile).then(() => {
                 setTypeFileToUpLoad("");
@@ -287,23 +289,30 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
         const typeOfCollection: { [key: string]: string } = {
             images: "orderImagesUrl",
-            pdf: "orderPDFUrl",
-            STL: "orderSTLFiles",
+            pdf: "orderImagesUrl",
+            STL: "orderImagesUrl",
+            PLY: "orderImagesUrl",
         };
 
         const filesUrls = await getOrdersUrls(slug);
 
-        const newData = {
-            [typeOfCollection[typeFile]]: allOrderData?.[
-                typeOfCollection[typeFile]
-            ]
-                ? [
-                      ...allOrderData?.[typeOfCollection[typeFile]],
-                      ...filesUrls[typeFile],
-                  ]
-                : filesUrls[typeFile],
-        };
-
+        // const newData = {
+        //     [typeOfCollection[typeFile]]: allOrderData?.[
+        //         typeOfCollection[typeFile]
+        //     ]
+        //         ? [
+        //               ...allOrderData?.[typeOfCollection[typeFile]],
+        //               ...filesUrls[typeFile],
+        //           ]
+        //         : filesUrls[typeFile],
+        // };
+        
+        const newData = { [typeOfCollection[typeFile]]:
+        [ 
+            ...allOrderData?.[typeOfCollection[typeFile]],
+            ...filesUrls?.images,
+        ]}
+       
         try {
             await updateDocumentsByIdFb(slug, newData, orderRef).then(() => {
                 handleRemoveImage(currentIndex);
@@ -410,28 +419,18 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
         const firstLetterCampus =
             campus && currentCampusName && currentCampusName.substring(0, 1);
+        const areaFolder = allAreas?.find((item) => item.value === (area??sentToArea))
+            ?.label as string
 
+        console.log(files);
         if (files.length > 0) {
             for (const record of files) {
-                const urlName = record.name.split(".")[0];
-                const fileType = record.type.split("/");
-                if (fileType[0] === "image") {
+                
                     await uploadFile({
                         folder: allOrderData?.id,
-                        fileName:
-                            userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" ||
-                            userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl"
-                                ? `${firstLetterCampus}${modelType}-${moment().format(
-                                      "YYYYMMDD",
-                                  )}-${allOrderData?.id}-${moment().format(
-                                      "HHmmss",
-                                  )}`
-                                : urlName.split(" ").join("_"),
+                        fileName: record.name.split(' ').join('_'),
                         file: record,
-                        area: allAreas?.find(
-                            (item) =>
-                                item.value === (sentToArea ? sentToArea : area),
-                        )?.label as string,
+                        area: areaFolder,
                         idOrder,
                     })
                         .then((res: string) => {
@@ -440,44 +439,11 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         .catch((err: any) => {
                             console.log(err);
                         });
-                } else if (fileType[1] === "pdf") {
-                    await uploadFile({
-                        folder: allOrderData?.id,
-                        fileName: urlName.split(" ").join("_"),
-                        file: record,
-                        area: allAreas?.find(
-                            (item) =>
-                                item.value === (sentToArea ? sentToArea : area),
-                        )?.label as string,
-                        idOrder,
-                    })
-                        .then((res: string) => {
-                            urlFiles.pdf.push(res);
-                        })
-                        .catch((err: any) => {
-                            console.log(err);
-                        });
-                } else {
-                    await uploadFile({
-                        folder: allOrderData?.id,
-                        fileName: record.name.split(" ").join("_"),
-                        file: record,
-                        area: allAreas?.find(
-                            (item) =>
-                                item.value === (sentToArea ? sentToArea : area),
-                        )?.label as string,
-                        idOrder,
-                    })
-                        .then((res: string) => {
-                            urlFiles.STL.push(res);
-                        })
-                        .catch((err: any) => {
-                            console.log(err);
-                        });
-                }
+                
+                
             }
         }
-
+        
         return urlFiles;
     };
 

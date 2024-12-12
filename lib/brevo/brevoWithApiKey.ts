@@ -21,7 +21,7 @@ export const sendEmail = async ({ subject, to, htmlContent }: Params) => {
     smtpEmail.htmlContent = htmlContent;
     smtpEmail.sender = {
         name: "Rx Country No Reply",
-        email: "fernando@eurekadreams.com",
+        email: "virtual@rxcountry.com.co",
     };
     await apiInstance.sendTransacEmail(smtpEmail);
 };
