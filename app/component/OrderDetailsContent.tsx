@@ -505,7 +505,7 @@ const OrderDetailsContent = ({
                                 onClick={() => setExpandRx2(!expandRx2)}
                                 className="flex justify-between items-center py-2 px-4 text-sm lg:text-base"
                             >
-                                Fotografía
+                                Fotografía y Modelos
                                 {expandRx2 ? (
                                     <>
                                         {orderAndPatientData?.fotObservationComment && (
@@ -561,7 +561,7 @@ const OrderDetailsContent = ({
                     )}
 
                     {/* Modelos */}
-                    {(orderAndPatientData?.modObservationComment ||
+                    {/* {(orderAndPatientData?.ObservationComment ||
                         userRol.uid === "g9xGywTJG7WSJ5o1bTsH") && (
                         <div
                             className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
@@ -627,7 +627,7 @@ const OrderDetailsContent = ({
                                 </div>
                             )}
                         </div>
-                    )}
+                    )} */}
 
                     {/* Reception data */}
                     {(orderAndPatientData?.recObservationComment ||

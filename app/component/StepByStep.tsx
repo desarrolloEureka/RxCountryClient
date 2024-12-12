@@ -1234,8 +1234,7 @@ function StepByStep({
               )}
 
               {/* Laboratorio y Fotografía  */}
-              {(userRol?.uid === 'chbFffCzpRibjYRyoWIx' ||
-                userRol?.uid === 'c24R4P0VcQmQT0VT6nfo') && (
+              {(userRol?.uid === 'chbFffCzpRibjYRyoWIx') && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
                   <div className="flex flex-wrap flex-row justify-start gap-4">
                     {/* Botón Ver PDF ODS */}
@@ -1305,7 +1304,8 @@ function StepByStep({
               )}
 
               {/* Modelos  */}
-              {userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH' && (
+              {(userRol?.uid === 'g9xGywTJG7WSJ5o1bTsH'||
+                userRol?.uid === 'c24R4P0VcQmQT0VT6nfo')  && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
                   <div className="flex flex-wrap col-span-2 flex flex-row items-start justify-start gap-4">
                     <div className='col-span-1 flex items-start justify-start text-sm lg:text-base font-normal text-company-orange'>
@@ -2307,7 +2307,7 @@ function StepByStep({
                             text: 'Hubo un problema al guardar la orden.',
                             background: '#404040',
                             color: '#e9a225',
-                            confirmButtonColor: '#1f2937',
+                            //confirmButtonColor: '#1f2937',
                           });
                         }
                       }
