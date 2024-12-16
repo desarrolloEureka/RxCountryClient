@@ -270,19 +270,43 @@ const NewOrderHook = (props?: Props) => {
         Ll6KGdzqdtmLLk0D5jhk: "asignada",
     };
 
-    const patientVal =
-        patientData.idType &&
-        patientData.id &&
-        patientData.name &&
-        patientData.lastName &&
-        patientData.age &&
-        patientData.birthDate &&
-        patientData.email &&
-        patientData.confirmEmail &&
-        patientData.confirmEmail === patientData.email &&
-        patientData.phone !== "57" &&
-        patientData.phone !== "" &&
-        patientData.phone.length > 11;
+    
+    // const patientVal =
+    //     patientData.idType &&
+    //     patientData.id &&
+    //     patientData.name &&
+    //     patientData.lastName &&
+    //     patientData.age &&
+    //     patientData.birthDate &&
+    //     patientData.email &&
+    //     patientData.confirmEmail &&
+    //     patientData.confirmEmail === patientData.email &&
+    //     patientData.phone !== "57" &&
+    //     patientData.phone !== "" &&
+    //     patientData.phone.length > 11;
+
+const patientVal =
+    ( userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk') // Roles con validación completa
+        ? (
+            patientData.idType &&
+            patientData.id &&
+            patientData.name &&
+            patientData.lastName &&
+            patientData.age &&
+            patientData.birthDate &&
+            patientData.email &&
+            patientData.confirmEmail &&
+            patientData.confirmEmail === patientData.email &&
+            patientData.phone !== "57" &&
+            patientData.phone !== "" &&
+            patientData.phone.length > 11
+        )
+        : ( // Validaciones para otros roles
+            patientData.idType &&
+            patientData.id &&
+            patientData.email &&
+            patientData.confirmEmail === patientData.email
+        );
 
     const confirmSaveAlert = () => {
         Swal.fire({
@@ -315,6 +339,7 @@ const NewOrderHook = (props?: Props) => {
             e.preventDefault();
             e.stopPropagation();
             confirmSaveAlert();
+            
         } else {
             e.preventDefault();
             e.stopPropagation();

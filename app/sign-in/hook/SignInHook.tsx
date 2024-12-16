@@ -98,9 +98,9 @@ const SignUpHook = () => {
                 }
                 setError("Error inicio de sesión");
             }
-            console.log("currentUser.rol:");
-            console.log(currentUser);
-            console.log(currentUser.rol);
+            // console.log("currentUser.rol:");
+            // console.log(currentUser);
+            // console.log(currentUser.rol);
         };
 
         // Verifica si existe el correo en base de datos.

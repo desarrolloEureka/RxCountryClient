@@ -258,7 +258,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         
     // };
     const downloadImagen = async (urlFile: string) => {
-        console.log("URL del archivo a descargar:", urlFile);
+        //console.log("URL del archivo a descargar:", urlFile);
     
         try {
             // Realiza la solicitud fetch para obtener el archivo
@@ -290,7 +290,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             // Libera la URL temporal
             URL.revokeObjectURL(url);
     
-            console.log("Descarga completada.");
+           // console.log("Descarga completada.");
         } catch (err) {
             console.error("Error al descargar la imagen:", err);
             alert("Hubo un error al intentar descargar el archivo. Revisa la consola para más detalles.");
@@ -302,6 +302,10 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     
 
     const deleteFile = async (urlFile: string, typeFile: string) => {
+        
+        console.log("urlFile  y typeFile");
+        console.log(urlFile);
+        console.log(typeFile);
         const orderRef = "serviceOrders";
 
         const typeOfCollection: { [key: string]: string } = {

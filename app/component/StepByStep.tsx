@@ -483,7 +483,9 @@ function StepByStep({
             <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
               <label htmlFor='firstName' className='text-white'>
                 Nombres&nbsp;
-                <span className='text-blue-500'>*</span>
+                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
+                <span className="text-blue-500">*</span>
+              )}
               </label>
               <input
                 disabled={
@@ -493,7 +495,7 @@ function StepByStep({
                 value={data && data?.name}
                 type='text'
                 name='name'
-                required
+                required={userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk'}
                 id='firstName'
                 className='rounded-xl h-10 bg-transparent border border-company-blue text-white px-10'
                 onChange={changeHandler}
@@ -509,7 +511,9 @@ function StepByStep({
             >
               <label htmlFor='lastName' className='text-white'>
                 Apellidos&nbsp;
-                <span className='text-blue-500'>*</span>
+                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
+                  <span className="text-blue-500">*</span>
+                )}
               </label>
               <input
                 disabled={
@@ -519,7 +523,7 @@ function StepByStep({
                 value={data && data?.lastName}
                 type='text'
                 name='lastName'
-                required
+                required={userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk'}
                 id='lastName'
                 className='rounded-xl h-10 bg-transparent border border-company-blue text-white px-10'
                 onChange={changeHandler}
@@ -612,7 +616,9 @@ function StepByStep({
             >
               <label htmlFor='phone' className='text-white'>
                 Celular&nbsp;
-                <span className='text-blue-500'>*</span>
+                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
+                  <span className="text-blue-500">*</span>
+                )}
               </label>
               <PhoneInput
                 disabled={
@@ -623,7 +629,8 @@ function StepByStep({
                 inputProps={{
                   id: 'phone',
                   name: 'phone',
-                  required: true,
+                  required: userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk', // Requerido solo para Recepcion
+                  //required: true,
                   pattern: '^(\\+?\\d{1,4})?\\s?\\d{11,15}$',
                   title: 'Por favor, ingrese un número de teléfono válido',
                 }}
@@ -645,7 +652,9 @@ function StepByStep({
             <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2 w-full'>
               <label htmlFor='data-picker' className='text-white'>
                 Fecha de Nacimiento&nbsp;
-                <span className='text-blue-500'>*</span>
+                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
+                  <span className="text-blue-500">*</span>
+                )}
               </label>
               <Datepicker
                 popoverDirection='up'
@@ -679,7 +688,9 @@ function StepByStep({
             <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
               <label htmlFor='age' className='text-white'>
                 Edad&nbsp;
-                <span className='text-blue-500'>*</span>
+                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
+                  <span className="text-blue-500">*</span>
+                )}
               </label>
               <input
                 value={data && data?.age}
@@ -1024,6 +1035,22 @@ function StepByStep({
                       />
                     </div>
                   </div>
+                  <div className='col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start'>
+                    <h1 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold'>
+                      Diagnóstico
+                    </h1>
+
+                    <div className='grid grid-cols-1 gap-4 text-sm lg:text-base font-normal text-company-orange'>
+                      <SelectComponent
+                        options={allDiagnoses}
+                        selectChangeHandler={(e) => {
+                          selectChangeHandlerDiagnoses(e?.value);
+                          setDiagnosesSelected(e);
+                        }}
+                        optionSelected={diagnosesSelected}
+                      />
+                    </div>
+                  </div>
 
                   <div className='col-span-3 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-sm lg:text-base text-company-orange font-bold px-4 py-2'>
@@ -1348,22 +1375,7 @@ function StepByStep({
                     </div>
                   </div>
                   
-                  <div className='col-span-1 flex flex-col space-y-4 py-0 lg:py-4'>
-                    <h1 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold'>
-                      Diagnósticos
-                    </h1>
-
-                    <div className='grid grid-cols-1 gap-4 text-sm lg:text-base font-normal text-company-orange'>
-                      <SelectComponent
-                        options={allDiagnoses}
-                        selectChangeHandler={(e) => {
-                          selectChangeHandlerDiagnoses(e?.value);
-                          setDiagnosesSelected(e);
-                        }}
-                        optionSelected={diagnosesSelected}
-                      />
-                    </div>
-                  </div>
+                  
 
                   <div className='col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center text-sm lg:text-base font-normal text-company-orange'>
                     <h1 className='text-sm lg:text-base font-normal text-company-orange '>

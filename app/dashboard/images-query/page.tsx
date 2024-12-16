@@ -137,6 +137,62 @@ const ImageQueryPage = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4 lg:gap-8 items-center justify-between w-full mx-auto max-w-screen p-4 lg:px-16 lg:py-4">
                         <div className="relative col flex flex-col space-y-2">
                             <label
+                                htmlFor="area-search"
+                                className="text-white text-sm"
+                            >
+                                Buscar imágenes por Sede
+                            </label>
+                            <input
+                                id="area-search"
+                                type="search"
+                                placeholder="Ej. Marly"
+                                className="bg-white rounded-full shadow-lg h-10 pl-4 pr-12 text-black"
+                                onChange={handleSearchInputChange}
+                            />
+                            <IoMdSearch className="absolute right-4 bottom-3 text-2xl text-company-blue cursor-pointer" />
+                            <span
+                                onClick={() => {
+                                    _.isEmpty(filteredOrders) &&
+                                        (setShowHelp(true),
+                                        setHelperText(
+                                            "No hay datos para mostrar",
+                                        ));
+                                }}
+                                className="text-[10px] absolute right-3 -bottom-1.5 text-2xl text-company-blue cursor-pointer"
+                            >
+                                Buscar
+                            </span>
+                        </div>
+                        <div className="relative col flex flex-col space-y-2">
+                            <label
+                                htmlFor="search"
+                                className="text-white text-sm"
+                            >
+                                Buscar imágenes por Área
+                            </label>
+                            <input
+                                id="search"
+                                type="search"
+                                placeholder="Ej. Fotografías y Modelos"
+                                className="bg-white rounded-full shadow-lg h-10 pl-4 pr-12 text-black"
+                                onChange={handleSearchInputChange}
+                            />
+                            <IoMdSearch className="absolute right-4 bottom-3 text-2xl text-company-blue cursor-pointer" />
+                            <span
+                                onClick={() => {
+                                    _.isEmpty(filteredOrders) &&
+                                        (setShowHelp(true),
+                                        setHelperText(
+                                            "No hay datos para mostrar",
+                                        ));
+                                }}
+                                className="text-[10px] absolute right-3 -bottom-1.5 text-2xl text-company-blue cursor-pointer"
+                            >
+                                Buscar
+                            </span>
+                        </div>
+                        <div className="relative col flex flex-col space-y-2">
+                            <label
                                 htmlFor="search"
                                 className="text-white text-sm"
                             >
