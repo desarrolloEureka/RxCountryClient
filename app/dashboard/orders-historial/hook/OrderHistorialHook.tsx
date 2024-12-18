@@ -284,6 +284,10 @@ const OrderHistorialHook = () => {
   // Nuevo estado para el área seleccionada
   const [selectedArea, setSelectedArea] = useState<string | null>(null);  
   
+  // Nuevo estado para el área seleccionada
+  const [selectedSede, setSelectedSede] = useState<string | null>(null);  
+  
+
   let filteredOrders: any[] = orderList?.filter((order: any) => {
     const itemDate = moment(order.timestamp);
     const start = value.startDate ? moment(value.startDate) : null;
@@ -312,17 +316,15 @@ const OrderHistorialHook = () => {
   console.log("Pedidos filtrados:", filteredOrders);
 
   const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
-    // (Array.isArray(selectedOption ) &&
-    // selectedOption.some((item: string) =>
-    //   item.toLowerCase().includes(search.toLowerCase())
-    // ));
     setSelectedArea(selectedOption?.value || null);
-    console.log("pruebaaaaa22222:");
-    console.log(selectedOption?.label);
-    console.log(selectedOption?.value);
     return selectedOption?.label ;
   }
-   
+  
+  const filterBySede = (selectedOption : { value: string; label: string }| null ) => {
+    setSelectedSede(selectedOption?.value || null);
+    return selectedOption?.label ;
+  }
+
   filteredOrders = _.sortBy(filteredOrders, (obj) =>
     parseInt(obj.uid, 10)
   ).reverse();
@@ -621,6 +623,7 @@ const OrderHistorialHook = () => {
     orderList,
     allAreas,
     filterByArea,
+    filterBySede,
   };
 };
 

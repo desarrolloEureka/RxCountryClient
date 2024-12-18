@@ -77,6 +77,7 @@ const OrderHistorialPage = () => {
     user,
     allAreas,
     filterByArea,
+    filterBySede,
   } = OrderHistorialHook();
 
   const modalLastUpdate = (item: any) => {
@@ -263,18 +264,33 @@ const OrderHistorialPage = () => {
             />
           </div>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-y-4 lg:gap-8 items-center justify-between w-full mx-auto max-w-screen py-4 lg:px-16 lg:py-4'>
-            <div className='relative col flex flex-col space-y-2 mx-4 lg:m-0'>
               <div className="text-company-orange text-sm lg:text-base font-normal">
-              <Select
-                    placeholder="Seleccione..."
-                    options={[{ value: "", label: "Seleccione..." }, ...allAreas]}
-                    onChange={filterByArea}
-                   
-                    isClearable={true} // Permite limpiar la selección
-                              />
-              
+                  <label htmlFor='search' className='text-white text-sm w-1/2'>
+                    Buscar Ordenes por Sede
+                  </label>
+                  <Select
+                        placeholder="Seleccione..."
+                        options={[{ value: "", label: "Seleccione..." }, ...allAreas]}
+                        onChange={filterBySede}
+                      
+                        isClearable={true} // Permite limpiar la selección
+                                  />
+                  
               </div>
-              
+              <div className="text-company-orange text-sm lg:text-base font-normal">
+                  <label htmlFor='search' className='text-white text-sm w-1/2'>
+                    Buscar Ordenes por Área
+                  </label>
+                  <Select
+                        placeholder="Seleccione..."
+                        options={[{ value: "", label: "Seleccione..." }, ...allAreas]}
+                        onChange={filterByArea}
+                      
+                        isClearable={true} // Permite limpiar la selección
+                                  />
+                  
+              </div>
+            <div className='relative col flex flex-col space-y-2 mx-4 lg:m-0'>
               <label htmlFor='search' className='text-white text-sm w-1/2'>
                 Buscar Ordenes por Paciente
               </label>

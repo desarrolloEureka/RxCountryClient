@@ -20,6 +20,7 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     const router = useRouter();
@@ -64,6 +65,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         ...allOrderData?.orderImagesUrl,
         ...allOrderData?.orderSTLFiles,
     ];
+    const storage = getStorage();
 
     const getIndexOfCurrentImage = (): number => {
         return arrayWithAllUrls?.indexOf(fileSrcSelected);
@@ -207,6 +209,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     };
 
     const handleDeleteFile = (urlFile: string, typeFile: string) => {
+        console.log("URL file: ",urlFile);
         confirmSaveAlert(() => deleteFile(urlFile, typeFile));
     };
 
@@ -310,8 +313,9 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
         const typeOfCollection: { [key: string]: string } = {
             images: "orderImagesUrl",
-            pdf: "orderPDFUrl",
-            STL: "orderSTLFiles",
+            pdf: "orderImagesUrl",
+            STL: "orderImagesUrl",
+            PLY: "orderImagesUrl",
         };
 
         await updateDocumentsByIdFb(
@@ -327,6 +331,33 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                 (item: string) => item !== urlFile,
             );
             setAllOrderData(newData);
+
+            const currentYear = urlFile.match(/ODS_(\d{4})/)?.[1]||"";
+            const currentDate = currentYear ? urlFile.match(new RegExp(`${currentYear}-\\d{2}-\\d{2}`))?.[0] || "" : "";
+            const areaFolder = allAreas?.find((item) => item.value === (area??sentToArea))
+            ?.label as string
+            
+            // Extrae el nombre del archivo desde la URL
+            const decodedUrl = decodeURIComponent(urlFile); // Decodifica caracteres especiales
+            const fileName = decodedUrl.split("/").pop()?.split("?")[0] || "archivo-descargado";
+    
+            const deletPatch =  `/Media/ODS_${currentYear}/${currentDate}/${slug}-${allOrderData?.id}/${areaFolder}/${fileName}`;
+            console.log("fileName");
+            console.log(fileName);
+            // Create a reference to the file to delete
+            const desertRef = ref(storage, deletPatch);
+            console.log("deletPatch");
+            console.log(deletPatch);
+            
+            
+            // Delete the file
+            deleteObject(desertRef).then(() => {
+                console.log("archivo eliminado");
+            // File deleted successfully
+            }).catch((error) => {
+                console.log("error al eliminar.")
+            // Uh-oh, an error occurred!
+            });
         });
     };
 
@@ -341,7 +372,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         };
 
         const filesUrls = await getOrdersUrls(slug);
-
+        console.log("fileURLS",filesUrls);
+        console.log("SLUG",slug);
         // const newData = {
         //     [typeOfCollection[typeFile]]: allOrderData?.[
         //         typeOfCollection[typeFile]
@@ -471,7 +503,11 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         console.log(files);
         if (files.length > 0) {
             for (const record of files) {
-                
+                    console.log("Folder:",allOrderData?.id);
+                    console.log("filename:",record.name.split(' ').join('_'));
+                    console.log("file:",record);
+                    console.log(" area:", areaFolder);
+                    console.log(" idOrder:", idOrder);
                     await uploadFile({
                         folder: allOrderData?.id,
                         fileName: record.name.split(' ').join('_'),
