@@ -1,5 +1,5 @@
 'use client';
-import { initialHelperText } from '@/app/component/constants/formConstants';
+import { campus, initialHelperText } from '@/app/component/constants/formConstants';
 import DashboardHeader from '@/app/component/DashboardHeader';
 import LightIcon from '@/app/component/icons/LightIcon';
 import Spinner from '@/app/component/spinner/Spinner';
@@ -270,7 +270,7 @@ const OrderHistorialPage = () => {
                   </label>
                   <Select
                         placeholder="Seleccione..."
-                        options={[{ value: "", label: "Seleccione..." }, ...allAreas]}
+                        options={[{ value: "", label: "Seleccione..." }, ...campus]}
                         onChange={filterBySede}
                       
                         isClearable={true} // Permite limpiar la selección

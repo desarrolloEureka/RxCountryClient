@@ -285,9 +285,8 @@ const OrderHistorialHook = () => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);  
   
   // Nuevo estado para el área seleccionada
-  const [selectedSede, setSelectedSede] = useState<string | null>(null);  
+  const [selectedCampus, setSelectedSede] = useState<string | null>(null);  
   
-
   let filteredOrders: any[] = orderList?.filter((order: any) => {
     const itemDate = moment(order.timestamp);
     const start = value.startDate ? moment(value.startDate) : null;
@@ -311,7 +310,12 @@ const OrderHistorialHook = () => {
         item.toLowerCase() === selectedArea.toLowerCase()
       ));
 
-    return isWithinDateRange && matchesSearchTerm && matchesAreaSearch;
+    // Filtro por Campus
+    const matchesCampusSearch =
+    !selectedCampus ||
+    order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+
+    return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
   });
   console.log("Pedidos filtrados:", filteredOrders);
 

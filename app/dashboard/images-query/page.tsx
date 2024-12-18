@@ -1,5 +1,5 @@
 "use client";
-import { initialHelperText } from "@/app/component/constants/formConstants";
+import { campus, initialHelperText } from "@/app/component/constants/formConstants";
 import DashboardHeader from "@/app/component/DashboardHeader";
 import LightIcon from "@/app/component/icons/LightIcon";
 import Spinner from "@/app/component/spinner/Spinner";
@@ -20,6 +20,7 @@ import { MdClose, MdPictureAsPdf } from "react-icons/md";
 import Datepicker from "react-tailwindcss-datepicker";
 import Swal from "sweetalert2";
 import ImagesQueryHook from "./hook/ImagesQueryHook";
+import Select, { components } from "react-select";
 
 const ImageQueryPage = () => {
     const {
@@ -57,6 +58,9 @@ const ImageQueryPage = () => {
         getLastUserData,
         getOrderStatus,
         user,
+        allAreas,
+        filterByArea,
+        filterBySede,
     } = ImagesQueryHook();
 
     const modalLastUpdate = (item: any) => {
@@ -135,7 +139,32 @@ const ImageQueryPage = () => {
                         </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4 lg:gap-8 items-center justify-between w-full mx-auto max-w-screen p-4 lg:px-16 lg:py-4">
-                    
+                    <div className="text-company-orange text-sm lg:text-base font-normal">
+                  <label htmlFor='search' className='text-white text-sm w-1/2'>
+                    Buscar Ordenes por Sede
+                  </label>
+                  <Select
+                        placeholder="Seleccione..."
+                        options={[{ value: "", label: "Seleccione..." }, ...campus]}
+                        onChange={filterBySede}
+                      
+                        isClearable={true} // Permite limpiar la selección
+                                  />
+                  
+              </div>
+              <div className="text-company-orange text-sm lg:text-base font-normal">
+                  <label htmlFor='search' className='text-white text-sm w-1/2'>
+                    Buscar Ordenes por Área
+                  </label>
+                  <Select
+                        placeholder="Seleccione..."
+                        options={[{ value: "", label: "Seleccione..." }, ...allAreas]}
+                        onChange={filterByArea}
+                      
+                        isClearable={true} // Permite limpiar la selección
+                                  />
+                  
+              </div>
                        
                         <div className="relative col flex flex-col space-y-2">
                             <label
