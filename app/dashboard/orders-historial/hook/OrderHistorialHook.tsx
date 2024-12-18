@@ -281,6 +281,9 @@ const OrderHistorialHook = () => {
   // console.log('ordersByRol', ordersByRol);
   const orderList = ordersByRol[userRol?.uid!]?.[selectedOrder];
 
+  // Nuevo estado para el área seleccionada
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);  
+  
   let filteredOrders: any[] = orderList?.filter((order: any) => {
     const itemDate = moment(order.timestamp);
     const start = value.startDate ? moment(value.startDate) : null;
@@ -296,9 +299,30 @@ const OrderHistorialHook = () => {
       order.lastName.toLowerCase().includes(search.toLowerCase()) ||
       order.uid.toLowerCase().includes(search.toLowerCase());
 
-    return isWithinDateRange && matchesSearchTerm;
-  });
+    // Filtro por área
+    const matchesAreaSearch =
+    !selectedArea ||
+    (Array.isArray(order.areaList) &&
+      order.areaList.some((item: string) =>
+        item.toLowerCase() === selectedArea.toLowerCase()
+      ));
 
+    return isWithinDateRange && matchesSearchTerm && matchesAreaSearch;
+  });
+  console.log("Pedidos filtrados:", filteredOrders);
+
+  const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
+    // (Array.isArray(selectedOption ) &&
+    // selectedOption.some((item: string) =>
+    //   item.toLowerCase().includes(search.toLowerCase())
+    // ));
+    setSelectedArea(selectedOption?.value || null);
+    console.log("pruebaaaaa22222:");
+    console.log(selectedOption?.label);
+    console.log(selectedOption?.value);
+    return selectedOption?.label ;
+  }
+   
   filteredOrders = _.sortBy(filteredOrders, (obj) =>
     parseInt(obj.uid, 10)
   ).reverse();
@@ -487,6 +511,8 @@ const OrderHistorialHook = () => {
   const getAreas = useCallback(async () => {
     const allAreasData = await getAllAreasOptions();
     allAreasData && setAllAreas(allAreasData);
+    console.log("allAreasData");
+    console.log(allAreasData);
   }, []);
 
   useEffect(() => {
@@ -593,6 +619,8 @@ const OrderHistorialHook = () => {
     totalItems,
     user,
     orderList,
+    allAreas,
+    filterByArea,
   };
 };
 
