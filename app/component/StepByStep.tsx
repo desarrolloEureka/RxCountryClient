@@ -483,9 +483,7 @@ function StepByStep({
             <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
               <label htmlFor='firstName' className='text-white'>
                 Nombres&nbsp;
-                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
                 <span className="text-blue-500">*</span>
-              )}
               </label>
               <input
                 disabled={
@@ -495,7 +493,7 @@ function StepByStep({
                 value={data && data?.name}
                 type='text'
                 name='name'
-                required={userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk'}
+                required
                 id='firstName'
                 className='rounded-xl h-10 bg-transparent border border-company-blue text-white px-10'
                 onChange={changeHandler}
@@ -511,9 +509,7 @@ function StepByStep({
             >
               <label htmlFor='lastName' className='text-white'>
                 Apellidos&nbsp;
-                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
                   <span className="text-blue-500">*</span>
-                )}
               </label>
               <input
                 disabled={
@@ -523,7 +519,7 @@ function StepByStep({
                 value={data && data?.lastName}
                 type='text'
                 name='lastName'
-                required={userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk'}
+                required
                 id='lastName'
                 className='rounded-xl h-10 bg-transparent border border-company-blue text-white px-10'
                 onChange={changeHandler}
@@ -1036,7 +1032,7 @@ function StepByStep({
                     </div>
                   </div>
                   <div className='col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start'>
-                    <h1 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold'>
+                    <h1 className='text-sm lg:text-base text-company-orange font-bold'>
                       Diagnóstico
                     </h1>
 

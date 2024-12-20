@@ -164,7 +164,9 @@ const ImagesQueryHook = () => {
    });
 
    console.log("Pedidos filtrados:", filteredOrders);
-   
+   const totalOrders = filteredOrders?.length || 0;
+   console.log("Total órdenes:", totalOrders);
+
   const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
     setSelectedArea(selectedOption?.value || null);
     return selectedOption?.label ;
@@ -388,6 +390,8 @@ const ImagesQueryHook = () => {
     allAreas,
     filterByArea,
     filterBySede,
+    totalOrders,
+    orderList,
   };
 };
 

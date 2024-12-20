@@ -318,6 +318,9 @@ const OrderHistorialHook = () => {
     return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
   });
   console.log("Pedidos filtrados:", filteredOrders);
+  const totalOrders = filteredOrders?.length || 0;
+  console.log("Total órdenes:", totalOrders);
+
 
   const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
     setSelectedArea(selectedOption?.value || null);
@@ -628,6 +631,7 @@ const OrderHistorialHook = () => {
     allAreas,
     filterByArea,
     filterBySede,
+    totalOrders,
   };
 };
 

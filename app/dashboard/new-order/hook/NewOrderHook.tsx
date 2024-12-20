@@ -304,6 +304,8 @@ const patientVal =
         : ( // Validaciones para otros roles
             patientData.idType &&
             patientData.id &&
+            patientData.name &&
+            patientData.lastName &&
             patientData.email &&
             patientData.confirmEmail === patientData.email
         );
