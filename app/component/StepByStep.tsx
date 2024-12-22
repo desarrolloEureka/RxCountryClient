@@ -34,6 +34,7 @@ import SelectWithCheckbox from './SelectWithCheckbox';
 import InputFileUpload from './UpLoadButton';
 import DoctorVector from './vectors/DoctorVector';
 import Swal from 'sweetalert2';
+import { DataPatientObject } from '../types/patient';
 
 interface Props {
   value: {
@@ -65,7 +66,7 @@ interface Props {
   handleAreaList: (e: any) => void;
   areaList?: string[];
   handleClose: (e: any) => void;
-  data: any;
+  data: DataPatientObject;
   optionsData: any;
   oldData?: any;
   wrapperRef?: any;
@@ -141,6 +142,8 @@ function StepByStep({
   modelType,
   handleFileChangeSTL,
 }: Props) {
+
+  
   const router = useRouter();
 
   const currentDate = moment().format();
@@ -390,6 +393,8 @@ function StepByStep({
 
   // console.log(data);
   console.log('areasListSelected', areasListSelected);
+  
+  console.log('data', data);
 
   return (
     <div>
