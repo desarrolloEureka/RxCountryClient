@@ -99,7 +99,7 @@ const ImageQueryPage = () => {
             confirmButtonColor: "#228cf0",
         });
     };
-
+   
     const imagesNotFoundAlert = () => {
         Swal.fire({
             icon: "info",
@@ -115,6 +115,8 @@ const ImageQueryPage = () => {
     if (!user) {
         return <Spinner />;
     }
+    const sortedCampus = [...campus].sort((a, b) => a.label.localeCompare(b.label));
+    const sortedAllAreas = [...allAreas].sort((a, b) => a.label.localeCompare(b.label));
 
     return (
         <main className="relative min-h-screen w-full bg-gray-image bg-fixed bg-cover">
@@ -174,7 +176,7 @@ const ImageQueryPage = () => {
                                 <Select
                                     className="bg-white text-black rounded-full"
                                     placeholder="Ej. Country"
-                                    options={[{ value: "", label: "Seleccione..." }, ...campus]}
+                                    options={[{ value: "", label: "Seleccione..." }, ...sortedCampus]} // Ordenar dinámicamente
                                     onChange={filterBySede}
                                     isClearable={true}
                                 />
@@ -186,28 +188,28 @@ const ImageQueryPage = () => {
                                 <Select
                                     className="bg-white text-black rounded-full"
                                     placeholder="Ej. Calidad"
-                                    options={[{ value: "", label: "Seleccione..." }, ...allAreas]}
+                                    options={[{ value: "", label: "Seleccione..." }, ...sortedAllAreas]}
                                     onChange={filterByArea}
                                     isClearable={true}
                                 />
                                 </div>
-                            {/* Filtro de Rango de Fechas */}
-                            <div className="relative flex flex-col space-y-2 w-full w-[315px] max-w-[315px] ">
-                                <label htmlFor="data-picker" className="text-white text-sm">
-                                    Rango de fecha:
-                                </label>
-                                <Datepicker
-                                    inputId="data-picker"
-                                    inputName="data-picker"
-                                    inputClassName="bg-white rounded-xl w-full shadow-lg h-10 px-4 text-black"
-                                    onChange={handleValueChange}
-                                    value={value}
-                                    primaryColor={"amber"}
-                                    separator={"al"}
-                                    displayFormat={"DD/MM/YYYY"}
-                                    readOnly={true}
-                                    i18n={"es"}
-                                />
+                                {/* Filtro de Rango de Fechas */}
+                                <div className="relative flex flex-col space-y-2 w-full w-[315px] max-w-[315px] ">
+                                    <label htmlFor="data-picker" className="text-white text-sm">
+                                        Rango de fecha:
+                                    </label>
+                                    <Datepicker
+                                        inputId="data-picker"
+                                        inputName="data-picker"
+                                        inputClassName="bg-white rounded-xl w-full shadow-lg h-10 px-4 text-black"
+                                        onChange={handleValueChange}
+                                        value={value}
+                                        primaryColor={"amber"}
+                                        separator={"al"}
+                                        displayFormat={"DD/MM/YYYY"}
+                                        readOnly={true}
+                                        i18n={"es"}
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -139,6 +139,8 @@ const OrderHistorialPage = () => {
       </main>
     );
   }
+  const sortedCampus = [...campus].sort((a, b) => a.label.localeCompare(b.label));
+  const sortedAllAreas = [...allAreas].sort((a, b) => a.label.localeCompare(b.label));
 
   return (
     <main className='relative min-h-screen w-full bg-gray-image bg-fixed bg-cover'>
@@ -298,7 +300,7 @@ const OrderHistorialPage = () => {
                     <Select
                       className="bg-white text-black rounded-full"
                       placeholder="Ej. Country"
-                      options={[{ value: "", label: "Seleccione..." }, ...campus]}
+                      options={[{ value: "", label: "Seleccione..." }, ...sortedCampus]}
                       onChange={filterBySede}
                       isClearable={true}
                     />
@@ -310,7 +312,7 @@ const OrderHistorialPage = () => {
                     <Select
                       className="bg-white text-black rounded-full"
                       placeholder="Ej. Calidad"
-                      options={[{ value: "", label: "Seleccione..." }, ...allAreas]}
+                      options={[{ value: "", label: "Seleccione..." }, ...sortedAllAreas]}
                       onChange={filterByArea}
                       isClearable={true}
                     />

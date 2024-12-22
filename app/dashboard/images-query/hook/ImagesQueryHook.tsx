@@ -158,8 +158,8 @@ const ImagesQueryHook = () => {
     //   order.assignedCampus.some((item: string) =>
     //     item.toLowerCase() === selectedCampus.toLowerCase()
     //   ));
-       console.log("selectedCampus", selectedCampus);
-      console.log("order.assignedCampus:", order.assignedCampus);
+      //  console.log("selectedCampus", selectedCampus);
+      // console.log("order.assignedCampus:", order.assignedCampus);
      return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
    });
 
