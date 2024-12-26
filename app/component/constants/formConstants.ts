@@ -61,9 +61,10 @@ const isActiveData = [
 ];
 
 export const campus = [
-    { value: "Marly", label: "Marly" },
-    { value: "Santa Barbara", label: "Santa Barbara" },
-    { value: "Country", label: "Country" },
+    { value: "M3S4iciIiEBUFxQSOJpa", label: "Marly" },
+    { value: "UmxdSSPtUqyfXtNBCSeh", label: "Santa Barbara" },
+    { value: "RDCpnXe3wHY2zNxzkesv", label: "Country" },
+    { value: "ZgCRHKMvQ1WJHEpZD0kv", label: "We work" },
 ];
 
 export const areas = [

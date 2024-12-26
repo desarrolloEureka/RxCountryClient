@@ -281,6 +281,12 @@ const OrderHistorialHook = () => {
   // console.log('ordersByRol', ordersByRol);
   const orderList = ordersByRol[userRol?.uid!]?.[selectedOrder];
 
+  // Nuevo estado para el área seleccionada
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);  
+  
+  // Nuevo estado para el área seleccionada
+  const [selectedCampus, setSelectedSede] = useState<string | null>(null);  
+  
   let filteredOrders: any[] = orderList?.filter((order: any) => {
     const itemDate = moment(order.timestamp);
     const start = value.startDate ? moment(value.startDate) : null;
@@ -296,8 +302,35 @@ const OrderHistorialHook = () => {
       order.lastName.toLowerCase().includes(search.toLowerCase()) ||
       order.uid.toLowerCase().includes(search.toLowerCase());
 
-    return isWithinDateRange && matchesSearchTerm;
+    // Filtro por área
+    const matchesAreaSearch =
+    !selectedArea ||
+    (Array.isArray(order.areaList) &&
+      order.areaList.some((item: string) =>
+        item.toLowerCase() === selectedArea.toLowerCase()
+      ));
+
+    // Filtro por Campus
+    const matchesCampusSearch =
+    !selectedCampus ||
+    order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+
+    return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
   });
+  console.log("Pedidos filtrados:", filteredOrders);
+  const totalOrders = filteredOrders?.length || 0;
+  console.log("Total órdenes:", totalOrders);
+
+
+  const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
+    setSelectedArea(selectedOption?.value || null);
+    return selectedOption?.label ;
+  }
+  
+  const filterBySede = (selectedOption : { value: string; label: string }| null ) => {
+    setSelectedSede(selectedOption?.value || null);
+    return selectedOption?.label ;
+  }
 
   filteredOrders = _.sortBy(filteredOrders, (obj) =>
     parseInt(obj.uid, 10)
@@ -487,6 +520,8 @@ const OrderHistorialHook = () => {
   const getAreas = useCallback(async () => {
     const allAreasData = await getAllAreasOptions();
     allAreasData && setAllAreas(allAreasData);
+    console.log("allAreasData");
+    console.log(allAreasData);
   }, []);
 
   useEffect(() => {
@@ -593,6 +628,10 @@ const OrderHistorialHook = () => {
     totalItems,
     user,
     orderList,
+    allAreas,
+    filterByArea,
+    filterBySede,
+    totalOrders,
   };
 };
 

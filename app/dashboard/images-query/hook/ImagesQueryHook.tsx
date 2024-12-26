@@ -5,6 +5,9 @@ import {
   getAllOrders,
   getAllPatients,
   getAllProfessionals,
+  getAllAreasOptions,
+  getAllCampusOptions,
+  
 } from '@/app/firebase/documents';
 import { Order, OrdersImagesByRol } from '@/app/types/order';
 import { DataPatientObject } from '@/app/types/patient';
@@ -12,7 +15,8 @@ import { DataProfessionalObject } from '@/app/types/professionals';
 import _ from 'lodash';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-
+import { AreasSelector } from '@/app/types/areas';
+import { CampusSelector } from '@/app/types/campus';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 const ImagesQueryHook = () => {
@@ -39,6 +43,10 @@ const ImagesQueryHook = () => {
 
   const [helperText, setHelperText] = useState<string>('');
 
+  const [allAreas, setAllAreas] = useState<AreasSelector[]>([]);
+
+  const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
+  
   const [itemsPerPage, setItemsPerPage] = useState(30);
 
   const [value, setValue] = useState({
@@ -108,6 +116,14 @@ const ImagesQueryHook = () => {
 
   const orderList = ordersImagesByRol[userRol?.uid!];
 
+  // Nuevo estado para el área seleccionada
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);  
+  
+  // Nuevo estado para el área seleccionada
+  const [selectedCampus, setSelectedSede] = useState<string | null>(null);  
+  
+  console.log("orderList", orderList);
+
   let filteredOrders: any[] = orderList?.filter((order: any) => {
     const itemDate = moment(order.timestamp);
     const start = value.startDate ? moment(value.startDate) : null;
@@ -123,8 +139,44 @@ const ImagesQueryHook = () => {
       order.lastName.toLowerCase().includes(search.toLowerCase()) ||
       order.uid.toLowerCase().includes(search.toLowerCase());
 
-    return isWithinDateRange && matchesSearchTerm;
-  });
+     // Filtro por área
+     const matchesAreaSearch =
+     !selectedArea ||
+     (Array.isArray(order.areaList) &&
+       order.areaList.some((item: string) =>
+         item.toLowerCase() === selectedArea.toLowerCase()
+      ));
+      console.log("selectedArea", selectedArea);
+       console.log("order.areaList:", order.areaList);
+   
+
+    // Filtro por Campus
+    const matchesCampusSearch =
+    !selectedCampus ||
+    order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+    // (Array.isArray(order.assignedCampus) &&
+    //   order.assignedCampus.some((item: string) =>
+    //     item.toLowerCase() === selectedCampus.toLowerCase()
+    //   ));
+      //  console.log("selectedCampus", selectedCampus);
+      // console.log("order.assignedCampus:", order.assignedCampus);
+     return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
+   });
+
+   console.log("Pedidos filtrados:", filteredOrders);
+   const totalOrders = filteredOrders?.length || 0;
+   console.log("Total órdenes:", totalOrders);
+
+  const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
+    setSelectedArea(selectedOption?.value || null);
+    return selectedOption?.label ;
+  }
+  
+  const filterBySede = (selectedOption : { value: string; label: string }| null ) => {
+    setSelectedSede(selectedOption?.value || null);
+    return selectedOption?.label ;
+  }
+
 
   filteredOrders = _.sortBy(filteredOrders, (obj) =>
     parseInt(obj.uid, 10)
@@ -266,7 +318,25 @@ const ImagesQueryHook = () => {
     allProfessionalsData && setProfessionalsData(allProfessionalsData);
   }, []);
 
+  
+    const getAreas = useCallback(async () => {
+      const allAreasData = await getAllAreasOptions();
+      allAreasData && setAllAreas(allAreasData);
+      console.log("allAreasData");
+      console.log(allAreasData);
+    }, []);
+
+    const getCampus = useCallback(async () => {
+      const allCampusData = await getAllCampusOptions();
+      allCampusData && setAllCampus(allCampusData);
+      console.log("allCampusData");
+      console.log(allCampusData);
+    }, []);
+
+
   useEffect(() => {
+    getCampus();
+    getAreas();
     getOrders();
     getPatients();
     getFunctionary();
@@ -317,6 +387,11 @@ const ImagesQueryHook = () => {
     getLastUserData,
     getOrderStatus,
     user,
+    allAreas,
+    filterByArea,
+    filterBySede,
+    totalOrders,
+    orderList,
   };
 };
 

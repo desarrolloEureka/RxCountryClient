@@ -2,7 +2,7 @@ import { DataPatientObject } from "../types/patient";
 
 export const dataPatientObject = {
     uid: "",
-    idType: "",
+    idType: "CC", // valor por defecto
     id: "",
     name: "",
     lastName: "",

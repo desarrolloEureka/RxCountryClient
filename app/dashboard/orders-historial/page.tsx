@@ -1,5 +1,5 @@
 'use client';
-import { initialHelperText } from '@/app/component/constants/formConstants';
+import { campus, initialHelperText } from '@/app/component/constants/formConstants';
 import DashboardHeader from '@/app/component/DashboardHeader';
 import LightIcon from '@/app/component/icons/LightIcon';
 import Spinner from '@/app/component/spinner/Spinner';
@@ -23,6 +23,7 @@ import { RiEditBoxFill } from 'react-icons/ri';
 import Datepicker from 'react-tailwindcss-datepicker';
 import Swal from 'sweetalert2';
 import OrderHistorialHook from './hook/OrderHistorialHook';
+import Select, { components } from "react-select";
 
 const OrderHistorialPage = () => {
   const {
@@ -74,6 +75,10 @@ const OrderHistorialPage = () => {
     getOrderStatus,
     getLastUserData,
     user,
+    allAreas,
+    filterByArea,
+    filterBySede,
+    totalOrders,
   } = OrderHistorialHook();
 
   const modalLastUpdate = (item: any) => {
@@ -134,6 +139,8 @@ const OrderHistorialPage = () => {
       </main>
     );
   }
+  const sortedCampus = [...campus].sort((a, b) => a.label.localeCompare(b.label));
+  const sortedAllAreas = [...allAreas].sort((a, b) => a.label.localeCompare(b.label));
 
   return (
     <main className='relative min-h-screen w-full bg-gray-image bg-fixed bg-cover'>
@@ -259,66 +266,109 @@ const OrderHistorialPage = () => {
               }`}
             />
           </div>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-y-4 lg:gap-8 items-center justify-between w-full mx-auto max-w-screen py-4 lg:px-16 lg:py-4'>
-            <div className='relative col flex flex-col space-y-2 mx-4 lg:m-0'>
-              <label htmlFor='search' className='text-white text-sm w-1/2'>
-                Buscar Ordenes por Paciente
-              </label>
-              <input
-                id='search'
-                type='search'
-                placeholder='Ej. Hernandez Rodriguez'
-                className='bg-white rounded-full shadow-lg h-10 pl-4 pr-12 text-black'
-                onChange={handleSearchInputChange}
-              />
-              <IoMdSearch className='absolute right-4 bottom-3 text-2xl text-company-blue cursor-pointer' />
-              <span
-                onClick={() => {
-                  _.isEmpty(filteredOrders) &&
-                    (setShowHelp(true),
-                    setHelperText('No hay datos para mostrar'));
-                }}
-                className='text-[10px] absolute right-3 -bottom-1.5 text-2xl text-company-blue cursor-pointer'
-              >
-                
-                Buscar
-              </span>
+          <div className='grid grid-cols-1 lg:grid-cols-6 gap-y-4 lg:gap-8 items-center justify-between w-full mx-auto max-w-screen py-4 lg:px-16 lg:py-4'>
+            <div className="w-full max-w-full lg:col-span-4">
+              {/* Filtro de Búsqueda General */}
+              <div className="w-full flex justify-start">
+                <div className="relative col flex flex-col space-y-2 w-[415px] max-w-[415px]">
+                  <label htmlFor="search" className="text-white text-sm">Búsqueda General</label>
+                  <input
+                    id="search"
+                    type="search"
+                    placeholder="Ej. Hernandez Rodriguez"
+                    className="bg-white rounded-full shadow-lg h-10 pl-4 pr-12 text-black"
+                    onChange={handleSearchInputChange}
+                  />
+                  <IoMdSearch className="absolute right-4 bottom-3 text-2xl text-company-blue cursor-pointer" />
+                  <span
+                    onClick={() => {
+                      _.isEmpty(filteredOrders) &&
+                        (setShowHelp(true), setHelperText("No hay datos para mostrar"));
+                    }}
+                    className="text-[10px] absolute right-3 -bottom-1.5 text-2xl text-company-blue cursor-pointer"
+                  >
+                    Buscar
+                  </span>
+                </div>
+              </div>
+
+              {/* Contenedor para Filtros */}
+              <div className="w-full flex justify-start grid-cols-1 md:grid-cols-3 gap-4 mt-6 items-center ">
+                  {/* Filtro de Sede */}
+                  <div className="flex flex-col justify-start w-full max-w-[200px]">
+                    <label htmlFor="sede" className="text-white text-sm">Filtrar por Sede</label>
+                    <Select
+                      className="bg-white text-black rounded-full"
+                      placeholder="Ej. Country"
+                      options={[{ value: "", label: "Seleccione..." }, ...sortedCampus]}
+                      onChange={filterBySede}
+                      isClearable={true}
+                    />
+                  </div>
+
+                  {/* Filtro de Área */}
+                  <div className="flex flex-col justify-start w-full max-w-[200px]">
+                    <label htmlFor="area" className="text-white text-sm">Filtrar por Área</label>
+                    <Select
+                      className="bg-white text-black rounded-full"
+                      placeholder="Ej. Calidad"
+                      options={[{ value: "", label: "Seleccione..." }, ...sortedAllAreas]}
+                      onChange={filterByArea}
+                      isClearable={true}
+                    />
+                  </div>
+                  {/* Filtro de Rango de Fechas */}
+                  <div className="relative flex flex-col space-y-2 w-full w-[315px] max-w-[315px] ">
+                    <label htmlFor="data-picker" className="text-white text-sm">
+                        Rango de fecha:
+                    </label>
+                    <Datepicker
+                        inputId="data-picker"
+                        inputName="data-picker"
+                        inputClassName="bg-white rounded-xl w-full shadow-lg h-10 px-4 text-black"
+                        onChange={handleValueChange}
+                        value={value}
+                        primaryColor={"amber"}
+                        separator={"al"}
+                        displayFormat={"DD/MM/YYYY"}
+                        readOnly={true}
+                        i18n={"es"}
+                    />
+                    </div>
+                </div>
             </div>
-            <div className='relative flex flex-col lg:flex-row items-center justify-center h-full space-y-4 lg:space-y-0 space-x-0 lg:space-x-8 w-full'>
-              <button
-                onClick={() => setShowFilter(!showFilter)}
-                className='rounded-full w-10 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white'
-              >
-                <LuSettings2 size={24} />
-              </button>
-              <div className='relative flex flex-col space-y-2 w-full lg:w-2/3 px-4'>
-                <label htmlFor='data-picker' className='text-white text-sm'>
-                  Rango de fecha:
-                </label>
-                <Datepicker
-                  inputId='data-picker'
-                  inputName='data-picker'
-                  inputClassName='bg-white rounded-xl w-full shadow-lg h-10 px-4 text-black'
-                  onChange={handleValueChange}
-                  value={value}
-                  primaryColor={'amber'}
-                  separator={'al'}
-                  displayFormat={'DD/MM/YYYY'}
-                  readOnly={true}
-                  i18n={'es'}
-                />
-              </div>
-              <div className='flex flex-row sm:flex-col justify-start sm:justify-center items-center border-t-2 border-company-orange sm:border-0 w-full sm:w-auto px-4 pt-5 sm:p-0'>
-                <span className='text-[#158eff] text-center font-bold'>
-                  Lista de Resultados:&nbsp;
-                </span>
-                <span className='text-white'>
-                  {Number(filteredOrders?.length)}
-                  &nbsp;de&nbsp;
-                  {/* {Number(ordersData?.length | 0)} */}
-                  {Number(orderList?.length)}
-                </span>
-              </div>
+
+            <div className="lg:col-span-2 relative flex flex-col lg:flex-row items-center justify-between  h-full space-y-4 lg:space-y-0 space-x-0 lg:space-x-8 w-full">        
+                <div className="flex flex-col lg:flex-row items-center justify-end space-x-6 sm:justify-center sm:items-center lg:ml-auto" >
+                    <div className="flex flex-col h-full ">
+                        <div className="flex flex-row items-center space-x-4">
+                            <div className="relative flex flex-col space-y-2 w-full">
+                                <button
+                                    onClick={() => setShowFilter(!showFilter)}
+                                    className="rounded-full w-10 h-10 flex justify-center items-center shadow-lg bg-company-blue text-white"
+                                    >
+                                    <LuSettings2 size={24} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col h-full">
+                        <div className="flex flex-row items-center space-x-4">
+                            <div className='flex flex-row sm:flex-col items-center border-t-2 border-company-orange sm:border-0 w-full sm:w-auto px-4 pt-5 sm:p-0 mt-auto sm:mt-0 sm:justify-center lg:justify-end'>
+                                <span className='text-[#158eff] text-center font-bold'>
+                                Lista de Resultados:&nbsp;
+                                </span>
+                                <span className='text-white'>
+                                {totalOrders}
+                                &nbsp;de&nbsp;
+                                {/* {Number(ordersData?.length | 0)} */}
+                                {Number(orderList?.length)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
               {showFilter && (
                 <div className='absolute top-7 left-4 bg-white shadow-xl rounded-2xl p-4 w-72 z-50'>
                   <div className='flex justify-between items-ce'>
