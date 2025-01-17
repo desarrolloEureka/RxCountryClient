@@ -205,7 +205,7 @@ const ImagesGroup = ({
                                             }
                                         >
                                             <Image
-                                                src="/assets/iconoply.png"
+                                                src="/assets/PLYIcono.png"
                                                 width={0}
                                                 height={0}
                                                 sizes="200px"
