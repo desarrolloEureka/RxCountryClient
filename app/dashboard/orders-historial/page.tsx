@@ -141,7 +141,7 @@ const OrderHistorialPage = () => {
   }
   const sortedCampus = [...campus].sort((a, b) => a.label.localeCompare(b.label));
   const sortedAllAreas = [...allAreas].sort((a, b) => a.label.localeCompare(b.label));
-
+  
   return (
     <main className='relative min-h-screen w-full bg-gray-image bg-fixed bg-cover'>
       <div className='bg-black bg-opacity-60 flex flex-col min-h-screen w-full py-16 px-5 lg:p-16'>
@@ -294,17 +294,22 @@ const OrderHistorialPage = () => {
 
               {/* Contenedor para Filtros */}
               <div className="w-full flex justify-start grid-cols-1 md:grid-cols-3 gap-4 mt-6 items-center ">
-                  {/* Filtro de Sede */}
-                  <div className="flex flex-col justify-start w-full max-w-[200px]">
-                    <label htmlFor="sede" className="text-white text-sm">Filtrar por Sede</label>
-                    <Select
-                      className="bg-white text-black rounded-full"
-                      placeholder="Ej. Country"
-                      options={[{ value: "", label: "Seleccione..." }, ...sortedCampus]}
-                      onChange={filterBySede}
-                      isClearable={true}
-                    />
-                  </div>
+                 {/* Filtro de Sede */}
+                <div className="flex flex-col justify-start w-full max-w-[200px]">
+                  <label htmlFor="sede" className="text-white text-sm">Filtrar por Sede</label>
+                  <Select
+                    className="bg-white text-black rounded-full"
+                    placeholder="Ej. Country"
+                    options={[
+                      { value: "", label: "Seleccione..." }, // Opción predeterminada
+                      ...sortedCampus, // Sedes disponibles
+                      { value: "sin_sede", label: "Sin sede asignada" }, // Opción para sedes no asignadas
+                    ]}
+                    onChange={filterBySede}
+                    isClearable={true}
+                  />
+                </div>
+
 
                   {/* Filtro de Área */}
                   <div className="flex flex-col justify-start w-full max-w-[200px]">

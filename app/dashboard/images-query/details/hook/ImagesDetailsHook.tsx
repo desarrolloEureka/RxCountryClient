@@ -92,12 +92,17 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                     allOrderData?.orderSTLFiles.indexOf(urlFile);
                 setIdFileSelected(getIdFile);
                 setTypeFile("STL");
+            } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
+                const getIdFile: number =
+                    allOrderData?.orderSTLFiles.indexOf(urlFile);
+                setIdFileSelected(getIdFile);
+                setTypeFile("STL");
             } else {
                 const getIdFile: number =
                     allOrderData?.orderPDFUrl.indexOf(urlFile);
                 setIdFileSelected(getIdFile);
                 setTypeFile("pdf");
-            }
+            } 
             setFileSrcSelected(urlFile);
             return getIndex;
         });

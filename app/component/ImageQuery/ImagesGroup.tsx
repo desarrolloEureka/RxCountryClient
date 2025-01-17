@@ -205,7 +205,7 @@ const ImagesGroup = ({
                                             }
                                         >
                                             <Image
-                                                src="/assets/iconoply.png"
+                                                src="/assets/PLYIcono.png"
                                                 width={0}
                                                 height={0}
                                                 sizes="200px"
@@ -213,7 +213,7 @@ const ImagesGroup = ({
                                                     width: "100%",
                                                     height: "auto",
                                                 }}
-                                                alt={"logo stl file"}
+                                                alt={"logo ply file"}
                                                 placeholder="blur"
                                                 blurDataURL={item}
                                             />
