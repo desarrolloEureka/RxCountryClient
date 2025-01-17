@@ -142,6 +142,7 @@ const OrderHistorialPage = () => {
   const sortedCampus = [...campus].sort((a, b) => a.label.localeCompare(b.label));
   const sortedAllAreas = [...allAreas].sort((a, b) => a.label.localeCompare(b.label));
   
+ 
   return (
     <main className='relative min-h-screen w-full bg-gray-image bg-fixed bg-cover'>
       <div className='bg-black bg-opacity-60 flex flex-col min-h-screen w-full py-16 px-5 lg:p-16'>
@@ -301,7 +302,7 @@ const OrderHistorialPage = () => {
                     className="bg-white text-black rounded-full"
                     placeholder="Ej. Country"
                     options={[
-                      { value: "", label: "Seleccione..." }, // Opción predeterminada
+                      { value: "", label: "Seleccione..." }, { value: "none", label: "Sin Sede asignada" }, // Opción predeterminada
                       ...sortedCampus, // Sedes disponibles
                       { value: "sin_sede", label: "Sin sede asignada" }, // Opción para sedes no asignadas
                     ]}
@@ -317,7 +318,7 @@ const OrderHistorialPage = () => {
                     <Select
                       className="bg-white text-black rounded-full"
                       placeholder="Ej. Calidad"
-                      options={[{ value: "", label: "Seleccione..." }, ...sortedAllAreas]}
+                      options={[{ value: "", label: "Seleccione..." },...sortedAllAreas]}
                       onChange={filterByArea}
                       isClearable={true}
                     />
