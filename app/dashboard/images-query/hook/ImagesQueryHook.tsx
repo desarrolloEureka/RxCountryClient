@@ -47,7 +47,7 @@ const ImagesQueryHook = () => {
 
   const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
   
-  const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [value, setValue] = useState({
     startDate: null,
@@ -151,9 +151,18 @@ const ImagesQueryHook = () => {
    
 
     // Filtro por Campus
+    // const matchesCampusSearch =
+    // !selectedCampus ||
+    // order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+
     const matchesCampusSearch =
-    !selectedCampus ||
-    order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+    selectedCampus === "sin_sede"
+      ? !order.assignedCampus // Incluye registros sin sede (null, undefined o "")
+      : !selectedCampus || 
+        order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+
+  
+
     // (Array.isArray(order.assignedCampus) &&
     //   order.assignedCampus.some((item: string) =>
     //     item.toLowerCase() === selectedCampus.toLowerCase()
@@ -172,11 +181,18 @@ const ImagesQueryHook = () => {
     return selectedOption?.label ;
   }
   
-  const filterBySede = (selectedOption : { value: string; label: string }| null ) => {
-    setSelectedSede(selectedOption?.value || null);
-    return selectedOption?.label ;
-  }
-
+  // const filterBySede = (selectedOption : { value: string; label: string }| null ) => {
+  //   setSelectedSede(selectedOption?.value || null);
+  //   return selectedOption?.label ;
+  // }
+  const filterBySede = (selectedOption: { value: string; label: string } | null) => {
+    if (selectedOption?.value === "sin_sede") {
+      setSelectedSede("sin_sede"); // Valor específico para registros sin sede
+    } else {
+      setSelectedSede(selectedOption?.value || null);
+    }
+    return selectedOption?.label;
+  };
 
   filteredOrders = _.sortBy(filteredOrders, (obj) =>
     parseInt(obj.uid, 10)

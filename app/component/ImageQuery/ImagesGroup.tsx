@@ -213,7 +213,7 @@ const ImagesGroup = ({
                                                     width: "100%",
                                                     height: "auto",
                                                 }}
-                                                alt={"logo stl file"}
+                                                alt={"logo ply file"}
                                                 placeholder="blur"
                                                 blurDataURL={item}
                                             />

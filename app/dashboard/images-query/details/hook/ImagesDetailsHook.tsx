@@ -60,17 +60,18 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     const [areaSelected, setAreaSelected] = useState<any>(null);
     const [sentToArea, setSentToArea] = useState<string>("");
 
-    const arrayWithAllUrls: string[] = allOrderData && [
-        ...allOrderData?.orderPDFUrl,
-        ...allOrderData?.orderImagesUrl,
-        ...allOrderData?.orderSTLFiles,
-    ];
+    const arrayWithAllUrls: string[] = allOrderData ? [
+        ...(allOrderData?.orderPDFUrl||[]),
+        ...(allOrderData?.orderImagesUrl||[]),
+        ...(allOrderData?.orderSTLFiles||[]),
+    ]:[];
     const storage = getStorage();
 
     const getIndexOfCurrentImage = (): number => {
         return arrayWithAllUrls?.indexOf(fileSrcSelected);
     };
-
+    console.log("arrayWithAllUrls");
+    console.log(arrayWithAllUrls);
     // console.log("Prueba", 0+1 % arrayWithAllUrls?.length);
 
     const isFirstFile: boolean = getIndexOfCurrentImage() === 0;
@@ -79,56 +80,67 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
     // Función para avanzar al siguiente archivo
     const nextImage = () => {
-        setCurrentImageIndex((prevIndex) => {
-            const getIndex: number = (prevIndex + 1) % arrayWithAllUrls?.length;
-            const urlFile: string = arrayWithAllUrls[getIndex];
-            if (allOrderData?.orderImagesUrl.includes(urlFile)) {
-                const getIdFile: number =
-                    allOrderData?.orderImagesUrl.indexOf(urlFile);
-                setIdFileSelected(getIdFile);
-                setTypeFile("images");
-            } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
-                const getIdFile: number =
-                    allOrderData?.orderSTLFiles.indexOf(urlFile);
-                setIdFileSelected(getIdFile);
-                setTypeFile("STL");
-            } else {
-                const getIdFile: number =
-                    allOrderData?.orderPDFUrl.indexOf(urlFile);
-                setIdFileSelected(getIdFile);
-                setTypeFile("pdf");
-            }
-            setFileSrcSelected(urlFile);
-            return getIndex;
-        });
+        if (arrayWithAllUrls.length > 0){
+            setCurrentImageIndex((prevIndex) => {
+                const getIndex: number = (prevIndex + 1) % arrayWithAllUrls?.length;
+                const urlFile: string = arrayWithAllUrls[getIndex];
+                if (allOrderData?.orderImagesUrl.includes(urlFile)) {
+                    const getIdFile: number =
+                        allOrderData?.orderImagesUrl.indexOf(urlFile);
+                    setIdFileSelected(getIdFile);
+                    setTypeFile("images");
+                } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
+                    const getIdFile: number =
+                        allOrderData?.orderSTLFiles.indexOf(urlFile);
+                    setIdFileSelected(getIdFile);
+                    setTypeFile("STL");
+                } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
+                    const getIdFile: number =
+                        allOrderData?.orderSTLFiles.indexOf(urlFile);
+                    setIdFileSelected(getIdFile);
+                    setTypeFile("STL");
+                } else {
+                    const getIdFile: number =
+                        allOrderData?.orderPDFUrl.indexOf(urlFile);
+                    setIdFileSelected(getIdFile);
+                    setTypeFile("pdf");
+                }
+                setFileSrcSelected(urlFile);
+                return getIndex;
+            });
+        }
+        
     };
 
     // Función para retroceder al archivo anterior
     const prevImage = () => {
-        setCurrentImageIndex((prevIndex) => {
-            const getIndex: number =
-                (prevIndex - 1 + arrayWithAllUrls?.length) %
-                arrayWithAllUrls?.length;
-            const urlFile: string = arrayWithAllUrls[getIndex];
-            if (allOrderData?.orderImagesUrl.includes(urlFile)) {
-                const getIdFile: number =
-                    allOrderData?.orderImagesUrl.indexOf(urlFile);
-                setIdFileSelected(getIdFile);
-                setTypeFile("images");
-            } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
-                const getIdFile: number =
-                    allOrderData?.orderSTLFiles.indexOf(urlFile);
-                setIdFileSelected(getIdFile);
-                setTypeFile("STL");
-            } else {
-                const getIdFile: number =
-                    allOrderData?.orderPDFUrl.indexOf(urlFile);
-                setIdFileSelected(getIdFile);
-                setTypeFile("pdf");
-            }
-            setFileSrcSelected(urlFile);
-            return getIndex;
-        });
+        if (arrayWithAllUrls.length > 0){
+            setCurrentImageIndex((prevIndex) => {
+                const getIndex: number =
+                    (prevIndex - 1 + arrayWithAllUrls?.length) %
+                    arrayWithAllUrls?.length;
+                const urlFile: string = arrayWithAllUrls[getIndex];
+                if (allOrderData?.orderImagesUrl.includes(urlFile)) {
+                    const getIdFile: number =
+                        allOrderData?.orderImagesUrl.indexOf(urlFile);
+                    setIdFileSelected(getIdFile);
+                    setTypeFile("images");
+                } else if (allOrderData?.orderSTLFiles.includes(urlFile)) {
+                    const getIdFile: number =
+                        allOrderData?.orderSTLFiles.indexOf(urlFile);
+                    setIdFileSelected(getIdFile);
+                    setTypeFile("STL");
+                } else {
+                    const getIdFile: number =
+                        allOrderData?.orderPDFUrl.indexOf(urlFile);
+                    setIdFileSelected(getIdFile);
+                    setTypeFile("pdf");
+                }
+                setFileSrcSelected(urlFile);
+                return getIndex;
+            });
+        }
+        
     };
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -225,23 +237,23 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
     // const downloadImagen = async (urlFile: string) => {
     //     console.log("URL del archivo a descargar:", urlFile);
-        
+
     //     try {
     //         console.log("prueba",fileSrcSelected)
     //         // Realiza la solicitud fetch para obtener el archivo
     //         const response = await fetch(fileSrcSelected);
-    
+
     //         // Verifica si la respuesta es exitosa
     //         if (!response.ok) {
     //             throw new Error(`Error al descargar el archivo. Código HTTP: ${response.status}`);
     //         }
-    
+
     //         // Convierte la respuesta en un Blob
     //         const blob = await response.blob();
-    
+
     //         // Crea una URL temporal para descargar el Blob
     //         const url = URL.createObjectURL(blob);
-            
+
     //         // Crea un enlace para forzar la descarga
     //         const a = document.createElement("a");
     //         a.href = url;
@@ -249,39 +261,39 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     //         document.body.appendChild(a); // Añade temporalmente el enlace al DOM
     //         a.click(); // Simula el clic para descargar
     //         document.body.removeChild(a); // Remueve el enlace del DOM
-    
+
     //         // Libera la URL temporal
     //         URL.revokeObjectURL(url);
-    
+
     //         //console.log("Descarga completada.");
     //     } catch (err) {
     //         //console.error("Error al descargar la imagen:", err);
     //         alert("Hubo un error al intentar descargar el archivo. Revisa la consola para más detalles.");
     //     }
-        
+
     // };
     const downloadImagen = async (urlFile: string) => {
         //console.log("URL del archivo a descargar:", urlFile);
-    
+
         try {
             // Realiza la solicitud fetch para obtener el archivo
             const response = await fetch(urlFile);
-    
+
             // Verifica si la respuesta es exitosa
             if (!response.ok) {
                 throw new Error(`Error al descargar el archivo. Código HTTP: ${response.status}`);
             }
-    
+
             // Extrae el nombre del archivo desde la URL
             const decodedUrl = decodeURIComponent(urlFile); // Decodifica caracteres especiales
             const fileName = decodedUrl.split("/").pop()?.split("?")[0] || "archivo-descargado";
-    
+
             // Convierte la respuesta en un Blob
             const blob = await response.blob();
-    
+
             // Crea una URL temporal para descargar el Blob
             const url = URL.createObjectURL(blob);
-    
+
             // Crea un enlace para forzar la descarga
             const a = document.createElement("a");
             a.href = url;
@@ -289,23 +301,23 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             document.body.appendChild(a); // Añade temporalmente el enlace al DOM
             a.click(); // Simula el clic para descargar
             document.body.removeChild(a); // Remueve el enlace del DOM
-    
+
             // Libera la URL temporal
             URL.revokeObjectURL(url);
-    
+
            // console.log("Descarga completada.");
         } catch (err) {
             console.error("Error al descargar la imagen:", err);
             alert("Hubo un error al intentar descargar el archivo. Revisa la consola para más detalles.");
         }
     };
-    
 
-    
-    
+
+
+
 
     const deleteFile = async (urlFile: string, typeFile: string) => {
-        
+
         console.log("urlFile  y typeFile");
         console.log(urlFile);
         console.log(typeFile);
@@ -336,11 +348,11 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             const currentDate = currentYear ? urlFile.match(new RegExp(`${currentYear}-\\d{2}-\\d{2}`))?.[0] || "" : "";
             const areaFolder = allAreas?.find((item) => item.value === (area??sentToArea))
             ?.label as string
-            
+
             // Extrae el nombre del archivo desde la URL
             const decodedUrl = decodeURIComponent(urlFile); // Decodifica caracteres especiales
             const fileName = decodedUrl.split("/").pop()?.split("?")[0] || "archivo-descargado";
-    
+
             const deletPatch =  `/Media/ODS_${currentYear}/${currentDate}/${slug}-${allOrderData?.id}/${areaFolder}/${fileName}`;
             console.log("fileName");
             console.log(fileName);
@@ -348,8 +360,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             const desertRef = ref(storage, deletPatch);
             console.log("deletPatch");
             console.log(deletPatch);
-            
-            
+
+
             // Delete the file
             deleteObject(desertRef).then(() => {
                 console.log("archivo eliminado");
@@ -384,13 +396,13 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         //           ]
         //         : filesUrls[typeFile],
         // };
-        
+
         const newData = { [typeOfCollection[typeFile]]:
-        [ 
+        [
             ...allOrderData?.[typeOfCollection[typeFile]],
             ...filesUrls?.images,
         ]}
-       
+
         try {
             await updateDocumentsByIdFb(slug, newData, orderRef).then(() => {
                 handleRemoveImage(currentIndex);
@@ -521,11 +533,11 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                         .catch((err: any) => {
                             console.log(err);
                         });
-                
-                
+
+
             }
         }
-        
+
         return urlFiles;
     };
 
@@ -578,9 +590,16 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                 email,
                 age,
             };
+            console.log("orderAndPatientData");
+            console.log(orderAndPatientData);
+            console.log("patient");
+            console.log(patient);
+            console.log("ordersData");
+            console.log(ordersData);
 
             setAllOrderData(orderAndPatientData);
         }
+
     }, [ordersData, patientsData]);
 
     useEffect(() => {

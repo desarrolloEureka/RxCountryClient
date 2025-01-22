@@ -176,7 +176,11 @@ const ImageQueryPage = () => {
                                 <Select
                                     className="bg-white text-black rounded-full"
                                     placeholder="Ej. Country"
-                                    options={[{ value: "", label: "Seleccione..." }, ...sortedCampus]} // Ordenar dinámicamente
+                                    options={[
+                                    { value: "", label: "Seleccione..." },
+                                    ...sortedCampus, // Sedes disponibles
+                                    { value: "sin_sede", label: "Sin sede asignada" }, // Opción para sedes no asignadas
+                                    ]}
                                     onChange={filterBySede}
                                     isClearable={true}
                                 />
@@ -338,205 +342,145 @@ const ImageQueryPage = () => {
                     <div className="scroll-container">
                         <div className="flex flex-col divide-y overflow-x-auto custom-scrollbar pb-3 mb-5">
                             {filteredOrders.length > 0 ? (
-                                <>
-                                    <div className="flex flex-row min-w-max items-center text-company-orange py-4 px-12 space-x-2">
-                                        <div className="text-center text-nowrap w-20">
-                                            <span># Orden</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-44 pl-5">
-                                            <span>Nombres</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-44 pl-5">
-                                            <span>Apellidos</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-28 pl-5">
-                                            <span>Estado</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-20">
-                                            <span>Tipo Doc.</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-28 pl-5">
-                                            <span>Cédula</span>
-                                        </div>
-                                        <div className="text-center text-nowrap w-48">
-                                            <span>Fecha</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-52 pl-5">
-                                            <span>Correo</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-36 pl-5">
-                                            <span>Teléfono</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-36 pl-5">
-                                            <span>Ultimo Usuario</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-48">
-                                            <span>Fecha de Actualización</span>
-                                        </div>
-                                        <div className="text-start text-nowrap w-24">
-                                            <span>Comentarios</span>
-                                        </div>
-                                        <div className="text-center text-nowrap w-40">
-                                            <span>Acciones</span>
-                                        </div>
+                            <>
+                                {/* Encabezados */}
+                                <div className="flex flex-row min-w-max items-center text-company-orange py-4 px-12 space-x-2">
+                                    <div className="text-center text-nowrap w-40">
+                                        <span>Acciones</span>
                                     </div>
-                                    {filteredOrders?.map(
-                                        (item: any, index: number) => {
-                                            
-                                            return (
-                                                <div
-                                                    key={index}
-                                                    className={`flex flex-row min-w-max border-t items-center ${
-                                                        index === 0
-                                                            ? "bg-gray-700"
-                                                            : ""
-                                                    } text-white py-4 hover:bg-gray-700 px-12 space-x-2`}
-                                                >
-                                                    <div className="text-nowrap text-center w-20">
-                                                        <p className="truncate">{`#${item.uid}`}</p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-44 pl-5">
-                                                        <p className="truncate">
-                                                            {item.name}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-44 pl-5">
-                                                        <p className="truncate">
-                                                            {item.lastName}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-28 pl-5">
-                                                        <p className="truncate">
-                                                            {item.status}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-20 pl-5">
-                                                        <p className="truncate">
-                                                            {item.idType}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-28 pl-2">
-                                                        <p className="truncate">
-                                                            {item.id}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-center w-48">
-                                                        <p className="truncate">
-                                                            {formatearFecha(
-                                                                item.timestamp,
-                                                            )}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-52">
-                                                        <p className="truncate">
-                                                            {item.email}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-36">
-                                                        <p className="truncate">
-                                                            {"+" +
-                                                                item.phone.substring(
-                                                                    0,
-                                                                    2,
-                                                                ) +
-                                                                " " +
-                                                                item.phone.substring(
-                                                                    2,
-                                                                )}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-36 pl-5">
-                                                        <p className="truncate">
-                                                            {item.updateLog.at(
-                                                                -1,
-                                                            ).lastUserId
-                                                                ? getLastUserData(
-                                                                      item.updateLog.at(
-                                                                          -1,
-                                                                      )
-                                                                          .lastUserId,
-                                                                  )
-                                                                : "No Registrado"}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-nowrap text-start w-48 pl-1">
-                                                        <p className="truncate">
-                                                            {item.updateLog.at(
-                                                                -1,
-                                                            ).lastUpdate
-                                                                ? formatearFecha(
-                                                                      item.updateLog.at(
-                                                                          -1,
-                                                                      )
-                                                                          .lastUpdate,
-                                                                  )
-                                                                : "Sin Registro"}
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="flex justify-center text-nowrap text-company-blue w-24">
-                                                        <button
-                                                            onClick={() => {
-                                                                modalLastUpdate(
-                                                                    item,
-                                                                );
-                                                            }}
-                                                        >
-                                                            <IoIosMore
-                                                                size={24}
-                                                            />
-                                                        </button>
-                                                    </div>
-                                                    <div className="col flex justify-between text-nowrap text-company-blue w-48 px-14">
-                                                        {(item.orderImagesUrl ||
-                                                            item.orderSTLFiles ||
-                                                            item.orderPDFUrl) &&
-                                                        (item.orderImagesUrl
-                                                            ?.length > 0 ||
-                                                            item.orderSTLFiles
-                                                                ?.length > 0 ||
-                                                            item.orderPDFUrl
-                                                                ?.length >
-                                                                0) ? (
-                                                            <Link
-                                                                href={`/dashboard/images-query/details/${item.uid}`}
-                                                                rel="noopener noreferrer"
-                                                                target="_blank"
-                                                            >
-                                                                <IoEye
-                                                                    size={24}
-                                                                />
-                                                            </Link>
-                                                        ) : (
-                                                            <button
-                                                                onClick={
-                                                                    imagesNotFoundAlert
-                                                                }
-                                                            >
-                                                                <IoEye
-                                                                    size={24}
-                                                                />
-                                                            </button>
-                                                        )}
-                                                        <Link
-                                                            href={`/dashboard/preview-order/${item.uid}`}
-                                                            rel="noopener noreferrer"
-                                                            target="_blank"
-                                                        >
-                                                            <MdPictureAsPdf
-                                                                size={24}
-                                                            />
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                            );
-                                        },
-                                    )}
-                                </>
-                            ) : (
-                                <div className="flex items-center justify-center bg-black bg-opacity-30 min-w-max w-full p-10 text-company-blue">
-                                    <span>No hay datos para mostrar</span>
+                                    <div className="text-center text-nowrap w-20">
+                                        <span># Orden</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-44 pl-5">
+                                        <span>Nombres</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-44 pl-5">
+                                        <span>Apellidos</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-28 pl-5">
+                                        <span>Estado</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-20">
+                                        <span>Tipo Doc.</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-28 pl-5">
+                                        <span>Cédula</span>
+                                    </div>
+                                    <div className="text-center text-nowrap w-48">
+                                        <span>Fecha</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-52 pl-5">
+                                        <span>Correo</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-36 pl-5">
+                                        <span>Teléfono</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-36 pl-5">
+                                        <span>Ultimo Usuario</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-48">
+                                        <span>Fecha de Actualización</span>
+                                    </div>
+                                    <div className="text-start text-nowrap w-24">
+                                        <span>Comentarios</span>
+                                    </div>
                                 </div>
+                                
+                                {/* Filas de datos */}
+                                {filteredOrders?.map((item: any, index: number) => {
+                                return (
+                                    <div
+                                    key={index}
+                                    className={`flex flex-row min-w-max border-t items-center ${
+                                        index === 0 ? "bg-gray-700" : ""
+                                    } text-white py-4 hover:bg-gray-700 px-12 space-x-2`}
+                                    >
+                                    {/* Acciones */}
+                                    <div className="col flex justify-between text-nowrap text-company-blue w-48 px-14">
+                                    {/* Ícono del ojo */}
+                                    <Link
+                                        href={`/dashboard/images-query/details/${item.uid}`}
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                    >
+                                        <IoEye size={24} />
+                                    </Link>
+
+                                    {/* Ícono de PDF */}
+                                    <Link
+                                        href={`/dashboard/preview-order/${item.uid}`}
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                    >
+                                        <MdPictureAsPdf size={24} />
+                                    </Link>
+                                    </div>
+
+
+                                    {/* Resto de columnas */}
+                                    <div className="text-nowrap text-center w-20">
+                                        <p className="truncate">{`#${item.uid}`}</p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-44 pl-5">
+                                        <p className="truncate">{item.name}</p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-44 pl-5">
+                                        <p className="truncate">{item.lastName}</p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-28 pl-5">
+                                        <p className="truncate">{item.status}</p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-20 pl-5">
+                                        <p className="truncate">{item.idType}</p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-28 pl-2">
+                                        <p className="truncate">{item.id}</p>
+                                    </div>
+                                    <div className="text-center w-48">
+                                        <p className="truncate">
+                                        {formatearFecha(item.timestamp)}
+                                        </p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-52">
+                                        <p className="truncate">{item.email}</p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-36">
+                                        <p className="truncate">
+                                        {"+" +
+                                            item.phone.substring(0, 2) +
+                                            " " +
+                                            item.phone.substring(2)}
+                                        </p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-36 pl-5">
+                                        <p className="truncate">
+                                        {item.updateLog.at(-1)?.lastUserId
+                                            ? getLastUserData(
+                                                item.updateLog.at(-1).lastUserId
+                                            )
+                                            : "No Registrado"}
+                                        </p>
+                                    </div>
+                                    <div className="text-nowrap text-start w-48 pl-1">
+                                        <p className="truncate">
+                                        {item.updateLog.at(-1)?.lastUpdate
+                                            ? formatearFecha(item.updateLog.at(-1).lastUpdate)
+                                            : "Sin Registro"}
+                                        </p>
+                                    </div>
+                                    <div className="flex justify-center text-nowrap text-company-blue w-24">
+                                        <button onClick={() => modalLastUpdate(item)}>
+                                        <IoIosMore size={24} />
+                                        </button>
+                                    </div>
+                                    </div>
+                                );
+                                })}
+                            </>
+                            ) : (
+                            <div className="flex items-center justify-center bg-black bg-opacity-30 min-w-max w-full p-10 text-company-blue">
+                                <span>No hay datos para mostrar</span>
+                            </div>
                             )}
                         </div>
                         <div className="scroll-arrow flex lg:hidden">
@@ -575,7 +519,7 @@ const ImageQueryPage = () => {
                                         );
                                         setCurrentPage(1);
                                     }}
-                                    defaultValue={ordersData.length}
+                                    defaultValue={10}
                                 >
                                     {Array.from(
                                         {
