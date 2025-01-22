@@ -311,9 +311,15 @@ const OrderHistorialHook = () => {
       ));
 
     // Filtro por Campus
+    // const matchesCampusSearch =
+    // !selectedCampus ||
+    // order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
     const matchesCampusSearch =
-    !selectedCampus ||
-    order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+    selectedCampus === "sin_sede"
+      ? !order.assignedCampus // Incluye registros sin sede (null, undefined o "")
+      : !selectedCampus || 
+        order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+
 
     return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
   });
@@ -327,10 +333,20 @@ const OrderHistorialHook = () => {
     return selectedOption?.label ;
   }
   
-  const filterBySede = (selectedOption : { value: string; label: string }| null ) => {
-    setSelectedSede(selectedOption?.value || null);
-    return selectedOption?.label ;
-  }
+  // const filterBySede = (selectedOption : { value: string; label: string }| null ) => {
+  //   setSelectedSede(selectedOption?.value || null);
+  //   return selectedOption?.label ;
+  // }
+  const filterBySede = (selectedOption: { value: string; label: string } | null) => {
+    if (selectedOption?.value === "sin_sede") {
+      setSelectedSede("sin_sede"); // Valor específico para registros sin sede
+    } else {
+      setSelectedSede(selectedOption?.value || null);
+    }
+    return selectedOption?.label;
+  };
+  
+
 
   filteredOrders = _.sortBy(filteredOrders, (obj) =>
     parseInt(obj.uid, 10)

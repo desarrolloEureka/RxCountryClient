@@ -302,7 +302,7 @@ const OrderHistorialPage = () => {
                     className="bg-white text-black rounded-full"
                     placeholder="Ej. Country"
                     options={[
-                      { value: "", label: "Seleccione..." }, { value: "none", label: "Sin Sede asignada" }, // Opción predeterminada
+                      { value: "", label: "Seleccione..." },
                       ...sortedCampus, // Sedes disponibles
                       { value: "sin_sede", label: "Sin sede asignada" }, // Opción para sedes no asignadas
                     ]}

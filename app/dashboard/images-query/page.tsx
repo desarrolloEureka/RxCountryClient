@@ -176,7 +176,11 @@ const ImageQueryPage = () => {
                                 <Select
                                     className="bg-white text-black rounded-full"
                                     placeholder="Ej. Country"
-                                    options={[{ value: "", label: "Seleccione..." }, ...sortedCampus]} // Ordenar dinámicamente
+                                    options={[
+                                    { value: "", label: "Seleccione..." },
+                                    ...sortedCampus, // Sedes disponibles
+                                    { value: "sin_sede", label: "Sin sede asignada" }, // Opción para sedes no asignadas
+                                    ]}
                                     onChange={filterBySede}
                                     isClearable={true}
                                 />
