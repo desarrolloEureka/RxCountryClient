@@ -1027,7 +1027,9 @@ function StepByStep({
 
                     <div className='grid grid-cols-1 gap-4'>
                       <SelectComponent
-                        options={allDiagnostician}
+                        options={[...(allDiagnostician || [])].sort((a, b) =>
+                          a.label.localeCompare(b.label)
+                        )}
                         selectChangeHandler={(e) => {
                           selectChangeHandlerDiagnostician(e?.value);
                           setDiagnosticianSelected(e);
@@ -1043,7 +1045,9 @@ function StepByStep({
 
                     <div className='grid grid-cols-1 gap-4 text-sm lg:text-base font-normal text-company-orange'>
                       <SelectComponent
-                        options={allDiagnoses}
+                        options={[...(allDiagnoses || [])].sort((a, b) =>
+                          a.label.localeCompare(b.label)
+                        )}
                         selectChangeHandler={(e) => {
                           selectChangeHandlerDiagnoses(e?.value);
                           setDiagnosesSelected(e);
