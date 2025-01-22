@@ -47,7 +47,7 @@ const ImagesQueryHook = () => {
 
   const [allCampus, setAllCampus] = useState<CampusSelector[]>([]);
   
-  const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [value, setValue] = useState({
     startDate: null,

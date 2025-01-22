@@ -455,7 +455,10 @@ const OrderHistorialPage = () => {
             <div className='flex flex-col divide-y overflow-x-auto custom-scrollbar pb-3 mb-5'>
               {filteredOrders.length > 0 ? (
                 <>
-                  <div className='flex flex-row min-w-max items-center text-company-orange py-4 px-12 space-x-2'>
+                  <div className='sticky top-0 flex flex-row min-w-max items-center text-company-orange py-4 px-12 space-x-2'>
+                    <div className=' text-center text-nowrap w-40'>
+                      <span>Acciones</span>
+                    </div>
                     <div className='text-center text-nowrap w-20'>
                       <span># Orden</span>
                     </div>
@@ -495,9 +498,7 @@ const OrderHistorialPage = () => {
                     <div className='text-start text-nowrap w-24'>
                       <span>Comentarios</span>
                     </div>
-                    <div className='text-center text-nowrap w-40'>
-                      <span>Acciones</span>
-                    </div>
+                   
                   </div>
                   <div className='scroll-arrow flex lg:hidden border-none'>
                     <LiaLongArrowAltRightSolid />
@@ -511,6 +512,66 @@ const OrderHistorialPage = () => {
                           index === 0 ? 'bg-gray-700' : ''
                         } text-white py-4 hover:bg-gray-700 px-12 space-x-2`}
                       >
+                         <div className='flex justify-between text-nowrap text-company-blue w-40 px-5'>
+                          {/* <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
+                                            >
+                                                <IoIosNotifications size={24} />
+                                            </button> */}
+                          {
+                            // Validamos si `userArea` está en `item.sendTo`
+                            ((((Array.isArray(item.sendTo) &&
+                              item.sendTo.some(
+                                (area: any) => area.value === userArea
+                              )) ||
+                              (!Array.isArray(item.sendTo) &&
+                                item.sendTo === userArea)) &&
+                              item.status !== 'finalizada') ||
+                              userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq' ||
+                              userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk') && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  userRol?.uid !== item.modifiedBy.userRolId &&
+                                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq'
+                                    ? setStatusOpenOrder(item.uid).then(() => {
+                                        router.push(
+                                          `/dashboard/orders-historial/edit-order/${item.uid}`
+                                        );
+                                      })
+                                    : router.push(
+                                        `/dashboard/orders-historial/edit-order/${item.uid}`
+                                      );
+                                }}
+                              >
+                                <RiEditBoxFill size={24} />
+                              </button>
+                            )
+                          }
+
+                          <Link
+                            href={`/dashboard/preview-order/${item.uid}`}
+                            rel='noopener noreferrer'
+                            target='_blank'
+                          >
+                            <MdPictureAsPdf size={24} />
+                          </Link>
+                          <button
+                            // className="px-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(
+                                selectedOrder === 'send'
+                                  ? `/dashboard/orders-historial/details/${item.uid}/?from=send`
+                                  : `/dashboard/orders-historial/details/${item.uid}/?from=received`
+                              );
+                            }}
+                          >
+                            <IoIosEye size={24} />
+                          </button>
+                        </div>
                         <div className='text-nowrap text-center w-20'>
                           <p className='truncate'>{`#${item.uid}`}</p>
                         </div>
@@ -577,66 +638,7 @@ const OrderHistorialPage = () => {
                             <IoIosMore size={24} />
                           </button>
                         </div>
-                        <div className='flex justify-between text-nowrap text-company-blue w-40 px-5'>
-                          {/* <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                }}
-                                            >
-                                                <IoIosNotifications size={24} />
-                                            </button> */}
-                          {
-                            // Validamos si `userArea` está en `item.sendTo`
-                            ((((Array.isArray(item.sendTo) &&
-                              item.sendTo.some(
-                                (area: any) => area.value === userArea
-                              )) ||
-                              (!Array.isArray(item.sendTo) &&
-                                item.sendTo === userArea)) &&
-                              item.status !== 'finalizada') ||
-                              userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq' ||
-                              userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk') && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  userRol?.uid !== item.modifiedBy.userRolId &&
-                                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq'
-                                    ? setStatusOpenOrder(item.uid).then(() => {
-                                        router.push(
-                                          `/dashboard/orders-historial/edit-order/${item.uid}`
-                                        );
-                                      })
-                                    : router.push(
-                                        `/dashboard/orders-historial/edit-order/${item.uid}`
-                                      );
-                                }}
-                              >
-                                <RiEditBoxFill size={24} />
-                              </button>
-                            )
-                          }
-
-                          <Link
-                            href={`/dashboard/preview-order/${item.uid}`}
-                            rel='noopener noreferrer'
-                            target='_blank'
-                          >
-                            <MdPictureAsPdf size={24} />
-                          </Link>
-                          <button
-                            // className="px-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              router.push(
-                                selectedOrder === 'send'
-                                  ? `/dashboard/orders-historial/details/${item.uid}/?from=send`
-                                  : `/dashboard/orders-historial/details/${item.uid}/?from=received`
-                              );
-                            }}
-                          >
-                            <IoIosEye size={24} />
-                          </button>
-                        </div>
+                       
                       </div>
                     );
                   })}
@@ -668,7 +670,7 @@ const OrderHistorialPage = () => {
                     setItemsPerPage(parseInt(e.target.value));
                     setCurrentPage(1);
                   }}
-                  defaultValue={ordersData.length}
+                  defaultValue={10}
                 >
                   {Array.from(
                     {
