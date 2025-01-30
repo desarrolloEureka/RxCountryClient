@@ -399,9 +399,25 @@ const ImageQueryPage = () => {
                                     <div className="col flex justify-between text-nowrap text-company-blue w-48 px-14">
                                     {/* Ícono del ojo */}
                                     <Link
-                                        href={`/dashboard/images-query/details/${item.uid}`}
+                                        href={
+                                          (Array.isArray(item.orderImagesUrl) && item.orderImagesUrl.length > 0) || item.urlWeTransfer != "" 
+                                                ? `/dashboard/images-query/details/${item.uid}`
+                                                : "#"
+                                        }
                                         rel="noopener noreferrer"
                                         target="_blank"
+                                        onClick={(e) => {
+                                            // Verificar si hay al menos un archivo en cualquiera de las propiedades conocidas
+                                            console.log("item")
+                                            console.log(item.orderImagesUrl)
+                                            if (
+                                                (!Array.isArray(item.orderImagesUrl) || item.orderImagesUrl.length === 0) && 
+                                                item.urlWeTransfer === ""
+                                            ) {
+                                                e.preventDefault(); // Evita abrir el enlace si no hay archivos
+                                                imagesNotFoundAlert(); // Muestra la alerta
+                                            } 
+                                        }}
                                     >
                                         <IoEye size={24} />
                                     </Link>

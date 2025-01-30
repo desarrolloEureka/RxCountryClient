@@ -380,7 +380,7 @@ const ImagesGroup = ({
                                     {typeFile === "STL" ? "Archivo" : "Imagen"}{" "}
                                     {idFileSelected + 1}
                                 </h3>
-                                {typeFile === "images" ? (
+                                {fileSrcSelected.includes(".jpg") ? (
                                     <Link
                                         className="flex flex-1 items-center justify-center"
                                         href={fileSrcSelected}
@@ -401,7 +401,7 @@ const ImagesGroup = ({
                                             blurDataURL={fileSrcSelected}
                                         />
                                     </Link>
-                                ) : (
+                                ) : fileSrcSelected.includes(".stl")?(
                                     <div className="flex flex-1 items-center justify-center">
                                         <Image
                                         src="/assets/stl.png"
@@ -418,7 +418,40 @@ const ImagesGroup = ({
                                     />
                                     </div>
                                     
-                                )}
+                                ):fileSrcSelected.includes(".ply")?(
+                                    <div className="flex flex-1 items-center justify-center">
+                                        <Image
+                                        src="/assets/PLYIcono.png"
+                                        width={0}
+                                        height={0}
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        style={{
+                                            width: "50%",
+                                            height: "auto",
+                                        }}
+                                        alt={"logo"}
+                                        placeholder="blur"
+                                        blurDataURL={fileSrcSelected}
+                                    />
+                                    </div>
+                                    ):fileSrcSelected.includes(".pdf")?(
+                                        <div className="flex flex-1 items-center justify-center">
+                                            <Image
+                                            src="/assets/icons/PDF.svg"
+                                            width={0}
+                                            height={0}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            style={{
+                                                width: "50%",
+                                                height: "auto",
+                                            }}
+                                            alt={"logo"}
+                                            placeholder="blur"
+                                            blurDataURL={fileSrcSelected}
+                                        />
+                                        </div>
+                                        ):null
+                                }
                             </div>
 
                             <div className="">
