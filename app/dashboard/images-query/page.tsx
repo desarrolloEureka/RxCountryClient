@@ -408,8 +408,8 @@ const ImageQueryPage = () => {
                                         target="_blank"
                                         onClick={(e) => {
                                             // Verificar si hay al menos un archivo en cualquiera de las propiedades conocidas
-                                            console.log("item")
-                                            console.log(item.orderImagesUrl)
+                                            // console.log("item")
+                                            // console.log(item.orderImagesUrl)
                                             if (
                                                 (!Array.isArray(item.orderImagesUrl) || item.orderImagesUrl.length === 0) && 
                                                 item.urlWeTransfer === ""

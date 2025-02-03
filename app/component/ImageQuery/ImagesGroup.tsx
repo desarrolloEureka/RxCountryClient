@@ -359,7 +359,8 @@ const ImagesGroup = ({
                     */}
                 </h2>
                
-                {typeFile === "images" || typeFile === "STL" ? (
+                {orderAndPatientData?.orderImagesUrl && orderAndPatientData?.orderImagesUrl.length > 0 ? (
+                    typeFile === "images" || typeFile === "STL" ? (
                     <div className="flex flex-col justify-center items-center space-y-4 ">
                         <div className="flex flex-row items-center w-full justify-around">
                             <div className="">
@@ -508,7 +509,15 @@ const ImagesGroup = ({
                             </div>
                         </div>
                     </div>
-                )}
+                )): (
+                    <div className="flex flex-col items-center justify-center space-y-4 h-full">
+                        <h3 className="text-white text-center text-xl">No hay imágenes disponibles</h3>
+                        <p className="text-gray-400 text-center">
+                            Por favor, agrega imágenes o regresa más tarde.
+                        </p>
+                    </div>
+                )
+                }
                 {fileSrcSelected !== "https://via.placeholder.com/1920" && (
                     <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0">
                         <button  

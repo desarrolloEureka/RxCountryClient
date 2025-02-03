@@ -322,7 +322,7 @@ const OrderPDF = ({
                                                     ) ? (
                                                         <Text
                                                             style={tw(
-                                                                "text-[14px] font-bold text-red-500 px-[2.9px]",
+                                                                "text-[15px] font-bold text-red-500 px-[2.9px]",
                                                             )}
                                                         >
                                                             X
@@ -351,7 +351,7 @@ const OrderPDF = ({
                                                     ) ? (
                                                         <Text
                                                             style={tw(
-                                                                "text-[14px] font-bold text-red-500 px-[2.9px]",
+                                                                "text-[15px] font-bold text-red-500 px-[2.9px]",
                                                             )}
                                                         >
                                                             X
@@ -382,7 +382,7 @@ const OrderPDF = ({
                                                 ) ? (
                                                     <Text
                                                         style={tw(
-                                                            "text-[14px] font-bold text-red-500 px-[2.9px]",
+                                                            "text-[15px] font-bold text-red-500 px-[2.9px]",
                                                         )}
                                                     >
                                                         X
@@ -407,7 +407,7 @@ const OrderPDF = ({
                                                 ) ? (
                                                     <Text
                                                         style={tw(
-                                                            "text-[14px] font-bold text-red-500 px-[2.9px]",
+                                                            "text-[15px] font-bold text-red-500 px-[2.9px]",
                                                         )}
                                                     >
                                                         X
@@ -460,7 +460,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedIntraOrals.includes(
@@ -522,7 +522,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedExtraOrals.includes(
@@ -714,7 +714,7 @@ const OrderPDF = ({
                                                     ) ? (
                                                         <Text
                                                             style={tw(
-                                                                "text-[14px] font-bold text-red-500",
+                                                                "text-[15px] font-bold text-red-500",
                                                             )}
                                                         >
                                                             X
@@ -744,7 +744,7 @@ const OrderPDF = ({
                                                     ) ? (
                                                         <Text
                                                             style={tw(
-                                                                "text-[14px] font-bold text-red-500",
+                                                                "text-[15px] font-bold text-red-500",
                                                             )}
                                                         >
                                                             X
@@ -778,7 +778,7 @@ const OrderPDF = ({
                                                 ) ? (
                                                     <Text
                                                         style={tw(
-                                                            "text-[14px] font-bold text-red-500",
+                                                            "text-[15px] font-bold text-red-500",
                                                         )}
                                                     >
                                                         X
@@ -804,7 +804,7 @@ const OrderPDF = ({
                                                 ) ? (
                                                     <Text
                                                         style={tw(
-                                                            "text-[14px] font-bold text-red-500",
+                                                            "text-[15px] font-bold text-red-500",
                                                         )}
                                                     >
                                                         X
@@ -861,7 +861,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selected3DVolumetricTomography.includes(
@@ -923,7 +923,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedAdditionalDeliveryMethod.includes(
@@ -1006,7 +1006,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedDiagnosis.includes(
@@ -1074,7 +1074,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedModels.includes(
@@ -1282,7 +1282,7 @@ const OrderPDF = ({
                                                             >
                                                                 <Text
                                                                     style={tw(
-                                                                        "absolute text-[10px] font-bold text-red-500",
+                                                                        "absolute text-[15px] font-bold text-red-500",
                                                                     )}
                                                                 >
                                                                     {orderData?.selectedIntraOralClinicalPhotography.includes(
@@ -1350,7 +1350,7 @@ const OrderPDF = ({
                                                             >
                                                                 <Text
                                                                     style={tw(
-                                                                        "absolute text-[10px] font-bold text-red-500",
+                                                                        "absolute text-[15px] font-bold text-red-500",
                                                                     )}
                                                                 >
                                                                     {orderData?.selectedExtraOralClinicalPhotography.includes(
@@ -1420,7 +1420,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedPresentation.includes(
@@ -1490,7 +1490,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedBackground.includes(
@@ -1556,7 +1556,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedClinicalPhotographyDeliveryMethod.includes(
@@ -1637,7 +1637,7 @@ const OrderPDF = ({
                                                         >
                                                             <Text
                                                                 style={tw(
-                                                                    "absolute text-[10px] font-bold text-red-500",
+                                                                    "absolute text-[15px] font-bold text-red-500",
                                                                 )}
                                                             >
                                                                 {orderData?.selectedDiagnosticPackage.includes(
