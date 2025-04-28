@@ -2186,9 +2186,7 @@ function StepByStep({
                       <SelectWithCheckbox
                         // isDisabled={areaSelected}
                         isMulti
-                        options={allAreas.filter(
-                          (area) => area.value !== '0OaigBxmSmUa90dvawB1'
-                        )}
+                        options={allAreas}
                         selectChangeHandler={(e) => {
                           handleAreaList(e);
                           setAreasListSelected(e);
