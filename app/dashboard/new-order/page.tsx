@@ -182,6 +182,7 @@ const NewOrderPage = () => {
           </div>
 
           <StepByStep
+            flag={false}
             userData={userData}
             value={value}
             uidUser={uidUser}
