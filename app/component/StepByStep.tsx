@@ -61,7 +61,7 @@ interface Props {
   phoneChangeHandler: (phone: string) => void;
   idChangeHandler: (id: string) => void;
   setSelectedOptions: (e: any) => void;
-  handleSendForm: (e: any) => Promise<void>;
+  handleSendForm: (e: any, areaSelected: any) => Promise<void>;
   selectChangeHandlerSentTo: (e: any) => void;
   handleAreaList: (e: any) => void;
   areaList?: string[];
@@ -91,6 +91,7 @@ interface Props {
   modelType?: string;
   handleModelType?: (e: any) => void;
   handleFileChangeSTL?: (e: any) => void;
+  flag: boolean;
 }
 
 function StepByStep({
@@ -141,6 +142,7 @@ function StepByStep({
   handleModelType,
   modelType,
   handleFileChangeSTL,
+  flag,
 }: Props) {
 
   
@@ -544,22 +546,19 @@ function StepByStep({
               </label>
               <input
                 disabled={
-                  oldData ||
-                  (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk')
-                }
+                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq'
+                }                
                 value={data && data?.email}
                 type='email'
                 name='email'
                 required
                 id='email'
                 className={`rounded-xl h-10 bg-transparent border ${
-                  oldData ||
-                  (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk')
+                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                  userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
                     ? 'border-gray-600 text-gray-400'
                     : 'border-company-blue text-white'
-                } px-10`}
+                } px-10`}                
                 onChange={changeHandler}
               />
               <span
@@ -818,7 +817,7 @@ function StepByStep({
         </div>
       )}
 
-      {isEdit && userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' ? (
+      {isEdit && userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' && (flag || userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk')?  (
         <>
           {/* Flujo de acción */}
           {formStep === 1 && (
@@ -1567,7 +1566,7 @@ function StepByStep({
             <div className='flex flex-col mx-4 sm:mx-20'>
               <div className='flex items-center justify-center mx-0 sm:mx-auto mb-8'>
                 <DentalSelect
-                  setSelected={!isEdit ? setDentalSelectBoneScan : () => {}}
+                  setSelected={!isEdit ? setDentalSelectBoneScan : userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'? setDentalSelectBoneScan : () => {}}
                   selected={dentalSelectBoneScan}
                 />
               </div>
@@ -1587,7 +1586,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  &&
                                     setSelectedIntraOrals(
                                       selectedIntraOrals.includes(option)
                                         ? selectedIntraOrals.filter(
@@ -1597,7 +1596,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  !isEdit && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  && 'cursor-pointer'
                                 } ${
                                   selectedIntraOrals.includes(option)
                                     ? 'bg-company-orange'
@@ -1631,7 +1630,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 
                                     setSelectedExtraOrals(
                                       selectedExtraOrals.includes(option)
                                         ? selectedExtraOrals.filter(
@@ -1641,7 +1640,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  !isEdit && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  && 'cursor-pointer'
                                 } ${
                                   selectedExtraOrals.includes(option)
                                     ? 'bg-company-orange'
@@ -1667,7 +1666,7 @@ function StepByStep({
             <div className='flex flex-col mx-4 sm:mx-20'>
               <div className='flex items-center justify-center mx-0 sm:mx-auto mb-8'>
                 <DentalSelect
-                  setSelected={!isEdit ? setDentalSelectTomography : () => {}}
+                  setSelected={(!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') ? setDentalSelectTomography : userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'? setDentalSelectBoneScan : () => {}}
                   selected={dentalSelectTomography}
                 />
               </div>
@@ -1690,7 +1689,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                     setSelected3DVolumetricTomography(
                                       selected3DVolumetricTomography.includes(
                                         option
@@ -1705,7 +1704,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  !isEdit && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                                 } ${
                                   selected3DVolumetricTomography.includes(
                                     option
@@ -1748,7 +1747,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                     setSelectedAdditionalDeliveryMethod(
                                       selectedAdditionalDeliveryMethod.includes(
                                         option
@@ -1804,7 +1803,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                !isEdit &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                   setSelectedDiagnosis(
                                     selectedDiagnosis.includes(option)
                                       ? selectedDiagnosis.filter(
@@ -1814,7 +1813,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                !isEdit && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                               } ${
                                 selectedDiagnosis.includes(option)
                                   ? 'bg-company-orange'
@@ -1848,7 +1847,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                !isEdit &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                   setSelectedModels(
                                     selectedModels.includes(option)
                                       ? selectedModels.filter(
@@ -1858,7 +1857,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                !isEdit && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                               } ${
                                 selectedModels.includes(option)
                                   ? 'bg-company-orange'
@@ -1901,7 +1900,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                     setSelectedIntraOralClinicalPhotography(
                                       selectedIntraOralClinicalPhotography.includes(
                                         option
@@ -1916,7 +1915,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  !isEdit && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                                 } ${
                                   selectedIntraOralClinicalPhotography.includes(
                                     option
@@ -1956,7 +1955,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                     setSelectedExtraOralClinicalPhotography(
                                       selectedExtraOralClinicalPhotography.includes(
                                         option
@@ -1971,7 +1970,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  !isEdit && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                                 } ${
                                   selectedExtraOralClinicalPhotography.includes(
                                     option
@@ -2006,7 +2005,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                !isEdit &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                   setSelectedPresentation(
                                     selectedPresentation.includes(option)
                                       ? selectedPresentation.filter(
@@ -2016,7 +2015,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                !isEdit && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                               } ${
                                 selectedPresentation.includes(option)
                                   ? 'bg-company-orange'
@@ -2049,10 +2048,10 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                !isEdit && setSelectedBackground(option);
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && setSelectedBackground(option);
                               }}
                               className={`flex border border-white justify-center items-center rounded-full h-4 w-4 ${
-                                !isEdit && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                               } ${
                                 selectedBackground === option
                                   ? 'bg-company-orange'
@@ -2085,7 +2084,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                     setSelectedClinicalPhotographyDeliveryMethod(
                                       selectedClinicalPhotographyDeliveryMethod.includes(
                                         option
@@ -2100,7 +2099,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  !isEdit && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                                 } ${
                                   selectedClinicalPhotographyDeliveryMethod.includes(
                                     option
@@ -2142,7 +2141,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  !isEdit &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
                                     setSelectedDiagnosticPackage(
                                       selectedDiagnosticPackage.includes(option)
                                         ? selectedDiagnosticPackage.filter(
@@ -2152,7 +2151,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  !isEdit && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
                                 } ${
                                   selectedDiagnosticPackage.includes(option)
                                     ? 'bg-company-orange'
@@ -2204,7 +2203,7 @@ function StepByStep({
                   </h3>
                   <div className='flex flex-col p-4'>
                     <textarea
-                      disabled={isEdit}
+                      disabled={(userRol && userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' && false) ?? isEdit}
                       value={observationComment}
                       id='Observations'
                       name='observations'
@@ -2316,7 +2315,8 @@ function StepByStep({
                           
                         });
                         try {
-                          await areasListSelected && handleSendForm(e); // Llama a la función de guardado
+                          console.log("Area selected", areaSelected);
+                          await areasListSelected && handleSendForm(e, areaSelected); // Llama a la función de guardado
                         } catch (error) {
                           Swal.fire({
                             icon: 'error',

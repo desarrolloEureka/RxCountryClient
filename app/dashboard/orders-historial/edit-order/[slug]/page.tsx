@@ -67,7 +67,11 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     modelType,
     handleFileChangeSTL,
     user,
+    flag,
+    setFlag,
+    setShowSave,
   } = EditOrderHook({ slug });
+
 
   if (!user) {
     return <Spinner />;
@@ -167,6 +171,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
             handleModelType={handleModelType}
             modelType={modelType}
             handleFileChangeSTL={handleFileChangeSTL}
+            flag={flag}
           />
 
           {formStep < 6 && (
@@ -205,6 +210,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                 {formStep > 0 && (
                   <div
                     onClick={() => {
+                      userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && setShowSave(false);
                       setFormStep((prevStep: number) => prevStep - 1);
                     }}
                     className='flex items-center cursor-pointer text-company-blue'
@@ -223,9 +229,10 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                 ) : (
                   <div
                     onClick={() => {
-                      userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' && formStep === 1
+                      userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk' && userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' && formStep === 1
                         ? setFormStep(6)
-                        : formStep === 5
+                        : formStep == 4 ? userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' ? (setShowSave(true), setFormStep((prevStep: number) => prevStep + 1) ) : null 
+                        : formStep === 5 
                         ? router.replace('/dashboard/orders-historial')
                         : setFormStep((prevStep: number) => prevStep + 1);
                       setIsDataSelected(false);
@@ -236,7 +243,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                       (areaList?.length > 0 ||
                         // oldData?.areaList?.length > 0 ||
                         formStep === 0 ||
-                        userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq') && (
+                        userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq' || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && (
                         <>
                           <span>Siguiente</span>
                           <BiChevronRight size={32} />

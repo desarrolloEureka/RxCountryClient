@@ -313,16 +313,28 @@ const OrderHistorialPage = () => {
 
 
                   {/* Filtro de Área */}
-                  <div className="flex flex-col justify-start w-full max-w-[200px]">
-                    <label htmlFor="area" className="text-white text-sm">Filtrar por Área</label>
-                    <Select
-                      className="bg-white text-black rounded-full"
-                      placeholder="Ej. Calidad"
-                      options={[{ value: "", label: "Seleccione..." },...sortedAllAreas]}
-                      onChange={filterByArea}
-                      isClearable={true}
-                    />
-                  </div>
+                  {!(
+                    userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && selectedOrder === 'received'
+                  ) && (
+                    <div className="flex flex-col justify-start w-full max-w-[200px]">
+                      <label htmlFor="area" className="text-white text-sm">Filtrar por Área</label>
+                      <Select
+                        className="bg-white text-black rounded-full"
+                        placeholder="Ej. Calidad"
+                        options={[
+                          { value: "", label: "Seleccione..." },
+                          ...sortedAllAreas.filter(
+                            (area) =>
+                              area.label !== 'Recepción' &&
+                              area.label !== 'Administrativo'
+                          )
+                        ]}
+                        onChange={filterByArea}
+                        isClearable={true}
+                      />
+                    </div>
+                  )}
+
                   {/* Filtro de Rango de Fechas */}
                   <div className="relative flex flex-col space-y-2 w-full w-[315px] max-w-[315px] ">
                     <label htmlFor="data-picker" className="text-white text-sm">

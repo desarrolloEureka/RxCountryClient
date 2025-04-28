@@ -61,7 +61,11 @@ const calculateAge = (birthDate: Date | string): number => {
   return age;
 };
 
+
 const EditOrderHook = ({ slug }: Props) => {
+
+  const [flag, setFlag] = useState<boolean>(false);
+
   const { userRol, userData, user } = useAuth();
 
   const router = useRouter();
@@ -557,12 +561,13 @@ const EditOrderHook = ({ slug }: Props) => {
     return urlFiles;
   };
 
-  const handleSendForm = async (e?: any) => {
+  const handleSendForm = async (e?: any,  areaSelected?: any) => {
+    console.log('areaSelected', areaSelected);
     e.preventDefault();
     e.stopPropagation();
     console.log('Editó', showSave);
     // setIisLoaded(true);
-    showSave ? await updatePatientData() : await uploadHandle();
+    showSave ? await updatePatientData() : await uploadHandle(areaSelected);
     // handleClose();
   };
 
@@ -577,7 +582,7 @@ const EditOrderHook = ({ slug }: Props) => {
     });
   };
 
-  const uploadHandle = async () => {
+  const uploadHandle = async (areaSelected: any) => {
     console.log('oldDataOrder.uid', oldDataOrder.uid);
     console.log('oldDataOrder?.completedAreas', oldDataOrder?.completedAreas);
     console.log('area', area);
@@ -593,7 +598,10 @@ const EditOrderHook = ({ slug }: Props) => {
     const addEdited = () =>
       sendToArray?.map((val: any) => {
         console.log('addddddddd', val.value, area);
-        val.value == area ? (val.edited = true) : (val.edited = false);
+        console.log('addddddddd1', val);
+        val.value == area && (val.edited = true);
+        console.log('areaSelected', areaSelected);
+        areaSelected && areaSelected.value && val.value == areaSelected.value && (val.edited = false); // se valida el area a donde se va a redirigir y se cambia a false
         return val;
       });
 
@@ -887,6 +895,8 @@ const EditOrderHook = ({ slug }: Props) => {
   }, [router, user, userData]);
 
   return {
+    setFlag,
+    flag,
     router,
     value,
     area,
@@ -946,6 +956,7 @@ const EditOrderHook = ({ slug }: Props) => {
     handleModelType,
     modelType,
     user,
+    setShowSave
   };
 };
 

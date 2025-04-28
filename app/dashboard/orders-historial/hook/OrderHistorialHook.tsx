@@ -109,7 +109,7 @@ const OrderHistorialHook = () => {
       send: allDataOrders?.filter(
         (order: any) =>
           // order.createdBy.userRol === userRol?.uid &&
-          order.assignedCampus === campus && order.status === 'asignada'
+          order.status === 'asignada'
       ),
     },
     //Modelos
