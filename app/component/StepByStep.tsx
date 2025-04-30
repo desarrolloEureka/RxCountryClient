@@ -546,7 +546,9 @@ function StepByStep({
               </label>
               <input
                 disabled={
-                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq'
+                  (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && isEdit) || 
+                  (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                  userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk')
                 }                
                 value={data && data?.email}
                 type='email'
@@ -875,19 +877,15 @@ function StepByStep({
                     <div className="flex flex-wrap flex-row  justify-start gap-4">
                       {/* Primer contenedor */}
                       <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
-                        <button
-                          type="button"
+                        <a
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                         >
                           <IoEye className="text-company-blue" size={24} />
-                          <Link
-                            href={`/dashboard/preview-order/${oldData?.uid}`}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            <span className="text-nowrap">Ver PDF ODS</span>
-                          </Link>
-                        </button>
+                          <span className="text-nowrap">Ver PDF ODS</span>
+                        </a>
                       </div>
                     
                       {/* Segundo contenedor */}
@@ -928,19 +926,15 @@ function StepByStep({
                   {userRol?.uid === 'wGU4GU8oDosW4ayQtxqT' && (
                     <div className="flex flex-wrap flex-row justify-start gap-4">
                       <div className='flex items-center justify-start text-sm lg:text-base font-normal text-company-orange'>
-                        <button
-                          type='button'
-                          className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
+                        <a
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                         >
-                          <IoEye className='text-company-blue' size={24} />
-                          <Link
-                            href={`/dashboard/preview-order/${oldData?.uid}`}
-                            rel='noopener noreferrer'
-                            target='_blank'
-                          >
-                            <span className='text-nowrap'>Ver PDF ODS</span>
-                          </Link>
-                        </button>
+                          <IoEye className="text-company-blue" size={24} />
+                          <span className="text-nowrap">Ver PDF ODS</span>
+                        </a>
                       </div>
                       <div className='flex flex-col justify-start text-sm lg:text-base font-normal text-company-orange'>
                         <InputFileUpload
@@ -1131,19 +1125,15 @@ function StepByStep({
                    <div className="flex flex-wrap flex-row   justify-start gap-4">
                       {/* Primer contenedor */}
                       <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
-                        <button
-                          type="button"
+                        <a
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                         >
                           <IoEye className="text-company-blue" size={24} />
-                          <Link
-                            href={`/dashboard/preview-order/${oldData?.uid}`}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            <span className="text-nowrap">Ver PDF ODS</span>
-                          </Link>
-                        </button>
+                          <span className="text-nowrap">Ver PDF ODS</span>
+                        </a>
                       </div>
                     
                       {/* Segundo contenedor */}
@@ -1270,19 +1260,15 @@ function StepByStep({
                   <div className="flex flex-wrap flex-row justify-start gap-4">
                     {/* Botón Ver PDF ODS */}
                     <div className="text-sm lg:text-base font-normal text-company-orange col-span-2 lg:col-span-1 flex items-center justify-start">
-                      <button
-                        type="button"
+                      <a
+                        href={`/dashboard/preview-order/${oldData?.uid}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                       >
                         <IoEye className="text-company-blue" size={24} />
-                        <Link
-                          href={`/dashboard/preview-order/${oldData?.uid}`}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          <span className="text-nowrap">Ver PDF ODS</span>
-                        </Link>
-                      </button>
+                        <span className="text-nowrap">Ver PDF ODS</span>
+                      </a>
                     </div>
 
                     {/* Botón Subir Archivo */}
@@ -1340,19 +1326,15 @@ function StepByStep({
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
                   <div className="flex flex-wrap col-span-2 flex flex-row items-start justify-start gap-4">
                     <div className='col-span-1 flex items-start justify-start text-sm lg:text-base font-normal text-company-orange'>
-                      <button
-                        type='button'
-                        className='w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white'
+                      <a
+                        href={`/dashboard/preview-order/${oldData?.uid}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                       >
-                        <IoEye className='text-company-blue' size={24} />
-                        <Link
-                          href={`/dashboard/preview-order/${oldData?.uid}`}
-                          rel='noopener noreferrer'
-                          target='_blank'
-                        >
-                          <span className='text-nowrap'>Ver PDF ODS</span>
-                        </Link>
-                      </button>
+                        <IoEye className="text-company-blue" size={24} />
+                        <span className="text-nowrap">Ver PDF ODS</span>
+                      </a>
                     </div>
                     <div className=' col-span-1 flex flex-col justify-end items-center lg:pt-0 text-sm lg:text-base font-normal text-company-orange' >
                       <InputFileUpload
@@ -1453,19 +1435,15 @@ function StepByStep({
                   <div className="flex flex-wrap flex-row  justify-start gap-4">
                       {/* Primer contenedor */}
                       <div className="flex  justify-start text-sm lg:text-base font-normal text-company-orange">
-                        <button
-                          type="button"
+                        <a
+                          href={`/dashboard/preview-order/${oldData?.uid}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="w-52 h-16 flex items-center bg-gray-800 hover:bg-gray-700 shadow-md justify-center space-x-2 px-4 py-2 border border-company-blue rounded-xl text-white"
                         >
                           <IoEye className="text-company-blue" size={24} />
-                          <Link
-                            href={`/dashboard/preview-order/${oldData?.uid}`}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            <span className="text-nowrap">Ver PDF ODS</span>
-                          </Link>
-                        </button>
+                          <span className="text-nowrap">Ver PDF ODS</span>
+                        </a>
                       </div>
                     
                       {/* Segundo contenedor */}
