@@ -310,7 +310,7 @@ const OrderPDF = ({
                                 <View style={tw("flex flex-col w-[22%] px-1")}>
                                     <View
                                         style={tw(
-                                            "flex flex-row h-1/2 pt-[3.3px]",
+                                            "flex flex-row h-1/2 pt-[0.8px]",
                                         )}
                                     >
                                         {quadrant(1)
@@ -372,7 +372,7 @@ const OrderPDF = ({
                                 >
                                     <View
                                         style={tw(
-                                            "flex flex-row h-1/2 pt-[3.3px]",
+                                            "flex flex-row h-1/2 pt-[0.8px]",
                                         )}
                                     >
                                         {quadrant(2).map((tooth, index) => (
@@ -1689,16 +1689,10 @@ const OrderPDF = ({
                                             "h-[75%] border-t-[0.5px] border-r-[0.5px] px-4 pt-2",
                                         )}
                                     >
-                                        <Text
-                                            style={tw("text-xs text-justify")}
-                                        >
-                                            {orderData?.createdBy?.userRol ===
-                                            "ZWb0Zs42lnKOjetXH5lq"
-                                                ? orderData?.observationComment
-                                                      .message
-                                                : orderData
-                                                      ?.recObservationComment
-                                                      .message}
+                                         <Text style={tw("text-xs text-justify")}>
+                                            {orderData?.modifiedBy?.userRolId === "ZWb0Zs42lnKOjetXH5lq"
+                                                ? orderData?.observationComment?.message
+                                                : orderData?.recObservationComment?.message}
                                         </Text>
                                     </View>
                                 </View>

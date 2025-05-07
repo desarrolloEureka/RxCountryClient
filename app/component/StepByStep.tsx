@@ -222,13 +222,13 @@ function StepByStep({
           : professionalName,
       professionalSpecialty:
         userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
-          ? userData?.specialty
+          ? userData?.specialty || ""
           : oldData?.professionalSpecialty
           ? oldData?.professionalSpecialty
           : professionalSpecialty,
       professionalEmail:
         userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
-          ? userData?.email
+          ? userData?.email || ""
           : oldData?.professionalEmail
           ? oldData?.professionalEmail
           : professionalEmail,
@@ -1544,7 +1544,8 @@ function StepByStep({
             <div className='flex flex-col mx-4 sm:mx-20'>
               <div className='flex items-center justify-center mx-0 sm:mx-auto mb-8'>
                 <DentalSelect
-                  setSelected={!isEdit ? setDentalSelectBoneScan : userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'? setDentalSelectBoneScan : () => {}}
+                  setSelected={ (!isEdit || userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq')
+                    ? setDentalSelectBoneScan : () => {}}
                   selected={dentalSelectBoneScan}
                 />
               </div>
@@ -1564,7 +1565,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')  &&
                                     setSelectedIntraOrals(
                                       selectedIntraOrals.includes(option)
                                         ? selectedIntraOrals.filter(
@@ -1574,7 +1575,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')  && 'cursor-pointer'
                                 } ${
                                   selectedIntraOrals.includes(option)
                                     ? 'bg-company-orange'
@@ -1608,7 +1609,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 
                                     setSelectedExtraOrals(
                                       selectedExtraOrals.includes(option)
                                         ? selectedExtraOrals.filter(
@@ -1618,7 +1619,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')  && 'cursor-pointer'
                                 } ${
                                   selectedExtraOrals.includes(option)
                                     ? 'bg-company-orange'
@@ -1644,7 +1645,7 @@ function StepByStep({
             <div className='flex flex-col mx-4 sm:mx-20'>
               <div className='flex items-center justify-center mx-0 sm:mx-auto mb-8'>
                 <DentalSelect
-                  setSelected={(!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') ? setDentalSelectTomography : userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'? setDentalSelectBoneScan : () => {}}
+                  setSelected={(!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') ? setDentalSelectTomography : (userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')? setDentalSelectBoneScan : () => {}}
                   selected={dentalSelectTomography}
                 />
               </div>
@@ -1667,7 +1668,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelected3DVolumetricTomography(
                                       selected3DVolumetricTomography.includes(
                                         option
@@ -1682,7 +1683,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selected3DVolumetricTomography.includes(
                                     option
@@ -1725,7 +1726,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedAdditionalDeliveryMethod(
                                       selectedAdditionalDeliveryMethod.includes(
                                         option
@@ -1781,7 +1782,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                   setSelectedDiagnosis(
                                     selectedDiagnosis.includes(option)
                                       ? selectedDiagnosis.filter(
@@ -1791,7 +1792,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedDiagnosis.includes(option)
                                   ? 'bg-company-orange'
@@ -1825,7 +1826,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                   setSelectedModels(
                                     selectedModels.includes(option)
                                       ? selectedModels.filter(
@@ -1835,7 +1836,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedModels.includes(option)
                                   ? 'bg-company-orange'
@@ -1878,7 +1879,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedIntraOralClinicalPhotography(
                                       selectedIntraOralClinicalPhotography.includes(
                                         option
@@ -1893,7 +1894,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedIntraOralClinicalPhotography.includes(
                                     option
@@ -1933,7 +1934,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedExtraOralClinicalPhotography(
                                       selectedExtraOralClinicalPhotography.includes(
                                         option
@@ -1948,7 +1949,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedExtraOralClinicalPhotography.includes(
                                     option
@@ -1983,7 +1984,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                   setSelectedPresentation(
                                     selectedPresentation.includes(option)
                                       ? selectedPresentation.filter(
@@ -1993,7 +1994,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedPresentation.includes(option)
                                   ? 'bg-company-orange'
@@ -2026,10 +2027,10 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && setSelectedBackground(option);
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && setSelectedBackground(option);
                               }}
                               className={`flex border border-white justify-center items-center rounded-full h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedBackground === option
                                   ? 'bg-company-orange'
@@ -2062,7 +2063,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedClinicalPhotographyDeliveryMethod(
                                       selectedClinicalPhotographyDeliveryMethod.includes(
                                         option
@@ -2077,7 +2078,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedClinicalPhotographyDeliveryMethod.includes(
                                     option
@@ -2119,7 +2120,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedDiagnosticPackage(
                                       selectedDiagnosticPackage.includes(option)
                                         ? selectedDiagnosticPackage.filter(
@@ -2129,7 +2130,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedDiagnosticPackage.includes(option)
                                     ? 'bg-company-orange'
@@ -2179,7 +2180,8 @@ function StepByStep({
                   </h3>
                   <div className='flex flex-col p-4'>
                     <textarea
-                      disabled={(userRol && userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' && false) ?? isEdit}
+                      disabled={((userRol && (userRol.uid === 'Ll6KGdzqdtmLLk0D5jhk' || userRol.uid === 'ZWb0Zs42lnKOjetXH5lq')) && false) ?? isEdit}
+
                       value={observationComment}
                       id='Observations'
                       name='observations'
@@ -2191,14 +2193,15 @@ function StepByStep({
                     />
                   </div>
                 </div>
-                {userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk' && (
+                {(userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq') && (
                   <div className='col-span-2 lg:col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-company-orange text-xl font-bold px-4 py-2'>
                       Impresión diagnostica
                     </h3>
                     <div className='grid grid-cols-1 gap-2 p-4'>
                       <textarea
-                        disabled={isEdit}
+                        disabled={!(userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq') ? true : false}
+
                         value={diagnosticImpressionComment}
                         id='DiagnosticImpression'
                         name='diagnosticImpression'

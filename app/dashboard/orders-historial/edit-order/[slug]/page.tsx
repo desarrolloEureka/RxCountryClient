@@ -210,7 +210,8 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                 {formStep > 0 && (
                   <div
                     onClick={() => {
-                      userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && setShowSave(false);
+                      (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' ||
+                      userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq') && setShowSave(false);
                       setFormStep((prevStep: number) => prevStep - 1);
                     }}
                     className='flex items-center cursor-pointer text-company-blue'
@@ -231,7 +232,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
                     onClick={() => {
                       userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk' && userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' && formStep === 1
                         ? setFormStep(6)
-                        : formStep == 4 ? userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' ? (setShowSave(true), setFormStep((prevStep: number) => prevStep + 1) ) : null 
+                        : formStep == 4 ? (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') ? (setShowSave(true), setFormStep((prevStep: number) => prevStep + 1) ) : null 
                         : formStep === 5 
                         ? router.replace('/dashboard/orders-historial')
                         : setFormStep((prevStep: number) => prevStep + 1);

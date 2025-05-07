@@ -109,7 +109,7 @@ const OrderHistorialHook = () => {
       send: allDataOrders?.filter(
         (order: any) =>
           // order.createdBy.userRol === userRol?.uid &&
-          order.status === 'asignada' || order.status === 'reasignada'
+          order.status === 'asignada' || order.status === 'reasignada' || order.status === 'finalizada'
       ),
     },
     //Modelos
