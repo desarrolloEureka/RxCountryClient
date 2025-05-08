@@ -150,6 +150,9 @@ function StepByStep({
 
   const currentDate = moment().format();
 
+  const [professionalObservation, setProfessionalObservation] = useState('');
+  const [receptionObservation, setReceptionObservation] = useState('');
+
   const [professionalName, setProfessionalName] = useState('');
   const [professionalSpecialty, setProfessionalSpecialty] = useState('');
   const [professionalEmail, setProfessionalEmail] = useState('');
@@ -222,13 +225,13 @@ function StepByStep({
           : professionalName,
       professionalSpecialty:
         userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
-          ? userData?.specialty
+          ? userData?.specialty || ""
           : oldData?.professionalSpecialty
           ? oldData?.professionalSpecialty
           : professionalSpecialty,
       professionalEmail:
         userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
-          ? userData?.email
+          ? userData?.email || ""
           : oldData?.professionalEmail
           ? oldData?.professionalEmail
           : professionalEmail,
@@ -289,9 +292,28 @@ function StepByStep({
     const dataSelected: {
       [key: string]: string | number[] | string[] | any;
     } = { ...allDataSelected };
-
-    if (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq') {
-      //crea propiedad según rol
+  
+    if (userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq') {
+      // Profesional
+      dataSelected.observationComment = {
+        timestamp: currentDate,
+        userId: uidUser,
+        message: professionalObservation,
+      };
+    } else if (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk') {
+      // Recepción edita ambos campos
+      dataSelected.observationComment = {
+        timestamp: currentDate,
+        userId: uidUser,
+        message: professionalObservation,
+      };
+      dataSelected.recObservationComment = {
+        timestamp: currentDate,
+        userId: uidUser,
+        message: receptionObservation,
+      };
+    } else {
+      // Otros roles (si aplica)
       dataSelected[
         userRol?.name.substring(0, 3).toLocaleLowerCase() + 'ObservationComment'
       ] = {
@@ -299,28 +321,24 @@ function StepByStep({
         userId: uidUser,
         message: observationComment,
       };
-    } else {
-      dataSelected.observationComment = {
-        timestamp: currentDate,
-        userId: uidUser,
-        message: observationComment,
-      };
     }
-
+  
     setIsDataSelected(_.some(dataSelected, (value) => !_.isEmpty(value)));
-
+  
     setSelectedOptions(dataSelected);
   }, [
     allDataSelected,
     currentDate,
+    professionalObservation,
+    receptionObservation,
     observationComment,
-    // oldData,
     setIsDataSelected,
     setSelectedOptions,
     uidUser,
     userRol?.name,
     userRol?.uid,
   ]);
+  
 
   const getObservationComment = (
     oldData: Record<string, any>,
@@ -354,6 +372,10 @@ function StepByStep({
       setProfessionalSpecialty(oldData.professionalSpecialty);
       setProfessionalEmail(oldData.professionalEmail);
       setObservationComment(userComment);
+
+      setProfessionalObservation(oldData?.observationComment?.message || '');
+      setReceptionObservation(oldData?.recObservationComment?.message || '');
+
       setDiagnosticImpressionComment(oldData.diagnosticImpressionComment);
       setDentalSelectBoneScan(oldData.dentalSelectBoneScan);
       setDentalSelectTomography(oldData.dentalSelectTomography);
@@ -1544,7 +1566,8 @@ function StepByStep({
             <div className='flex flex-col mx-4 sm:mx-20'>
               <div className='flex items-center justify-center mx-0 sm:mx-auto mb-8'>
                 <DentalSelect
-                  setSelected={!isEdit ? setDentalSelectBoneScan : userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'? setDentalSelectBoneScan : () => {}}
+                  setSelected={ (!isEdit || userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq')
+                    ? setDentalSelectBoneScan : () => {}}
                   selected={dentalSelectBoneScan}
                 />
               </div>
@@ -1564,7 +1587,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')  &&
                                     setSelectedIntraOrals(
                                       selectedIntraOrals.includes(option)
                                         ? selectedIntraOrals.filter(
@@ -1574,7 +1597,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')  && 'cursor-pointer'
                                 } ${
                                   selectedIntraOrals.includes(option)
                                     ? 'bg-company-orange'
@@ -1608,7 +1631,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 
                                     setSelectedExtraOrals(
                                       selectedExtraOrals.includes(option)
                                         ? selectedExtraOrals.filter(
@@ -1618,7 +1641,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk')  && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')  && 'cursor-pointer'
                                 } ${
                                   selectedExtraOrals.includes(option)
                                     ? 'bg-company-orange'
@@ -1644,7 +1667,7 @@ function StepByStep({
             <div className='flex flex-col mx-4 sm:mx-20'>
               <div className='flex items-center justify-center mx-0 sm:mx-auto mb-8'>
                 <DentalSelect
-                  setSelected={(!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') ? setDentalSelectTomography : userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'? setDentalSelectBoneScan : () => {}}
+                  setSelected={(!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') ? setDentalSelectTomography : (userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq')? setDentalSelectBoneScan : () => {}}
                   selected={dentalSelectTomography}
                 />
               </div>
@@ -1667,7 +1690,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelected3DVolumetricTomography(
                                       selected3DVolumetricTomography.includes(
                                         option
@@ -1682,7 +1705,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selected3DVolumetricTomography.includes(
                                     option
@@ -1725,7 +1748,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedAdditionalDeliveryMethod(
                                       selectedAdditionalDeliveryMethod.includes(
                                         option
@@ -1781,7 +1804,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                   setSelectedDiagnosis(
                                     selectedDiagnosis.includes(option)
                                       ? selectedDiagnosis.filter(
@@ -1791,7 +1814,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedDiagnosis.includes(option)
                                   ? 'bg-company-orange'
@@ -1825,7 +1848,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                   setSelectedModels(
                                     selectedModels.includes(option)
                                       ? selectedModels.filter(
@@ -1835,7 +1858,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedModels.includes(option)
                                   ? 'bg-company-orange'
@@ -1878,7 +1901,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedIntraOralClinicalPhotography(
                                       selectedIntraOralClinicalPhotography.includes(
                                         option
@@ -1893,7 +1916,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedIntraOralClinicalPhotography.includes(
                                     option
@@ -1933,7 +1956,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedExtraOralClinicalPhotography(
                                       selectedExtraOralClinicalPhotography.includes(
                                         option
@@ -1948,7 +1971,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedExtraOralClinicalPhotography.includes(
                                     option
@@ -1983,7 +2006,7 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                   setSelectedPresentation(
                                     selectedPresentation.includes(option)
                                       ? selectedPresentation.filter(
@@ -1993,7 +2016,7 @@ function StepByStep({
                                   );
                               }}
                               className={`border border-white rounded-[4px] h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedPresentation.includes(option)
                                   ? 'bg-company-orange'
@@ -2026,10 +2049,10 @@ function StepByStep({
                           <div className=''>
                             <div
                               onClick={() => {
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && setSelectedBackground(option);
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && setSelectedBackground(option);
                               }}
                               className={`flex border border-white justify-center items-center rounded-full h-4 w-4 ${
-                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                               } ${
                                 selectedBackground === option
                                   ? 'bg-company-orange'
@@ -2062,7 +2085,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedClinicalPhotographyDeliveryMethod(
                                       selectedClinicalPhotographyDeliveryMethod.includes(
                                         option
@@ -2077,7 +2100,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedClinicalPhotographyDeliveryMethod.includes(
                                     option
@@ -2119,7 +2142,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') &&
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedDiagnosticPackage(
                                       selectedDiagnosticPackage.includes(option)
                                         ? selectedDiagnosticPackage.filter(
@@ -2129,7 +2152,7 @@ function StepByStep({
                                     );
                                 }}
                                 className={`border border-white rounded-[4px] h-4 w-4 ${
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk') && 'cursor-pointer'
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 'cursor-pointer'
                                 } ${
                                   selectedDiagnosticPackage.includes(option)
                                     ? 'bg-company-orange'
@@ -2148,6 +2171,71 @@ function StepByStep({
                     )}
                   </div>
                 </div>
+                
+                {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' ? (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 col-span-2">
+                    {/* Observaciones */}
+                    <div className="flex flex-col rounded-xl bg-[#2c2c2c] divide-y divide-slate-500">
+                      <h3 className="text-company-orange text-xl font-bold py-2 px-4">
+                           Observaciones profesional
+                      </h3>
+                      <div className="flex flex-col p-4">
+                        <textarea
+                          value={professionalObservation}
+                          onChange={(e) => setProfessionalObservation(e.target.value)}
+                          className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent custom-scrollbar-textarea"
+                          placeholder="Escribe aquí tus observaciones..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* Impresión diagnóstica */}
+                    <div className="flex flex-col rounded-xl bg-[#2c2c2c] divide-y divide-slate-500">
+                      <h3 className="text-company-orange text-xl font-bold px-4 py-2">
+                        Impresión diagnóstica
+                      </h3>
+                      <div className="grid grid-cols-1 gap-2 p-4">
+                        <textarea
+                          value={diagnosticImpressionComment}
+                          onChange={(e) => setDiagnosticImpressionComment(e.target.value)}
+                          className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent custom-scrollbar-textarea"
+                          placeholder="Escribe aquí tus observaciones..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {/* Profesional u otros roles */}
+                    <div className="col-span-2 lg:col-span-1 flex flex-col rounded-xl bg-[#2c2c2c] divide-y divide-slate-500">
+                      <h3 className="text-company-orange text-xl font-bold py-2 px-4">
+                          Observaciones profesional
+                      </h3>
+                      <div className="flex flex-col p-4">
+                        <textarea
+                          value={professionalObservation}
+                          onChange={(e) => setProfessionalObservation(e.target.value)}
+                          className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent custom-scrollbar-textarea"
+                          placeholder="Escribe aquí tus observaciones..."
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-span-2 lg:col-span-1 flex flex-col rounded-xl bg-[#2c2c2c] divide-y divide-slate-500">
+                      <h3 className="text-company-orange text-xl font-bold px-4 py-2">
+                        Impresión diagnóstica
+                      </h3>
+                      <div className="grid grid-cols-1 gap-2 p-4">
+                        <textarea
+                          value={diagnosticImpressionComment}
+                          onChange={(e) => setDiagnosticImpressionComment(e.target.value)}
+                          className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent custom-scrollbar-textarea"
+                          placeholder="Escribe aquí tus observaciones..."
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div
                   className={`${
                     userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
@@ -2172,47 +2260,25 @@ function StepByStep({
                         }}
                         optionSelected={areasListSelected}
                       />
+                      {/* Observaciones */}
+                        <div className="flex flex-col rounded-xl bg-[#2c2c2c] bg-opacity-50 divide-y divide-slate-500">
+                          <h3 className="text-company-orange text-xl font-bold py-2 px-4">
+                              Observaciones Recepción
+                          </h3>
+                          <div className="flex flex-col p-4">
+                            <textarea
+                              value={receptionObservation}
+                              onChange={(e) => setReceptionObservation(e.target.value)}
+                              className="block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent custom-scrollbar-textarea"
+                              placeholder="Escribe aquí tus observaciones..."
+                            />
+                          </div>
+                        </div>
                     </div>
+                    
                   )}
-                  <h3 className='text-company-orange text-xl font-bold py-2 px-4'>
-                    Observaciones
-                  </h3>
-                  <div className='flex flex-col p-4'>
-                    <textarea
-                      disabled={(userRol && userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' && false) ?? isEdit}
-                      value={observationComment}
-                      id='Observations'
-                      name='observations'
-                      rows={4}
-                      cols={50}
-                      className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
-                      placeholder='Escribe aquí tus observaciones...'
-                      onChange={(e) => setObservationComment(e.target.value)}
-                    />
-                  </div>
                 </div>
-                {userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk' && (
-                  <div className='col-span-2 lg:col-span-1 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
-                    <h3 className='text-company-orange text-xl font-bold px-4 py-2'>
-                      Impresión diagnostica
-                    </h3>
-                    <div className='grid grid-cols-1 gap-2 p-4'>
-                      <textarea
-                        disabled={isEdit}
-                        value={diagnosticImpressionComment}
-                        id='DiagnosticImpression'
-                        name='diagnosticImpression'
-                        rows={4}
-                        cols={50}
-                        className='block p-2.5 w-full text-md text-white bg-transparent rounded-lg border border-transparent focus:ring-transparent focus:border-transparent dark:bg-transparent dark:border-transparent dark:placeholder-white dark:text-white dark:focus:ring-transparent dark:focus:border-transparent custom-scrollbar-textarea'
-                        placeholder='Escribe aquí tus observaciones...'
-                        onChange={(e) =>
-                          setDiagnosticImpressionComment(e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                )}
+                
               </div>
             </div>
           )}

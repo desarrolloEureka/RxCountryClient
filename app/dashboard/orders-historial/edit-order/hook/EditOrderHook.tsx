@@ -99,7 +99,8 @@ const EditOrderHook = ({ slug }: Props) => {
 
   const [currentOrderId, setCurrentOrderId] = useState<number>(1);
 
-  const [sentToArea, setSentToArea] = useState<any>();
+  const [sentToArea, setSentToArea] = useState<any[]>([]);
+
 
   const [areaList, setAreaList] = useState<string[]>([]);
 
@@ -232,9 +233,10 @@ const EditOrderHook = ({ slug }: Props) => {
   };
 
   const selectChangeHandlerSentTo = (value: any) => {
-    console.log('value??????', value);
-    setSentToArea(value);
+    const arrayValue = Array.isArray(value) ? value : [value];
+    setSentToArea(arrayValue);
   };
+  
 
   const handleAreaList = (value: { label: string; value: string }[]) => {
     const list: string[] = value.map(
@@ -590,10 +592,9 @@ const EditOrderHook = ({ slug }: Props) => {
     console.log('userRol?.uid', userRol?.uid);
     console.log('sentToArea', sentToArea);
 
-    const sendToArray =
-      userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk'
-        ? sentToArea
-        : oldDataOrder?.sendTo;
+    //para que no se totee el map por no ser un array sendToArray
+    const rawSendTo = userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' ? sentToArea : oldDataOrder?.sendTo;
+    const sendToArray = Array.isArray(rawSendTo) ? rawSendTo : [];
 
     const addEdited = () =>
       sendToArray?.map((val: any) => {
