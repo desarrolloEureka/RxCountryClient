@@ -1690,9 +1690,10 @@ const OrderPDF = ({
                                         )}
                                     >
                                          <Text style={tw("text-xs text-justify")}>
-                                            {orderData?.modifiedBy?.userRolId === "ZWb0Zs42lnKOjetXH5lq"
+                                            {/* {orderData?.modifiedBy?.userRolId === "ZWb0Zs42lnKOjetXH5lq"
                                                 ? orderData?.observationComment?.message
-                                                : orderData?.recObservationComment?.message}
+                                                : orderData?.recObservationComment?.message} */}
+                                            {orderData?.observationComment?.message}
                                         </Text>
                                     </View>
                                 </View>
