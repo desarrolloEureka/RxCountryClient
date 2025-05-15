@@ -239,7 +239,7 @@ const SingIn = () => {
                             </>
                         )}
 
-                        {userLogin !== "Paciente" && (
+                        {(
                             <div className="flex justify-end items-center w-full px-4 sm:px-16">
                                 <Link
                                     href={"/forgot-password"}

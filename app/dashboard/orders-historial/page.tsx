@@ -299,16 +299,19 @@ const OrderHistorialPage = () => {
                 <div className="flex flex-col justify-start w-full max-w-[200px]">
                   <label htmlFor="sede" className="text-white text-sm">Filtrar por Sede</label>
                   <Select
-                    className="bg-white text-black rounded-full"
-                    placeholder="Ej. Country"
-                    options={[
-                      { value: "", label: "Seleccione..." },
-                      ...sortedCampus, // Sedes disponibles
-                      { value: "sin_sede", label: "Sin sede asignada" }, // Opción para sedes no asignadas
-                    ]}
-                    onChange={filterBySede}
-                    isClearable={true}
-                  />
+  className="bg-white text-black rounded-full"
+  placeholder="Ej. Country"
+  options={[
+    { value: "", label: "Seleccione..." },
+    ...sortedCampus, // Sedes disponibles
+    ...(userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && selectedOrder === 'send'
+      ? []  // Recepción en "Gestionadas" → NO mostrar "sin sede"
+      : [{ value: "sin_sede", label: "Sin sede asignada" }]) // en todo lo demás sí
+  ]}
+  onChange={filterBySede}
+  isClearable={true}
+/>
+
                 </div>
 
 
