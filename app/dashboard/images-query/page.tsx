@@ -192,7 +192,15 @@ const ImageQueryPage = () => {
                                 <Select
                                     className="bg-white text-black rounded-full"
                                     placeholder="Ej. Calidad"
-                                    options={[{ value: "", label: "Seleccione..." }, ...sortedAllAreas]}
+                                    options={[
+                                        { value: "", label: "Seleccione..." },
+                                        ...sortedAllAreas.filter(
+                                            (area) =>
+                                            area.label !== 'Recepción' &&
+                                            area.label !== 'Administrativo'
+                                        )
+                                        ]}
+
                                     onChange={filterByArea}
                                     isClearable={true}
                                 />
