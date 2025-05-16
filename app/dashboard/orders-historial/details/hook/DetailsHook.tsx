@@ -63,8 +63,9 @@ const DetailsHook = ({ slug }: Props) => {
             (professional: DataProfessionalObject) => professional.uid === id,
         );
         const result = functionary || professional;
+        
+        return result?.name || 'Sin nombre';
 
-        return result.name;
     };
 
     const allDataOrders = ordersData?.flatMap((order: Order) => {
