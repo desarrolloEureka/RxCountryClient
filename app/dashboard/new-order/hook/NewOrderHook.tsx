@@ -28,6 +28,8 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
+import { checkIfUserExists } from "@/app/firebase/documents";
+
 
 const calculateAge = (birthDate: Date | string): number => {
     // Convierte el birthDate a un objeto de tipo moment
@@ -49,6 +51,7 @@ const calculateAge = (birthDate: Date | string): number => {
 
     return age;
 };
+
 
 const saveAlert = async (callbackFc: () => Promise<void>, router: any) => {
     Swal.fire({
@@ -136,6 +139,8 @@ const NewOrderHook = (props?: Props) => {
 
     //*Aquí para cambiar de vista de edición
     const [isEdit, setIsEdit] = useState(false);
+    
+    const [isVerificated, setIsVerificated] = useState(false);
 
     const [isDataSelected, setIsDataSelected] = useState(false);
 
@@ -189,6 +194,16 @@ const NewOrderHook = (props?: Props) => {
         }
     };
 
+
+    const validateid = async (id:any) => { 
+        const exists = await checkIfUserExists(id);
+        console.log("validateid", exists);
+        if (exists){
+        return true;
+        }
+        return false;
+    }
+
     const areasByCampus = () => {
         const filteredIdAreas = allCampus?.find(
             (item) => item.value === campus,
@@ -226,6 +241,8 @@ const NewOrderHook = (props?: Props) => {
     };
 
     const idChangeHandler = (id: string) => {
+        setIsEdit(true);
+        setIsVerificated(true);
         const patient = suggestions?.find(
             (patient: DataPatientObject) => patient.id === id,
         );
@@ -616,7 +633,9 @@ const patientVal =
         setFormStep,
         userRol,
         isEdit,
+        isVerificated,
         setIsEdit,
+        setIsVerificated,
         isDataSelected,
         setIsDataSelected,
         widthSlider,
@@ -641,6 +660,7 @@ const patientVal =
         handleAreaList,
         areaList,
         user,
+        validateid,
     };
 };
 

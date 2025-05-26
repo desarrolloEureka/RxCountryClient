@@ -35,13 +35,14 @@ export const addPatient = async ({
     uid: string;
 }) => {
     return new Promise((resolve, reject) => {
-        backendClient(accessTokenUser).then(async (client) => {
+        backendClient(accessTokenUser).then(async (client) => { 
             const data = await client.post(`auth/createUser`, {
                 uid,
                 email,
                 password,
             });
-            console.log(data.status);
+
+            
             if (data.status === 200) {
                 resolve(data);
             } else {

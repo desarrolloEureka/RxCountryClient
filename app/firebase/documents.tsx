@@ -10,6 +10,7 @@ import {
     updateDoc,
     query,
     where,
+    getDoc,
 } from "firebase/firestore";
 import moment from "moment";
 import { AreasBd, AreasSelector } from "../types/areas";
@@ -283,4 +284,12 @@ export const updateDocumentsByIdFb = async (
 ) => {
     const document = docRef({ ref: reference, collection: id });
     return await updateDoc(document, newData);
+};
+
+export const checkIfUserExists = async (id: string) => {
+    const patientsRef = collection(db, "patients");
+    const q = query(patientsRef, where("id", "==", id));
+    const querySnapshot = await getDocs(q);
+    console.log("querySnapshot",!querySnapshot.empty);
+    return !querySnapshot.empty;
 };
