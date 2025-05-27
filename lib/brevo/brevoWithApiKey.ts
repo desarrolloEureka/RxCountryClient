@@ -25,3 +25,4 @@ export const sendEmail = async ({ subject, to, htmlContent }: Params) => {
     };
     await apiInstance.sendTransacEmail(smtpEmail);
 };
+  
