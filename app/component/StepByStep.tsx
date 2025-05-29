@@ -51,6 +51,7 @@ interface Props {
   currentOrderId: number;
   suggestions?: any[];
   isEdit?: boolean;
+  isVerificated?: boolean;
   setIsDataSelected: (e: any) => void;
   changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputUrl?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -104,6 +105,7 @@ function StepByStep({
   setFormStep,
   userRol,
   isEdit,
+  isVerificated,
   setIsDataSelected,
   optionsData,
   data,
@@ -217,24 +219,45 @@ function StepByStep({
 
   const allDataSelected = useMemo(() => {
     return {
+      // professionalName:
+      //   userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
+      //     ? `${userData?.name} ${userData?.lastName}`
+      //     : oldData?.professionalName
+      //     ? oldData?.professionalName
+      //     : professionalName,
+      // professionalSpecialty:
+      //   userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
+      //     ? userData?.specialty || ""
+      //     : oldData?.professionalSpecialty
+      //     ? oldData?.professionalSpecialty
+      //     : professionalSpecialty,
+      // professionalEmail:
+      //   userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
+      //     ? userData?.email || ""
+      //     : oldData?.professionalEmail
+      //     ? oldData?.professionalEmail
+      //     : professionalEmail,
       professionalName:
-        userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
-          ? `${userData?.name} ${userData?.lastName}`
-          : oldData?.professionalName
-          ? oldData?.professionalName
-          : professionalName,
-      professionalSpecialty:
-        userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
-          ? userData?.specialty || ""
-          : oldData?.professionalSpecialty
-          ? oldData?.professionalSpecialty
-          : professionalSpecialty,
-      professionalEmail:
-        userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
-          ? userData?.email || ""
-          : oldData?.professionalEmail
-          ? oldData?.professionalEmail
-          : professionalEmail,
+      professionalName?.trim() !== ''
+        ? professionalName
+        : userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
+        ? `${userData?.name} ${userData?.lastName}`
+        : oldData?.professionalName || '',
+
+    professionalSpecialty:
+      professionalSpecialty?.trim() !== ''
+        ? professionalSpecialty
+        : userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
+        ? userData?.specialty || ''
+        : oldData?.professionalSpecialty || '',
+
+    professionalEmail:
+      professionalEmail?.trim() !== ''
+        ? professionalEmail
+        : userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
+        ? userData?.email || ''
+        : oldData?.professionalEmail || '',
+
       dentalSelectBoneScan,
       selectedIntraOrals,
       selectedExtraOrals,
@@ -419,7 +442,7 @@ function StepByStep({
   console.log('areasListSelected', areasListSelected);
   
   console.log('data', data);
-
+  console.log('isEdit stepbystep:', isEdit);
   return (
     <div>
       {/* Datos Paciente */}
@@ -485,6 +508,7 @@ function StepByStep({
                 max={9999999999}
                 className='rounded-xl h-10 bg-transparent border border-company-blue text-white px-10'
                 onChange={isEdit ? changeHandler : handleInputChange}
+                
                 // onChange={handleInputChange}
               />
               {suggestions && suggestions?.length > 0 && (
@@ -493,7 +517,10 @@ function StepByStep({
                     <li
                       key={patient.id}
                       className='p-2 hover:bg-company-blue cursor-pointer'
-                      onClick={() => idChangeHandler(patient.id)}
+                      onClick={() => {
+                        idChangeHandler(patient.id)
+                      }  
+                      }
                     >
                       {patient.id}
                     </li>

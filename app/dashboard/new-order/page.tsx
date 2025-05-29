@@ -11,6 +11,7 @@ import { IoAlertCircleSharp, IoArrowBackCircleOutline } from 'react-icons/io5';
 import { MdClose } from 'react-icons/md';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import NewOrderHook from './hook/NewOrderHook';
+import Swal from "sweetalert2";
 
 const NewOrderPage = () => {
 
@@ -38,6 +39,8 @@ const NewOrderPage = () => {
         setIsDataSelected,
         widthSlider,
         isEdit,
+        isVerificated,
+        setIsVerificated,
         userRol,
         optionsData,
         patientData,
@@ -60,8 +63,9 @@ const NewOrderPage = () => {
         handleAreaList,
         areaList,
         user,
+        validateid,
     } = NewOrderHook();
-
+    console.log("patienData: ",patientData);
   if (!user) {
     return <Spinner />;
   }
@@ -262,12 +266,32 @@ const NewOrderPage = () => {
                                 )} */}
                 <button
                   type={patientVal ? 'button' : 'submit'}
-                  onClick={() => {
+                  onClick={async() => {
+                    console.log("formstep: ",formStep);
+                    if(formStep == 0){
+                      const existe = await validateid(patientData.id);
+                      console.log("isedit: ",isEdit, existe);
+                      if(existe && !isVerificated){
+                        console.log("si existe");
+                        Swal.fire({
+                          position: "center",
+                          title: `El ID ya existe`,
+                          text: "Por favor seleccionelo",
+                          allowOutsideClick: false,
+                          background: "#404040",
+                          color: "#e9a225",
+                          
+                        });
+                        setFormStep(0);
+                        return;
+                      }
+                      }
                     if (patientVal) {
                       if (emailFound) {
                         emailFoundAlert();
                         return;
                       }
+                      
                       setFormStep((prevStep: number) => prevStep + 1);
                       return;
                       // setIsDataSelected(false);

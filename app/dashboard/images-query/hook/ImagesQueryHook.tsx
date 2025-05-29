@@ -266,8 +266,9 @@ const ImagesQueryHook = () => {
       (professional: DataProfessionalObject) => professional.uid === id
     );
     const result = functionary || professional;
+    
+    return result?.name || 'Sin nombre';
 
-    return result.name;
   };
 
   const downloadCSV = (array: any[], tableTitle: string) => {

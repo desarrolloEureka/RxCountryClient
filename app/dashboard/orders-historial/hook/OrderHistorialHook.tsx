@@ -466,7 +466,8 @@ const OrderHistorialHook = () => {
     );
     const result = functionary || professional;
 
-    return result.name;
+    return result ? result.name : 'Sin nombre';
+
   };
 
   const downloadCSV = (array: any[], tableTitle: string) => {
