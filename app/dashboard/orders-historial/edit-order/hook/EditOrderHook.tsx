@@ -34,6 +34,7 @@ import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { getAllDocumentsFb } from '@/app/firebase/documents';
 
 type Props = {
   // setDataSelected: (e: any) => void;
@@ -63,6 +64,8 @@ const calculateAge = (birthDate: Date | string): number => {
 
 
 const EditOrderHook = ({ slug }: Props) => {
+
+  const [professionals, setProfessionals] = useState<any[]>([]);
 
   const [flag, setFlag] = useState<boolean>(false);
 
@@ -797,6 +800,21 @@ const EditOrderHook = ({ slug }: Props) => {
   }, [allPatients, isEdit, oldDataOrder?.patientId]);
 
   useEffect(() => {
+    const fetchProfessionals = async () => {
+      try {
+        const list = await getAllDocumentsFb("professionals"); // <-- ahora sí funcionará
+        console.log("Profesionales traídos:", list);
+        setProfessionals(list);
+      } catch (err) {
+        console.error("No pude leer profesionales:", err);
+      }
+    };
+
+    fetchProfessionals();
+  }, []);
+
+
+  useEffect(() => {
     const docRef = doc(db, 'serviceOrders', slug);
 
     const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
@@ -957,7 +975,8 @@ const EditOrderHook = ({ slug }: Props) => {
     handleModelType,
     modelType,
     user,
-    setShowSave
+    setShowSave,
+    professionals
   };
 };
 

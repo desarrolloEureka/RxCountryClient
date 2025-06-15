@@ -93,6 +93,7 @@ interface Props {
   handleModelType?: (e: any) => void;
   handleFileChangeSTL?: (e: any) => void;
   flag: boolean;
+  professionals: any[]; 
 }
 
 function StepByStep({
@@ -145,6 +146,7 @@ function StepByStep({
   modelType,
   handleFileChangeSTL,
   flag,
+  professionals = [],
 }: Props) {
 
   
@@ -437,12 +439,31 @@ function StepByStep({
   useEffect(() => {
     areasListSelected && selectChangeHandlerSentTo(areasListSelected);
   }, [areasListSelected, selectChangeHandlerSentTo]);
+  
+  
+  const handleProfessionalSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const uid = e.target.value;
+    const selected = professionals.find(p => p.uid === uid);
+
+    if (selected) {
+      setProfessionalName(`${selected.name} ${selected.lastName}`);
+      setProfessionalSpecialty(selected.specialty);
+      setProfessionalEmail(selected.email);
+    } else {
+      setProfessionalName("");
+      setProfessionalSpecialty("");
+      setProfessionalEmail("");
+    }
+  };
+  
+
 
   // console.log(data);
   console.log('areasListSelected', areasListSelected);
   
   console.log('data', data);
   console.log('isEdit stepbystep:', isEdit);
+  
   return (
     <div>
       {/* Datos Paciente */}
@@ -682,8 +703,8 @@ function StepByStep({
                   name: 'phone',
                   required: userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk', // Requerido solo para Recepcion
                   //required: true,
-                  pattern: '^(\\+?\\d{1,4})?\\s?\\d{11,15}$',
-                  title: 'Por favor, ingrese un número de teléfono válido',
+                  pattern: '^\\+?\\d{5,15}$',
+                  title: 'Por favor, ingrese un número de teléfono válido (5 a 15 dígitos). Ej: +573001234567',
                 }}
                 country={'co'}
                 specialLabel=''
@@ -784,19 +805,23 @@ function StepByStep({
                   <label htmlFor='Doctor' className='text-white'>
                     Profesional&nbsp;(opcional)
                   </label>
-                  <input
-                    disabled={
-                      oldData?.createdBy.userRol === 'ZWb0Zs42lnKOjetXH5lq' ||
-                      (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                        userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk')
-                    }
-                    value={professionalName}
-                    type='text'
-                    name='professionalName'
-                    id='Doctor'
-                    className='rounded-xl h-10 bg-transparent border border-company-blue text-white px-10'
-                    onChange={(e) => setProfessionalName(e.target.value)}
-                  />
+                  <select
+                    id="Doctor"
+                    value={professionalName ? professionals.find(p =>
+                          `${p.name} ${p.lastName}` === professionalName)?.uid ?? "" : ""}
+                    onChange={handleProfessionalSelect}
+                    className="rounded-xl h-10 bg-gray-800 border border-company-blue text-white px-10 focus:outline-none focus:ring-2 focus:ring-company-blue shadow-md"
+                  >
+                    <option value="" className="bg-gray-800 text-white">-- Seleccione --</option>
+                    {professionals?.length > 0 &&
+                    professionals.map(prof => (
+                      <option key={prof.uid} value={prof.uid} className="bg-gray-800 text-white">
+                        {prof.name} {prof.lastName}
+                      </option>
+                    ))}
+                  </select>
+
+
                   <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
                     <FaUserDoctor />
                   </span>
@@ -807,10 +832,11 @@ function StepByStep({
                   </label>
                   <input
                     // disabled={isEdit}
-                    disabled={
-                      professionalName === '' ||
-                      (oldData && oldData?.createdBy.userRol !== userRol?.uid)
-                    }
+                    // disabled={
+                    //   professionalName === '' ||
+                    //   (oldData && oldData?.createdBy.userRol !== userRol?.uid)
+                    // }
+                    disabled
                     value={professionalSpecialty}
                     type='text'
                     name='professionalSpecialty'
@@ -837,10 +863,11 @@ function StepByStep({
                     Correo del Profesional
                   </label>
                   <input
-                    disabled={
-                      professionalName === '' ||
-                      (oldData && oldData?.createdBy.userRol !== userRol?.uid)
-                    }
+                    // disabled={
+                    //   professionalName === '' ||
+                    //   (oldData && oldData?.createdBy.userRol !== userRol?.uid)
+                    // }
+                    disabled
                     value={professionalEmail}
                     type='email'
                     name='professionalEmail'
@@ -873,6 +900,21 @@ function StepByStep({
           {/* Flujo de acción */}
           {formStep === 1 && (
             <>
+            {/* Datos del paciente y orden en línea */}
+              <div className="flex flex-wrap gap-6 px-4 lg:px-28 pt-4 text-white text-sm lg:text-base">
+                <div>
+                  <span className="text-company-orange">Paciente:</span> {data?.name} {data?.lastName}
+                </div>
+                <div>
+                  <span className="text-company-orange">Doc:</span> {data?.idType} {data?.id}
+                </div>
+                <div>
+                  <span className="text-company-orange">Email:</span> {data?.email}
+                </div>
+                
+              </div>
+
+
               {/* Visualizar PDF */}
               <div className='pace-y-4flex flex-col mx-4 lg:mx-28 my-5 space-y-4'>
                 <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 gap-4'>

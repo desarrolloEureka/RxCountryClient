@@ -70,6 +70,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     flag,
     setFlag,
     setShowSave,
+    professionals,
   } = EditOrderHook({ slug });
 
 
@@ -126,6 +127,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
           </div>
 
           <StepByStep
+            professionals={professionals}
             value={value}
             area={area}
             uidUser={uidUser}

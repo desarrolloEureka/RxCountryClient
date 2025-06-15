@@ -177,6 +177,8 @@ const NewOrderHook = (props?: Props) => {
         endDate: null,
     });
 
+    const [professionals, setProfessionals] = useState<any[]>([]);
+
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setPatientData({ ...patientData, [e.target.name]: e.target.value });
     };
@@ -314,9 +316,12 @@ const patientVal =
             patientData.email &&
             patientData.confirmEmail &&
             patientData.confirmEmail === patientData.email &&
-            patientData.phone !== "57" &&
-            patientData.phone !== "" &&
-            patientData.phone.length > 11
+            patientData.phone &&
+            /^\+?\d{5,15}$/.test(patientData.phone)
+
+            // patientData.phone !== "57" &&
+            // patientData.phone !== "" &&
+            // patientData.phone.length > 11
         )
         : ( // Validaciones para otros roles
             patientData.idType &&
@@ -570,6 +575,19 @@ const patientVal =
     }, [patientData]);
 
     useEffect(() => {
+        const fetchProfessionals = async () => {
+            try {
+            // Colección donde guardas tus odontólogos/especialistas
+            const list = await getAllDocumentsFb("professionals");
+            setProfessionals(list);               // 👈  guardamos todo el objeto
+            } catch (err) {
+            console.error("No pude leer profesionales:", err);
+            }
+        };
+        fetchProfessionals();
+        }, []);
+        
+    useEffect(() => {
         getAllEmails();
         getOptions();
         getOrders();
@@ -620,6 +638,7 @@ const patientVal =
     }, [router, user, userData]);
 
     return {
+        professionals,
         emailFound,
         userData,
         value,

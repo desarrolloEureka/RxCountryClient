@@ -64,6 +64,7 @@ const NewOrderPage = () => {
         areaList,
         user,
         validateid,
+        professionals,
     } = NewOrderHook();
     console.log("patienData: ",patientData);
   if (!user) {
@@ -186,6 +187,7 @@ const NewOrderPage = () => {
           </div>
 
           <StepByStep
+            professionals={professionals} 
             flag={false}
             userData={userData}
             value={value}
