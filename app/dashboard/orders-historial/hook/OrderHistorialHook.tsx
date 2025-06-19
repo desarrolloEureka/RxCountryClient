@@ -22,7 +22,8 @@ const OrderHistorialHook = () => {
   const { userData, userRol, user } = useAuth();
 
   const { campus = '', area = '', uid = '' } = userData || {};
-
+  const currentUserUid = userData?.uid;
+  const currentRoleUid = userRol?.uid;
   const searchParams = useSearchParams();
 
   const fromEdit = searchParams.get('to');
@@ -88,16 +89,26 @@ const OrderHistorialHook = () => {
 
   const ordersByRol: OrdersByRol = {
     //Profesional
+    // ZWb0Zs42lnKOjetXH5lq: {
+    //   // received: allDataOrders?.filter(
+    //   //     (order: any) => order.status === "enviada",
+    //   // ),
+    //   send: allDataOrders?.filter(
+    //     (order: any) =>
+    //       order.createdBy.userRol === userRol?.uid &&
+    //       order.createdBy.userId === uid
+    //   ),
+    // },
+    // Profesional
     ZWb0Zs42lnKOjetXH5lq: {
-      // received: allDataOrders?.filter(
-      //     (order: any) => order.status === "enviada",
-      // ),
       send: allDataOrders?.filter(
         (order: any) =>
-          order.createdBy.userRol === userRol?.uid &&
-          order.createdBy.userId === uid
+          order.professionalUid === uid ||         // Asignadas por Recepción
+          order.createdBy?.userId === uid          // Creadas por el profesional
       ),
     },
+
+
     //Recepción
     Ll6KGdzqdtmLLk0D5jhk: {
       received: allDataOrders?.filter(

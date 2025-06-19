@@ -136,7 +136,7 @@ const SignUpHook = (props?: Props) => {
         setFileName("");
     };
 
-    // console.log(data);
+    // //console.log(data);
 
     // Validación del formulario
     const professionalsVal =
@@ -269,17 +269,17 @@ const SignUpHook = (props?: Props) => {
 
     // Handle de formulario, valida las contraseñas
     const handleSendForm = async (e?: any) => {
-        // console.log("data", data);
+        // //console.log("data", data);
         if (professionalsVal && emailValidation) {
             e.preventDefault();
             e.stopPropagation();
-            // console.log("Entró");
+            // //console.log("Entró");
             await uploadHandle();
         } else {
             e.preventDefault();
             e.stopPropagation();
             !emailValidation && setErrorPass(true);
-            console.log("Falló");
+            //console.log("Falló");
         }
     };
 

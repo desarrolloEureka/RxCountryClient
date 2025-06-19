@@ -28,7 +28,7 @@ export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
             }),
         });
     } catch (error) {
-        console.log("Este fue el error: ", error);
+        //console.log("Este fue el error: ", error);
     }
 };
 export const handleSendFinishedOrderEmail = async (data: any) => {
@@ -53,7 +53,7 @@ export const handleSendFinishedOrderEmail = async (data: any) => {
             }),
         });
     } catch (error) {
-        console.log("Este fue el error: ", error);
+        //console.log("Este fue el error: ", error);
     }
 };
 
@@ -75,6 +75,6 @@ export const handleSendNewOrderEmail = async (data: any) => {
             }),
         });
     } catch (error) {
-        console.log("Este fue el error: ", error);
+        //console.log("Este fue el error: ", error);
     }
 };

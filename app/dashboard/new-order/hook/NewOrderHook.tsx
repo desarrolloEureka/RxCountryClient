@@ -429,6 +429,7 @@ const patientVal =
                 userId: userData?.uid,
             },
             assignedCampus: campus ? campus : "",
+            professionalUid: selectedOptions?.professionalUid || null,
             timestamp: currentDate,
             updateLog: [
                 {

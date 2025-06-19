@@ -70,9 +70,9 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     const getIndexOfCurrentImage = (): number => {
         return arrayWithAllUrls?.indexOf(fileSrcSelected);
     };
-    console.log("arrayWithAllUrls");
-    console.log(arrayWithAllUrls);
-    // console.log("Prueba", 0+1 % arrayWithAllUrls?.length);
+    //console.log("arrayWithAllUrls");
+    //console.log(arrayWithAllUrls);
+    // //console.log("Prueba", 0+1 % arrayWithAllUrls?.length);
 
     const isFirstFile: boolean = getIndexOfCurrentImage() === 0;
     const isLastFile: boolean =
@@ -222,12 +222,12 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     };
 
     const handleDeleteFile = (urlFile: string, typeFile: string) => {
-        console.log("URL file: ",urlFile);
+        //console.log("URL file: ",urlFile);
         confirmSaveAlert(() => deleteFile(urlFile, typeFile));
     };
 
     const handleSaveFile = (typeFile: string) => {
-        console.log(typeFile);
+        //console.log(typeFile);
         confirmSaveAlert(() =>
             saveFile(typeFile).then(() => {
                 setTypeFileToUpLoad("");
@@ -237,10 +237,10 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     };
 
     // const downloadImagen = async (urlFile: string) => {
-    //     console.log("URL del archivo a descargar:", urlFile);
+    //     //console.log("URL del archivo a descargar:", urlFile);
 
     //     try {
-    //         console.log("prueba",fileSrcSelected)
+    //         //console.log("prueba",fileSrcSelected)
     //         // Realiza la solicitud fetch para obtener el archivo
     //         const response = await fetch(fileSrcSelected);
 
@@ -266,7 +266,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     //         // Libera la URL temporal
     //         URL.revokeObjectURL(url);
 
-    //         //console.log("Descarga completada.");
+    //         ////console.log("Descarga completada.");
     //     } catch (err) {
     //         //console.error("Error al descargar la imagen:", err);
     //         alert("Hubo un error al intentar descargar el archivo. Revisa la consola para más detalles.");
@@ -274,7 +274,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
     // };
     const downloadImagen = async (urlFile: string) => {
-        //console.log("URL del archivo a descargar:", urlFile);
+        ////console.log("URL del archivo a descargar:", urlFile);
 
         try {
             // Realiza la solicitud fetch para obtener el archivo
@@ -306,7 +306,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             // Libera la URL temporal
             URL.revokeObjectURL(url);
 
-           // console.log("Descarga completada.");
+           // //console.log("Descarga completada.");
         } catch (err) {
             console.error("Error al descargar la imagen:", err);
             alert("Hubo un error al intentar descargar el archivo. Revisa la consola para más detalles.");
@@ -319,9 +319,9 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
     const deleteFile = async (urlFile: string, typeFile: string) => {
 
-        console.log("urlFile  y typeFile");
-        console.log(urlFile);
-        console.log(typeFile);
+        //console.log("urlFile  y typeFile");
+        //console.log(urlFile);
+        //console.log(typeFile);
         const orderRef = "serviceOrders";
 
         const typeOfCollection: { [key: string]: string } = {
@@ -355,20 +355,20 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             const fileName = decodedUrl.split("/").pop()?.split("?")[0] || "archivo-descargado";
 
             const deletPatch =  `/Media/ODS_${currentYear}/${currentDate}/${slug}-${allOrderData?.id}/${areaFolder}/${fileName}`;
-            console.log("fileName");
-            console.log(fileName);
+            //console.log("fileName");
+            //console.log(fileName);
             // Create a reference to the file to delete
             const desertRef = ref(storage, deletPatch);
-            console.log("deletPatch");
-            console.log(deletPatch);
+            //console.log("deletPatch");
+            //console.log(deletPatch);
 
 
             // Delete the file
             deleteObject(desertRef).then(() => {
-                console.log("archivo eliminado");
+                //console.log("archivo eliminado");
             // File deleted successfully
             }).catch((error) => {
-                console.log("error al eliminar.")
+                //console.log("error al eliminar.")
             // Uh-oh, an error occurred!
             });
         });
@@ -385,8 +385,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         };
 
         const filesUrls = await getOrdersUrls(slug);
-        console.log("fileURLS",filesUrls);
-        console.log("SLUG",slug);
+        //console.log("fileURLS",filesUrls);
+        //console.log("SLUG",slug);
         // const newData = {
         //     [typeOfCollection[typeFile]]: allOrderData?.[
         //         typeOfCollection[typeFile]
@@ -417,7 +417,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                     : filesUrls[typeFile];
             });
         } catch (error) {
-            console.log("error----->: ", error);
+            //console.log("error----->: ", error);
         }
     };
 
@@ -438,7 +438,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             color: "#e9a225",
         }).then(async (result) => {
             if (result.isConfirmed) {
-                console.log("Entró");
+                //console.log("Entró");
 
                 saveAlert(callbackFc);
             }
@@ -481,7 +481,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                 // confirmButtonColor: "#1f2937",
                 // confirmButtonText: "Volver a intentar",
             }).then(() => {
-                console.log("error ----> :", error);
+                //console.log("error ----> :", error);
             });
         }
     };
@@ -513,14 +513,14 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         const areaFolder = allAreas?.find((item) => item.value === (area??sentToArea))
             ?.label as string
 
-        console.log(files);
+        //console.log(files);
         if (files.length > 0) {
             for (const record of files) {
-                    console.log("Folder:",allOrderData?.id);
-                    console.log("filename:",record.name.split(' ').join('_'));
-                    console.log("file:",record);
-                    console.log(" area:", areaFolder);
-                    console.log(" idOrder:", idOrder);
+                    //console.log("Folder:",allOrderData?.id);
+                    //console.log("filename:",record.name.split(' ').join('_'));
+                    //console.log("file:",record);
+                    //console.log(" area:", areaFolder);
+                    //console.log(" idOrder:", idOrder);
                     await uploadFile({
                         folder: allOrderData?.id,
                         fileName: record.name.split(' ').join('_'),
@@ -532,7 +532,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                             urlFiles.images.push(res);
                         })
                         .catch((err: any) => {
-                            console.log(err);
+                            //console.log(err);
                         });
 
 
@@ -592,12 +592,12 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                 email,
                 age,
             };
-            console.log("orderAndPatientData");
-            console.log(orderAndPatientData);
-            console.log("patient");
-            console.log(patient);
-            console.log("ordersData");
-            console.log(ordersData);
+            //console.log("orderAndPatientData");
+            //console.log(orderAndPatientData);
+            //console.log("patient");
+            //console.log(patient);
+            //console.log("ordersData");
+            //console.log(ordersData);
 
             setAllOrderData(orderAndPatientData);
         }
@@ -613,7 +613,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
                     ? "Local"
                     : "Server";
                 const data = querySnapshot.data();
-                // console.log("doc.data", data, source);
+                // //console.log("doc.data", data, source);
                 setOrdersData(data);
             }
         });

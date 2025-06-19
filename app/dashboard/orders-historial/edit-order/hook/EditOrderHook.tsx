@@ -510,7 +510,7 @@ const EditOrderHook = ({ slug }: Props) => {
     callback: async ({ obj1, obj2 }) => {
       const orderRef = 'serviceOrders';
       const dataUpdated = updateOrder({ obj1, obj2 });
-      // console.log(dataUpdated);
+      // //console.log(dataUpdated);
       // await updateDocumentsByIdF(obj2?.uid, dataUpdated, orderRef);
     },
     wait: 600,
@@ -557,7 +557,7 @@ const EditOrderHook = ({ slug }: Props) => {
               urlFiles.images.push(res);
             })
             .catch((err: any) => {
-              console.log(err);
+              //console.log(err);
             });
         } 
       }
@@ -567,10 +567,10 @@ const EditOrderHook = ({ slug }: Props) => {
   };
 
   const handleSendForm = async (e?: any,  areaSelected?: any) => {
-    console.log('areaSelected', areaSelected);
+    //console.log('areaSelected', areaSelected);
     e.preventDefault();
     e.stopPropagation();
-    console.log('Editó', showSave);
+    //console.log('Editó', showSave);
     // setIisLoaded(true);
     showSave ? await updatePatientData() : await uploadHandle(areaSelected);
     // handleClose();
@@ -588,12 +588,12 @@ const EditOrderHook = ({ slug }: Props) => {
   };
 
   const uploadHandle = async (areaSelected: any) => {
-    console.log('oldDataOrder.uid', oldDataOrder.uid);
-    console.log('oldDataOrder?.completedAreas', oldDataOrder?.completedAreas);
-    console.log('area', area);
-    console.log('oldDataOrder?.sendTo', oldDataOrder?.sendTo);
-    console.log('userRol?.uid', userRol?.uid);
-    console.log('sentToArea', sentToArea);
+    //console.log('oldDataOrder.uid', oldDataOrder.uid);
+    //console.log('oldDataOrder?.completedAreas', oldDataOrder?.completedAreas);
+    //console.log('area', area);
+    //console.log('oldDataOrder?.sendTo', oldDataOrder?.sendTo);
+    //console.log('userRol?.uid', userRol?.uid);
+    //console.log('sentToArea', sentToArea);
 
     //para que no se totee el map por no ser un array sendToArray
     const rawSendTo = userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' ? sentToArea : oldDataOrder?.sendTo;
@@ -601,17 +601,17 @@ const EditOrderHook = ({ slug }: Props) => {
 
     const addEdited = () =>
       sendToArray?.map((val: any) => {
-        console.log('addddddddd', val.value, area);
-        console.log('addddddddd1', val);
+        //console.log('addddddddd', val.value, area);
+        //console.log('addddddddd1', val);
         val.value == area && (val.edited = true);
-        console.log('areaSelected', areaSelected);
+        //console.log('areaSelected', areaSelected);
         areaSelected && areaSelected.value && val.value == areaSelected.value && (val.edited = false); // se valida el area a donde se va a redirigir y se cambia a false
         return val;
       });
 
     const removeEdited = () =>
       sendToArray?.map((val: any) => {
-        console.log('removeEditeddddddd', val.value, area);
+        //console.log('removeEditeddddddd', val.value, area);
         val.edited = false;
         return val;
       });
@@ -722,7 +722,7 @@ const EditOrderHook = ({ slug }: Props) => {
             },
           ],
     };
-    console.log('newSendTo', newSendTo);
+    //console.log('newSendTo', newSendTo);
 
     const patientAndOrderData = {
       ...newOrderData,
@@ -736,7 +736,7 @@ const EditOrderHook = ({ slug }: Props) => {
 
     await saveOneDocumentFb(documentEditOrderRef, newOrderData).then(
       async (res: any) => {
-        console.log('res>>>>', res);
+        //console.log('res>>>>', res);
 
         !isOrderIncomplete &&
           userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' &&
@@ -803,7 +803,7 @@ const EditOrderHook = ({ slug }: Props) => {
     const fetchProfessionals = async () => {
       try {
         const list = await getAllDocumentsFb("professionals"); // <-- ahora sí funcionará
-        console.log("Profesionales traídos:", list);
+        //console.log("Profesionales traídos:", list);
         setProfessionals(list);
       } catch (err) {
         console.error("No pude leer profesionales:", err);
@@ -823,7 +823,7 @@ const EditOrderHook = ({ slug }: Props) => {
         //   ? 'Local'
         //   : 'Server';
         const data = querySnapshot.data();
-        // console.log("doc.data", data, source);
+        // //console.log("doc.data", data, source);
         setOrderData(data);
       }
     });

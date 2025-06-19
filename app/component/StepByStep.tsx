@@ -157,6 +157,7 @@ function StepByStep({
   const [professionalObservation, setProfessionalObservation] = useState('');
   const [receptionObservation, setReceptionObservation] = useState('');
 
+  const [professionalUid, setprofessionalUid] = useState('');
   const [professionalName, setProfessionalName] = useState('');
   const [professionalSpecialty, setProfessionalSpecialty] = useState('');
   const [professionalEmail, setProfessionalEmail] = useState('');
@@ -218,7 +219,7 @@ function StepByStep({
   const [selectedDiagnosticPackage, setSelectedDiagnosticPackage] = useState<
     string[]
   >([]);
-
+  console.log('profesionalUid', professionalUid);
   const allDataSelected = useMemo(() => {
     return {
       // professionalName:
@@ -239,6 +240,14 @@ function StepByStep({
       //     : oldData?.professionalEmail
       //     ? oldData?.professionalEmail
       //     : professionalEmail,
+
+      professionalUid:
+        professionalName?.trim() !== ''
+          ? professionals.find(p => `${p.name} ${p.lastName}` === professionalName)?.uid || ''
+          : userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq'
+          ? uidUser
+          : oldData?.professionalUid || '',
+
       professionalName:
       professionalName?.trim() !== ''
         ? professionalName
@@ -349,7 +358,7 @@ function StepByStep({
     }
   
     setIsDataSelected(_.some(dataSelected, (value) => !_.isEmpty(value)));
-  
+    console.log('dataSelected', dataSelected);
     setSelectedOptions(dataSelected);
   }, [
     allDataSelected,
@@ -441,6 +450,20 @@ function StepByStep({
   }, [areasListSelected, selectChangeHandlerSentTo]);
   
   
+  // const handleProfessionalSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const uid = e.target.value;
+  //   const selected = professionals.find(p => p.uid === uid);
+
+  //   if (selected) {
+  //     setProfessionalName(`${selected.name} ${selected.lastName}`);
+  //     setProfessionalSpecialty(selected.specialty);
+  //     setProfessionalEmail(selected.email);
+  //   } else {
+  //     setProfessionalName("");
+  //     setProfessionalSpecialty("");
+  //     setProfessionalEmail("");
+  //   }
+  // };
   const handleProfessionalSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const uid = e.target.value;
     const selected = professionals.find(p => p.uid === uid);
@@ -449,13 +472,31 @@ function StepByStep({
       setProfessionalName(`${selected.name} ${selected.lastName}`);
       setProfessionalSpecialty(selected.specialty);
       setProfessionalEmail(selected.email);
+
+      //  Guardar en selectedOptions también
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        professionalUid: selected.uid,
+        professionalName: `${selected.name} ${selected.lastName}`,
+        professionalSpecialty: selected.specialty,
+        professionalEmail: selected.email,
+      }));
     } else {
       setProfessionalName("");
       setProfessionalSpecialty("");
       setProfessionalEmail("");
+
+      // Limpiar también si no hay profesional
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        professionalUid: null,
+        professionalName: "",
+        professionalSpecialty: "",
+        professionalEmail: "",
+      }));
     }
   };
-  
+
 
 
   // console.log(data);
@@ -802,30 +843,36 @@ function StepByStep({
             {userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' && (
               <>
                 <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
-                  <label htmlFor='Doctor' className='text-white'>
-                    Profesional&nbsp;(opcional)
-                  </label>
-                  <select
-                    id="Doctor"
-                    value={professionalName ? professionals.find(p =>
-                          `${p.name} ${p.lastName}` === professionalName)?.uid ?? "" : ""}
-                    onChange={handleProfessionalSelect}
-                    className="rounded-xl h-10 bg-gray-800 border border-company-blue text-white px-10 focus:outline-none focus:ring-2 focus:ring-company-blue shadow-md"
-                  >
-                    <option value="" className="bg-gray-800 text-white">-- Seleccione --</option>
-                    {professionals?.length > 0 &&
-                    professionals.map(prof => (
-                      <option key={prof.uid} value={prof.uid} className="bg-gray-800 text-white">
-                        {prof.name} {prof.lastName}
-                      </option>
-                    ))}
-                  </select>
+  <label htmlFor='Doctor' className='text-white'>
+    Profesional&nbsp;(opcional)
+  </label>
+  <select
+    id="Doctor"
+    value={professionalName ? professionals.find(p =>
+          `${p.name} ${p.lastName}` === professionalName)?.uid ?? "" : ""}
+    onChange={handleProfessionalSelect}
+    className="rounded-xl h-10 bg-gray-800 border border-company-blue text-white px-10 focus:outline-none focus:ring-2 focus:ring-company-blue shadow-md"
+  >
+    <option value="" className="bg-gray-800 text-white">-- Seleccione --</option>
+    {professionals
+      ?.slice() // crea una copia para no mutar el estado original
+      .sort((a, b) => {
+        const nameA = `${a.name} ${a.lastName}`.toLowerCase();
+        const nameB = `${b.name} ${b.lastName}`.toLowerCase();
+        return nameA.localeCompare(nameB);
+      })
+      .map(prof => (
+        <option key={prof.uid} value={prof.uid} className="bg-gray-800 text-white">
+          {prof.name} {prof.lastName}
+        </option>
+      ))}
+  </select>
 
+  <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
+    <FaUserDoctor />
+  </span>
+</div>
 
-                  <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
-                    <FaUserDoctor />
-                  </span>
-                </div>
                 <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
                   <label htmlFor='Specialty' className='text-white'>
                     Especialidad
@@ -901,7 +948,7 @@ function StepByStep({
           {formStep === 1 && (
             <>
             {/* Datos del paciente y orden en línea */}
-              <div className="flex flex-wrap gap-6 px-4 lg:px-28 pt-4 text-white text-sm lg:text-base">
+              <div className="flex flex-col gap-2 px-4 lg:px-28 pt-4 text-white text-sm lg:text-base">
                 <div>
                   <span className="text-company-orange">Paciente:</span> {data?.name} {data?.lastName}
                 </div>
@@ -911,7 +958,9 @@ function StepByStep({
                 <div>
                   <span className="text-company-orange">Email:</span> {data?.email}
                 </div>
-                
+                <div>
+                  <span className="text-company-orange">ODS:</span> {oldData?.uid}
+                </div>
               </div>
 
 

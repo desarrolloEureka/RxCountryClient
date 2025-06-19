@@ -12,6 +12,10 @@ import ImagesRequestIcon from "./icons/ImagesRequestIcon.jsx";
 import OrderHistorialIcon from "./icons/OrderHistorialIcon.jsx";
 import OrderIcon from "./icons/OrderIcon.jsx";
 import Spinner from "./spinner/Spinner";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 interface Props {
     // selectedMenuItem?: "create-order" | "orders-historial" | "images-query";
@@ -21,6 +25,22 @@ interface Props {
 export default function DashboardHeader({ selectedMenuItem }: Props) {
     const logOut = () => signOut(auth);
     const { isActiveUser, userData, userRol, userCampus } = useAuth();
+    console.log("isActiveUser",isActiveUser);
+    const [blockMessage, setBlockMessage] = useState("");
+
+    useEffect(() => {
+    if (isActiveUser === false) {
+        setBlockMessage("Tu cuenta está bloqueada. Ponte en contacto con un administrador.");
+        setTimeout(() => logOut(), 10000);
+    }
+    }, [isActiveUser]);
+
+    {blockMessage && (
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded shadow-md z-50">
+        {blockMessage}
+    </div>
+    )}
+
     const { name = "", lastName = "", urlPhoto = "" } = userData || {};
 
     const [orderIconColor, setOrderIconColor] = useState("white");
@@ -47,24 +67,29 @@ export default function DashboardHeader({ selectedMenuItem }: Props) {
     );
 
     useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [handleClickOutside]);
+        if (isActiveUser === false) {
+            toast.error("Tu cuenta está bloqueada. Ponte en contacto con un administrador.");
+            setTimeout(() => {
+            signOut(auth);
+            }, 5000);
+        }
+    }, [isActiveUser]);
 
-    if (!userData || !userRol?.uid) {
-        return (
-            <nav className="flex bg-gray-700 bg-opacity-80 rounded-2xl px-4 lg:px-8 py-2.5 lg:py-0">
-                <div className="relative flex flex-wrap lg:flex-nowrap justify-between items-center w-full">
-                    <Spinner background="bg-transparent" screenH="min-h-36" />
-                </div>
-            </nav>
-        );
-    }
-
+    
     return (
+        
         <nav className="flex bg-gray-700 bg-opacity-80 rounded-2xl px-4 lg:px-8 py-2.5 lg:py-0">
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}           // ⏳ 5 segundos
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                draggable
+                theme="colored"
+                />
+
             <div className="relative flex flex-wrap lg:flex-nowrap justify-between items-center w-full">
                 <Link
                     href="/dashboard"

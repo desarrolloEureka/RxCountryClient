@@ -66,7 +66,7 @@ const NewOrderPage = () => {
         validateid,
         professionals,
     } = NewOrderHook();
-    console.log("patienData: ",patientData);
+    //console.log("patienData: ",patientData);
   if (!user) {
     return <Spinner />;
   }
@@ -269,12 +269,12 @@ const NewOrderPage = () => {
                 <button
                   type={patientVal ? 'button' : 'submit'}
                   onClick={async() => {
-                    console.log("formstep: ",formStep);
+                    //console.log("formstep: ",formStep);
                     if(formStep == 0){
                       const existe = await validateid(patientData.id);
-                      console.log("isedit: ",isEdit, existe);
+                      //console.log("isedit: ",isEdit, existe);
                       if(existe && !isVerificated){
-                        console.log("si existe");
+                        //console.log("si existe");
                         Swal.fire({
                           position: "center",
                           title: `El ID ya existe`,

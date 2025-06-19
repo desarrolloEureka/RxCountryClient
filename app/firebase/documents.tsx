@@ -209,7 +209,7 @@ export const getOrderByIdInRealTime = (id: string) => {
                 ? "Local"
                 : "Server";
             const data = querySnapshot.data();
-            console.log("doc.data", data, source);
+            //console.log("doc.data", data, source);
             dataResult.push(data);
             // });
         }
@@ -273,7 +273,7 @@ export const saveOneDocumentFb = async (documentRef: any, data: any) => {
         timestamp: data.timestamp ? data.timestamp : currentDate,
     });
 
-    // console.log(documentRef,data);
+    // //console.log(documentRef,data);
     return documentRef;
 };
 
@@ -290,6 +290,6 @@ export const checkIfUserExists = async (id: string) => {
     const patientsRef = collection(db, "patients");
     const q = query(patientsRef, where("id", "==", id));
     const querySnapshot = await getDocs(q);
-    console.log("querySnapshot",!querySnapshot.empty);
+    //console.log("querySnapshot",!querySnapshot.empty);
     return !querySnapshot.empty;
 };

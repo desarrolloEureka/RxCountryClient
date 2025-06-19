@@ -73,7 +73,7 @@ const SignUpHook = () => {
                         selectedCampus &&
                         selectedCampus !== currentUser.campus
                     ) {
-                        // console.log("En el if");
+                        // //console.log("En el if");
                         const reference = "functionary";
                         
                         updateDocumentsByIdFb(
@@ -98,9 +98,9 @@ const SignUpHook = () => {
                 }
                 setError("Error inicio de sesión");
             }
-            // console.log("currentUser.rol:");
-            // console.log(currentUser);
-            // console.log(currentUser.rol);
+            // //console.log("currentUser.rol:");
+            // //console.log(currentUser);
+            // //console.log(currentUser.rol);
         };
 
         // Verifica si existe el correo en base de datos.

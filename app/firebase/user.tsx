@@ -67,7 +67,7 @@ export const addPatient = async ({
 //                 uid,
 //                 password,
 //             });
-//             console.log(data.status);
+//             //console.log(data.status);
 //             if (data.status === 200) {
 //                 resolve(data);
 //             } else {
@@ -88,7 +88,7 @@ export const reauthenticate = async (
             EmailAuthProvider.credential(email, password),
         );
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         return false;
     }
 };
@@ -97,7 +97,7 @@ export const updatePass = async (newPassword: string, user: any) => {
     try {
         return await updatePassword(user as User, newPassword);
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         return false;
     }
 };
@@ -108,18 +108,18 @@ export const saveUserById = async (data: any) => {
 };
 
 export const getProfileDataByIdFb = async (uid: any, ref: string) => {
-    // console.log(uid);
+    // //console.log(uid);
     const docRef = doc(db, ref, uid);
     const docSnap = await getDoc(docRef);
     let userData: any = {};
 
     if (docSnap.exists()) {
-        // console.log("Document data:", docSnap.data());
+        // //console.log("Document data:", docSnap.data());
         userData = docSnap.data();
     } else {
-        console.log("No such document!");
+        //console.log("No such document!");
     }
-    // console.log(userData);
+    // //console.log(userData);
     return userData;
 };
 

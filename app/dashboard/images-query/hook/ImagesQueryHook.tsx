@@ -122,7 +122,7 @@ const ImagesQueryHook = () => {
   // Nuevo estado para el área seleccionada
   const [selectedCampus, setSelectedSede] = useState<string | null>(null);  
   
-  console.log("orderList", orderList);
+  //console.log("orderList", orderList);
 
   let filteredOrders: any[] = orderList?.filter((order: any) => {
     const itemDate = moment(order.timestamp);
@@ -146,8 +146,8 @@ const ImagesQueryHook = () => {
        order.areaList.some((item: string) =>
          item.toLowerCase() === selectedArea.toLowerCase()
       ));
-      console.log("selectedArea", selectedArea);
-       console.log("order.areaList:", order.areaList);
+      //console.log("selectedArea", selectedArea);
+       //console.log("order.areaList:", order.areaList);
    
 
     // Filtro por Campus
@@ -167,14 +167,14 @@ const ImagesQueryHook = () => {
     //   order.assignedCampus.some((item: string) =>
     //     item.toLowerCase() === selectedCampus.toLowerCase()
     //   ));
-      //  console.log("selectedCampus", selectedCampus);
-      // console.log("order.assignedCampus:", order.assignedCampus);
+      //  //console.log("selectedCampus", selectedCampus);
+      // //console.log("order.assignedCampus:", order.assignedCampus);
      return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
    });
 
-   console.log("Pedidos filtrados:", filteredOrders);
+   //console.log("Pedidos filtrados:", filteredOrders);
    const totalOrders = filteredOrders?.length || 0;
-   console.log("Total órdenes:", totalOrders);
+   //console.log("Total órdenes:", totalOrders);
 
   const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
     setSelectedArea(selectedOption?.value || null);
@@ -339,15 +339,15 @@ const ImagesQueryHook = () => {
     const getAreas = useCallback(async () => {
       const allAreasData = await getAllAreasOptions();
       allAreasData && setAllAreas(allAreasData);
-      console.log("allAreasData");
-      console.log(allAreasData);
+      //console.log("allAreasData");
+      //console.log(allAreasData);
     }, []);
 
     const getCampus = useCallback(async () => {
       const allCampusData = await getAllCampusOptions();
       allCampusData && setAllCampus(allCampusData);
-      console.log("allCampusData");
-      console.log(allCampusData);
+      //console.log("allCampusData");
+      //console.log(allCampusData);
     }, []);
 
 

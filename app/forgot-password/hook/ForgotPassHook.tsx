@@ -47,7 +47,7 @@ export const ForgotPassHook = () => {
                     },
                 );
             } catch (error) {
-                console.log("Error: ", error);
+                //console.log("Error: ", error);
             }
         };
 

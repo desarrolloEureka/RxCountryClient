@@ -12,7 +12,7 @@ const PageHook = () => {
             ? router.replace("/dashboard")
             : router.replace("/sign-in");
 
-        // console.log("entre en PageHook");
+        // //console.log("entre en PageHook");
     }, [isActiveUser, isLoading, router, user]);
 
     return { user, isActiveUser, isLoading };

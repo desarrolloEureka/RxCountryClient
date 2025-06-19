@@ -104,10 +104,10 @@ const useAuth = () => {
             setIsLoading(false);
             getUserData();
             user?.getIdToken().then((token) => setAccessTokenUser(token));
-            console.log("user", user);
+            //console.log("user", user);
         } else {
             // localStorage.removeItem("userRoleId"); // Limpia el rol si no hay usuario
-            console.log("User nulo o Indefinido");
+            //console.log("User nulo o Indefinido");
             // setIsLoading(true);
             // setUser(null);
         }

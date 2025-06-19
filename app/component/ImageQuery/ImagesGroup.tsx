@@ -137,8 +137,8 @@ const ImagesGroup = ({
                     {orderAndPatientData?.orderImagesUrl &&
                         orderAndPatientData?.orderImagesUrl?.map(
                             (item: any, index: number) => {
-                                console.log("-a-sdaas--d-s-d-a-d");
-                                console.log(item);
+                                //console.log("-a-sdaas--d-s-d-a-d");
+                                //console.log(item);
                                 if (item.includes(".pdf")){
                                     return (
                                         <div
