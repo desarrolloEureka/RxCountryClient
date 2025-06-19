@@ -950,6 +950,9 @@ function StepByStep({
             {/* Datos del paciente y orden en línea */}
               <div className="flex flex-col gap-2 px-4 lg:px-28 pt-4 text-white text-sm lg:text-base">
                 <div>
+                  <span className="text-company-orange">ODS:</span> {oldData?.uid}
+                </div>
+                <div>
                   <span className="text-company-orange">Paciente:</span> {data?.name} {data?.lastName}
                 </div>
                 <div>
@@ -957,9 +960,6 @@ function StepByStep({
                 </div>
                 <div>
                   <span className="text-company-orange">Email:</span> {data?.email}
-                </div>
-                <div>
-                  <span className="text-company-orange">ODS:</span> {oldData?.uid}
                 </div>
               </div>
 
