@@ -73,14 +73,18 @@ const ImagesQueryHook = () => {
 
   const ordersImagesByRol: OrdersImagesByRol = {
     //Profesional
+    // ZWb0Zs42lnKOjetXH5lq: allDataOrders?.filter(
+    //   (order: any) =>
+    //     order.createdBy.userRol === userRol?.uid &&
+    //     order.createdBy.userId === uid
+    //   // order.modifiedBy.userRolId === userRol?.uid
+    //   // order.status === "finalizada",
+    // ),
     ZWb0Zs42lnKOjetXH5lq: allDataOrders?.filter(
       (order: any) =>
-        order.createdBy.userRol === userRol?.uid &&
-        order.createdBy.userId === uid
-      // order.modifiedBy.userRolId === userRol?.uid
-      // order.status === "finalizada",
+        order.professionalUid === user?.uid ||
+        order.createdBy?.userId === user?.uid
     ),
-
     //Recepción
     Ll6KGdzqdtmLLk0D5jhk: allDataOrders,
 
