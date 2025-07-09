@@ -37,13 +37,13 @@ export default function ForgotPassword() {
                         </label>
                         <input
                             onChange={(e) => {
-                                handleChangeEmail(e.target.value);
+                                handleChangeEmail(e.target.value.toLowerCase());
                             }}
                             id="email"
                             name="email"
                             type="email"
                             required
-                            className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                            className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10 lowercase"
                         />
                         <IoMail className="lg:ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
                     </div>

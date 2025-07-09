@@ -118,20 +118,25 @@ const SignUpHook = () => {
 
     // Handlers de formulario: Guarda los datos ingresados
     const changeHandler = (e: any) => {
-        setData({ ...data, [e.target.name]: e.target.value });
+        const value = e.target.name === 'email'
+            ? e.target.value.toLowerCase()
+            : e.target.value;
 
-        const userLoginData =
-            allFunctionaries?.find(
-                (user: any) => user.email === e.target.value,
-            ) ||
-            allPatients?.find((user: any) => user.email === e.target.value);
+        setData({ ...data, [e.target.name]: value });
 
-        e.target.name === "email" &&
-            userLoginData &&
-            (setCurrentUser(userLoginData),
-            setSelectedArea(userLoginData?.area),
-            setSelectedCampus(userLoginData?.campus));
+        if (e.target.name === 'email') {
+            const userLoginData =
+            allFunctionaries?.find((user: any) => user.email === value) ||
+            allPatients?.find((user: any) => user.email === value);
+
+            if (userLoginData) {
+            setCurrentUser(userLoginData);
+            setSelectedArea(userLoginData?.area);
+            setSelectedCampus(userLoginData?.campus);
+            }
+        }
     };
+
 
     const selectChangeHandlerCampus = (e: any) => {
         setSelectedCampus(e?.target.value);

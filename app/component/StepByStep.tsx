@@ -672,7 +672,15 @@ function StepByStep({
                     ? 'border-gray-600 text-gray-400'
                     : 'border-company-blue text-white'
                 } px-10`}                
-                onChange={changeHandler}
+                onChange={(e) => {
+                  const email = e.target.value.toLowerCase();
+                  setSelectedOptions((prev: any) => ({
+                    ...prev,
+                    email,
+                  }));
+                  data.email = email; // solo si necesitas ver reflejado el cambio visualmente
+                }}
+
               />
               <span
                 className={`absolute left-2 bottom-2 ${
@@ -715,7 +723,18 @@ function StepByStep({
                       ? 'border-company-blue border'
                       : 'border-red-600 border-2'
                   } text-white px-10`}
-                  onChange={changeHandler}
+                  onChange={(e) => {
+                    const confirmEmail = e.target.value.toLowerCase();
+                    setSelectedOptions((prev: any) => ({
+                      ...prev,
+                      confirmEmail,
+                    }));
+                    changeHandler({
+                      target: { name: 'confirmEmail', value: confirmEmail }
+                    } as React.ChangeEvent<HTMLInputElement>);
+
+                  }}
+
                 />
                 <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
                   <IoMail />
@@ -843,35 +862,35 @@ function StepByStep({
             {userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' && (
               <>
                 <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
-  <label htmlFor='Doctor' className='text-white'>
-    Profesional&nbsp;(opcional)
-  </label>
-  <select
-    id="Doctor"
-    value={professionalName ? professionals.find(p =>
-          `${p.name} ${p.lastName}` === professionalName)?.uid ?? "" : ""}
-    onChange={handleProfessionalSelect}
-    className="rounded-xl h-10 bg-gray-800 border border-company-blue text-white px-10 focus:outline-none focus:ring-2 focus:ring-company-blue shadow-md"
-  >
-    <option value="" className="bg-gray-800 text-white">-- Seleccione --</option>
-    {professionals
-      ?.slice() // crea una copia para no mutar el estado original
-      .sort((a, b) => {
-        const nameA = `${a.name} ${a.lastName}`.toLowerCase();
-        const nameB = `${b.name} ${b.lastName}`.toLowerCase();
-        return nameA.localeCompare(nameB);
-      })
-      .map(prof => (
-        <option key={prof.uid} value={prof.uid} className="bg-gray-800 text-white">
-          {prof.name} {prof.lastName}
-        </option>
-      ))}
-  </select>
+                  <label htmlFor='Doctor' className='text-white'>
+                    Profesional&nbsp;(opcional)
+                  </label>
+                  <select
+                    id="Doctor"
+                    value={professionalName ? professionals.find(p =>
+                          `${p.name} ${p.lastName}` === professionalName)?.uid ?? "" : ""}
+                    onChange={handleProfessionalSelect}
+                    className="rounded-xl h-10 bg-gray-800 border border-company-blue text-white px-10 focus:outline-none focus:ring-2 focus:ring-company-blue shadow-md"
+                  >
+                    <option value="" className="bg-gray-800 text-white">-- Seleccione --</option>
+                    {professionals
+                      ?.slice() // crea una copia para no mutar el estado original
+                      .sort((a, b) => {
+                        const nameA = `${a.name} ${a.lastName}`.toLowerCase();
+                        const nameB = `${b.name} ${b.lastName}`.toLowerCase();
+                        return nameA.localeCompare(nameB);
+                      })
+                      .map(prof => (
+                        <option key={prof.uid} value={prof.uid} className="bg-gray-800 text-white">
+                          {prof.name} {prof.lastName}
+                        </option>
+                      ))}
+                  </select>
 
-  <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
-    <FaUserDoctor />
-  </span>
-</div>
+                  <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
+                    <FaUserDoctor />
+                  </span>
+                </div>
 
                 <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
                   <label htmlFor='Specialty' className='text-white'>

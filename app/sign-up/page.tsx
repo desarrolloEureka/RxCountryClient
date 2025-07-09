@@ -192,7 +192,7 @@ export default function SignUp() {
                                         name="email"
                                         type="email"
                                         required
-                                        className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-10"
+                                        className="rounded-xl h-10 bg-transparent border-company-blue border text-white px-10 lowercase"
                                         onChange={changeHandler}
                                     />
                                     <span className="absolute left-2 bottom-2 text-company-blue text-[1.5rem]">
@@ -218,7 +218,7 @@ export default function SignUp() {
                                         name="confirmEmail"
                                         type="email"
                                         required
-                                        className={`rounded-xl h-10 bg-transparent ${
+                                        className={`lowercase rounded-xl h-10 bg-transparent ${
                                             emailValidation
                                                 ? "border-company-blue border"
                                                 : "border-red-600 border-2"

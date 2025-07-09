@@ -52,8 +52,13 @@ const SignUpHook = (props?: Props) => {
 
     // Handlers de formulario
     const changeHandler = (e: any) => {
-        setData({ ...data, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        const lowerFields = ["email", "confirmEmail"];
+        const newValue = lowerFields.includes(name) ? value.toLowerCase() : value;
+
+        setData({ ...data, [name]: newValue });
     };
+
 
     const selectChangeHandlerIdType = (e: any) => {
         setData({ ...data, ["idType"]: e?.target.value });
