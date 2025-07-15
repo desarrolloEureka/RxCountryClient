@@ -290,6 +290,8 @@ function StepByStep({
           ? oldData?.observationComment
           : '',
       diagnosticImpressionComment,
+      createdByRole: oldData?.createdByRole || '',
+
     };
   }, [
     userRol?.uid,
@@ -334,6 +336,9 @@ function StepByStep({
         userId: uidUser,
         message: professionalObservation,
       };
+      if (allDataSelected?.createdByRole === 'Ll6KGdzqdtmLLk0D5jhk') {
+        dataSelected.specialistEdited = true;
+      }
     } else if (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk') {
       // Recepción edita ambos campos
       dataSelected.observationComment = {
@@ -356,7 +361,12 @@ function StepByStep({
         message: observationComment,
       };
     }
-  
+    // Solo asignar el rol que creó la ODS si no está ya registrado
+    if (!allDataSelected?.createdByRole && userRol?.uid) {
+      dataSelected.createdByRole = userRol.uid;
+    }
+
+
     setIsDataSelected(_.some(dataSelected, (value) => !_.isEmpty(value)));
     console.log('dataSelected', dataSelected);
     setSelectedOptions(dataSelected);

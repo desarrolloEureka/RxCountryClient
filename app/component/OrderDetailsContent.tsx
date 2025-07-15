@@ -65,7 +65,14 @@ const OrderDetailsContent = ({
     getLastUserData,
     areasSelected,
 }: Props) => {
-    // const router = useRouter();
+    const recepcionRolId = 'Ll6KGdzqdtmLLk0D5jhk';
+const profesionalRolId = 'ZWb0Zs42lnKOjetXH5lq';
+
+const createdByRecepcion = orderAndPatientData?.createdByRole === recepcionRolId;
+const editedByProfesional = orderAndPatientData?.professionalUid === orderAndPatientData?.observationComment?.userId;
+
+// Mostrar si no fue creada por recepción o si el profesional ya editó
+const shouldShowSpecialist = !createdByRecepcion || editedByProfesional;
 
     if (
         !orderAndPatientData ||
@@ -709,8 +716,10 @@ const OrderDetailsContent = ({
                     )}
 
                     {/* specialist */}
-                    {(orderAndPatientData?.observationComment ||
-                        userRol.uid === "ZWb0Zs42lnKOjetXH5lq") && (
+                    {(
+                        orderAndPatientData?.createdByRole !== 'Ll6KGdzqdtmLLk0D5jhk' || 
+                        orderAndPatientData?.specialistEdited
+                        ) && (
                         <div
                             className={`flex flex-col m-4 lg:mx-28 lg:mb-10 transition-transform rounded-xl ${
                                 expandSpecialist
@@ -730,12 +739,11 @@ const OrderDetailsContent = ({
                                         {orderAndPatientData?.observationComment && (
                                             <>
                                                 <span className="text-xs lg:text-base">
-                                                    {`Usuario: ${getLastUserData(
-                                                        orderAndPatientData
-                                                            ?.observationComment
-                                                            .userId,
+                                                    {`Usuario: ${orderAndPatientData?.professionalName || getLastUserData(
+                                                        orderAndPatientData?.observationComment?.userId
                                                     )}`}
-                                                </span>
+                                                    </span>
+
                                                 <span className="text-xs lg:text-base">
                                                     {`Fecha: ${
                                                         formatearFecha(

@@ -139,7 +139,8 @@ const ImagesGroup = ({
                             (item: any, index: number) => {
                                 //console.log("-a-sdaas--d-s-d-a-d");
                                 //console.log(item);
-                                if (item.includes(".pdf")){
+                                if (item.toLowerCase().includes(".pdf")) {
+
                                     return (
                                         <div
                                             key={index}
@@ -168,7 +169,7 @@ const ImagesGroup = ({
                                             </h3>
                                         </div>
                                     );
-                                }else if (item.includes(".stl")) {
+                                } else if (item.toLowerCase().includes(".stl")) {
                                     return (
                                         <div
                                             key={index}
@@ -195,7 +196,7 @@ const ImagesGroup = ({
                                             </h3>
                                         </div>
                                     );
-                                }else if(item.includes(".ply")){
+                                } else if (item.toLowerCase().includes(".ply")) {
                                     return (
                                         <div
                                             key={index}
@@ -381,7 +382,7 @@ const ImagesGroup = ({
                                     {typeFile === "STL" ? "Archivo" : "Imagen"}{" "}
                                     {idFileSelected + 1}
                                 </h3>
-                                {fileSrcSelected.includes(".jpg") ? (
+                                {fileSrcSelected.toLowerCase().includes(".jpg") ? (
                                     <Link
                                         className="flex flex-1 items-center justify-center"
                                         href={fileSrcSelected}
@@ -402,7 +403,7 @@ const ImagesGroup = ({
                                             blurDataURL={fileSrcSelected}
                                         />
                                     </Link>
-                                ) : fileSrcSelected.includes(".stl")?(
+                                ): fileSrcSelected.toLowerCase().includes(".stl") ? (
                                     <div className="flex flex-1 items-center justify-center">
                                         <Image
                                         src="/assets/stl.png"
@@ -419,7 +420,7 @@ const ImagesGroup = ({
                                     />
                                     </div>
                                     
-                                ):fileSrcSelected.includes(".ply")?(
+                                ): fileSrcSelected.toLowerCase().includes(".ply") ? (
                                     <div className="flex flex-1 items-center justify-center">
                                         <Image
                                         src="/assets/PLYIcono.png"
@@ -435,7 +436,7 @@ const ImagesGroup = ({
                                         blurDataURL={fileSrcSelected}
                                     />
                                     </div>
-                                    ):fileSrcSelected.includes(".pdf")?(
+                                    ): fileSrcSelected.toLowerCase().includes(".pdf") ? (
                                         <div className="flex flex-1 items-center justify-center">
                                             <Image
                                             src="/assets/icons/PDF.svg"
@@ -566,6 +567,7 @@ const ImagesGroup = ({
                             <div className="my-4 flex items-center justify-center">
                                 <InputFileUpload
                                     fileName={fileName}
+                                    multiple={true}
                                     handleFileChange={handleFileChange}
                                     fileTypes=".jpg, .jpeg, .png, .pdf, .stl"
                                 />

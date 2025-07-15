@@ -189,14 +189,23 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
     const handleRemoveImage = (indexToRemove: number) => {
         setPreviewImages((prevPreviews) => {
-            const updatedPreviews = prevPreviews.filter(
-                (_, index) => index !== indexToRemove,
-            );
-            URL.revokeObjectURL(prevPreviews[indexToRemove].url);
-            return updatedPreviews;
+            const fileToRemove = prevPreviews[indexToRemove];
+            if (fileToRemove?.url) {
+                URL.revokeObjectURL(fileToRemove.url);
+            }
+
+            return prevPreviews.filter((_, index) => index !== indexToRemove);
         });
-        resetFileInput();
+
+        setFiles((prevFiles) => prevFiles.filter((_, index) => index !== indexToRemove));
+
+        setFileName((prev) => {
+            const updated = files.filter((_, index) => index !== indexToRemove);
+            return updated.length > 0 ? updated.map((file) => file.name).join(", ") : "Subir Archivo";
+        });
     };
+
+
 
     const openModal = () => {
         setIsModalOpen(true);
