@@ -990,6 +990,13 @@ function StepByStep({
                 <div>
                   <span className="text-company-orange">Email:</span> {data?.email}
                 </div>
+                <div>
+                  <span className="text-company-orange">Fecha de gestión:</span>{" "}
+                  {oldData?.recObservationComment?.timestamp
+                    ? moment(oldData.recObservationComment.timestamp).format("DD/MM/YYYY HH:mm")
+                    : "No disponible"}
+                </div>
+
               </div>
 
 
