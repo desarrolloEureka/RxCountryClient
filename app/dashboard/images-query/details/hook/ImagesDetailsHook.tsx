@@ -143,7 +143,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         }
         
     };
-
+    
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
 
@@ -208,10 +208,12 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
 
 
     const openModal = () => {
+        resetUploadState();
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
+        resetUploadState();
         setIsModalOpen(false);
     };
 
@@ -241,10 +243,19 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             saveFile(typeFile).then(() => {
                 setTypeFileToUpLoad("");
                 setSentToArea("");
+                resetUploadState(); 
+                closeModal();
             }),
         );
     };
-
+    const resetUploadState = () => {
+        setPreviewImages([]);
+        setFiles([]);
+        setTypeFileToUpLoad("");
+        setSentToArea("");
+        // cualquier otro estado relacionado al modal
+    };
+    
     // const downloadImagen = async (urlFile: string) => {
     //     //console.log("URL del archivo a descargar:", urlFile);
 
@@ -434,7 +445,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         Swal.fire({
             title:
                 previewImages.length > 0
-                    ? "¿Desea subir este archivo?"
+                    ? "¿Desea cargar estas imágenes?"
                     : "¿Desea eliminar este archivo?",
             // text: "Después no podrá recuperar la información.",
             icon: "warning",
