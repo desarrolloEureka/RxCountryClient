@@ -11,6 +11,7 @@ import { LuFilePlus2 } from "react-icons/lu";
 import { RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
 import SelectComponent from "../SelectComponent";
 import InputFileUpload from "../UpLoadButton";
+import moment from "moment";
 
 type Props = {
     orderAndPatientData: any;
@@ -329,35 +330,38 @@ const ImagesGroup = ({
             </div>
             <div className="flex flex-col space-y-4 w-full p-4 lg:p-12">
                 <h2 className="text-company-orange text-sm lg:text-xl">
-                    {orderAndPatientData &&
-                    (
+                    {orderAndPatientData && (
                         <>
-                            {`Orden #${orderAndPatientData?.uid}`}
+                        <h2 className="text-company-orange text-sm lg:text-xl">
+                            {`Orden #${orderAndPatientData.uid}`}
                             <br />
-                            {`${orderAndPatientData?.name} ${orderAndPatientData?.lastName}`}
+                            {`Paciente: ${orderAndPatientData.name} ${orderAndPatientData.lastName}`}
+                        </h2>
+
+                        <p>
+                            <span className="text-company-orange">Tel:</span>{" "}
+                            +{orderAndPatientData.phone?.substring(0, 2)}{" "}
+                            {orderAndPatientData.phone?.substring(2)}
+                        </p>
+
+                        <p>
+                            <span className="text-company-orange">Email:</span>{" "}
+                            {orderAndPatientData.email}
+                        </p>
+
+                        <p>
+                            <span className="text-company-orange">Edad:</span>{" "}
+                            {orderAndPatientData.age}
+                        </p>
+                        <p>
+                        <span className="text-company-orange">Fecha de gestión:</span>{" "}
+                        {orderAndPatientData?.recObservationComment?.timestamp
+                            ? moment(orderAndPatientData.recObservationComment.timestamp).format("DD/MM/YYYY HH:mm")
+                            : "No disponible"}
+                        </p>
+
                         </>
-                    )
-                        }
-                         {/*
-
-                         `Orden #${orderAndPatientData?.uid} / Nombre: ${
-                            orderAndPatientData?.name
-                        } ${
-                            orderAndPatientData?.lastName
-                        }
-                        `
-                    - Tel: +${orderAndPatientData?.phone.substring(
-                                0,
-                                2,
-                            )} ${orderAndPatientData?.phone.substring(
-                                2,
-                            )} - Email: ${orderAndPatientData?.email} - Edad: ${
-                                orderAndPatientData?.age
-                            }
-
-                    /// si se solicitan de nuevo agregar antes de ´}
-
-                    */}
+                    )}                   
                 </h2>
                
                 {orderAndPatientData?.orderImagesUrl && orderAndPatientData?.orderImagesUrl.length > 0 ? (
