@@ -22,4 +22,6 @@ export const dataPatientObject = {
     timestamp: "",
     isActive: true,
     isDeleted: false,
+    autoEmail: true,
+    autoProfessional: true,
 } as DataPatientObject;

@@ -3,6 +3,8 @@ import { dataAllOptions } from "@/app/data/documentsData";
 import { dataPatientObject } from "@/app/data/patientData";
 import useAuth from "@/app/firebase/auth";
 import {
+    checkIfEmailExists,
+    checkIfUserProfessionalExists,
     getAllAreasOptions,
     getAllCampusOptions,
     getAllDocumentsFb,
@@ -197,8 +199,35 @@ const NewOrderHook = (props?: Props) => {
     };
 
 
-    const validateid = async (id:any) => { 
+    const validateid = async (id:any) => {
         const exists = await checkIfUserExists(id);
+        console.log("validateid", exists);
+        if (exists){
+        return true;
+        }
+        return false;
+    }
+
+    const validateidProfessional = async (id:any) => {
+        const exists = await checkIfUserProfessionalExists(id);
+        console.log("validateidProfessional", exists);
+        if (exists){
+        return true;
+        }
+        return false;
+    }
+
+    const validateidPatient = async (id:any) => { 
+        const exists = await checkIfUserExists(id);
+        console.log("validateidPatient", exists);
+        if (exists){
+        return true;
+        }
+        return false;
+    }
+
+    const validateEmail = async (email:any) => {
+        const exists = await checkIfEmailExists(email);
         console.log("validateid", exists);
         if (exists){
         return true;
@@ -547,6 +576,52 @@ const patientVal =
         allCampusData && setAllCampus(allCampusData);
     }, []);
 
+
+    const autoEmail = async () => {
+       let patientIsActive = !patientData.autoEmail;
+       console.log("patientIsActive", patientIsActive);
+       if (patientData.id !== "") {
+            if (!patientIsActive) {
+            setPatientData({ ...patientData, ["autoEmail"]: patientIsActive, ["email"]: patientData.id + "@rxcountry.com", ["confirmEmail"]: patientData.id + "@rxcountry.com" });
+            
+        }
+        else {
+            setPatientData({ ...patientData,["autoEmail"]: patientIsActive , ["email"]: "", ["confirmEmail"]: "" });
+        }
+       }
+       
+    }
+
+    const autoProfessional = async () => {
+        let professionalIsActive = !patientData.autoProfessional;
+        console.log("professionalIsActive", professionalIsActive);
+
+        if (patientData.id !== "") {
+            if (!professionalIsActive) {
+            let newId = patientData.id.startsWith("p")
+                ? patientData.id
+                : "p" + patientData.id;
+
+            setPatientData({
+                ...patientData,
+                autoProfessional: professionalIsActive,
+                id: newId,
+            });
+            } else {
+            let newId = patientData.id.startsWith("p")
+                ? patientData.id.substring(1)
+                : patientData.id;
+
+            setPatientData({
+                ...patientData,
+                autoProfessional: professionalIsActive,
+                id: newId,
+            });
+            }
+        }
+    };
+
+
     const getAllEmails = useCallback(async () => {
         const professionalsDocs = await getAllDocumentsFb("professionals");
         const functionaryDocs = await getAllDocumentsFb("functionary");
@@ -680,7 +755,12 @@ const patientVal =
         handleAreaList,
         areaList,
         user,
-        validateid,
+        //validateid,
+        validateidProfessional,
+        validateidPatient,
+        validateEmail,
+        autoEmail,
+        autoProfessional,
     };
 };
 

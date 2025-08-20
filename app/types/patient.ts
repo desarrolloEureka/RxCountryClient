@@ -20,6 +20,8 @@ export type DataPatientObject = {
     timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
+    autoEmail?: boolean;
+    autoProfessional?: boolean;
 };
 
 export interface Patient {

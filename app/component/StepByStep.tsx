@@ -94,6 +94,8 @@ interface Props {
   handleFileChangeSTL?: (e: any) => void;
   flag: boolean;
   professionals: any[]; 
+  autoEmail: () => void;
+  autoProfessional: () => void;
 }
 
 function StepByStep({
@@ -146,6 +148,8 @@ function StepByStep({
   modelType,
   handleFileChangeSTL,
   flag,
+  autoEmail,
+  autoProfessional,
   professionals = [],
 }: Props) {
 
@@ -515,16 +519,23 @@ function StepByStep({
   console.log('data', data);
   console.log('isEdit stepbystep:', isEdit);
   
+  
+  const visibleEmail = !data?.autoEmail
+    ? (String(data?.email ?? '').split('@')[0] || String(data?.id ?? ''))
+    : String(data?.email ?? '');
+
   return (
     <div>
       {/* Datos Paciente */}
+
+      
       {formStep === 0 && (
         <div className='mx-4 sm:mx-16 bg-black bg-opacity-50 rounded-2xl p-8 flex flex-col space-y-8'>
           <h3 className='text-xl sm:text-2xl text-company-orange'>
             Datos del Paciente
           </h3>
           <div className='grid grid-cols-1 lg:grid-cols-12 gap-4'>
-            <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
+            <div className='col-span-1 lg:col-span-3 relative flex flex-col space-y-2'>
               <label htmlFor='idType' className='text-white'>
                 Tipo de Documento&nbsp;
                 <span className='text-blue-500'>*</span>
@@ -558,6 +569,29 @@ function StepByStep({
                 <BsFillPersonVcardFill />
               </span>
             </div>
+            <div className={`col-span-1 lg:col-span-1 flex flex-col space-y-2 justify-end`}>
+              <label
+                htmlFor='autoProfessional'
+                className={`text-white ${isEdit ? 'invisible' : ''}`}
+              >
+                ¿Profesional?
+              </label>
+
+              <button
+                type='button'
+                id='autoProfessional'
+                onClick={!isEdit ? autoProfessional : undefined}
+                className={`h-10 w-full rounded-xl border px-4 transition-all duration-300 text-sm font-semibold
+                  ${data?.autoProfessional ? 'bg-company-blue text-white border-company-blue' : 'bg-transparent text-white border-white'}
+                  ${isEdit ? 'invisible pointer-events-none' : ''}  // 👈 oculta pero mantiene el ancho de la columna
+                `}
+                aria-hidden={isEdit}
+                tabIndex={isEdit ? -1 : 0}
+              >
+                {data?.autoProfessional ? 'No' : 'Si'}
+              </button>
+            </div>
+
             <div
               className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'
               // ref={wrapperRef}
@@ -657,8 +691,32 @@ function StepByStep({
               </span>
             </div>
             <div
+              className={`col-span-1 ${oldData ? 'lg:col-span-2' : 'lg:col-span-1'}
+              ${isEdit ? 'hidden' : 'flex'}  /* 👈 oculto en edición */
+              flex-col space-y-2 justify-end`}
+            >
+              <label htmlFor='autoEmail' className='text-white'>
+                ¿Correo?
+              </label>
+              <button
+                type='button'
+                id='autoEmail'
+                className={`h-10 w-full rounded-xl border px-4 transition-all duration-300 text-sm font-semibold ${
+                  data?.autoEmail
+                    ? 'bg-company-blue text-white border-company-blue'
+                    : 'bg-transparent text-white border-white'
+                }`}
+                onClick={() =>
+                  autoEmail()
+                }
+              >
+                {data?.autoEmail ? 'Si' : 'No'}
+              </button>
+            </div>
+
+            <div
               className={`col-span-1 ${
-                oldData ? 'lg:col-span-4' : 'lg:col-span-3'
+                oldData ? 'lg:col-span-4' : 'lg:col-span-4'
               } relative flex flex-col space-y-2`}
             >
               <label htmlFor='email' className='text-white'>
@@ -666,32 +724,41 @@ function StepByStep({
                 <span className='text-blue-500'>*</span>
               </label>
               <input
-                disabled={
-                  (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && isEdit) || 
-                  (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                  userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk')
-                }                
-                value={data && data?.email}
-                type='email'
-                name='email'
-                required
-                id='email'
-                className={`rounded-xl h-10 bg-transparent border ${
-                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                  userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
-                    ? 'border-gray-600 text-gray-400'
-                    : 'border-company-blue text-white'
-                } px-10`}                
-                onChange={(e) => {
-                  const email = e.target.value.toLowerCase();
-                  setSelectedOptions((prev: any) => ({
-                    ...prev,
-                    email,
-                  }));
-                  data.email = email; // solo si necesitas ver reflejado el cambio visualmente
-                }}
+                  disabled={
+                    (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && isEdit) || 
+                    (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk') ||
+                    data?.isActive === false
+                  }                
+                  type={!data?.autoEmail ? 'text' : 'email'}
+                  value={visibleEmail}
+                  name='email'
+                  required
+                  id='email'
+                  className={`rounded-xl h-10 bg-transparent border ${
+                    userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
+                      ? 'border-gray-600 text-gray-400'
+                      : 'border-company-blue text-white'
+                  } px-10`}                
+                  onChange={(e) => {
+                    const typed = e.target.value.trim().toLowerCase();
 
-              />
+                    // 🔒 MODELO que se guarda por debajo:
+                    // - autoEmail=false → guarda local@rxcountry.com
+                    // - autoEmail=true  → guarda exactamente lo tecleado (no agregues dominio)
+                    const email = !data?.autoEmail
+                      ? (typed ? `${typed}@rxcountry.com` : '')
+                      : typed;
+
+                    setSelectedOptions?.((prev: any) => ({ ...prev, email }));
+                    // No mutes data.email directo; usa tu handler
+                    changeHandler({
+                      target: { name: 'email', value: email }
+                    } as React.ChangeEvent<HTMLInputElement>);
+                  }}
+                />
+
               <span
                 className={`absolute left-2 bottom-2 ${
                   oldData ||
@@ -706,7 +773,7 @@ function StepByStep({
             </div>
             {!oldData && (
               <div
-                className={`col-span-1 lg:col-span-3 relative ${
+                className={`col-span-1 lg:col-span-4 relative ${
                   oldData ? 'hidden' : 'flex'
                 } flex-col space-y-2`}
               >
@@ -715,47 +782,44 @@ function StepByStep({
                   <span className='text-blue-500'>*</span>
                 </label>
                 <input
-                  onPaste={(e) => {
-                    alert('No puedes pegar');
-                    e.preventDefault();
-                  }}
+                  onPaste={(e) => { alert('No puedes pegar'); e.preventDefault(); }}
                   disabled={
-                    userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
+                    (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk') ||
+                    data?.isActive === false
                   }
-                  value={data && data?.confirmEmail}
-                  type='email'
+                  type={!data?.autoEmail ? 'text' : 'email'}
+                  value={
+                    !data?.autoEmail
+                      ? (String(data?.confirmEmail ?? '').split('@')[0] || String(data?.id ?? ''))
+                      : String(data?.confirmEmail ?? '')
+                  }
                   name='confirmEmail'
                   required
-                  id='email'
+                  id='confirmEmail'
                   className={`rounded-xl h-10 bg-transparent ${
-                    data?.confirmEmail === data?.email
-                      ? 'border-company-blue border'
-                      : 'border-red-600 border-2'
+                    data?.confirmEmail === data?.email ? 'border-company-blue border' : 'border-red-600 border-2'
                   } text-white px-10`}
                   onChange={(e) => {
-                    const confirmEmail = e.target.value.toLowerCase();
-                    setSelectedOptions((prev: any) => ({
-                      ...prev,
-                      confirmEmail,
-                    }));
+                    const typed = e.target.value.trim().toLowerCase();
+                    const confirmEmail = !data?.autoEmail
+                      ? (typed ? `${typed}@rxcountry.com` : '')
+                      : typed;
+
+                    setSelectedOptions?.((prev: any) => ({ ...prev, confirmEmail }));
                     changeHandler({
                       target: { name: 'confirmEmail', value: confirmEmail }
                     } as React.ChangeEvent<HTMLInputElement>);
-
                   }}
-
                 />
+
                 <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
                   <IoMail />
                 </span>
               </div>
             )}
-            <div
-              className={`col-span-1 ${
-                oldData ? 'lg:col-span-4' : 'lg:col-span-3'
-              } relative flex flex-col space-y-2`}
-            >
+            <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
+
               <label htmlFor='phone' className='text-white'>
                 Celular&nbsp;
                 {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
@@ -848,7 +912,7 @@ function StepByStep({
                 <MdOutlineDateRange />
               </span>
             </div>
-            <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
+            <div className='col-span-1 lg:col-span-12 relative flex flex-col space-y-2'>
               <label htmlFor='address' className='text-white'>
                 Dirección&nbsp;(opcional)
               </label>

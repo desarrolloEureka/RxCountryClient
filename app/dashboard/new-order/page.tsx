@@ -63,8 +63,13 @@ const NewOrderPage = () => {
         handleAreaList,
         areaList,
         user,
-        validateid,
+        //validateid,
+        validateidProfessional,
+        validateidPatient,
+        validateEmail,
         professionals,
+        autoEmail,  
+        autoProfessional,
     } = NewOrderHook();
     //console.log("patienData: ",patientData);
   if (!user) {
@@ -219,6 +224,8 @@ const NewOrderPage = () => {
             handleCheckOrderIncomplete={() => {}}
             selectChangeHandlerDiagnoses={() => {}}
             selectChangeHandlerDiagnostician={() => {}}
+            autoEmail={autoEmail}
+            autoProfessional={autoProfessional}
           />
 
           {formStep < 6 && (
@@ -271,13 +278,32 @@ const NewOrderPage = () => {
                   onClick={async() => {
                     //console.log("formstep: ",formStep);
                     if(formStep == 0){
-                      const existe = await validateid(patientData.id);
+                      const existePatient = await validateidPatient(patientData.id);
+                      const existeProfessional = await validateidProfessional(patientData.id);
+                      const existeEmail = await validateEmail(patientData.email);
+                      const existe = existePatient || existeProfessional;
+                      
                       //console.log("isedit: ",isEdit, existe);
+                      if(!isVerificated && existeEmail ){
+                        //console.log("si existe y existe email");
+                        Swal.fire({
+                          position: "center",
+                          title: `El Correo ya existe`,
+                          text: "Por favor digite otro correo",
+                          allowOutsideClick: false,
+                          background: "#404040",
+                          color: "#e9a225",
+                          
+                        });
+                        setFormStep(0);
+                        return;
+                      }
+
                       if(existe && !isVerificated){
                         //console.log("si existe");
                         Swal.fire({
                           position: "center",
-                          title: `El ID ya existe`,
+                          title: `El Documento ya existe`,
                           text: "Por favor seleccionelo",
                           allowOutsideClick: false,
                           background: "#404040",
