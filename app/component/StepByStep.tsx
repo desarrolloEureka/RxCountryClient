@@ -94,8 +94,8 @@ interface Props {
   handleFileChangeSTL?: (e: any) => void;
   flag: boolean;
   professionals: any[]; 
-  autoEmail: () => void;
-  autoProfessional: () => void;
+  autoEmail?: () => void;
+  autoProfessional?: () => void;
 }
 
 function StepByStep({
@@ -148,8 +148,8 @@ function StepByStep({
   modelType,
   handleFileChangeSTL,
   flag,
-  autoEmail,
-  autoProfessional,
+  autoEmail = () => {},          
+  autoProfessional = () => {},   
   professionals = [],
 }: Props) {
 
