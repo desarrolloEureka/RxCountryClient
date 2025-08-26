@@ -30,6 +30,11 @@ const SingIn = () => {
         handleSignIn,
         selectChangeHandlerCampus,
         selectChangeHandlerArea,
+        hasEmail,
+        toggleHasEmail,
+        doc,
+        handleDocChange,
+
     } = SignInHook();
 
     if (user || user === undefined) {
@@ -116,7 +121,112 @@ const SingIn = () => {
                             </div>
                         </div>
 
-                        <div className="relative flex flex-col w-full sm:px-16 space-y-2">
+                        {userLogin === "Paciente" && (
+                            <div className="w-full sm:px-16 flex items-center gap-2">
+                                <h3 className="text-base font-normal text-company-orange m-0">
+                                ¿Tiene cuenta de Correo?
+                                </h3>
+
+                                <label className="inline-flex items-center cursor-pointer select-none">
+                                <input
+                                    id="hasEmailSwitch"
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    checked={hasEmail}
+                                    onChange={(e) => toggleHasEmail(e.target.checked)}
+                                />
+                                <div
+                                    className="
+                                    peer h-6 w-11 rounded-full bg-gray-500 transition-colors relative
+                                    peer-checked:bg-company-blue focus:outline-none
+                                    focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-company-blue
+                                    "
+                                    role="switch"
+                                    aria-checked={hasEmail}
+                                    aria-labelledby="hasEmailText"
+                                >
+                                    <span
+                                    className="
+                                        absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow
+                                        transition-transform peer-checked:translate-x-5
+                                    "
+                                    />
+                                </div>
+                                <span id="hasEmailText" className="ml-2 text-white text-sm w-10">
+                                    {hasEmail ? "Sí" : "No"}
+                                </span>
+                                </label>
+                            </div>
+                            )}
+
+                        {userLogin === "Paciente" && !hasEmail ? (
+                            // 👉 modo SIN correo: mostramos Documento (texto) y el hook arma email/password por debajo
+                            <div className="relative flex flex-col w-full sm:px-16 space-y-2">
+                                <label htmlFor="identity" className="text-white">Documento</label>
+                                <input
+                                value={doc}
+                                id="identity"
+                                name="doc"
+                                type="text"
+                                required
+                                className="rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                onChange={handleDocChange}
+                                placeholder="Escribe tu documento"
+                                autoComplete="username"
+                        
+                                />
+                                <IoMail className="sm:ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                            </div>
+                            ) : (
+                            <div className="relative flex flex-col w-full sm:px-16 space-y-2">
+                                <label htmlFor="email" className="text-white">Correo</label>
+                                <input
+                                value={email}
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                className="w-full rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                onChange={changeHandler}
+                                autoComplete="username"
+                                />
+                                <IoMail className="sm:ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
+                            </div>
+                        )}
+
+                        {!(userLogin === "Paciente" && !hasEmail) && (
+                            <div className="relative flex flex-col w-full sm:px-16 space-y-2">
+                                <label htmlFor="password" className="text-white">Contraseña</label>
+                                <input
+                                value={password}
+                                id="password"
+                                name="password"
+                                type={showPassword ? "text" : "password"}
+                                required
+                                className="w-full rounded-xl h-10 bg-transparent border-company-blue border text-white pl-10"
+                                onChange={changeHandler}
+                                autoComplete="current-password"
+                                />
+                                <ImKey className="sm:ml-16 absolute left-2 bottom-4 text-company-blue text-[1.5rem]" />
+                                <Link href={""} onClick={() => setShowPassword(!showPassword)}>
+                                <span className="absolute right-2 bottom-4 text-company-blue sm:mr-16 text-[1.5rem]">
+                                    {showPassword ? <IoEyeOff /> : <IoEye />}
+                                </span>
+                                </Link>
+                            </div>
+                            )}
+
+                            {!(userLogin === "Paciente" && !hasEmail) && (
+                            <div className="flex justify-end items-center w-full px-4 sm:px-16">
+                                <Link href={"/forgot-password"} className="text-white underline">
+                                Olvide mi contraseña
+                                </Link>
+                            </div>
+                        )}
+
+
+
+                        {/* <div className="relative flex flex-col w-full sm:px-16 space-y-2">
                             <label htmlFor="email" className="text-white">
                                 Correo
                             </label>
@@ -130,9 +240,9 @@ const SingIn = () => {
                                 onChange={changeHandler}
                             />
                             <IoMail className="sm:ml-16 absolute left-2 bottom-2 text-company-blue text-[1.5rem]" />
-                        </div>
+                        </div> */}
 
-                        <div className="relative flex flex-col w-full sm:px-16 space-y-2">
+                        {/* <div className="relative flex flex-col w-full sm:px-16 space-y-2">
                             <label htmlFor="password" className="text-white">
                                 Contraseña
                             </label>
@@ -156,7 +266,7 @@ const SingIn = () => {
                                     {showPassword ? <IoEyeOff /> : <IoEye />}
                                 </span>
                             </Link>
-                        </div>
+                        </div> */}
 
                         {userLogin === "Funcionario" && (
                             <>
@@ -239,7 +349,7 @@ const SingIn = () => {
                             </>
                         )}
 
-                        {(
+                        {/* {(
                             <div className="flex justify-end items-center w-full px-4 sm:px-16">
                                 <Link
                                     href={"/forgot-password"}
@@ -248,7 +358,7 @@ const SingIn = () => {
                                     Olvide mi contraseña
                                 </Link>
                             </div>
-                        )}
+                        )} */}
 
                         {error && (
                             <div

@@ -34,7 +34,7 @@ export const plantillaCierreOrden = (data: any): string => {
                                     Si tienes alguna pregunta, no dudes en
                                     <a href="mailto:${data.contactEmail}" style="color: #2563eb; text-decoration: none;">contactarnos</a>.
                                 </p>
-                                <p style="margin-top: 0.5rem;">© 2024 Rx Country. Todos los derechos reservados.</p>
+                                <p style="margin-top: 0.5rem;">© 2025 Rx Country. Todos los derechos reservados.</p>
                             </div>
                         </div>
                     </body>

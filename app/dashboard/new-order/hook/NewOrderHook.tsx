@@ -179,6 +179,9 @@ const NewOrderHook = (props?: Props) => {
         endDate: null,
     });
 
+    const [emailLocked, setEmailLocked] = useState(false);
+    const lockEmail = (locked: boolean) => setEmailLocked(locked);
+
     const [professionals, setProfessionals] = useState<any[]>([]);
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -190,7 +193,7 @@ const NewOrderHook = (props?: Props) => {
         setPatientData({ ...patientData, [e.target.name]: value });
         if (value.length > 0) {
             const filteredPatients = allPatients?.filter(
-                (patient: DataPatientObject) => patient.id.includes(value),
+                (patient: DataPatientObject) => String(patient?.id ?? '').includes(String(value ?? '')),
             );
             setSuggestions(filteredPatients);
         } else {
@@ -592,34 +595,34 @@ const patientVal =
        
     }
 
-    const autoProfessional = async () => {
-        let professionalIsActive = !patientData.autoProfessional;
-        console.log("professionalIsActive", professionalIsActive);
+    // const setProfessionalId = (isPro: boolean) => {
+    //     setPatientData(prev => {
+    //         const baseId = String(prev.id || '').trim().replace(/^p/i, ''); // quita P inicial
+    //         const newId  = isPro ? `p${baseId}` : baseId;                    // pone P sólo si toca
+    //         return { ...prev, id: newId, autoProfessional: isPro };
+    //     });
+    // };
+   
+    const RX_DOMAIN = '@rxcountry.com';
+    const setProfessionalId = (forceProfessional: boolean) => {
+        setPatientData(prev => {
+            const baseId = String(prev.id ?? '').trim().replace(/^p/i, '');
+            const newId  = forceProfessional ? `p${baseId}` : baseId;
 
-        if (patientData.id !== "") {
-            if (!professionalIsActive) {
-            let newId = patientData.id.startsWith("p")
-                ? patientData.id
-                : "p" + patientData.id;
+            const nextEmail = prev.autoEmail
+            ? prev.email
+            : (newId ? `${newId}${RX_DOMAIN}` : '');
 
-            setPatientData({
-                ...patientData,
-                autoProfessional: professionalIsActive,
-                id: newId,
-            });
-            } else {
-            let newId = patientData.id.startsWith("p")
-                ? patientData.id.substring(1)
-                : patientData.id;
-
-            setPatientData({
-                ...patientData,
-                autoProfessional: professionalIsActive,
-                id: newId,
-            });
-            }
-        }
+            return {
+            ...prev,
+            autoProfessional: forceProfessional,
+            id: newId,
+            email: nextEmail,
+            confirmEmail: nextEmail,
+            };
+        });
     };
+
 
 
     const getAllEmails = useCallback(async () => {
@@ -713,6 +716,11 @@ const patientVal =
         }
     }, [router, user, userData]);
 
+    useEffect(() => {
+        if (patientData.autoEmail) {
+            setEmailLocked(false);
+        }
+    }, [patientData.autoEmail]);
     return {
         professionals,
         emailFound,
@@ -760,7 +768,11 @@ const patientVal =
         validateidPatient,
         validateEmail,
         autoEmail,
-        autoProfessional,
+        setProfessionalId,
+        emailLocked,
+        setEmailLocked,
+        lockEmail,
+
     };
 };
 

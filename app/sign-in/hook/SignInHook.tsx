@@ -48,6 +48,32 @@ const SignUpHook = () => {
     const [currentUser, setCurrentUser] = useState<any>();
 
     // Envía la información del formulario
+    // ¿Tiene correo? y documento visible cuando NO tiene correo
+    const [hasEmail, setHasEmail] = useState(true);
+    const [doc, setDoc] = useState("");
+
+    const toggleHasEmail = (v: boolean) => setHasEmail(v);
+    const handleDocChange = (e: React.ChangeEvent<HTMLInputElement>) => setDoc(e.target.value);
+
+    const setCurrentUserByEmail = (mail: string) => {
+        if (!mail) { setCurrentUser(undefined); return; }
+
+        const lc = mail.toLowerCase();
+
+        const found =
+            allFunctionaries?.find((u: any) => String(u.email).toLowerCase() === lc) ||
+            allPatients?.find((u: any) => String(u.email).toLowerCase() === lc);
+
+        if (found) {
+            setCurrentUser(found);
+            setSelectedArea(found?.area || "");
+            setSelectedCampus(found?.campus || "");
+        } else {
+            setCurrentUser(undefined);
+        }
+    };
+    
+
 
     const handleSignIn = async () => {
         // Verifica que las variables estén llenas
@@ -200,6 +226,27 @@ const SignUpHook = () => {
     }, []);
 
     useEffect(() => {
+    // Solo para PACIENTE sin correo
+        if (userLogin === "Paciente" && !hasEmail) {
+            const rawDoc = (doc ?? "").trim(); // ← tal cual lo digitó (puede tener letras)
+            setData(prev => ({
+            ...prev,
+            email: rawDoc ? `${rawDoc}@rxcountry.com` : "",
+            password: rawDoc, // contraseña = documento exacto
+            }));
+            setCurrentUserByEmail(rawDoc ? `${rawDoc}@rxcountry.com` : "");
+        }
+    }, [userLogin, hasEmail, doc]);
+
+    useEffect(() => {
+        if (userLogin !== "Paciente") {
+            setHasEmail(true);
+            setDoc("");
+        }
+    }, [userLogin]);
+
+
+    useEffect(() => {
         getCampus();
         getRoles();
         getProfessionals();
@@ -234,6 +281,11 @@ const SignUpHook = () => {
         setIsPatient: setUserLogin,
         selectChangeHandlerCampus,
         selectChangeHandlerArea,
+        hasEmail,
+        toggleHasEmail,
+        doc,
+        handleDocChange,
+        
     };
 };
 

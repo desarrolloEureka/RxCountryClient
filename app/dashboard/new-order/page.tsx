@@ -12,7 +12,9 @@ import { MdClose } from 'react-icons/md';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import NewOrderHook from './hook/NewOrderHook';
 import Swal from "sweetalert2";
+import { checkIfUserProfessionalExists } from '@/app/firebase/documents';
 
+// ...
 const NewOrderPage = () => {
 
     const helpMessages: { [key: number]: string } = {
@@ -69,7 +71,11 @@ const NewOrderPage = () => {
         validateEmail,
         professionals,
         autoEmail,  
-        autoProfessional,
+        setProfessionalId,
+        emailLocked,
+        setEmailLocked,
+        lockEmail,
+        // autoProfessional,
     } = NewOrderHook();
     //console.log("patienData: ",patientData);
   if (!user) {
@@ -225,7 +231,8 @@ const NewOrderPage = () => {
             selectChangeHandlerDiagnoses={() => {}}
             selectChangeHandlerDiagnostician={() => {}}
             autoEmail={autoEmail}
-            autoProfessional={autoProfessional}
+            emailLocked={emailLocked}
+            // autoProfessional={autoProfessional}
           />
 
           {formStep < 6 && (
@@ -248,31 +255,6 @@ const NewOrderPage = () => {
             >
               <div className='text-white invisible'>Paso {formStep}/5</div>
               <div className='flex items-center'>
-                {/* {formStep > 0 && (
-                                    <>
-                                        <div
-                                            onClick={() => {
-                                                setFormStep(
-                                                    (prevStep: number) =>
-                                                        prevStep - 1,
-                                                );
-                                            }}
-                                            className="hidden sm:flex items-center cursor-pointer text-company-blue"
-                                        >
-                                            <BiChevronLeft size={32} />
-                                            <span>Atrás</span>
-                                        </div>
-                                        <div
-                                            onClick={() => {
-                                                setFormStep(0);
-                                            }}
-                                            className="flex sm:hidden items-center cursor-pointer text-company-blue"
-                                        >
-                                            <BiChevronLeft size={32} />
-                                            <span>Atrás</span>
-                                        </div>
-                                    </>
-                                )} */}
                 <button
                   type={patientVal ? 'button' : 'submit'}
                   onClick={async() => {
@@ -297,23 +279,45 @@ const NewOrderPage = () => {
                         });
                         setFormStep(0);
                         return;
-                      }
+                      }                      
+                      if (existe && !isVerificated) {
+                        const baseId = String(patientData.id || '').trim().replace(/^p/i, '');
+                        const proId  = `p${baseId}`;
 
-                      if(existe && !isVerificated){
-                        //console.log("si existe");
-                        Swal.fire({
+                        const yaEsProfesional = await checkIfUserProfessionalExists(proId);
+
+                        const { isConfirmed, isDenied } = await Swal.fire({
                           position: "center",
-                          title: `El Documento ya existe`,
-                          text: "Por favor seleccionelo",
+                          title: "Este documento ya existe",
+                          html: yaEsProfesional
+                            ? `<p style="margin:6px 0 0; font-weight:600;">Ya está registrado como profesional (${proId}).</p>
+                              <p style="margin:6px 0 0;">¿Deseas usar el formato profesional para el paciente?</p>`
+                            : `<p style="margin:6px 0 0;">¿Desea crear esta cuenta como paciente?</p>`,
+                          showDenyButton: true,
+                          confirmButtonText: "Sí",
+                          denyButtonText: "No",
+                          confirmButtonColor: "#2563eb",
+                          denyButtonColor: "#6b7280",
                           allowOutsideClick: false,
                           background: "#404040",
                           color: "#e9a225",
-                          
                         });
+
+                        if (isConfirmed) {
+                          setProfessionalId(true);   
+                          lockEmail(true);           
+                        } else if (isDenied) {
+                          setProfessionalId(false);  
+                          lockEmail(false);          
+                        }
+
                         setFormStep(0);
                         return;
                       }
-                      }
+
+
+
+                    }
                     if (patientVal) {
                       if (emailFound) {
                         emailFoundAlert();
