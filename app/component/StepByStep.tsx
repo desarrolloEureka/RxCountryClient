@@ -96,7 +96,7 @@ interface Props {
   professionals: any[];
   autoEmail?: () => void;
   autoProfessional?: () => void;
-  emailLocked: boolean;
+  emailLocked?: boolean;
 }
 
 function StepByStep({
@@ -152,7 +152,7 @@ function StepByStep({
   autoEmail = () => {},
   autoProfessional = () => {},
   professionals = [],
-  emailLocked,
+  emailLocked = false,
 }: Props) {
 
 
