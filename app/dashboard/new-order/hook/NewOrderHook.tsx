@@ -97,17 +97,19 @@ const saveAlert = async (callbackFc: () => Promise<void>, router: any) => {
     }
 };
 
-const emailFoundAlert = () => {
-    Swal.fire({
-        icon: "error",
-        title: "Error Email",
-        text: "¡Este correo ya existe!",
-        background: "#404040",
-        color: "#e9a225",
-        confirmButtonColor: "#1f2937",
-        confirmButtonText: "Ok",
-    });
-};
+// const emailFoundAlert = () => {
+//     Swal.fire({
+//         icon: "error",
+//         title: "Error Email",
+//         text: "¡Este correo ya existe!",
+//         background: "#404040",
+//         color: "#e9a225",
+//         confirmButtonColor: "#1f2937",
+//         confirmButtonText: "Ok",
+//     });
+// };
+
+
 
 const incompleteDataAlert = () => {
     Swal.fire({
@@ -653,6 +655,33 @@ const patientVal =
         }
     }, [patientData]);
 
+    const emailFoundAlert = async () => {
+        const doc = String(patientData.id || '').trim();
+
+        await Swal.fire({
+            icon: "error",
+            title: "El correo ya existe",
+            text: "Usaremos un correo automático basado en el documento.",
+            background: "#404040",
+            color: "#e9a225",
+            confirmButtonColor: "#1f2937",
+            confirmButtonText: "Ok",
+        });
+
+        // Precarga email y confirmEmail como <id>@rxcountry.com y fuerza autoEmail=false
+        setPatientData(prev => {
+            const idForEmail = String(prev.id || '').trim(); // respeta si ya viene con 'p'
+            const auto = idForEmail ? `${idForEmail}${RX_DOMAIN}` : '';
+            return {
+            ...prev,
+            autoEmail: false,
+            email: auto,
+            confirmEmail: auto,
+            };
+        });
+        setEmailLocked(true);
+    };
+
     useEffect(() => {
         const fetchProfessionals = async () => {
             try {
@@ -772,6 +801,7 @@ const patientVal =
         emailLocked,
         setEmailLocked,
         lockEmail,
+        setPatientData,
 
     };
 };

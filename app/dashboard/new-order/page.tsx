@@ -75,6 +75,7 @@ const NewOrderPage = () => {
         emailLocked,
         setEmailLocked,
         lockEmail,
+        setPatientData,
         // autoProfessional,
     } = NewOrderHook();
     //console.log("patienData: ",patientData);
@@ -281,6 +282,7 @@ const NewOrderPage = () => {
                         return;
                       }                      
                       if (existe && !isVerificated) {
+                        const RX_DOMAIN = '@rxcountry.com';
                         const baseId = String(patientData.id || '').trim().replace(/^p/i, '');
                         const proId  = `p${baseId}`;
 
@@ -304,23 +306,28 @@ const NewOrderPage = () => {
                         });
 
                         if (isConfirmed) {
-                          setProfessionalId(true);   
-                          lockEmail(true);           
+                          // Fuerza 'p' y precarga correos con dominio
+                          setProfessionalId(true);
+                          setPatientData(prev => ({
+                            ...prev,
+                            autoEmail: false, // para que use documento@rxcountry.com
+                            email: `${proId}${RX_DOMAIN}`,
+                            confirmEmail: `${proId}${RX_DOMAIN}`,
+                          }));
+                          lockEmail(true); // 🔒 bloquea inputs de correo
                         } else if (isDenied) {
-                          setProfessionalId(false);  
-                          lockEmail(false);          
+                          setProfessionalId(false);
+                          lockEmail(false); // 🔓 deja editables
                         }
 
                         setFormStep(0);
                         return;
                       }
 
-
-
                     }
                     if (patientVal) {
                       if (emailFound) {
-                        emailFoundAlert();
+                        await emailFoundAlert();
                         return;
                       }
                       
