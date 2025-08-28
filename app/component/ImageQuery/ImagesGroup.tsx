@@ -553,242 +553,191 @@ const ImagesGroup = ({
                 )}
 
                 {isModalOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50 text-white">
-                        <div className="w-3/4 max-w-3xl mx-auto py-6 rounded-lg shadow-lg bg-[#1d1d1d]">
-                            <div className="flex justify-between items-center border-b border-gray-500 pb-2 px-6">
-                                <h2 className="text-xl font-bold">
-                                    Actualizar Archivos
-                                </h2>
-                                <button
-                                    type="button"
-                                    className="text-white hover:text-blue-400"
-                                    onClick={closeModal}
-                                >
-                                    <RiCloseLine size={32} />
-                                </button>
-                            </div>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        {/* Backdrop */}
+                        <div
+                        className="absolute inset-0 bg-black/60 backdrop-blur-[1px]"
+                        onClick={closeModal}
+                        />
 
-                            <div className="my-4 flex items-center justify-center">
-                                <InputFileUpload
-                                    fileName={fileName}
-                                    multiple={true}
-                                    handleFileChange={handleFileChange}
-                                    fileTypes=".jpg, .jpeg, .png, .pdf, .stl"
-                                />
-                            </div>
+                        {/* Modal: 4 filas (header, uploader, columnas, lista) */}
+                        <div className="relative w-11/12 max-w-3xl rounded-lg shadow-lg bg-[#1d1d1d] text-white max-h-[85vh] grid grid-rows-[auto,auto,auto,1fr] overflow-hidden">
+                        {/* 1) Header */}
+                        <div className="flex justify-between items-center border-b border-gray-500 px-6 py-3">
+                            <h2 className="text-xl font-bold">Actualizar Archivos</h2>
+                            <button
+                            type="button"
+                            className="hover:text-blue-400"
+                            onClick={closeModal}
+                            aria-label="Cerrar"
+                            >
+                            <RiCloseLine size={32} />
+                            </button>
+                        </div>
 
-                            {previewImages.length > 0 && (
-                                <div className="flex flex-col p-8">
-                                    <div className="flex flex-row border-b-2">
-                                        <div className="w-1/3 text-center">
-                                            Miniatura
-                                        </div>
-                                        <div className="w-1/3 text-center">
-                                            Nombre del archivo
-                                        </div>
-                                        <div className="w-1/3 text-center">
-                                            Acciones
-                                        </div>
-                                    </div>
-                                    {previewImages.map(
-                                        (file: PreviewFile, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex flex-row items-center justify-center py-2"
-                                            >
-                                                <div className="flex flex-col items-center justify-center w-1/3">
-                                                    <Image
-                                                        src={
-                                                            file.type?.includes(
-                                                                "pdf",
-                                                            )
-                                                                ? "/assets/icons/PDF.svg"
-                                                                : file.name?.includes(
-                                                                      "stl",
-                                                                  )
-                                                                ? "/assets/stl.png"
-                                                                : file.url
-                                                        }
-                                                        width={0}
-                                                        height={0}
-                                                        sizes="200px"
-                                                        style={{
-                                                            width: file.type?.includes(
-                                                                "pdf",
-                                                            )
-                                                                ? "30%"
-                                                                : file.name?.includes(
-                                                                      "stl",
-                                                                  )
-                                                                ? "50%"
-                                                                : "50%",
-                                                            height: "auto",
-                                                        }}
-                                                        alt={file.name}
-                                                        placeholder="blur"
-                                                        blurDataURL={
-                                                            typeFile === "pdf"
-                                                                ? "/assets/icons/PDF.svg"
-                                                                : typeFile ===
-                                                                  "pdf"
-                                                                ? "/assets/stl.png"
-                                                                : file.url
-                                                        }
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col items-center justify-center w-1/3 space-y-4">
-                                                    <span>{file.name}</span>
-                                                    {/* Modelos y Despacho respectivamente */}
-                                                    {(userRol?.uid ===
-                                                        "g9xGywTJG7WSJ5o1bTsH" ||
-                                                        userRol?.uid ===
-                                                            "9RZ9uhaiwMC7VcTyIzhl") &&
-                                                        file.type?.includes(
-                                                            "image",
-                                                        ) && (
-                                                            <div className="flex flex-col py-2 justify-center items-center">
-                                                                <h1 className="text-company-orange text-sm">
-                                                                    Tipo de
-                                                                    Modelo:
-                                                                </h1>
-                                                                <div className="flex flex-row space-x-2 justify-around w-full">
-                                                                    <div className="flex space-x-1 justify-center items-center text-white">
-                                                                        <input
-                                                                            id="radio-1"
-                                                                            type="radio"
-                                                                            value="E"
-                                                                            checked={
-                                                                                modelType ===
-                                                                                "E"
-                                                                            }
-                                                                            onChange={
-                                                                                handleModelType
-                                                                            }
-                                                                            className="w-4 h-4 border-2"
-                                                                        />
-                                                                        <label htmlFor="radio-1">
-                                                                            Estudio
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="flex space-x-1 justify-center items-center text-white">
-                                                                        <input
-                                                                            id="radio-2"
-                                                                            type="radio"
-                                                                            value="T"
-                                                                            checked={
-                                                                                modelType ===
-                                                                                "T"
-                                                                            }
-                                                                            onChange={
-                                                                                handleModelType
-                                                                            }
-                                                                            className="w-4 h-4 border-2"
-                                                                        />
-                                                                        <label htmlFor="radio-2">
-                                                                            Trabajo
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="flex space-x-1 justify-center items-center text-white">
-                                                                        <input
-                                                                            id="radio-3"
-                                                                            type="radio"
-                                                                            value="C"
-                                                                            checked={
-                                                                                modelType ===
-                                                                                "C"
-                                                                            }
-                                                                            onChange={
-                                                                                handleModelType
-                                                                            }
-                                                                            className="w-4 h-4 border-0"
-                                                                        />
-                                                                        <label htmlFor="radio-3">
-                                                                            Copia
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                </div>
-                                                <div className="flex flex-col items-center justify-center w-1/3 space-y-4">
-                                                    <button
-                                                        type="button"
-                                                        className="text-company-orange"
-                                                        onClick={() => {
-                                                            handleRemoveImage(
-                                                                index,
-                                                            );
-                                                            setCurrentIndex(
-                                                                index,
-                                                            );
-                                                        }}
-                                                    >
-                                                        <RiDeleteBin6Line
-                                                            size={32}
-                                                        />
-                                                    </button>
-                                                    {userRol?.uid ===
-                                                        "9RZ9uhaiwMC7VcTyIzhl" && (
-                                                        <div className="flex flex-col justify-center items-center">
-                                                            <label className="text-company-orange text-base">
-                                                                Área de destino:
-                                                            </label>
-                                                            <SelectComponent
-                                                                options={allAreas.filter(
-                                                                    (area) =>
-                                                                        orderAndPatientData?.areaList
-                                                                            ? orderAndPatientData?.areaList?.includes(
-                                                                                  area.value,
-                                                                              )
-                                                                            : area,
-                                                                )}
-                                                                selectChangeHandler={(
-                                                                    e,
-                                                                ) => {
-                                                                    selectChangeHandlerSentTo(
-                                                                        e?.value,
-                                                                    );
-                                                                    setAreaSelected(
-                                                                        e,
-                                                                    );
-                                                                }}
-                                                                optionSelected={
-                                                                    areaSelected
-                                                                }
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ),
-                                    )}
-                                </div>
-                            )}
-
-                            <div className="flex flex-row space-x-4 justify-end px-6 border-t border-gray-500 pt-2">
-                                {files.length > 0 && (
-                                    <button
-                                        type="button"
-                                        className="flex flex-row items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg"
-                                        onClick={() => {
-                                            handleSaveFile(typeFileToUpLoad);
-                                        }}
-                                    >
-                                        <IoIosSave />
-                                        <span>Guardar</span>
-                                    </button>
-                                )}
-                                <button
-                                    type="button"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-                                    onClick={closeModal}
-                                >
-                                    Cerrar
-                                </button>
+                        {/* 2) Uploader (fijo, fuera del scroll) */}
+                        <div className="px-6 py-3 border-b border-gray-700">
+                            <div className="flex items-center justify-center">
+                            <InputFileUpload
+                                fileName={fileName}
+                                multiple={true}
+                                handleFileChange={handleFileChange}
+                                fileTypes=".jpg, .jpeg, .png, .pdf, .stl"
+                            />
                             </div>
                         </div>
+
+                        {/* 3) Encabezado de columnas (fijo) */}
+                        <div className="px-6 bg-[#1d1d1d]">
+                            <div className="flex flex-row items-center py-2 border-b-2">
+                            <div className="w-1/3 text-center">Miniatura</div>
+                            <div className="w-1/3 text-center">Nombre del archivo</div>
+                            <div className="w-1/3 text-center">Acciones</div>
+                            </div>
+                        </div>
+
+                        {/* 4) Lista scrolleable */}
+                        <div className="overflow-y-auto px-6 py-4">
+                            {previewImages.length > 0 && (
+                            <div className="px-0">
+                                {previewImages.map((file: PreviewFile, index) => (
+                                <div key={index} className="flex flex-row items-center justify-center py-4">
+                                    <div className="flex flex-col items-center justify-center w-1/3">
+                                    <Image
+                                        src={
+                                        file.type?.includes("pdf")
+                                            ? "/assets/icons/PDF.svg"
+                                            : file.name?.includes("stl")
+                                            ? "/assets/stl.png"
+                                            : file.url
+                                        }
+                                        width={0}
+                                        height={0}
+                                        sizes="200px"
+                                        style={{
+                                        width: file.type?.includes("pdf") ? "30%" : "50%",
+                                        height: "auto",
+                                        }}
+                                        alt={file.name}
+                                        placeholder="blur"
+                                        blurDataURL={
+                                        file.type?.includes("pdf")
+                                            ? "/assets/icons/PDF.svg"
+                                            : file.name?.includes("stl")
+                                            ? "/assets/stl.png"
+                                            : file.url
+                                        }
+                                    />
+                                    </div>
+
+                                    <div className="flex flex-col items-center justify-center w-1/3 space-y-4">
+                                    <span>{file.name}</span>
+
+                                    {(userRol?.uid === "g9xGywTJG7WSJ5o1bTsH" ||
+                                        userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl") &&
+                                        file.type?.includes("image") && (
+                                        <div className="flex flex-col py-2 justify-center items-center">
+                                            <h1 className="text-company-orange text-sm">Tipo de Modelo:</h1>
+                                            <div className="flex flex-row space-x-2 justify-around w-full">
+                                            <div className="flex space-x-1 justify-center items-center">
+                                                <input
+                                                id="radio-1"
+                                                type="radio"
+                                                value="E"
+                                                checked={modelType === "E"}
+                                                onChange={handleModelType}
+                                                className="w-4 h-4 border-2"
+                                                />
+                                                <label htmlFor="radio-1">Estudio</label>
+                                            </div>
+                                            <div className="flex space-x-1 justify-center items-center">
+                                                <input
+                                                id="radio-2"
+                                                type="radio"
+                                                value="T"
+                                                checked={modelType === "T"}
+                                                onChange={handleModelType}
+                                                className="w-4 h-4 border-2"
+                                                />
+                                                <label htmlFor="radio-2">Trabajo</label>
+                                            </div>
+                                            <div className="flex space-x-1 justify-center items-center">
+                                                <input
+                                                id="radio-3"
+                                                type="radio"
+                                                value="C"
+                                                checked={modelType === "C"}
+                                                onChange={handleModelType}
+                                                className="w-4 h-4 border-0"
+                                                />
+                                                <label htmlFor="radio-3">Copia</label>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex flex-col items-center justify-center w-1/3 space-y-4">
+                                    <button
+                                        type="button"
+                                        className="text-company-orange"
+                                        onClick={() => {
+                                        handleRemoveImage(index);
+                                        setCurrentIndex(index);
+                                        }}
+                                    >
+                                        <RiDeleteBin6Line size={32} />
+                                    </button>
+
+                                    {userRol?.uid === "9RZ9uhaiwMC7VcTyIzhl" && (
+                                        <div className="flex flex-col justify-center items-center">
+                                        <label className="text-company-orange text-base">Área de destino:</label>
+                                        <SelectComponent
+                                            options={allAreas.filter((area) =>
+                                            orderAndPatientData?.areaList
+                                                ? orderAndPatientData?.areaList?.includes(area.value)
+                                                : area
+                                            )}
+                                            selectChangeHandler={(e) => {
+                                            selectChangeHandlerSentTo(e?.value);
+                                            setAreaSelected(e);
+                                            }}
+                                            optionSelected={areaSelected}
+                                        />
+                                        </div>
+                                    )}
+                                    </div>
+                                </div>
+                                ))}
+                            </div>
+                            )}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex justify-end gap-3 border-t border-gray-500 px-6 py-3">
+                            {files.length > 0 && (
+                            <button
+                                type="button"
+                                className="flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg"
+                                onClick={() => handleSaveFile(typeFileToUpLoad)}
+                            >
+                                <IoIosSave />
+                                <span>Guardar</span>
+                            </button>
+                            )}
+                            <button
+                            type="button"
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                            onClick={closeModal}
+                            >
+                            Cerrar
+                            </button>
+                        </div>
+                        </div>
                     </div>
-                )}
+                    )}
+
+
             </div>
         </div>
     );

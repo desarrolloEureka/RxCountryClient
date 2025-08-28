@@ -238,7 +238,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
     };
 
     const handleSaveFile = (typeFile: string) => {
-        //console.log(typeFile);
+        //console.log("typeFile", typeFile);
         confirmSaveAlert(() =>
             saveFile(typeFile).then(() => {
                 setTypeFileToUpLoad("");
@@ -326,7 +326,8 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             // Libera la URL temporal
             URL.revokeObjectURL(url);
 
-           // //console.log("Descarga completada.");
+           // //
+           // ("Descarga completada.");
         } catch (err) {
             console.error("Error al descargar la imagen:", err);
             alert("Hubo un error al intentar descargar el archivo. Revisa la consola para más detalles.");
@@ -405,8 +406,10 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         };
 
         const filesUrls = await getOrdersUrls(slug);
-        //console.log("fileURLS",filesUrls);
-        //console.log("SLUG",slug);
+        
+        console.log("fileURLS",filesUrls);
+        console.log("SLUG",slug);
+        console.log("allOrderData",allOrderData);
         // const newData = {
         //     [typeOfCollection[typeFile]]: allOrderData?.[
         //         typeOfCollection[typeFile]
@@ -417,13 +420,23 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         //           ]
         //         : filesUrls[typeFile],
         // };
-
-        const newData = { [typeOfCollection[typeFile]]:
-        [
-            ...allOrderData?.[typeOfCollection[typeFile]],
-            ...filesUrls?.images,
-        ]}
-
+        
+        let newData = {};
+        if (allOrderData?.[typeOfCollection[typeFile]]) {
+            newData = { [typeOfCollection[typeFile]]:
+            [
+                ...allOrderData?.[typeOfCollection[typeFile]],
+            ]}
+        }
+        if (filesUrls?.images) {
+            newData = { [typeOfCollection[typeFile]]:
+            [
+                ...filesUrls?.images,
+            ]}
+        }
+        
+       
+        //console.log("newData",newData);
         try {
             await updateDocumentsByIdFb(slug, newData, orderRef).then(() => {
                 handleRemoveImage(currentIndex);
@@ -458,7 +471,7 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
             color: "#e9a225",
         }).then(async (result) => {
             if (result.isConfirmed) {
-                //console.log("Entró");
+                console.log("Entró");
 
                 saveAlert(callbackFc);
             }
