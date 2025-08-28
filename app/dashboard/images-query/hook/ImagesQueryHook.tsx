@@ -138,10 +138,10 @@ const ImagesQueryHook = () => {
       (!end || itemDate.isSameOrBefore(end, 'day'));
 
     const matchesSearchTerm =
-      order.id.toLowerCase().includes(search.toLowerCase()) ||
-      order.name.toLowerCase().includes(search.toLowerCase()) ||
-      order.lastName.toLowerCase().includes(search.toLowerCase()) ||
-      order.uid.toLowerCase().includes(search.toLowerCase());
+      order?.id?.toLowerCase().includes(search.toLowerCase()) ||
+      order?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      order?.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+      order?.uid?.toLowerCase().includes(search.toLowerCase());
 
      // Filtro por área
      const matchesAreaSearch =
@@ -161,9 +161,9 @@ const ImagesQueryHook = () => {
 
     const matchesCampusSearch =
     selectedCampus === "sin_sede"
-      ? !order.assignedCampus // Incluye registros sin sede (null, undefined o "")
+      ? !order?.assignedCampus // Incluye registros sin sede (null, undefined o "")
       : !selectedCampus || 
-        order.assignedCampus.toLowerCase().includes(selectedCampus.toLowerCase());
+        order?.assignedCampus?.toLowerCase().includes(selectedCampus.toLowerCase());
 
   
 
@@ -176,9 +176,9 @@ const ImagesQueryHook = () => {
      return isWithinDateRange && matchesSearchTerm && matchesAreaSearch && matchesCampusSearch;
    });
 
-   //console.log("Pedidos filtrados:", filteredOrders);
-   const totalOrders = filteredOrders?.length || 0;
-   //console.log("Total órdenes:", totalOrders);
+  //console.log("Pedidos filtrados:", filteredOrders);
+  const totalOrders = filteredOrders?.length || 0;
+  //console.log("Total órdenes:", totalOrders);
 
   const filterByArea = (selectedOption : { value: string; label: string }| null ) => {
     setSelectedArea(selectedOption?.value || null);

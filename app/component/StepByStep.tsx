@@ -634,29 +634,6 @@ function StepByStep({
                 <BsFillPersonVcardFill />
               </span>
             </div>
-            {/* <div className={`col-span-1 lg:col-span-1 flex flex-col space-y-2 justify-end`}>
-              <label
-                htmlFor='autoProfessional'
-                className={`text-white ${isEdit ? 'invisible' : ''}`}
-              >
-                ¿Profesional?
-              </label>
-
-              <button
-                type='button'
-                id='autoProfessional'
-                onClick={!isEdit ? autoProfessional : undefined}
-                className={`h-10 w-full rounded-xl border px-4 transition-all duration-300 text-sm font-semibold
-                  ${data?.autoProfessional ? 'bg-company-blue text-white border-company-blue' : 'bg-transparent text-white border-white'}
-                  ${isEdit ? 'invisible pointer-events-none' : ''}  // 👈 oculta pero mantiene el ancho de la columna
-                `}
-                aria-hidden={isEdit}
-                tabIndex={isEdit ? -1 : 0}
-              >
-                {data?.autoProfessional ? 'No' : 'Si'}
-              </button>
-            </div> */}
-
             <div
               className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'
               // ref={wrapperRef}
