@@ -421,19 +421,16 @@ const ImagesDetailsHook = ({ slug }: ImagesDetailsHookProps) => {
         //         : filesUrls[typeFile],
         // };
         
-        let newData = {};
-        if (allOrderData?.[typeOfCollection[typeFile]]) {
-            newData = { [typeOfCollection[typeFile]]:
-            [
-                ...allOrderData?.[typeOfCollection[typeFile]],
-            ]}
+        let newData: any = {};
+        const key = typeOfCollection[typeFile];
+
+        if (allOrderData?.[key]) {
+        newData[key] = [...allOrderData[key]];
         }
         if (filesUrls?.images) {
-            newData = { [typeOfCollection[typeFile]]:
-            [
-                ...filesUrls?.images,
-            ]}
+        newData[key] = [ ...(newData[key] ?? []), ...filesUrls.images ]; // ✅ concatena
         }
+
         
        
         //console.log("newData",newData);
