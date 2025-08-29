@@ -24,7 +24,7 @@ export const handleSendWelcomeEmail = async (data: DataProfessionalObject) => {
                 userEmail: data.email,
                 password: data.id,
                 loginUrl: "https://rx-country-client.vercel.app/sign-in",
-                contactEmail: "soporte-rxcountry@yopmail.com",
+                contactEmail: "virtualcountry@rxcountry.com.co",
             }),
         });
     } catch (error) {
@@ -49,7 +49,7 @@ export const handleSendFinishedOrderEmail = async (data: any) => {
             htmlContent: plantillaCierreOrden({
                 ...data,
                 loginUrl: "https://rx-country-client.vercel.app/sign-in",
-                contactEmail: "soporte-rxcountry@yopmail.com",
+                contactEmail: "virtualcountry@rxcountry.com.co",
             }),
         });
     } catch (error) {
@@ -71,7 +71,7 @@ export const handleSendNewOrderEmail = async (data: any) => {
             htmlContent: plantillaNuevaOrden({
                 ...data,
                 loginUrl: "https://rx-country-client.vercel.app/sign-in",
-                contactEmail: "soporte-rxcountry@yopmail.com",
+                contactEmail: "virtualcountry@rxcountry.com.co",
             }),
         });
     } catch (error) {

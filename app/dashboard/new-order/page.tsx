@@ -12,7 +12,9 @@ import { MdClose } from 'react-icons/md';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import NewOrderHook from './hook/NewOrderHook';
 import Swal from "sweetalert2";
+import { checkIfUserProfessionalExists } from '@/app/firebase/documents';
 
+// ...
 const NewOrderPage = () => {
 
     const helpMessages: { [key: number]: string } = {
@@ -63,8 +65,18 @@ const NewOrderPage = () => {
         handleAreaList,
         areaList,
         user,
-        validateid,
+        //validateid,
+        validateidProfessional,
+        validateidPatient,
+        validateEmail,
         professionals,
+        autoEmail,  
+        setProfessionalId,
+        emailLocked,
+        setEmailLocked,
+        lockEmail,
+        setPatientData,
+        // autoProfessional,
     } = NewOrderHook();
     //console.log("patienData: ",patientData);
   if (!user) {
@@ -219,6 +231,9 @@ const NewOrderPage = () => {
             handleCheckOrderIncomplete={() => {}}
             selectChangeHandlerDiagnoses={() => {}}
             selectChangeHandlerDiagnostician={() => {}}
+            autoEmail={autoEmail}
+            emailLocked={emailLocked}
+            // autoProfessional={autoProfessional}
           />
 
           {formStep < 6 && (
@@ -241,44 +256,23 @@ const NewOrderPage = () => {
             >
               <div className='text-white invisible'>Paso {formStep}/5</div>
               <div className='flex items-center'>
-                {/* {formStep > 0 && (
-                                    <>
-                                        <div
-                                            onClick={() => {
-                                                setFormStep(
-                                                    (prevStep: number) =>
-                                                        prevStep - 1,
-                                                );
-                                            }}
-                                            className="hidden sm:flex items-center cursor-pointer text-company-blue"
-                                        >
-                                            <BiChevronLeft size={32} />
-                                            <span>Atrás</span>
-                                        </div>
-                                        <div
-                                            onClick={() => {
-                                                setFormStep(0);
-                                            }}
-                                            className="flex sm:hidden items-center cursor-pointer text-company-blue"
-                                        >
-                                            <BiChevronLeft size={32} />
-                                            <span>Atrás</span>
-                                        </div>
-                                    </>
-                                )} */}
                 <button
                   type={patientVal ? 'button' : 'submit'}
                   onClick={async() => {
                     //console.log("formstep: ",formStep);
                     if(formStep == 0){
-                      const existe = await validateid(patientData.id);
+                      const existePatient = await validateidPatient(patientData.id);
+                      const existeProfessional = await validateidProfessional(patientData.id);
+                      const existeEmail = await validateEmail(patientData.email);
+                      const existe = existePatient || existeProfessional;
+                      
                       //console.log("isedit: ",isEdit, existe);
-                      if(existe && !isVerificated){
-                        //console.log("si existe");
+                      if(!isVerificated && existeEmail ){
+                        //console.log("si existe y existe email");
                         Swal.fire({
                           position: "center",
-                          title: `El ID ya existe`,
-                          text: "Por favor seleccionelo",
+                          title: `El Correo ya existe`,
+                          text: "Por favor digite otro correo",
                           allowOutsideClick: false,
                           background: "#404040",
                           color: "#e9a225",
@@ -286,11 +280,54 @@ const NewOrderPage = () => {
                         });
                         setFormStep(0);
                         return;
+                      }                      
+                      if (existe && !isVerificated) {
+                        const RX_DOMAIN = '@rxcountry.com';
+                        const baseId = String(patientData.id || '').trim().replace(/^p/i, '');
+                        const proId  = `p${baseId}`;
+
+                        const yaEsProfesional = await checkIfUserProfessionalExists(proId);
+
+                        const { isConfirmed, isDenied } = await Swal.fire({
+                          position: "center",
+                          title: "Este documento ya existe",
+                          html: yaEsProfesional
+                            ? `<p style="margin:6px 0 0; font-weight:600;">Ya está registrado como profesional (${proId}).</p>
+                              <p style="margin:6px 0 0;">¿Deseas usar el formato profesional para el paciente?</p>`
+                            : `<p style="margin:6px 0 0;">¿Desea crear esta cuenta como paciente?</p>`,
+                          showDenyButton: true,
+                          confirmButtonText: "Sí",
+                          denyButtonText: "No",
+                          confirmButtonColor: "#2563eb",
+                          denyButtonColor: "#6b7280",
+                          allowOutsideClick: false,
+                          background: "#404040",
+                          color: "#e9a225",
+                        });
+
+                        if (isConfirmed) {
+                          // Fuerza 'p' y precarga correos con dominio
+                          setProfessionalId(true);
+                          setPatientData(prev => ({
+                            ...prev,
+                            autoEmail: false, // para que use documento@rxcountry.com
+                            email: `${proId}${RX_DOMAIN}`,
+                            confirmEmail: `${proId}${RX_DOMAIN}`,
+                          }));
+                          lockEmail(true); // 🔒 bloquea inputs de correo
+                        } else if (isDenied) {
+                          setProfessionalId(false);
+                          lockEmail(false); // 🔓 deja editables
+                        }
+
+                        setFormStep(0);
+                        return;
                       }
-                      }
+
+                    }
                     if (patientVal) {
                       if (emailFound) {
-                        emailFoundAlert();
+                        await emailFoundAlert();
                         return;
                       }
                       

@@ -3,6 +3,8 @@ import { dataAllOptions } from "@/app/data/documentsData";
 import { dataPatientObject } from "@/app/data/patientData";
 import useAuth from "@/app/firebase/auth";
 import {
+    checkIfEmailExists,
+    checkIfUserProfessionalExists,
     getAllAreasOptions,
     getAllCampusOptions,
     getAllDocumentsFb,
@@ -95,17 +97,19 @@ const saveAlert = async (callbackFc: () => Promise<void>, router: any) => {
     }
 };
 
-const emailFoundAlert = () => {
-    Swal.fire({
-        icon: "error",
-        title: "Error Email",
-        text: "¡Este correo ya existe!",
-        background: "#404040",
-        color: "#e9a225",
-        confirmButtonColor: "#1f2937",
-        confirmButtonText: "Ok",
-    });
-};
+// const emailFoundAlert = () => {
+//     Swal.fire({
+//         icon: "error",
+//         title: "Error Email",
+//         text: "¡Este correo ya existe!",
+//         background: "#404040",
+//         color: "#e9a225",
+//         confirmButtonColor: "#1f2937",
+//         confirmButtonText: "Ok",
+//     });
+// };
+
+
 
 const incompleteDataAlert = () => {
     Swal.fire({
@@ -177,6 +181,9 @@ const NewOrderHook = (props?: Props) => {
         endDate: null,
     });
 
+    const [emailLocked, setEmailLocked] = useState(false);
+    const lockEmail = (locked: boolean) => setEmailLocked(locked);
+
     const [professionals, setProfessionals] = useState<any[]>([]);
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -188,7 +195,7 @@ const NewOrderHook = (props?: Props) => {
         setPatientData({ ...patientData, [e.target.name]: value });
         if (value.length > 0) {
             const filteredPatients = allPatients?.filter(
-                (patient: DataPatientObject) => patient.id.includes(value),
+                (patient: DataPatientObject) => String(patient?.id ?? '').includes(String(value ?? '')),
             );
             setSuggestions(filteredPatients);
         } else {
@@ -197,8 +204,35 @@ const NewOrderHook = (props?: Props) => {
     };
 
 
-    const validateid = async (id:any) => { 
+    const validateid = async (id:any) => {
         const exists = await checkIfUserExists(id);
+        console.log("validateid", exists);
+        if (exists){
+        return true;
+        }
+        return false;
+    }
+
+    const validateidProfessional = async (id:any) => {
+        const exists = await checkIfUserProfessionalExists(id);
+        console.log("validateidProfessional", exists);
+        if (exists){
+        return true;
+        }
+        return false;
+    }
+
+    const validateidPatient = async (id:any) => { 
+        const exists = await checkIfUserExists(id);
+        console.log("validateidPatient", exists);
+        if (exists){
+        return true;
+        }
+        return false;
+    }
+
+    const validateEmail = async (email:any) => {
+        const exists = await checkIfEmailExists(email);
         console.log("validateid", exists);
         if (exists){
         return true;
@@ -243,17 +277,39 @@ const NewOrderHook = (props?: Props) => {
     };
 
     const idChangeHandler = (id: string) => {
-        setIsEdit(true);
-        setIsVerificated(true);
-        const patient = suggestions?.find(
-            (patient: DataPatientObject) => patient.id === id,
-        );
+  setIsEdit(true);
+  setIsVerificated(true);
 
-        patient &&
-            (setPatientData({ ...patient, confirmEmail: patient.email }),
-            setPatientExist(true));
-        setSuggestions([]);
-    };
+  const patient = suggestions?.find(
+    (p: DataPatientObject) => p.id === id
+  );
+
+  if (patient) {
+    // Inferimos si el correo es automático (id@rxcountry.com) o personal
+    const systemEmail = `${String(patient.id || '').trim().toLowerCase()}${RX_DOMAIN}`;
+    const emailLC    = String(patient.email || '').trim().toLowerCase();
+
+    // autoEmail = true  => tiene correo personal (editable)
+    // autoEmail = false => usa correo automático id@rxcountry.com (bloqueado)
+    const hasPersonalEmail = !!patient.email && emailLC !== systemEmail;
+    const inferredAutoEmail = ('autoEmail' in patient)
+      ? !!(patient as any).autoEmail     // si ya existe en BD, respétalo
+      : hasPersonalEmail;                // si no existe, inferimos
+
+    setPatientData({
+      ...patient,
+      autoEmail: inferredAutoEmail,
+      confirmEmail: patient.email,       // igual al que viene de BD
+    });
+
+    // bloquea si NO tiene correo (autoEmail=false)
+    setEmailLocked(!inferredAutoEmail);
+
+    setPatientExist(true);
+  }
+
+  setSuggestions([]);
+};
 
     const dateChangeHandler = (e: any) => {
         setValue(e);
@@ -547,6 +603,52 @@ const patientVal =
         allCampusData && setAllCampus(allCampusData);
     }, []);
 
+
+    const autoEmail = () => {
+        const nextAuto = !patientData.autoEmail;   // true = Sí tiene correo (editable)
+        setEmailLocked(!nextAuto);                 // bloquea cuando NO tiene correo
+
+        const baseId = String(patientData.id || '').trim();
+        const auto = baseId ? `${baseId}${RX_DOMAIN}` : '';
+
+        setPatientData(prev => ({
+            ...prev,
+            autoEmail: nextAuto,
+            email: nextAuto ? '' : auto,             // si NO tiene correo → carga auto
+            confirmEmail: nextAuto ? '' : auto,
+        }));
+    };
+
+    // const setProfessionalId = (isPro: boolean) => {
+    //     setPatientData(prev => {
+    //         const baseId = String(prev.id || '').trim().replace(/^p/i, ''); // quita P inicial
+    //         const newId  = isPro ? `p${baseId}` : baseId;                    // pone P sólo si toca
+    //         return { ...prev, id: newId, autoProfessional: isPro };
+    //     });
+    // };
+   
+    const RX_DOMAIN = '@rxcountry.com';
+    const setProfessionalId = (forceProfessional: boolean) => {
+        setPatientData(prev => {
+            const baseId = String(prev.id ?? '').trim().replace(/^p/i, '');
+            const newId  = forceProfessional ? `p${baseId}` : baseId;
+
+            const nextEmail = prev.autoEmail
+            ? prev.email
+            : (newId ? `${newId}${RX_DOMAIN}` : '');
+
+            return {
+            ...prev,
+            autoProfessional: forceProfessional,
+            id: newId,
+            email: nextEmail,
+            confirmEmail: nextEmail,
+            };
+        });
+    };
+
+
+
     const getAllEmails = useCallback(async () => {
         const professionalsDocs = await getAllDocumentsFb("professionals");
         const functionaryDocs = await getAllDocumentsFb("functionary");
@@ -574,6 +676,33 @@ const patientVal =
             setEmailFound(currentUserData);
         }
     }, [patientData]);
+
+    const emailFoundAlert = async () => {
+        const doc = String(patientData.id || '').trim();
+
+        await Swal.fire({
+            icon: "error",
+            title: "El correo ya existe",
+            text: "Usaremos un correo automático basado en el documento.",
+            background: "#404040",
+            color: "#e9a225",
+            confirmButtonColor: "#1f2937",
+            confirmButtonText: "Ok",
+        });
+
+        // Precarga email y confirmEmail como <id>@rxcountry.com y fuerza autoEmail=false
+        setPatientData(prev => {
+            const idForEmail = String(prev.id || '').trim(); // respeta si ya viene con 'p'
+            const auto = idForEmail ? `${idForEmail}${RX_DOMAIN}` : '';
+            return {
+            ...prev,
+            autoEmail: false,
+            email: auto,
+            confirmEmail: auto,
+            };
+        });
+        setEmailLocked(true);
+    };
 
     useEffect(() => {
         const fetchProfessionals = async () => {
@@ -638,6 +767,23 @@ const patientVal =
         }
     }, [router, user, userData]);
 
+    useEffect(() => {
+        setEmailLocked(!patientData.autoEmail);
+    }, [patientData.autoEmail]);
+
+
+    useEffect(() => {
+        if (!patientData.autoEmail) {  // sólo cuando NO tiene correo
+            const baseId = String(patientData.id || '').trim();
+            const auto = baseId ? `${baseId}${RX_DOMAIN}` : '';
+            setPatientData(prev => ({
+            ...prev,
+            email: auto,
+            confirmEmail: auto,
+            }));
+        }
+    }, [patientData.id, patientData.autoEmail]);
+
     return {
         professionals,
         emailFound,
@@ -680,7 +826,17 @@ const patientVal =
         handleAreaList,
         areaList,
         user,
-        validateid,
+        //validateid,
+        validateidProfessional,
+        validateidPatient,
+        validateEmail,
+        autoEmail,
+        setProfessionalId,
+        emailLocked,
+        setEmailLocked,
+        lockEmail,
+        setPatientData,
+
     };
 };
 

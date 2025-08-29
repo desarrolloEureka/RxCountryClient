@@ -293,3 +293,19 @@ export const checkIfUserExists = async (id: string) => {
     //console.log("querySnapshot",!querySnapshot.empty);
     return !querySnapshot.empty;
 };
+
+export const checkIfUserProfessionalExists = async (id: string) => {
+    const professionalsRef = collection(db, "professionals");
+    const q = query(professionalsRef, where("id", "==", id));
+    const querySnapshot = await getDocs(q);
+    //console.log("querySnapshot",!querySnapshot.empty);
+    return !querySnapshot.empty;
+};
+
+export const checkIfEmailExists = async (email: string) => {
+    const patientsRef = collection(db, "patients");
+    const q = query(patientsRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    //console.log("querySnapshot",!querySnapshot.empty);
+    return !querySnapshot.empty;
+};

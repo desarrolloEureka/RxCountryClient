@@ -495,7 +495,7 @@ const OrderHistorialPage = () => {
                     <div className='text-center text-nowrap w-48'>
                       <span>Fecha</span>
                     </div>
-                    <div className='text-start text-nowrap w-52 pl-5'>
+                    <div className='text-start whitespace-normal break-all flex-[2] min-w-[18rem] pl-5'>
                       <span>Correo</span>
                     </div>
                     <div className='text-start text-nowrap w-36 pl-5'>
@@ -606,8 +606,8 @@ const OrderHistorialPage = () => {
                             {formatearFecha(item.timestamp)}
                           </p>
                         </div>
-                        <div className='text-nowrap text-start w-52'>
-                          <p className='truncate'>{item.email}</p>
+                        <div className='text-start whitespace-normal break-all flex-[2] min-w-[18rem]'>
+                          <p>{item.email}</p>
                         </div>
                         <div className='text-nowrap text-start w-36'>
                           <p className='truncate'>

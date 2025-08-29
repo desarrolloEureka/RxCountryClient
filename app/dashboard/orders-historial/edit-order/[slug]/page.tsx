@@ -71,11 +71,18 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
     setFlag,
     setShowSave,
     professionals,
+    
   } = EditOrderHook({ slug });
 
 
   if (!user) {
     return <Spinner />;
+  }
+
+ 
+
+  function autoEmail(): void {
+    throw new Error('Function not implemented.');
   }
 
   return (
@@ -174,6 +181,7 @@ const EditOrderPage = ({ params: { slug } }: { params: { slug: string } }) => {
             modelType={modelType}
             handleFileChangeSTL={handleFileChangeSTL}
             flag={flag}
+            autoEmail={autoEmail}
           />
 
           {formStep < 6 && (

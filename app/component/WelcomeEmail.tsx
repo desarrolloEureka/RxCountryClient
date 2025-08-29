@@ -56,7 +56,7 @@ const WelcomeEmail = ({ username, password, loginUrl }: WelcomeEmailProps) => {
                         .
                     </p>
                     <p className="mt-2">
-                        © 2024 Nuestra Comunidad. Todos los derechos reservados.
+                        © 2025 Nuestra Comunidad. Todos los derechos reservados.
                     </p>
                 </div>
             </div>

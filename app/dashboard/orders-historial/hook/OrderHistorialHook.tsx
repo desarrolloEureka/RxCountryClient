@@ -70,6 +70,16 @@ const OrderHistorialHook = () => {
     return moment(fechaISO).format('DD/MM/YYYY HH:mm:ss');
   };
 
+  const getModifierId = (order: any) => {
+    const m = order?.modifiedBy;
+    if (!m) return undefined;
+    if (typeof m === 'string') return m;         
+    return m.userRolId ?? m.uid ?? m.userId;     
+  };
+
+const isStatus = (o: any, s: string) =>
+  String(o?.status ?? '').toLowerCase() === s.toLowerCase();
+
   // console.log('ordersData???????', ordersData);
 
   const allDataOrders = ordersData?.flatMap((order: Order) => {
@@ -273,15 +283,15 @@ const OrderHistorialHook = () => {
             ? order.sendTo.some((item: any) => item.value === area) // Validación para array
             : order.sendTo === area) // Validación para string
       ),
-      reassigned: allDataOrders?.filter(
-        (order: any) =>
-          order.modifiedBy.userRolId === userRol?.uid &&
-          order.assignedCampus === campus &&
-          order.status === 'reasignada' &&
-          (Array.isArray(order.sendTo)
-            ? order.sendTo.some((item: any) => item.value === area) // Validación para array
-            : order.sendTo === area) // Validación para string
+      reassigned: (allDataOrders ?? []).filter((order: any) =>
+        getModifierId(order) === userRol?.uid &&
+        order?.assignedCampus === campus &&
+        isStatus(order, 'reasignada') &&
+        (Array.isArray(order?.sendTo)
+          ? order.sendTo.some((item: any) => item?.value === area)
+          : order?.sendTo === area)
       ),
+
     },
   };
 

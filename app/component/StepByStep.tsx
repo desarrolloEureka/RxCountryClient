@@ -93,7 +93,10 @@ interface Props {
   handleModelType?: (e: any) => void;
   handleFileChangeSTL?: (e: any) => void;
   flag: boolean;
-  professionals: any[]; 
+  professionals: any[];
+  autoEmail?: () => void;
+  autoProfessional?: () => void;
+  emailLocked?: boolean;
 }
 
 function StepByStep({
@@ -146,10 +149,13 @@ function StepByStep({
   modelType,
   handleFileChangeSTL,
   flag,
+  autoEmail = () => {},
+  autoProfessional = () => {},
   professionals = [],
+  emailLocked = false,
 }: Props) {
 
-  
+
   const router = useRouter();
 
   const currentDate = moment().format();
@@ -328,7 +334,7 @@ function StepByStep({
     const dataSelected: {
       [key: string]: string | number[] | string[] | any;
     } = { ...allDataSelected };
-  
+
     if (userRol?.uid === 'ZWb0Zs42lnKOjetXH5lq') {
       // Profesional
       dataSelected.observationComment = {
@@ -382,7 +388,7 @@ function StepByStep({
     userRol?.name,
     userRol?.uid,
   ]);
-  
+
 
   const getObservationComment = (
     oldData: Record<string, any>,
@@ -458,8 +464,8 @@ function StepByStep({
   useEffect(() => {
     areasListSelected && selectChangeHandlerSentTo(areasListSelected);
   }, [areasListSelected, selectChangeHandlerSentTo]);
-  
-  
+
+
   // const handleProfessionalSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
   //   const uid = e.target.value;
   //   const selected = professionals.find(p => p.uid === uid);
@@ -511,19 +517,89 @@ function StepByStep({
 
   // console.log(data);
   console.log('areasListSelected', areasListSelected);
-  
+
   console.log('data', data);
   console.log('isEdit stepbystep:', isEdit);
+
+
+  const visibleEmail = !data?.autoEmail
+  ? String(data?.email ?? (data?.id ? `${data.id}@rxcountry.com` : ''))
+  : String(data?.email ?? '');
+
+  const visibleConfirmEmail = !data?.autoEmail
+  ? String(data?.confirmEmail ?? (data?.id ? `${data.id}@rxcountry.com` : ''))
+  : String(data?.confirmEmail ?? '');
   
+  const showEmailToggle = !isEdit && !oldData; 
   return (
     <div>
       {/* Datos Paciente */}
+
+
       {formStep === 0 && (
         <div className='mx-4 sm:mx-16 bg-black bg-opacity-50 rounded-2xl p-8 flex flex-col space-y-8'>
           <h3 className='text-xl sm:text-2xl text-company-orange'>
             Datos del Paciente
           </h3>
           <div className='grid grid-cols-1 lg:grid-cols-12 gap-4'>
+            <div
+              className={`col-span-1 ${oldData ? 'lg:col-span-2' : 'lg:col-span-4'}
+              ${isEdit ? 'hidden' : 'flex'}
+              items-center gap-3`}   // <- fila con separación
+            >
+              <label htmlFor='autoEmail' className='text-white m-0'>
+                <h3 className='text-base font-normal text-company-orange whitespace-nowrap'>
+                  ¿Tiene cuenta de Correo?
+                </h3>
+              </label>
+
+              {/* <button
+                type='button'
+                id='autoEmail'
+                className={`h-10 px-4 w-auto inline-flex items-center justify-center
+                            rounded-xl border transition-all duration-300 text-sm font-semibold
+                            ${data?.autoEmail
+                              ? 'bg-company-blue text-white border-company-blue'
+                              : 'bg-transparent text-white border-white'}`}
+                onClick={() => autoEmail()}
+              >
+                {data?.autoEmail ? 'Si' : 'No'}
+              </button> */}
+              {/* Switch accesible (checkbox + peer) */}
+              <label className="inline-flex items-center cursor-pointer select-none">
+                <input
+                  id="autoEmailSwitch"
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={!!data?.autoEmail}
+                  onChange={autoEmail}              
+                  disabled={false }
+                />
+                <div
+                  className="
+                    peer h-6 w-11 rounded-full bg-gray-500 transition-colors
+                    peer-checked:bg-company-blue relative
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+                    focus-visible:ring-company-blue
+                  "
+                  role="switch"
+                  aria-checked={!!data?.autoEmail}
+                >
+                  <span
+                    className="
+                      absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow
+                      transition-transform peer-checked:translate-x-5
+                    "
+                  />
+                </div>
+                <span className="ml-2 text-white text-sm w-10">
+                  {data?.autoEmail ? 'Sí' : 'No'}
+                </span>
+              </label>
+            </div>
+             {!isEdit && (                 
+            <div className='col-span-1 lg:col-span-8 relative flex flex-col space-y-2'></div>
+            )}
             <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
               <label htmlFor='idType' className='text-white'>
                 Tipo de Documento&nbsp;
@@ -580,7 +656,7 @@ function StepByStep({
                 max={9999999999}
                 className='rounded-xl h-10 bg-transparent border border-company-blue text-white px-10'
                 onChange={isEdit ? changeHandler : handleInputChange}
-                
+
                 // onChange={handleInputChange}
               />
               {suggestions && suggestions?.length > 0 && (
@@ -591,7 +667,7 @@ function StepByStep({
                       className='p-2 hover:bg-company-blue cursor-pointer'
                       onClick={() => {
                         idChangeHandler(patient.id)
-                      }  
+                      }
                       }
                     >
                       {patient.id}
@@ -632,7 +708,7 @@ function StepByStep({
             </div>
             <div
               className={`col-span-1 ${
-                oldData ? 'lg:col-span-4' : 'lg:col-span-3'
+                oldData ? 'lg:col-span-4' : 'lg:col-span-4'
               } relative flex flex-col space-y-2`}
             >
               <label htmlFor='lastName' className='text-white'>
@@ -656,9 +732,11 @@ function StepByStep({
                 <IoPerson />
               </span>
             </div>
+            
+
             <div
               className={`col-span-1 ${
-                oldData ? 'lg:col-span-4' : 'lg:col-span-3'
+                oldData ? 'lg:col-span-4' : 'lg:col-span-4'
               } relative flex flex-col space-y-2`}
             >
               <label htmlFor='email' className='text-white'>
@@ -666,32 +744,37 @@ function StepByStep({
                 <span className='text-blue-500'>*</span>
               </label>
               <input
-                disabled={
-                  (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && isEdit) || 
-                  (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                  userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk')
-                }                
-                value={data && data?.email}
-                type='email'
-                name='email'
-                required
-                id='email'
-                className={`rounded-xl h-10 bg-transparent border ${
-                  userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                  userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
-                    ? 'border-gray-600 text-gray-400'
-                    : 'border-company-blue text-white'
-                } px-10`}                
-                onChange={(e) => {
-                  const email = e.target.value.toLowerCase();
-                  setSelectedOptions((prev: any) => ({
-                    ...prev,
-                    email,
-                  }));
-                  data.email = email; // solo si necesitas ver reflejado el cambio visualmente
-                }}
+                  disabled={
+                    (userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && isEdit) ||
+                    (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk') ||
+                    data?.isActive === false || emailLocked
+                  }
+                  type={!data?.autoEmail ? 'text' : 'email'}
+                  value={visibleEmail}
+                  name='email'
+                  required
+                  id='email'
+                  className={`rounded-xl h-10 bg-transparent border ${
+                    userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
+                      ? 'border-gray-600 text-gray-400'
+                      : 'border-company-blue text-white'
+                  } px-10`}
+                  onChange={(e) => {
+                    const typed = e.target.value.trim().toLowerCase();
+                    const email = !data?.autoEmail
+                      ? (typed ? `${typed}@rxcountry.com` : '')
+                      : typed;
 
-              />
+                    setSelectedOptions?.((prev: any) => ({ ...prev, email }));
+                    // No mutes data.email directo; usa tu handler
+                    changeHandler({
+                      target: { name: 'email', value: email }
+                    } as React.ChangeEvent<HTMLInputElement>);
+                  }}
+                />
+
               <span
                 className={`absolute left-2 bottom-2 ${
                   oldData ||
@@ -706,7 +789,7 @@ function StepByStep({
             </div>
             {!oldData && (
               <div
-                className={`col-span-1 lg:col-span-3 relative ${
+                className={`col-span-1 lg:col-span-4 relative ${
                   oldData ? 'hidden' : 'flex'
                 } flex-col space-y-2`}
               >
@@ -715,47 +798,42 @@ function StepByStep({
                   <span className='text-blue-500'>*</span>
                 </label>
                 <input
-                  onPaste={(e) => {
-                    alert('No puedes pegar');
-                    e.preventDefault();
-                  }}
+                  onPaste={(e) => { alert('No puedes pegar'); e.preventDefault(); }}
                   disabled={
-                    userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
-                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk'
+                    (userRol?.uid !== 'ZWb0Zs42lnKOjetXH5lq' &&
+                    userRol?.uid !== 'Ll6KGdzqdtmLLk0D5jhk') ||
+                    data?.isActive === false || emailLocked
                   }
-                  value={data && data?.confirmEmail}
-                  type='email'
+                  type={!data?.autoEmail ? 'text' : 'email'}
+                  value={
+                    visibleConfirmEmail
+                  }
                   name='confirmEmail'
                   required
-                  id='email'
+                  id='confirmEmail'
                   className={`rounded-xl h-10 bg-transparent ${
-                    data?.confirmEmail === data?.email
-                      ? 'border-company-blue border'
-                      : 'border-red-600 border-2'
+                    data?.confirmEmail === data?.email ? 'border-company-blue border' : 'border-red-600 border-2'
                   } text-white px-10`}
                   onChange={(e) => {
-                    const confirmEmail = e.target.value.toLowerCase();
-                    setSelectedOptions((prev: any) => ({
-                      ...prev,
-                      confirmEmail,
-                    }));
+                    const typed = e.target.value.trim().toLowerCase();
+                    const confirmEmail = !data?.autoEmail
+                      ? (typed ? `${typed}@rxcountry.com` : '')
+                      : typed;
+
+                    setSelectedOptions?.((prev: any) => ({ ...prev, confirmEmail }));
                     changeHandler({
                       target: { name: 'confirmEmail', value: confirmEmail }
                     } as React.ChangeEvent<HTMLInputElement>);
-
                   }}
-
                 />
+
                 <span className='absolute left-2 bottom-2 text-company-blue text-[1.5rem]'>
                   <IoMail />
                 </span>
               </div>
             )}
-            <div
-              className={`col-span-1 ${
-                oldData ? 'lg:col-span-4' : 'lg:col-span-3'
-              } relative flex flex-col space-y-2`}
-            >
+            <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
+
               <label htmlFor='phone' className='text-white'>
                 Celular&nbsp;
                 {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' && (
@@ -848,7 +926,7 @@ function StepByStep({
                 <MdOutlineDateRange />
               </span>
             </div>
-            <div className='col-span-1 lg:col-span-4 relative flex flex-col space-y-2'>
+            <div className='col-span-1 lg:col-span-12 relative flex flex-col space-y-2'>
               <label htmlFor='address' className='text-white'>
                 Dirección&nbsp;(opcional)
               </label>
@@ -1003,7 +1081,7 @@ function StepByStep({
               {/* Visualizar PDF */}
               <div className='pace-y-4flex flex-col mx-4 lg:mx-28 my-5 space-y-4'>
                 <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 gap-4'>
-                  
+
                   {/* Vista verificación de la orden */}
                   {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
                     <div className="flex flex-col items-start space-y-2">
@@ -1015,7 +1093,7 @@ function StepByStep({
                             handleCheckOrderIncomplete(!isOrderIncomplete);
                           }}
 
-                          
+
                           className={`w-52 h-16 flex items-center justify-center space-x-2 px-4 py-2 border rounded-xl text-white ${
                             isOrderIncomplete
                               ? 'bg-gray-600 hover:bg-gray-500 border-company-orange'
@@ -1063,7 +1141,7 @@ function StepByStep({
                           <span className="text-nowrap">Ver PDF ODS</span>
                         </a>
                       </div>
-                    
+
                       {/* Segundo contenedor */}
                       <div className="flex  flex-col justify-start ">
                         <InputFileUpload
@@ -1073,11 +1151,11 @@ function StepByStep({
                         />
                       </div>
                     </div>
-                
+
                   )}
-                  
-                  
-                  
+
+
+
                   {/* <div className="flex items-center justify-center lg:justify-start w-full">
                                         <button
                                             type="button"
@@ -1131,7 +1209,7 @@ function StepByStep({
                                 : 'text-green-500'
                             } pt-3`}
                           >
-                            
+
                           </span>
                         )} */}
                       </div>
@@ -1178,17 +1256,17 @@ function StepByStep({
                     </div>
                   )}
 
-                    
+
 
                 </div>
 
-                
+
               </div>
 
               {/* Despacho */}
               {userRol?.uid === '9RZ9uhaiwMC7VcTyIzhl' && (
                 <div className='grid grid-cols-3 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  
+
                   <div className='col-span-3 lg:col-span-1 flex flex-col rounded-xl justify-start'>
                     <h1 className='text-sm lg:text-base text-company-orange font-bold'>
                       Diagnosticadores:
@@ -1294,7 +1372,7 @@ function StepByStep({
                 </div>
               )}
 
-              
+
               {/* Radiología  */}
               {userRol?.uid === 'V5iMSnSlSYsiSDFs4UpI' && (
                 <div className='grid grid-cols-1 gap-4 mx-4 lg:mb-10 lg:mx-28'>
@@ -1311,7 +1389,7 @@ function StepByStep({
                           <span className="text-nowrap">Ver PDF ODS</span>
                         </a>
                       </div>
-                    
+
                       {/* Segundo contenedor */}
                       <div className="flex  flex-col justify-start text-sm lg:text-base font-normal text-company-orange">
                         <InputFileUpload
@@ -1321,8 +1399,8 @@ function StepByStep({
                         />
                       </div>
                     </div>
-                  
-                  
+
+
                   {/* <div className='col-span-3 lg:col-span-1 flex flex-col justify-start items-center'>
                     <InputFileUpload
                       fileName={fileNameSTL}
@@ -1405,7 +1483,7 @@ function StepByStep({
               {/* Diagnostico  */}
               {userRol?.uid === 'wGU4GU8oDosW4ayQtxqT' && (
                 <div className='grid grid-cols-2 gap-4 mx-4 lg:mb-10 lg:mx-28'>
-                  
+
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
@@ -1466,12 +1544,12 @@ function StepByStep({
                               : 'text-green-500'
                           } pt-3`}
                         >
-                         
+
                         </span>
                       )} */}
                     </div>
                   </div>
-                  
+
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-company-orange text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
@@ -1531,13 +1609,13 @@ function StepByStep({
                               : 'text-green-500'
                           } pt-3`}
                         >
-                        
+
                         </span>
                       )}
                     </div>
                   </div>
-                  
-                  
+
+
 
                   <div className='col-span-1 flex flex-col space-y-4 lg:space-y-8 py-0 lg:py-4 justify-center items-center text-sm lg:text-base font-normal text-company-orange'>
                     <h1 className='text-sm lg:text-base font-normal text-company-orange '>
@@ -1580,7 +1658,7 @@ function StepByStep({
                     </div>
                   </div>
 
-                  
+
                   <div className='col-span-2 flex flex-col rounded-xl bg-black bg-opacity-50 divide-y divide-slate-500'>
                     <h3 className='text-sm lg:text-base font-normal text-company-orange font-bold px-4 py-2'>
                       Observaciones
@@ -1621,7 +1699,7 @@ function StepByStep({
                           <span className="text-nowrap">Ver PDF ODS</span>
                         </a>
                       </div>
-                    
+
                       {/* Segundo contenedor */}
                       <div className="flex  flex-col justify-start text-sm lg:text-base font-normal text-company-orange">
                         <InputFileUpload
@@ -1785,7 +1863,7 @@ function StepByStep({
                             <div className=''>
                               <div
                                 onClick={() => {
-                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') && 
+                                  (!isEdit || userRol?.uid == 'Ll6KGdzqdtmLLk0D5jhk' || userRol?.uid == 'ZWb0Zs42lnKOjetXH5lq') &&
                                     setSelectedExtraOrals(
                                       selectedExtraOrals.includes(option)
                                         ? selectedExtraOrals.filter(
@@ -2325,7 +2403,7 @@ function StepByStep({
                     )}
                   </div>
                 </div>
-                
+
                 {userRol?.uid === 'Ll6KGdzqdtmLLk0D5jhk' ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 col-span-2">
                     {/* Observaciones */}
@@ -2429,10 +2507,10 @@ function StepByStep({
                           </div>
                         </div>
                     </div>
-                    
+
                   )}
                 </div>
-                
+
               </div>
             </div>
           )}
@@ -2508,7 +2586,7 @@ function StepByStep({
                           allowOutsideClick: false,
                           background: '#404040',
                           color: '#e9a225',
-                          
+
                         });
                         try {
                           console.log("Area selected", areaSelected);
